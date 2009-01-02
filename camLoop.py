@@ -1,29 +1,29 @@
-#!/usr/bin/python
-## camLoop.py
-##
-## Copyright 2008 Tristan Matthews 
-## <tristan@sat.qc.ca>
-##
-## Original idea by Alexandre Quessy
-## http://alexandre.quessy.net
-##
-## camLoop.py is free software: you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation, either version 3 of the License, or
-## (at your option) any later version.
-##
-## camLoop.py is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with camLoop.py.  If not, see <http://www.gnu.org/licenses/>.
-##
-## Camera module for pygame available from pygame's svn revision 1744 or greater
-## svn co svn://seul.org/svn/pygame/trunk
+#!/usr/bin/env python
+# camLoop.py
+#
+# Copyright 2008 Tristan Matthews 
+# <le.businessman@gmail.com>
+#
+# Original idea by Alexandre Quessy
+# http://alexandre.quessy.net
+#
+# camLoop.py is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# camLoop.py is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with camLoop.py.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Camera module for pygame available from pygame's svn revision 1744 or greater
+# svn co svn://seul.org/svn/pygame/trunk
 
-import pygame, random
+import pygame
 import pygame.camera
 from pygame.locals import *
 
