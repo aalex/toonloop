@@ -26,7 +26,8 @@
 # initial keyboard or mouse event. 
 # FIXME: Opens in two windows, should be all in one window. However this means
 # copying both images to a new bigger image and only displaying that. 
-
+# See http://opencv.willowgarage.com/wiki/DisplayManyImages for an example of
+# how to do this.
 
 from opencv.cv import *
 from opencv.highgui import *
@@ -41,15 +42,15 @@ class CamLoop():
         self.size = (self.width, self.height)
         cvNamedWindow("camLoops", 1)
         cvNamedWindow("Playback", 1)
-        self.frames = 0
         self.imageList = []
         self.imageIdx = 0
         self.capture = cvCreateCameraCapture(0)
+        cvSetCaptureProperty(self.capture, CV_CAP_PROP_FPS, 30.0)
         # blank image with bitdepth 8 and 3 channels
         self.blankImage = cvCreateImage(cvSize(self.width, self.height), 8, 3)
-        self.blackout()
+        self.blackoutLoop()
 
-    def blackout(self):
+    def blackoutLoop(self):
         cvShowImage("camLoops", self.blankImage)
 
     def display(self):
@@ -71,21 +72,29 @@ class CamLoop():
 
     def resetLoop(self):
         self.imageList = []
-        self.blackout()
+        self.blackoutLoop()
 
     def printHelp(self):
         print "Usage: "
         print "<Space bar> = add image to loop "
         print "r = reset loop"
         print "p = pause"
-        print "i = print current loop frame number, number of frames in loop and global framerate"
+        print "i = print current loop frame number and number of frames in loop"
         print "h = print this help message"
         print "<Esc> or q = quit program\n"
 
     def printStats(self):
         print "Frame idx: " + str(self.imageIdx)
         print "Num images: " + str(len(self.imageList))
-        print str(self.frames) + " fps\n"
+
+    def cleanup(self):
+        """ Frees previously allocated resources """
+        cvDestroyWindow("camLoops")
+        cvDestroyWindow("Playback")
+        cvReleaseImage(self.blankImage)
+        for img in self.imageList:
+            cvReleaseImage(img)
+        cvReleaseCapture(self.capture)
 
     def main(self):
         print "CamLoop - Version " + str(versionNumber)
@@ -96,10 +105,10 @@ class CamLoop():
         if self.capture:
             running = True
             while running: 
+                key = cvWaitKey(20)
                 self.lastImage = cvQueryFrame(self.capture)
                 if not self.lastImage:
                     running = False
-                key = cvWaitKey(20)
                 if key == ' ':
                     self.grabImage()
                 elif key == 'r':
@@ -116,7 +125,7 @@ class CamLoop():
                 if not self.paused:
                     self.display()
             
-        cvDestroyWindow("camLoops")
+        self.cleanup()
 
 CamLoop().main()
 

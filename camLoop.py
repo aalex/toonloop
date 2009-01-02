@@ -31,14 +31,14 @@ versionNumber = 0.1
 
 pygame.init()
 
-class VideoCapturePlayer(object):
+class CamLoop(object):
     def __init__(self, **argd):
         self.imgWidth = 640
         self.width = self.imgWidth * 2
         self.height = 480 
         self.size = (self.width, self.height)
         self.__dict__.update(**argd)
-        super(VideoCapturePlayer, self).__init__(**argd)
+        super(CamLoop, self).__init__(**argd)
         self.surface = pygame.display.set_mode(self.size)
     
         pygame.display.set_caption("Loop Cam")
@@ -127,5 +127,5 @@ class VideoCapturePlayer(object):
                 self.clock.tick()
                 self.frames = self.clock.get_fps()
 
-VideoCapturePlayer().main()
+CamLoop().main()
 
