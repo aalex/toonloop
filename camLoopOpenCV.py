@@ -94,7 +94,7 @@ class CamLoop():
         cvReleaseImage(self.blankImage)
         for img in self.imageList:
             cvReleaseImage(img)
-        cvReleaseCapture(self.capture)
+#cvReleaseCapture(self.capture.own())
 
     def main(self):
         print "CamLoop - Version " + str(versionNumber)
