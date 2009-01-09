@@ -73,11 +73,18 @@ class CamLoop():
     def resetLoop(self):
         self.imageList = []
         self.blackoutLoop()
+    
+    def popOneFrame(self):
+        if self.imageList != []:
+            self.imageList.pop()
+            if self.imageList == []:
+                self.blackoutLoop()
 
     def printHelp(self):
         print "Usage: "
         print "<Space bar> = add image to loop "
         print "r = reset loop"
+        print "d = remove last frame from loop"
         print "p = pause"
         print "i = print current loop frame number and number of frames in loop"
         print "h = print this help message"
@@ -94,7 +101,6 @@ class CamLoop():
         cvReleaseImage(self.blankImage)
         for img in self.imageList:
             cvReleaseImage(img)
-#cvReleaseCapture(self.capture.own())
 
     def main(self):
         print "CamLoop - Version " + str(versionNumber)
@@ -119,6 +125,8 @@ class CamLoop():
                     self.printStats()
                 elif key == 'h':
                     self.printHelp()
+                elif key == 'd':
+                    self.popOneFrame()
                 elif key == 'q':
                     running = False
 
