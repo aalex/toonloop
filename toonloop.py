@@ -34,25 +34,33 @@ __version__ = 0.2
 
 pygame.init()
 
+class ToonLoopError(Exception):
+    """Any error ToonLoop might encouter"""
+    pass
+
 class ToonLoop(object):
     def __init__(self, **argd):
         self.img_width = 640
-        self.width = self.img_width * 2
         self.height = 480 
-        self.size = (self.width, self.height)
-        self.__dict__.update(**argd)
-        super(ToonLoop, self).__init__(**argd)
-        self.surface = pygame.display.set_mode(self.size)
-    
-        pygame.display.set_caption("ToonLoop")
-        self.camera = pygame.camera.Camera("/dev/video0", (self.img_width, self.height))
-        self.camera.start()
-        self.clock = pygame.time.Clock()
-        self.fps = 0
-        self.image_list = []
-        self.image_idx = 0
+        #super(ToonLoop, self).__init__(**argd) <-- ??
         self.running = True
         self.paused = False
+        pygame.display.set_caption("ToonLoop")
+        self.v4l2_device = "/dev/video0"
+        
+        self.__dict__.update(**argd) # overrides some attributes whose defaults and names are below
+        self.width = self.img_width * 2
+        self.size = (self.width, self.height)
+        self.surface = pygame.display.set_mode(self.size)
+        try:
+            self.camera = pygame.camera.Camera(self.v4l2_device, (self.img_width, self.height))
+            self.camera.start()
+        except SystemError, e:
+            raise ToonLoopError("Invalid camera. %s" % (str(e.message)))
+        self.clock = pygame.time.Clock()
+        self.fps = 0 # for statistics
+        self.image_list = []
+        self.image_idx = 0
 
     def get_and_flip(self):
         self.last_image = self.camera.get_image()
@@ -138,23 +146,25 @@ class PygameTimer:
     Integrates a pygame game and twisted.
     See http://twistedmatrix.com/pipermail/twisted-python/2002-October/001884.html
     """
-    def __init__(self, game):
+    def __init__(self, game, verbose=False):
         self.clock = time.Clock()
         self.game = game
+        self.is_verbose = verbose
+        self.desired_fps = 30.0
         # start
         self.update()
 
     def update(self):
         self.clock.tick()
         self.ms = self.clock.get_rawtime()
-        FPS = 60.0 # desired FPS
-        framespeed = (1.0 / FPS) * 1000
+        
+        framespeed = (1.0 / self.desired_fps) * 1000
         lastspeed = self.ms
         next = framespeed - lastspeed
         
-        #if self.is_verbose:
+        if self.is_verbose:
         #    print "framespeed", framespeed, "ms", self.ms, "next", next, "fps", self.clock.get_fps()
-        #    print "FPS: %5f" % (self.clock.get_fps())
+            print "FPS: %5f" % (self.clock.get_fps())
         
         # calls its draw method, which draw and refresh the whole screen.
         self.game.draw()
@@ -169,10 +179,33 @@ class PygameTimer:
             reactor.callLater(when, self.update)
 
 if __name__ == "__main__":
-    print "ToonLoop - Version " + str(__version__)
-    print "---------------------------------------"
-    print "Press h for usage and instructions\n"
+    from optparse import OptionParser
+    import sys
+
+    parser = OptionParser(usage="%prog [version]", version=str(__version__))
+    parser.add_option("-d", "--device", dest="device", default="/dev/video0", type="string", help="Specifies v4l2 device to grab image from.")
+    parser.add_option("-v", "--verbose", dest="verbose", action="store_true", help="Sets the output to verbose.")
     
-    pt = PygameTimer(ToonLoop())
+    (options, args) = parser.parse_args()
+    
+    # default options
+    device = "/dev/video0"
+    is_verbose = False
+    if options.device:
+        device = options.device
+    if options.verbose:
+        is_verbose = True
+        
+    print "ToonLoop - Version " + str(__version__)
+    print "Using v4l2 device " + device
+    print "Press h for usage and instructions\n"
+    try:
+        toonloop = ToonLoop(v4l2_device=options.device, verbose=is_verbose)
+    except ToonLoopError, e:
+        print str(e.message)
+        print "\nnow exiting"
+        sys.exit(1)
+    pygame_timer = PygameTimer(toonloop, is_verbose)
+    
     reactor.run()
 
