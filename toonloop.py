@@ -26,8 +26,11 @@
 import pygame
 import pygame.camera
 from pygame.locals import *
+from pygame import time
 
-__version__ = 0.1
+from twisted.internet import reactor
+
+__version__ = 0.2
 
 pygame.init()
 
@@ -45,10 +48,12 @@ class ToonLoop(object):
         self.camera = pygame.camera.Camera("/dev/video0", (self.img_width, self.height))
         self.camera.start()
         self.clock = pygame.time.Clock()
-        self.frames = 0
+        self.fps = 0
         self.image_list = []
         self.image_idx = 0
-        
+        self.running = True
+        self.paused = False
+
     def get_and_flip(self):
         self.last_image = self.camera.get_image()
         self.surface.blit(self.last_image, (0, 0))
@@ -93,39 +98,81 @@ class ToonLoop(object):
     def print_stats(self):
         print "Frame idx: " + str(self.image_idx)
         print "Num images: " + str(len(self.image_list))
-        print str(self.frames) + " fps\n"
+        print str(self.fps) + " fps\n"
 
-    def main(self):
-        print "CamLoop - Version " + str(__version__)
-        print "---------------------------------------"
-        print "Press h for usage instructions\n"
-        running = True
-        self.paused = False
-        while running:
-            events = pygame.event.get()
-            for e in events:
-                if e.type == QUIT:
-                    running = False
-                elif e.type == KEYDOWN: 
-                    if (e.key == K_SPACE):
-                        self.grab_image()
-                    elif (e.key == K_r):
-                        self.reset_loop()
-                    elif (e.key == K_p):
-                        self.pause()
-                    elif (e.key == K_i): 
-                        self.print_stats()
-                    elif (e.key == K_h):
-                        self.print_help()
-                    elif (e.key == K_BACKSPACE):
-                        self.pop_one_frame()
-                    elif (e.key == K_ESCAPE or e.key == K_q):
-                        running = False
+    def draw(self):
+        """
+        Renders one frame.
+        Called from the event loop. (twisted)
+        """
+        events = pygame.event.get()
+        for e in events:
+            if e.type == QUIT:
+                self.running = False
+            elif e.type == KEYDOWN: 
+                if (e.key == K_SPACE):
+                    self.grab_image()
+                elif (e.key == K_r):
+                    self.reset_loop()
+                elif (e.key == K_p):
+                    self.pause()
+                elif (e.key == K_i): 
+                    self.print_stats()
+                elif (e.key == K_h):
+                    self.print_help()
+                elif (e.key == K_BACKSPACE):
+                    self.pop_one_frame()
+                elif (e.key == K_ESCAPE or e.key == K_q):
+                    self.running = False
+        if not self.paused:
+            self.get_and_flip()
+            self.clock.tick()
+            self.fps = self.clock.get_fps()
+    
+    def cleanup(self):
+        pass
 
-            if not self.paused:
-                self.get_and_flip()
-                self.clock.tick()
-                self.frames = self.clock.get_fps()
 
-ToonLoop().main()
+class PygameTimer:
+    """
+    Integrates a pygame game and twisted.
+    See http://twistedmatrix.com/pipermail/twisted-python/2002-October/001884.html
+    """
+    def __init__(self, game):
+        self.clock = time.Clock()
+        self.game = game
+        # start
+        self.update()
+
+    def update(self):
+        self.clock.tick()
+        self.ms = self.clock.get_rawtime()
+        FPS = 60.0 # desired FPS
+        framespeed = (1.0 / FPS) * 1000
+        lastspeed = self.ms
+        next = framespeed - lastspeed
+        
+        #if self.is_verbose:
+        #    print "framespeed", framespeed, "ms", self.ms, "next", next, "fps", self.clock.get_fps()
+        #    print "FPS: %5f" % (self.clock.get_fps())
+        
+        # calls its draw method, which draw and refresh the whole screen.
+        self.game.draw()
+        
+        if not self.game.running:
+            self.game.cleanup()
+            reactor.stop()
+        else:
+            when = next / 1000.0 * 2.0
+            if when < 0:
+                when = 0
+            reactor.callLater(when, self.update)
+
+if __name__ == "__main__":
+    print "ToonLoop - Version " + str(__version__)
+    print "---------------------------------------"
+    print "Press h for usage and instructions\n"
+    
+    pt = PygameTimer(ToonLoop())
+    reactor.run()
 
