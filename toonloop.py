@@ -72,7 +72,7 @@ class ToonLoop(object):
 
     def reset_loop(self):
         self.image_list = []
-        self.rese_playback_window()
+        self.reset_playback_window()
 
     def pop_one_frame(self):
         if self.image_list != []:
