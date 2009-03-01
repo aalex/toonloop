@@ -42,6 +42,7 @@ class ToonLoop(object):
     def __init__(self, **argd):
         self.img_width = 640
         self.height = 480 
+        self.last_image = pygame.Surface((self.img_width, self.height))
         #super(ToonLoop, self).__init__(**argd) <-- ??
         self.running = True
         self.paused = False
@@ -54,7 +55,7 @@ class ToonLoop(object):
         self.surface = pygame.display.set_mode(self.size)
         try:
             pygame.camera.init()
-            self.camera = pygame.camera.Camera(self.v4l2_device, (self.img_width, self.height))
+            self.camera = pygame.camera.Camera(0, (self.img_width, self.height))
             self.camera.start()
         except SystemError, e:
             raise ToonLoopError("Invalid camera. %s" % (str(e.message)))
@@ -64,7 +65,7 @@ class ToonLoop(object):
         self.image_idx = 0
 
     def get_and_flip(self):
-        self.last_image = self.camera.get_image()
+        self.camera.get_image(self.last_image)
         self.surface.blit(self.last_image, (0, 0))
         if len(self.image_list) > self.image_idx:
             self.surface.blit(self.image_list[self.image_idx], (self.img_width, 0))
@@ -74,7 +75,7 @@ class ToonLoop(object):
         pygame.display.update()
 
     def grab_image(self):
-        self.image_list.append(self.last_image)
+        self.image_list.append(self.last_image.copy())
 
     def pause(self):
         self.paused = not self.paused
