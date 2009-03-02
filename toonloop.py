@@ -53,7 +53,7 @@ class ToonLoop(object):
         self.size = (self.width, self.height)
         self.surface = pygame.display.set_mode(self.size)
         try:
-            pygame.camera.init()
+            pygame.camera.init() 
             self.camera = pygame.camera.Camera(self.v4l2_device, (self.img_width, self.height))
             self.camera.start()
         except SystemError, e:
