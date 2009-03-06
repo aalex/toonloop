@@ -27,6 +27,7 @@ import pygame
 import pygame.camera
 from pygame.locals import *
 from pygame import time
+from time import strftime
 
 from twisted.internet import reactor
 
@@ -54,6 +55,11 @@ class ToonLoop(object):
         self.surface = pygame.display.set_mode(self.size)
         try:
             pygame.camera.init() 
+        except Exception, e:
+            print "error calling pygame.camera.init()", e.message
+        try:
+            print "cameras :", pygame.camera.list_cameras()
+
             self.camera = pygame.camera.Camera(self.v4l2_device, (self.img_width, self.height))
             self.camera.start()
         except SystemError, e:
@@ -83,6 +89,15 @@ class ToonLoop(object):
         self.image_list = []
         self.reset_playback_window()
 
+    def save_images(self):
+        """
+        Saves all images as jpeg
+        """
+        datetime = strftime("%Y-%m-%d_%H:%M:%S")
+        for i in range(len(self.image_list)):
+            name = "%s_%d.jpg" % (datetime, i)
+            pygame.image.save(self.image_list[i], name)
+
     def pop_one_frame(self):
         if self.image_list != []:
             self.image_list.pop()
@@ -102,6 +117,7 @@ class ToonLoop(object):
         print "p = pause"
         print "i = print current loop frame number, number of frames in loop and global framerate"
         print "h = print this help message"
+        print "s = saves all images as jpeg"
         print "<Esc> or q = quit program\n"
 
     def print_stats(self):
@@ -119,19 +135,21 @@ class ToonLoop(object):
             if e.type == QUIT:
                 self.running = False
             elif e.type == KEYDOWN: 
-                if (e.key == K_SPACE):
+                if e.key == K_SPACE:
                     self.grab_image()
-                elif (e.key == K_r):
+                elif e.key == K_r:
                     self.reset_loop()
-                elif (e.key == K_p):
+                elif e.key == K_p:
                     self.pause()
-                elif (e.key == K_i): 
+                elif e.key == K_i: 
                     self.print_stats()
-                elif (e.key == K_h):
+                elif e.key == K_h:
                     self.print_help()
-                elif (e.key == K_BACKSPACE):
+                elif e.key == K_s:
+                    self.save_images()
+                elif e.key == K_BACKSPACE:
                     self.pop_one_frame()
-                elif (e.key == K_ESCAPE or e.key == K_q):
+                elif e.key == K_ESCAPE or e.key == K_q:
                     self.running = False
         if not self.paused:
             self.get_and_flip()
