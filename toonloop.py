@@ -39,6 +39,9 @@ Usage :
  - Press 'h' to print a help message.
  - Press UP to increase frame rate.
  - Press DOWN to decrease frame rate.
+ - Press 'a' to toggle on/off the auto recording. 
+   (it records one frame on every frame)
+ - Press 'k' or 'j' to increase or decrease the auto rate.
 
 Camera module for pygame available from pygame's svn revision 1744 or greater
 svn co svn://seul.org/svn/pygame/trunk
@@ -46,8 +49,6 @@ svn co svn://seul.org/svn/pygame/trunk
 # TODO:
 # - Press numbers from 0 to 9 to switch to an other sequence.
 # - Press 'p' to open the Quicktime video camera settings dialog. (if available)
-# - Press 'a' to toggle on/off the auto recording. 
-#   (it records one frame on every frame)
 # - Press LEFT or RIGHT to move the insertion point
 # - OSC messages to set intervalometer rate (timelapse) and enable it.
 
@@ -113,6 +114,9 @@ class ToonLoop(object):
         self.image_list = []
         self.image_idx = 0
         self.timer = None # Twisted PygameTimer instance that owns it.
+        self.auto_enabled = False
+        self.auto_rate = 3.0 # in seconds
+        self.auto_delayed_id = None
 
     def get_and_flip(self):
         """
@@ -129,6 +133,46 @@ class ToonLoop(object):
         else:
             self.image_idx = 0
         pygame.display.update()
+
+    def toggle_auto(self):
+        """
+        Toggles on/off the auto mode
+        """
+        self.auto_enabled = not self.auto_enabled
+        if self.auto_enabled:
+            self.auto_delayed_id = reactor.callLater(0, self.auto_grab)
+            print "enabled intervalometer"
+        elif self.auto_delayed_id.active():
+            self.auto_delayed_id.cancel()
+            print "disabled intervalometer"
+
+        # self.auto_enabled = False
+        # self.auto_rate = 3.0 # in seconds
+        # self.auto_delayed_id = None
+    
+    def increment_auto_rate(self, dir=1):
+        """
+        Increase or decreases the intervalometer rate. (in seconds)
+        :param dir: by how much increment it.
+        """
+        will_be = self.auto_rate + dir
+        if will_be > 0 and will_be <= 999999:
+            self.auto_rate = will_be
+            print "auto rate:", will_be
+
+    def auto_grab(self):
+        """
+        Called when it is time to utomatically grab an image.
+
+        The auto mode is like an intervalometer to create timelapse animations.
+        """
+        # self.get_and_flip()
+        self.grab_image()
+        sys.stdout.write("grab ")
+        sys.stdout.flush()
+        if self.auto_enabled:
+            self.auto_delayed_id = reactor.callLater(self.auto_rate, self.auto_grab)
+
 
     def grab_image(self):
         """
@@ -202,6 +246,9 @@ class ToonLoop(object):
         print "i = print current loop frame number, number of frames in loop and global framerate"
         print "h = print this help message"
         print "s = saves all images as jpeg"
+        print "a = enable the intervalometer auto grab"
+        print "k = increase the intervalometer interval"
+        print "j = decrease the intervalometer interval"
         print "<Esc> or q = quit program\n"
 
     def print_stats(self):
@@ -234,6 +281,10 @@ class ToonLoop(object):
             if e.type == QUIT:
                 self.running = False
             elif e.type == KEYDOWN: 
+                if e.key == K_k:
+                    self.increment_auto_rate(1)
+                if e.key == K_j:
+                    self.increment_auto_rate(-1)
                 if e.key == K_UP:
                     self.increment_fps(1)
                 if e.key == K_DOWN:
@@ -250,6 +301,8 @@ class ToonLoop(object):
                     self.print_help()
                 elif e.key == K_s:
                     self.save_images()
+                if e.key == K_a:
+                    self.toggle_auto()
                 elif e.key == K_BACKSPACE:
                     self.pop_one_frame()
                 elif e.key == K_ESCAPE or e.key == K_q:
@@ -362,4 +415,5 @@ if __name__ == "__main__":
     try:
         reactor.run()
     except KeyboardInterrupt:
-        print "Exiting toonloop"
+        pass
+    print "\nExiting toonloop"
