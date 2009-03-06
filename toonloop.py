@@ -23,6 +23,7 @@
 # Camera module for pygame available from pygame's svn revision 1744 or greater
 # svn co svn://seul.org/svn/pygame/trunk
 
+import sys
 import pygame
 import pygame.camera
 from pygame.locals import *
@@ -94,9 +95,12 @@ class ToonLoop(object):
         Saves all images as jpeg
         """
         datetime = strftime("%Y-%m-%d_%H:%M:%S")
+        print datetime
         for i in range(len(self.image_list)):
             name = "%s_%d.jpg" % (datetime, i)
+            sys.stdout.write("%d " % i)
             pygame.image.save(self.image_list[i], name)
+        print ""
 
     def pop_one_frame(self):
         if self.image_list != []:
