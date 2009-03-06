@@ -20,30 +20,41 @@
 # You should have received a copy of the GNU General Public License
 # along with camLoop.py.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Camera module for pygame available from pygame's svn revision 1744 or greater
-# svn co svn://seul.org/svn/pygame/trunk
+"""
+ToonLoop is a realtime stop motion performance tool. 
 
+The idea is to spread its use for teaching new medias to children and to 
+give a professional tool for movie creators.
+
+Camera module for pygame available from pygame's svn revision 1744 or greater
+svn co svn://seul.org/svn/pygame/trunk
+"""
 import sys
+from time import strftime
+import os
+
 import pygame
 import pygame.camera
 from pygame.locals import *
 from pygame import time
-from time import strftime
-
-import os
 
 from twisted.internet import reactor
 
-__version__ = 0.2
+__version__ = "1.0.1 alpha"
 
 pygame.init()
 
 class ToonLoopError(Exception):
-    """Any error ToonLoop might encouter"""
+    """
+    Any error ToonLoop might encouter
+    """
     pass
 
 class ToonLoop(object):
     def __init__(self, **argd):
+        """
+        Startup poutine.
+        """
         if os.uname()[0] == 'Darwin':
             self.isMac = True
         else:
@@ -79,8 +90,12 @@ class ToonLoop(object):
         self.fps = 0 # for statistics
         self.image_list = []
         self.image_idx = 0
+        self.timer = None # Twisted PygameTimer instance that owns it.
 
     def get_and_flip(self):
+        """
+        Image capture from the video camera and pygame pixels update.
+        """
         if self.isMac:
             self.camera.get_image(self.last_image)
         else:
@@ -94,15 +109,24 @@ class ToonLoop(object):
         pygame.display.update()
 
     def grab_image(self):
+        """
+        Copies the last grabbed to the list of images.
+        """
         if self.isMac:
             self.image_list.append(self.last_image.copy())
         else:
             self.image_list.append(self.last_image)
 
     def pause(self):
+        """
+        Toggles on/off the pause
+        """
         self.paused = not self.paused
 
     def reset_loop(self):
+        """
+        Deletes all frames from the current animation
+        """
         self.image_list = []
         self.reset_playback_window()
 
@@ -110,26 +134,44 @@ class ToonLoop(object):
         """
         Saves all images as jpeg
         """
+        # TODO : in a thread or using reactor.callLater()
         datetime = strftime("%Y-%m-%d_%H:%M:%S")
-        print datetime
-        for i in range(len(self.image_list)):
-            name = "%s_%d.jpg" % (datetime, i)
-            sys.stdout.write("%d " % i)
-            pygame.image.save(self.image_list[i], name)
-        print ""
+        print "Saving images ", datetime, " " 
+        reactor.callLater(0, self._save_next_image, datetime, 0)
+
+    def _save_next_image(self, datetime, index):
+        """
+        Saves each image using twisted in order not to freeze the app.
+        """
+        if index < len(self.image_list):
+            name = ("%s_%4d.jpg" % (datetime, index)).replace(' ', '0')
+            sys.stdout.write("%d " % index)
+            pygame.image.save(self.image_list[index], name)
+            reactor.callLater(0, self._save_next_image, datetime, index + 1)
+        else:
+            print "" # done
 
     def pop_one_frame(self):
+        """
+        Deletes the last frame from the current list of images.
+        """
         if self.image_list != []:
             self.image_list.pop()
             if self.image_list == []:
                 self.reset_playback_window()
 
     def reset_playback_window(self):
+        """
+        Sets all pixels of the window as black.
+        """
         blank_surface = pygame.Surface((self.img_width, self.height))
         playback_pos = (self.img_width, 0)
         self.surface.blit(blank_surface, playback_pos)
 
     def print_help(self):
+        """
+        Prints help and usage.
+        """
         print "Usage: "
         print "<Space bar> = add image to loop "
         print "<Backspace> = remove image from loop "
@@ -141,9 +183,22 @@ class ToonLoop(object):
         print "<Esc> or q = quit program\n"
 
     def print_stats(self):
+        """
+        Print statistics
+        """
         print "Frame idx: " + str(self.image_idx)
         print "Num images: " + str(len(self.image_list))
         print str(self.fps) + " fps\n"
+    
+    def increment_fps(self, dir=1):
+        """
+        Increase or decreases the FPS
+        :param dir: by how much increment it.
+        """
+        if self.timer is not None:
+            will_be = self.timer.desired_fps + dir
+            if will_be > 0 and will_be <= 60:
+                self.timer.desired_fps = will_be
 
     def draw(self):
         """
@@ -155,6 +210,10 @@ class ToonLoop(object):
             if e.type == QUIT:
                 self.running = False
             elif e.type == KEYDOWN: 
+                if e.key == K_UP:
+                    self.increment_fps(1)
+                if e.key == K_DOWN:
+                    self.increment_fps(-1)
                 if e.key == K_SPACE:
                     self.grab_image()
                 elif e.key == K_r:
@@ -177,6 +236,9 @@ class ToonLoop(object):
             self.fps = self.clock.get_fps()
     
     def cleanup(self):
+        """
+        Called before quitting the application.
+        """
         pass
 
 
@@ -188,12 +250,16 @@ class PygameTimer:
     def __init__(self, game, verbose=False):
         self.clock = time.Clock()
         self.game = game
+        self.game.timer = self 
         self.is_verbose = verbose
         self.desired_fps = 30.0
         # start
         self.update()
 
     def update(self):
+        """
+        Renders one frame sequenced using the Twisted events loop.
+        """
         self.clock.tick()
         self.ms = self.clock.get_rawtime()
         
@@ -218,6 +284,9 @@ class PygameTimer:
             reactor.callLater(when, self.update)
 
 if __name__ == "__main__":
+    """
+    Starts the application, reading the command-line arguments.
+    """
     from optparse import OptionParser
     import sys
 
@@ -228,7 +297,7 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
     
     # default options
-    device = "/dev/video0"
+    device = "/dev/video0" # TODO: use numbers not strings.
     is_verbose = False
     if options.device:
         device = options.device
