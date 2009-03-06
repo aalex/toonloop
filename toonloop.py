@@ -18,7 +18,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the gnu general public license
-# along with camLoop.py.  If not, see <http://www.gnu.org/licenses/>.
+# along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
 ToonLoop is a realtime stop motion performance tool. 
@@ -40,10 +40,13 @@ Usage :
  - Press UP to increase frame rate.
  - Press DOWN to decrease frame rate.
  - Press 'a' to toggle on/off the auto recording. 
-   (it records one frame on every frame)
+   (it records one frame on every frame) It is an intervalometer.
+   Best used to create timelapse sequences automatically.
  - Press 'k' or 'j' to increase or decrease the auto rate.
 
-Camera module for pygame available from pygame's svn revision 1744 or greater
+INSTALLATION NOTES : 
+The camera module for pygame is available from pygame's svn revision 
+1744 or greater
 svn co svn://seul.org/svn/pygame/trunk
 """
 # TODO:
@@ -90,7 +93,7 @@ class ToonLoop(object):
         self.running = True
         self.paused = False
         pygame.display.set_caption("ToonLoop")
-        self.v4l2_device = "/dev/video0"
+        self.video_device = 0 
         
         self.__dict__.update(**argd) # overrides some attributes whose defaults and names are below
         self.width = self.img_width * 2
@@ -105,7 +108,7 @@ class ToonLoop(object):
             if self.isMac:
                 self.camera = pygame.camera.Camera(0, (self.img_width, self.height))
             else:
-                self.camera = pygame.camera.Camera(self.v4l2_device, (self.img_width, self.height))
+                self.camera = pygame.camera.Camera("/dev/video%d" % (self.video_device), (self.img_width, self.height))
             self.camera.start()
         except SystemError, e:
             raise ToonLoopError("Invalid camera. %s" % (str(e.message)))
@@ -382,36 +385,40 @@ if __name__ == "__main__":
     Starts the application, reading the command-line arguments.
     """
     from optparse import OptionParser
-    import sys
 
     parser = OptionParser(usage="%prog [version]", version=str(__version__))
-    parser.add_option("-d", "--device", dest="device", default="/dev/video0", type="string", help="Specifies v4l2 device to grab image from.")
-    parser.add_option("-v", "--verbose", dest="verbose", action="store_true", help="Sets the output to verbose.")
-    parser.add_option("-f", "--fps", type="int", default=12, help="Sets the desired fps.")
+    parser.add_option("-d", "--device", dest="device", default=0, type="int", \
+        help="Specifies v4l2 device to grab image from.")
+    parser.add_option("-v", "--verbose", dest="verbose", action="store_true", \
+        help="Sets the output to verbose.")
+    parser.add_option("-f", "--fps", type="int", default=12, \
+        help="Sets the desired fps.")
+    parser.add_option("-t", "--intervalometer", type="int", default=3, \
+        help="Sets intervalometer interval in seconds.")
+    parser.add_option("-i", "--enable-intervalometer", \
+        dest="enable_intervalometer", action="store_true", \
+        help="Enables the intervalometer at startup.")
     
     (options, args) = parser.parse_args()
     
-    # default options
-    device = "/dev/video0" # TODO: use numbers not strings.
-    is_verbose = False
-    if options.device:
-        device = options.device
-    if options.verbose:
-        is_verbose = True
-        
     print "ToonLoop - Version " + str(__version__)
     print "Copyright 2008 Tristan Matthews & Alexandre Quessy"
     print "Released under the GNU General Public License"
-    print "Using video device " + device
+    print "Using video device %d" % options.device
     print "Press h for usage and instructions\n"
+    print "options:", options
     try:
-        toonloop = ToonLoop(v4l2_device=options.device, verbose=is_verbose)
+        toonloop = ToonLoop(video_device=options.device, \
+            auto_rate=options.intervalometer, \
+            auto_enabled=options.enable_intervalometer == True, \
+            verbose=options.verbose == True)
     except ToonLoopError, e:
         print str(e.message)
         print "\nnow exiting"
         sys.exit(1)
-    pygame_timer = PygameTimer(toonloop, is_verbose)
+    pygame_timer = PygameTimer(toonloop, options.verbose)
     pygame_timer.desired_fps = options.fps
+    
     try:
         reactor.run()
     except KeyboardInterrupt:
