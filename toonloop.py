@@ -17,7 +17,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the gnu general public license
 # along with camLoop.py.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
@@ -26,9 +26,31 @@ ToonLoop is a realtime stop motion performance tool.
 The idea is to spread its use for teaching new medias to children and to 
 give a professional tool for movie creators.
 
+In the left window, you can see what is seen by the live camera.
+In the right window, it is the result of the stop motion loop.
+
+Usage :
+ - Press the SPACE bar to grab a frame.
+ - Press DELETE or BACKSPACE to delete the last frame.
+ - Press 'r' to reset and start the current sequence. (an remove all its frames)
+ - Press 's' to save the current sequence as a QuickTime movie.
+ - Press 'i' to print current loop frame number, number of frames in loop 
+   and global framerate.
+ - Press 'h' to print a help message.
+ - Press UP to increase frame rate.
+ - Press DOWN to decrease frame rate.
+
 Camera module for pygame available from pygame's svn revision 1744 or greater
 svn co svn://seul.org/svn/pygame/trunk
 """
+# TODO:
+# - Press numbers from 0 to 9 to switch to an other sequence.
+# - Press 'p' to open the Quicktime video camera settings dialog. (if available)
+# - Press 'a' to toggle on/off the auto recording. 
+#   (it records one frame on every frame)
+# - Press LEFT or RIGHT to move the insertion point
+# - OSC messages to set intervalometer rate (timelapse) and enable it.
+
 import sys
 from time import strftime
 import os
@@ -196,16 +218,18 @@ class ToonLoop(object):
         :param dir: by how much increment it.
         """
         if self.timer is not None:
+            # accesses the PygameTimer instance that owns this.
             will_be = self.timer.desired_fps + dir
             if will_be > 0 and will_be <= 60:
                 self.timer.desired_fps = will_be
-
-    def draw(self):
+                print "FPS:", will_be
+    
+    def process_events(self, events):
         """
-        Renders one frame.
-        Called from the event loop. (twisted)
+        Processes pygame events.
+        :param events: got them using pygame.event.get()
         """
-        events = pygame.event.get()
+        # events = pygame.event.get()
         for e in events:
             if e.type == QUIT:
                 self.running = False
@@ -230,6 +254,12 @@ class ToonLoop(object):
                     self.pop_one_frame()
                 elif e.key == K_ESCAPE or e.key == K_q:
                     self.running = False
+
+    def draw(self):
+        """
+        Renders one frame.
+        Called from the event loop. (twisted)
+        """
         if not self.paused:
             self.get_and_flip()
             self.clock.tick()
@@ -252,9 +282,20 @@ class PygameTimer:
         self.game = game
         self.game.timer = self 
         self.is_verbose = verbose
-        self.desired_fps = 30.0
+        self.desired_fps = 12.0
         # start
-        self.update()
+        self.check_for_events() # starts a metronome
+        self.update() # starts a metronome
+
+
+    def check_for_events(self):
+        """
+        Check for pygame events and warn the game.
+        :param events: got them using pygame.event.get()
+        """
+        events = pygame.event.get()
+        self.game.process_events(events)
+        reactor.callLater(0, self.check_for_events)
 
     def update(self):
         """
@@ -293,6 +334,7 @@ if __name__ == "__main__":
     parser = OptionParser(usage="%prog [version]", version=str(__version__))
     parser.add_option("-d", "--device", dest="device", default="/dev/video0", type="string", help="Specifies v4l2 device to grab image from.")
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true", help="Sets the output to verbose.")
+    parser.add_option("-f", "--fps", type="int", default=12, help="Sets the desired fps.")
     
     (options, args) = parser.parse_args()
     
@@ -305,7 +347,9 @@ if __name__ == "__main__":
         is_verbose = True
         
     print "ToonLoop - Version " + str(__version__)
-    print "Using v4l2 device " + device
+    print "Copyright 2008 Tristan Matthews & Alexandre Quessy"
+    print "Released under the GNU General Public License"
+    print "Using video device " + device
     print "Press h for usage and instructions\n"
     try:
         toonloop = ToonLoop(v4l2_device=options.device, verbose=is_verbose)
@@ -314,6 +358,8 @@ if __name__ == "__main__":
         print "\nnow exiting"
         sys.exit(1)
     pygame_timer = PygameTimer(toonloop, is_verbose)
-    
-    reactor.run()
-
+    pygame_timer.desired_fps = options.fps
+    try:
+        reactor.run()
+    except KeyboardInterrupt:
+        print "Exiting toonloop"
