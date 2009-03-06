@@ -1,0 +1,10 @@
+#!/bin/bash
+# Converts all jpeg images in the current directory to a mp4 video sequence.
+# Relies on the mencoder package.
+#
+# To read the resulting file, use :
+# mplayer output.mp4
+
+mencoder "mf://*.jpg" -mf fps=12 -o output.mp4 -ovc lavc -lavcopts vcodec=mpeg4
+
+
