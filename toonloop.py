@@ -70,6 +70,77 @@ __version__ = "1.0.1 alpha"
 
 pygame.init()
 
+class ToonOsc(object):
+    """
+    OSC callbacks and sends for ToonLoop
+    
+    Sends:
+    /toon/frame <i>
+    /toon/sequence <i>
+    /toon/framerate <i>
+    /toon/writehead <i>
+    
+    Receives:
+    /toon/framerate/set <i>
+    /toon/framerate/increase
+    /toon/framerate/decrease
+    /toon/auto/enable <i>
+    /toon/auto/rate <i>
+    /toon/osc/send/host <s>
+    /toon/osc/send/port <i>
+    /toon/sequence <i>
+    /toon/frame/delete
+    /toon/frame/add
+    /toon/reset
+    /toon/playhead <i>
+    /toon/writehead <i>
+    """
+    pass
+# TODO : text for frame number on both sides
+# TODO : OSC callbacks and sends
+
+class ToonSequence(object):
+    """
+    ToonLoop sequence. 
+
+    A sequence is made of many shots.
+    
+    An act include one or more sequences; sequences comprise one or more scenes; 
+    and scenes may be thought of as being built out of shots (if one is thinking visually) 
+    or beats (if one is thinking in narrative terms).
+    """
+    pass
+
+class ToonShot(object):
+    """
+    ToonLoop shot.
+
+    A shot is a serie of frames. 
+    """
+    def __init__(self, fps=12):
+        self.writehead = 0
+        self.playhead = 0
+        self.frames = []
+        self.fps = fps
+
+    def reset(self):
+        pass
+
+    def delete_frame(self):
+        pass
+
+    def add_frame(self):
+        pass
+
+    def next_frame(self):
+        pass
+
+#  int captureFrameNum = 0; //the next captured frame number ... might wrap around
+#  int playFrameNum = 0;
+#  PImage[] images = new PImage[LOOP_MAX_NUM_FRAME];
+#  int seqFrameRate = FRAME_RATE;
+#  int getFrameRate() 
+
 class ToonLoopError(Exception):
     """
     Any error ToonLoop might encouter
@@ -77,6 +148,9 @@ class ToonLoopError(Exception):
     pass
 
 class ToonLoop(object):
+    """
+    ToonLoop is a realtime stop motion tool.
+    """
     def __init__(self, **argd):
         """
         Startup poutine.
@@ -89,13 +163,14 @@ class ToonLoop(object):
         self.img_width = 640
         self.height = 480 
         self.last_image = pygame.Surface((self.img_width, self.height))
-        #super(ToonLoop, self).__init__(**argd) <-- ??
         self.running = True
         self.paused = False
         pygame.display.set_caption("ToonLoop")
         self.video_device = 0 
         
+        #super(ToonLoop, self).__init__(**argd) <-- ??
         self.__dict__.update(**argd) # overrides some attributes whose defaults and names are below
+        
         self.width = self.img_width * 2
         self.size = (self.width, self.height)
         self.surface = pygame.display.set_mode(self.size)
@@ -106,7 +181,7 @@ class ToonLoop(object):
         try:
             print "cameras :", pygame.camera.list_cameras()
             if self.isMac:
-                self.camera = pygame.camera.Camera(0, (self.img_width, self.height))
+                self.camera = pygame.camera.Camera(self.video_device, (self.img_width, self.height))
             else:
                 self.camera = pygame.camera.Camera("/dev/video%d" % (self.video_device), (self.img_width, self.height))
             self.camera.start()
@@ -204,7 +279,7 @@ class ToonLoop(object):
         Saves all images as jpeg
         """
         # TODO : in a thread or using reactor.callLater()
-        datetime = strftime("%Y-%m-%d_%H:%M:%S")
+        datetime = strftime("%Y-%m-%d_%Hh%Mm%S")
         print "Saving images ", datetime, " " 
         reactor.callLater(0, self._save_next_image, datetime, 0)
 
@@ -310,7 +385,11 @@ class ToonLoop(object):
                     self.pop_one_frame()
                 elif e.key == K_ESCAPE or e.key == K_q:
                     self.running = False
+        """
+        TODO: 
+        switch to sequences 0 to 9
 
+        """
     def draw(self):
         """
         Renders one frame.
