@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#
 # ToonLoop for Python
 #
 # Copyright 2008 Tristan Matthews & Alexandre Quessy
@@ -20,6 +21,7 @@
 # You should have received a copy of the gnu general public license
 # along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
 #
+
 """
 ToonLoop is a realtime stop motion performance tool. 
 
@@ -54,10 +56,17 @@ svn co svn://seul.org/svn/pygame/trunk
 # - Press 'p' to open the Quicktime video camera settings dialog. (if available)
 # - Press LEFT or RIGHT to move the insertion point
 # - OSC messages to set intervalometer rate (timelapse) and enable it.
+# - onion peal
+# - text for frame number on both sides
+# - OSC callbacks and sends
 
 import sys
 from time import strftime
 import os
+
+from toon import osc_protocol 
+from toon import osc_create_and_send
+
 
 import pygame
 import pygame.camera
@@ -69,6 +78,9 @@ from twisted.internet import reactor
 __version__ = "1.0.1 alpha"
 
 pygame.init()
+
+def _print(text):
+    print "\n", text
 
 class ToonOsc(object):
     """
@@ -95,9 +107,42 @@ class ToonOsc(object):
     /toon/playhead <i>
     /toon/writehead <i>
     """
-    pass
-# TODO : text for frame number on both sides
-# TODO : OSC callbacks and sends
+    
+    def ping(self, addr, tags, msg, host):
+        """
+        /ping
+        
+        answers /pong
+        args: pattern, tags, data, (self.client_host, self.client_port)
+        """
+        print addr, tags, msg, host
+        _print("Received /ping. Sending /pong")
+        osc_create_and_send(self.osc, (host[0], self.send_port), "/pong")
+    
+    def pong(self,addr, tags, stuff, host):
+        print "received pong from", host
+
+    def __init__(self):
+        self.send_port = 3333
+        self.receive_port = 4444
+        self.send_host = 'localhost'
+        self.osc = osc_protocol.Osc()
+        try:
+            print "OSC listening on port %d" % (self.receive_port)
+            reactor.listenUDP(self.receive_port, self.osc)
+        except CannotListenError,e:
+            _print("ERROR: port already in use : %d" % (port_num))
+            _print("Please quit and try again.")
+            _print(e)
+        
+        # /ping
+        self.osc.add_msg_handler('/ping', self.ping)
+        self.osc.add_msg_handler('/pong', self.pong)
+
+        print 'OSC callbacks:'
+        for c in self.osc.callbacks:
+            print c
+
 
 class ToonSequence(object):
     """
@@ -195,6 +240,8 @@ class ToonLoop(object):
         self.auto_enabled = False
         self.auto_rate = 3.0 # in seconds
         self.auto_delayed_id = None
+        self.osc = ToonOsc()
+
 
     def get_and_flip(self):
         """
