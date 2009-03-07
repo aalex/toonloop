@@ -31,10 +31,11 @@ _data = {
     'enable_auto':False,
     'file_prefix':'toonloop_'
     }
+METHOD = 'post'
 
 def renderHomePage(request):
     """
-    Handles get data and generates a web form.
+    Handles get/post data and generates a web form.
     """
     global _data
 
@@ -74,7 +75,7 @@ def renderHomePage(request):
     </head>
     <body>
       <h1>ToonLoop</h1>
-      <form action='/' method='get'>
+      <form action='/' method='%s'>
         <p>
           File name prefix:
           <input type='text' name='file_prefix' value='%s' />
@@ -85,7 +86,7 @@ def renderHomePage(request):
         </p>
         <p>
         Options : 
-    """ % (_data['file_prefix'], _data['frame_rate']))
+    """ % (METHOD, _data['file_prefix'], _data['frame_rate']))
     checked_str = ''
     if _data['enable_auto']:
         checked_str = 'checked="checked"'
