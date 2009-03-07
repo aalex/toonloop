@@ -29,7 +29,7 @@ __version__ = '1.0 alpha'
 
 import osc_protocol
 
-__all__ = ("OSC", "osc_protocol")
+__all__ = ("osc_protocol")
 
 def osc_create_and_send(osc, host, addr="", msg=None, typehint=None):
     """
