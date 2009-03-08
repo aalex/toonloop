@@ -23,7 +23,6 @@
 #
 
 from time import strftime
-
 from twisted.web import http
 
 _data = {
@@ -32,6 +31,66 @@ _data = {
     'file_prefix':'toonloop_'
     }
 METHOD = 'post'
+
+class FormInput(object):
+    """
+    Three-column table-based layout of HTML form elements
+    """
+    def __init__(self, **kwargs):
+        self.title = ''
+        self.name = ''
+        self.value = ''
+        self.description = ''
+        self.error_message = ''
+        self.__dict__.update(**kwargs)
+    
+    def get_html(self):
+        """
+        Returns HTML for the form element
+        """
+        raise NotImplementedError()
+        
+    def _render_error(self):
+        error_mess = ''
+        if self.error_message != '':
+            error_mess = "<br />%s" % (self.error_message)
+        return error_mess
+    
+    def set_value(self, value):
+        """
+        validates the GET/POST variable and changes it if valid. 
+        """
+        raise NotImplementedError()
+
+class TextInput(FormInput):
+    """
+    'text' type HTML form input
+    """
+    def get_html(self):
+        error_mess = self._render_error()
+        txt = """
+        <tr>
+            <td>%s</td>
+            <td><input type='text' name='%s' value='%s' /></td>
+            <td>%s %s</td>
+        </tr>
+        """ % (self.title, self.name, self.value, self.description, error_mess)
+        return txt
+        
+    def set_value(self):
+        self.value = str(arg)
+        
+
+class IntegerInput(TextInput):
+    """
+    'text' type HTML form input but for integers only.
+    """
+    def set_value(self, value):
+        try:
+            self.value = int(value)
+        except ValueError:
+            self.error_message = "Invalid integer"
+            print self.error_message
 
 def renderHomePage(request):
     """

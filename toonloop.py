@@ -154,6 +154,10 @@ class ToonSequence(object):
     and scenes may be thought of as being built out of shots (if one is thinking visually) 
     or beats (if one is thinking in narrative terms).
     """
+    # TODO: translate, rotate
+    # animate, pause... 
+    # keyframe, interpolate
+    # tween
     pass
 
 class ToonShot(object):
