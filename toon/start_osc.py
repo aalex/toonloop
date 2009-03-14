@@ -84,12 +84,16 @@ class TestClient:
         """
         note = random.uniform(0, 127)
         amplitude = 1.0
-        print "rand note %d %f" % (note, amplitude)
-        osc_create_and_send(
-            self.osc, 
-            (self.remote_host, self.send_port), 
-            "/test/note", [note]) #[note, amplitude]
+        print "rand note %d ... %f" % (note, amplitude)
+        #osc_create_and_send(
+        #    self.osc, 
+        #    (self.remote_host, self.send_port), 
+        #    "/test/note", [note]) #[note, amplitude]
         
+        message = osc_protocol.OscMessage()
+        message.setAddress('/note')
+        message.append(note, 'i') # typehint int
+        self.osc.send_message(self.remote_host, self.send_port, message)
         reactor.callLater(1.0, self.send_random_note)
 
     

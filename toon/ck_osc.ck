@@ -12,7 +12,7 @@ recv.listen();
 
 //  create an address in the receiver, store in new variable
 recv.event("/ping") @=> OscEvent oe;
-//  recv.event("/test/note,i") @=> OscEvent oe;
+//  recv.event("/note,i") @=> OscEvent oe;
 
 //  <<< "adding /test/note,i OSC handler""" >>>;
 
@@ -33,11 +33,11 @@ while (true)
         1.0 => f;
 
         // getFloat fetches the expected float (as indicated by "i f")
-        // oe.getInt() => i => Std.mtof => s.freq;
+        oe.getInt() => i => Std.mtof => s.freq;
         // oe.getFloat() => f => s.gain;
 
         // print
-        // <<< "got (via OSC):", i, f >>>;
+        <<< "got OSC :", i >>>; // f
     }
 }
 // TODO : sporl shreds...
