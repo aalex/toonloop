@@ -251,6 +251,8 @@ class ToonLoop(object):
         """
         Image capture from the video camera and pygame pixels update.
         """
+        #TODO: try using gltextures instead of surfaces, i.e.
+        # http://www.pygame.org/wiki/SimpleOpenGL2dClasses?parent=CookBook
         if self.isMac:
             self.camera.get_image(self.last_image)
         else:
