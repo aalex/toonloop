@@ -57,6 +57,16 @@ if __name__ == '__main__':
         osc_addr = args[0]
     if len(args) > 1:
         osc_args = args[1:]
+        for i in range(len(osc_args)):
+            try:
+                osc_args = int(osc_args[i])
+            except ValueError:
+                #try:
+                #    osc_args = float(osc_args[i])
+                #except ValueError:
+                osc_args = str(osc_args[i])
+                
+            
     try:
         target = liblo.Address(send_port)
     except liblo.AddressError, err:
