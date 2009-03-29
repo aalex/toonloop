@@ -2,9 +2,9 @@
 #
 # ToonLoop for Python
 #
-# Copyright 2008 Tristan Matthews & Alexandre Quessy
-# <le.businessman@gmail.com> & <alexandre@quessy.net>
-#
+# Copyright 2008 Alexandre Quessy & Tristan Matthews
+# http://toonloop.com
+# 
 # Original idea by Alexandre Quessy
 # http://alexandre.quessy.net
 #
@@ -41,13 +41,20 @@ from twisted.internet import reactor, defer, protocol
 from twisted.python import procutils, failure
 from twisted.internet import utils
 
-mencoder_executable = procutils.which('mencoder')[0] # gets the executable
+# variables
+mencoder_executable = ''
+try:
+    mencoder_executable = procutils.which('mencoder')[0] # gets the executable
+except IndexError:
+    print "mencoder must be in your $PATH"
+    print "mencoder conversion is disabled"
+    # sys.exit(1)
 movie_name_suffix = "movie"
 
 def cb_error(command_failure, args):
     print "FAILURE"
     pprint.pprint({'failure':command_failure, 'exception':sys.exc_info(), 'args':args})
-    traceback.print_tb(sys.exc_info()[2])
+    # traceback.print_tb(sys.exc_info()[2])
     print '>>>> Exception message : %s' % (command_failure.value.message)
     
 def cb_success(result, args):
@@ -65,13 +72,11 @@ def cb_success(result, args):
     You should provide an other callback as argument to the commands starter functions.
     You can copy-paste this one to start with.
     """
-    print "SUCCESS"
-    #pprint.pprint(result) # (out, err, code)
-    print "------------mencoder output:--------------"
-    print result[0]
-    # print result
-    
-    # , commands
+    print "SUCCESSFULLY converted JPEG images to movie"
+    print "mencoder arguments:", args
+    print "\nmencoder output:"
+    print result[0] # stdout 
+
 #     success, results_infos = result
 #     command = commands[i]
 #     print ">>>>>>>>>>>>>>>>  command : %s   <<<<<<<<<<<<<<<" % (command)
@@ -97,24 +102,27 @@ def jpeg_to_movie(filename_pattern, path='.', fps=12):
     """
     global mencoder_executable
     global movie_name_suffix 
-    abs_filename = os.path.join(path, filename_pattern)
-    jpegs = "mf://%s*.jpg" % (abs_filename)
-    output_file = "%s%s.avi"  %  (abs_filename, movie_name_suffix)
-    txt_args = """%s -quiet -mf w=640:h=480:fps=%s:type=jpg -ovc copy -oac copy -o %s""" % (jpegs, fps, output_file) 
-    args = txt_args.split()
-    print "starting mencoder %s" % (txt_args)
-    try:
-        deferred = utils.getProcessOutputAndValue(mencoder_executable, args, os.environ, path, reactor)
-        # TODO: get rid of this and, instead, change utils.commands and add it a 
-        # ProcessProtocol which supports a timeout. 
-    except Exception,e:
-        print "error :", sys.exc_info()
-        log.critical('Cannot start the command %s. Reason: %s' % (executable, str(e.message)))
-        # raise
+    if mencoder_executable is '':
+        print "mencoder not currently installed. Cannot save to movie."
     else:
-        deferred.addErrback(cb_error, args)
-        deferred.addCallback(cb_success, args)
-        return deferred
+        abs_filename = os.path.join(path, filename_pattern)
+        jpegs = "mf://%s*.jpg" % (abs_filename)
+        output_file = "%s%s.avi"  %  (abs_filename, movie_name_suffix)
+        txt_args = """%s -quiet -mf w=640:h=480:fps=%s:type=jpg -ovc copy -oac copy -o %s""" % (jpegs, fps, output_file) 
+        args = txt_args.split()
+        print "starting mencoder %s" % (txt_args)
+        try:
+            deferred = utils.getProcessOutputAndValue(mencoder_executable, args, os.environ, path, reactor)
+            # TODO: get rid of this and, instead, change utils.commands and add it a 
+            # ProcessProtocol which supports a timeout. 
+        except Exception,e:
+            print "error :", sys.exc_info()
+            log.critical('Cannot start the command %s. Reason: %s' % (executable, str(e.message)))
+            # raise
+        else:
+            deferred.addErrback(cb_error, args)
+            deferred.addCallback(cb_success, args)
+            return deferred
 
 if __name__ == '__main__':
     def stop(arg):
