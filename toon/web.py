@@ -311,7 +311,8 @@ class ToonHttpRequestHandler(http.Request):
             handler(self)
         else:
             self.setResponseCode(http.NOT_FOUND)
-            self.write("<h1>Not Found</h1>Sorry, no such page.")
+            self.write("<h1>Not Found</h1>Sorry, no such page.<br />")
+            self.write("<a href="/">Back to main.</a>")
             self.finish()
 
 class ToonHttp(http.HTTPChannel):

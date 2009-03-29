@@ -1,40 +1,133 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#
+# ToonLoop for Python
+#
+# Copyright 2008 Alexandre Quessy & Tristan Matthews
+# http://toonloop.com
+# 
+# Original idea by Alexandre Quessy
+# http://alexandre.quessy.net
+#
+# ToonLoop is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# ToonLoop is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the gnu general public license
+# along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
+#
 """
-RSS Generator.
-"""
+RSS Feed Generation
 
+"""
 import datetime
-import PyRSS2Gen
 
-def test_rss():
+def _format_date(dt):
     """
-    Returns a simple RSS reponse.
+    Converts a datetime into an RFC 822 formatted date
+    
+    Input date must be in GMT.
+    
+    Source : PyRSS2Gen - A Python library for generating RSS 2.0 feeds.
+    :author: Andrew Dalke <dalke@dalkescientific.com>
+   
+    Looks like:
+      Sat, 07 Sep 2002 00:00:01 GMT
+    Can't use strftime because that's locale dependent
+
+    Isn't there a standard way to do this for Python?  The
+    rfc822 and email.Utils modules assume a timestamp.  The
+    following is based on the rfc822 module.
     """
-    items_list = []
-    # ------------------------------------
-    # one item
-    url = "http://localhost/1"
-    length = 0
-    type = "txt"
-    items_list.append(PyRSS2Gen.RSSItem(
-             title = "Test item",
-             link = "http://localhost/1",
-             description = "test decription",
-             guid = PyRSS2Gen.Guid("http://localhost/1"), 
-             enclosure = PyRSS2Gen.Enclosure(url, length, type),
-             pubDate = datetime.datetime(2003, 9, 6, 21, 31)))
-    # ------------------------------------
-    # the channel
-    rss = PyRSS2Gen.RSS2(
-        title = "ToonLoop Materials",
-        link = "http://localhost/",
-        description = "Stop Motion Animation Software",
-        lastBuildDate = datetime.datetime.now(),
-        items = items_list)
-    return rss.to_xml()
+    return "%s, %02d %s %04d %02d:%02d:%02d GMT" % (
+        ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][dt.weekday()],
+        dt.day,
+        ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][dt.month - 1],
+        dt.year, dt.hour, dt.minute, dt.second)
+
+class Item(object):
+    """
+    Generates a RSS item
+    """
+    def __init__(self, **kwargs):
+        self.title = ''
+        self.link = '' 
+        self.description = ''
+        self.enclosure_url = '' 
+        self.enclosure_length = 0 
+        self.enclosure_type = 'text/txt'
+        self.guid = '' 
+        self.pub_date = datetime.datetime.now()
+        #print "pub_date", self.pub_date
+        self.__dict__.update(kwargs)
+
+    def __str__(self):
+        return """
+            <item>
+              <title>%s</title>
+              <link>%s</link>
+              <description>%s</description>
+              <enclosure url="%s" length="%s" type="%s">
+              </enclosure>
+              <guid isPermaLink="true">%s</guid>
+              <pubDate>%s</pubDate>
+            </item>
+        """ % (
+        self.title,
+        self.link, 
+        self.description, 
+        self.enclosure_url, 
+        self.enclosure_length, 
+        self.enclosure_type, 
+        self.guid, 
+        _format_date(self.pub_date))
+
+class Channel(object):
+    def __init__(self, **kwargs):
+        self.title = 'ToonLoop'
+        self.link = 'http://localhost/'
+        self.description = 'Stop Motion Animation Software'
+        self.last_build_date = datetime.datetime.now()
+        # print "pub_date", self.last_build_date
+        self.generator = 'ToonLoop'
+        self.docs = 'http://toonloop.com'
+        self.items = []
+        self.__dict__.update(kwargs)
+
+    def __str__(self):
+        items = ""
+        for item in self.items:
+            items += str(item)
+        return """
+        <?xml version="1.0" encoding="us-ascii"?>
+        <rss version="2.0">
+        <channel>
+          <title>%s</title>
+          <link>%s</link>
+          <description>%s</description>
+          <lastBuildDate>%s</lastBuildDate>
+          <generator>%s</generator>
+          <docs>%s</docs>
+          %s
+        </channel>
+        </rss>  
+        """ % (
+        self.title,
+        self.link,
+        self.description,
+        _format_date(self.last_build_date),
+        self.generator,
+        self.docs,
+        items)
 
 if __name__ == '__main__':
-    rss = test_rss()
-    print rss
+    channel = Channel()
+    channel.items.append(Item(title='Hello', link='http://localhost/1', guid='1', enclosure_url='http://localhost/download/1'))
+    print str(channel)
 
