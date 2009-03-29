@@ -107,8 +107,7 @@ class ToonOsc(object):
     /toon/playhead <i>
     /toon/writehead <i>
     """
-    
-    def ping(self, addr, tags, msg, host):
+    def r_ping(self, addr, tags, msg, host):
         """
         /ping
         
@@ -119,10 +118,15 @@ class ToonOsc(object):
         _print("Received /ping. Sending /pong")
         osc_create_and_send(self.osc, (host[0], self.send_port), "/pong")
     
-    def pong(self,addr, tags, stuff, host):
+    def r_pong(self, addr, tags, stuff, host):
         print "received pong from", host
 
-    def __init__(self):
+    def r_frame_add(self, addr, tags, stuff, host):
+        self.toonloop.grab_image()
+        print "received /frame/add from", host
+
+    def __init__(self, toonloop):
+        self.toonloop = toonloop
         self.send_port = 3333
         self.receive_port = 4444
         self.send_host = 'localhost'
@@ -136,8 +140,9 @@ class ToonOsc(object):
             _print(e)
         
         # /ping
-        self.osc.add_msg_handler('/ping', self.ping)
-        self.osc.add_msg_handler('/pong', self.pong)
+        self.osc.add_msg_handler('/ping', self.r_ping)
+        self.osc.add_msg_handler('/pong', self.r_pong)
+        self.osc.add_msg_handler('/frame/add', self.r_frame_add)
 
         print 'OSC callbacks:'
         for c in self.osc.callbacks:
@@ -244,7 +249,7 @@ class ToonLoop(object):
         self.auto_enabled = False
         self.auto_rate = 3.0 # in seconds
         self.auto_delayed_id = None
-        self.osc = ToonOsc()
+        self.osc = ToonOsc(self)
 
 
     def get_and_flip(self):
