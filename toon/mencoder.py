@@ -88,7 +88,7 @@ def cb_success(result, args):
 #             print ">>>> Failure !"
 #             print ">>>> signal is ", signal_or_code
 
-def mencoder_jpeg_to_movie(filename_pattern, path='.', fps=12):
+def jpeg_to_movie(filename_pattern, path='.', fps=12):
     """
     Converts a series a JPEG images to a MJPEG movie.
 
@@ -99,7 +99,7 @@ def mencoder_jpeg_to_movie(filename_pattern, path='.', fps=12):
     global movie_name_suffix 
     abs_filename = os.path.join(path, filename_pattern)
     jpegs = "mf://%s*.jpg" % (abs_filename)
-    output_file = "%s%s.avi"  %  (movie_name_suffix, abs_filename)
+    output_file = "%s%s.avi"  %  (abs_filename, movie_name_suffix)
     txt_args = """%s -quiet -mf w=640:h=480:fps=%s:type=jpg -ovc copy -oac copy -o %s""" % (jpegs, fps, output_file) 
     args = txt_args.split()
     print "starting mencoder %s" % (txt_args)
@@ -121,7 +121,7 @@ if __name__ == '__main__':
         print "stopping reactor", arg
         reactor.stop()
     def start(filename_pattern, path, fps):
-        deferred = mencoder_jpeg_to_movie(filename_pattern, path, fps)
+        deferred = jpeg_to_movie(filename_pattern, path, fps)
         deferred.addCallback(stop)
         deferred.addErrback(stop)
     

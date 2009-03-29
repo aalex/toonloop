@@ -23,6 +23,7 @@
 
 from time import strftime
 from twisted.web import http
+import rss
 
 class FormInput(object):
     """
@@ -280,6 +281,14 @@ def render_single_web_form(request):
     request.write(txt)
     request.finish()
 
+def render_rss(request):
+    """
+    Generates a RSS feed.
+    """
+    txt = rss.test_rss()
+    request.write(txt)
+    request.finish()
+
 class ToonHttpRequestHandler(http.Request):
     """
     Serves the web pages
@@ -289,7 +298,8 @@ class ToonHttpRequestHandler(http.Request):
     """
     # VERY IMPOERTATN VAR
     pageHandlers = {
-        '/':render_single_web_form
+        '/':render_single_web_form, 
+        '/rss':render_rss
         #'/': renderHomePage # ,
         #'/posthandler': handlePost,
         }

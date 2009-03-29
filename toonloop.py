@@ -66,7 +66,7 @@ import os
 
 from toon import osc_protocol 
 from toon import osc_create_and_send
-
+from toon import mencoder
 
 import pygame
 import pygame.camera
@@ -346,7 +346,13 @@ class ToonLoop(object):
             pygame.image.save(self.image_list[index], name)
             reactor.callLater(0, self._save_next_image, datetime, index + 1)
         else:
-            print "" # done
+            print ""
+            print "converting to mjpeg" # done
+            filename_pattern = "%s_" % (datetime)
+            # path = "."
+            path = os.getcwd()
+            fps = self.timer.desired_fps 
+            deferred = mencoder.jpeg_to_movie(filename_pattern, path, fps)
 
     def pop_one_frame(self):
         """
