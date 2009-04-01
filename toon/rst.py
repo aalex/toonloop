@@ -27,6 +27,7 @@ from twisted.web import static
 from twisted.internet import reactor
 
 from docutils.core import publish_string                                                                  
+
 class ReStructured(Resource):
     def __init__(self, filename, *a):
         self.rst = open(filename).read()
