@@ -1,4 +1,4 @@
-import serialize
+from toon import serialize
 
 if __name__ == '__main__':
     class Conf(object):
