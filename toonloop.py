@@ -2,8 +2,9 @@
 #
 # ToonLoop for Python
 #
-# Copyright 2008 Tristan Matthews & Alexandre Quessy
-# <le.businessman@gmail.com> & <alexandre@quessy.net>
+# Copyright 2008 Alexandre Quessy & Tristan Matthews
+# <alexandre@quessy.net> & <le.businessman@gmail.com>
+# http://www.toonloop.com
 #
 # Original idea by Alexandre Quessy
 # http://alexandre.quessy.net
@@ -67,6 +68,7 @@ import os
 from toon import osc_protocol 
 from toon import osc_create_and_send
 from toon import mencoder
+from rats import renderer
 
 import pygame
 import pygame.camera
@@ -75,9 +77,7 @@ from pygame import time
 
 from twisted.internet import reactor
 
-__version__ = "1.0.1 alpha"
-
-pygame.init()
+__version__ = "1.0.2 alpha"
 
 def _print(text):
     print "\n", text
@@ -148,7 +148,6 @@ class ToonOsc(object):
         for c in self.osc.callbacks:
             print c
 
-
 class ToonSequence(object):
     """
     ToonLoop sequence. 
@@ -201,7 +200,7 @@ class ToonLoopError(Exception):
     """
     pass
 
-class ToonLoop(object):
+class ToonLoop(renderer.Game):
     """
     ToonLoop is a realtime stop motion tool.
     """
@@ -209,11 +208,6 @@ class ToonLoop(object):
         """
         Startup poutine.
         """
-        if os.uname()[0] == 'Darwin':
-            self.isMac = True
-        else:
-            self.isMac = False
-
         self.img_width = 640
         self.height = 480 
         self.last_image = pygame.Surface((self.img_width, self.height))
@@ -221,10 +215,12 @@ class ToonLoop(object):
         self.paused = False
         pygame.display.set_caption("ToonLoop")
         self.video_device = 0 
-        
-        #super(ToonLoop, self).__init__(**argd) <-- ??
         self.__dict__.update(**argd) # overrides some attributes whose defaults and names are below
-        
+
+        if os.uname()[0] == 'Darwin':
+            self.is_mac = True
+        else:
+            self.is_mac = False
         self.width = self.img_width * 2
         self.size = (self.width, self.height)
         self.surface = pygame.display.set_mode(self.size)
@@ -232,33 +228,36 @@ class ToonLoop(object):
             pygame.camera.init() 
         except Exception, e:
             print "error calling pygame.camera.init()", e.message
+            print sys.exc_info()
+            raise ToonLoopError("Error initializing the video camera. %s" % (e.message))
         try:
             print "cameras :", pygame.camera.list_cameras()
-            if self.isMac:
+            if self.is_mac:
                 self.camera = pygame.camera.Camera(self.video_device, (self.img_width, self.height))
             else:
                 self.camera = pygame.camera.Camera("/dev/video%d" % (self.video_device), (self.img_width, self.height))
             self.camera.start()
         except SystemError, e:
+            print sys.exc_info()
+            raise ToonLoopError("Invalid camera. %s" % (str(e.message)))
+        except Exception, e:
+            print sys.exc_info()
             raise ToonLoopError("Invalid camera. %s" % (str(e.message)))
         self.clock = pygame.time.Clock()
         self.fps = 0 # for statistics
         self.image_list = []
         self.image_idx = 0
-        self.timer = None # Twisted PygameTimer instance that owns it.
+        self.renderer = None # Twisted Renderer instance that owns it.
         self.auto_enabled = False
         self.auto_rate = 3.0 # in seconds
         self.auto_delayed_id = None
         self.osc = ToonOsc(self)
 
-
     def get_and_flip(self):
         """
         Image capture from the video camera and pygame pixels update.
         """
-        #TODO: try using gltextures instead of surfaces, i.e.
-        # http://www.pygame.org/wiki/SimpleOpenGL2dClasses?parent=CookBook
-        if self.isMac:
+        if self.is_mac:
             self.camera.get_image(self.last_image)
         else:
             self.last_image = self.camera.get_image()
@@ -292,7 +291,7 @@ class ToonLoop(object):
         :param dir: by how much increment it.
         """
         will_be = self.auto_rate + dir
-        if will_be > 0 and will_be <= 999999:
+        if will_be > 0 and will_be <= 60:
             self.auto_rate = will_be
             print "auto rate:", will_be
 
@@ -314,7 +313,7 @@ class ToonLoop(object):
         """
         Copies the last grabbed to the list of images.
         """
-        if self.isMac:
+        if self.is_mac:
             self.image_list.append(self.last_image.copy())
         else:
             self.image_list.append(self.last_image)
@@ -351,12 +350,10 @@ class ToonLoop(object):
             pygame.image.save(self.image_list[index], name)
             reactor.callLater(0, self._save_next_image, datetime, index + 1)
         else:
-            print ""
-            print "converting to mjpeg" # done
+            print "\nConverting to mjpeg" # done
             filename_pattern = "%s_" % (datetime)
-            # path = "."
             path = os.getcwd()
-            fps = self.timer.desired_fps 
+            fps = self.renderer.desired_fps 
             deferred = mencoder.jpeg_to_movie(filename_pattern, path, fps)
 
     def pop_one_frame(self):
@@ -399,18 +396,18 @@ class ToonLoop(object):
         """
         print "Frame idx: " + str(self.image_idx)
         print "Num images: " + str(len(self.image_list))
-        print str(self.fps) + " fps\n"
+        print "FPS: %s" % (self.fps)
     
     def increment_fps(self, dir=1):
         """
         Increase or decreases the FPS
         :param dir: by how much increment it.
         """
-        if self.timer is not None:
-            # accesses the PygameTimer instance that owns this.
-            will_be = self.timer.desired_fps + dir
+        if self.renderer is not None:
+            # accesses the Renderer instance that owns this.
+            will_be = self.renderer.desired_fps + dir
             if will_be > 0 and will_be <= 60:
-                self.timer.desired_fps = will_be
+                self.renderer.desired_fps = will_be
                 print "FPS:", will_be
     
     def process_events(self, events):
@@ -449,11 +446,7 @@ class ToonLoop(object):
                     self.pop_one_frame()
                 elif e.key == K_ESCAPE or e.key == K_q:
                     self.running = False
-        """
-        TODO: 
-        switch to sequences 0 to 9
-
-        """
+    
     def draw(self):
         """
         Renders one frame.
@@ -470,58 +463,6 @@ class ToonLoop(object):
         """
         pass
 
-
-class PygameTimer:
-    """
-    Integrates a pygame game and twisted.
-    See http://twistedmatrix.com/pipermail/twisted-python/2002-October/001884.html
-    """
-    def __init__(self, game, verbose=False):
-        self.clock = time.Clock()
-        self.game = game
-        self.game.timer = self 
-        self.is_verbose = verbose
-        self.desired_fps = 12.0
-        # start
-        self.check_for_events() # starts a metronome
-        self.update() # starts a metronome
-
-
-    def check_for_events(self):
-        """
-        Check for pygame events and warn the game.
-        :param events: got them using pygame.event.get()
-        """
-        events = pygame.event.get()
-        self.game.process_events(events)
-        reactor.callLater(0, self.check_for_events)
-
-    def update(self):
-        """
-        Renders one frame sequenced using the Twisted events loop.
-        """
-        self.clock.tick()
-        self.ms = self.clock.get_rawtime()
-        
-        framespeed = (1.0 / self.desired_fps) * 1000
-        lastspeed = self.ms
-        next = framespeed - lastspeed
-        
-        if self.is_verbose:
-        #    print "framespeed", framespeed, "ms", self.ms, "next", next, "fps", self.clock.get_fps()
-            print "FPS: %5f" % (self.clock.get_fps())
-        
-        # calls its draw method, which draw and refresh the whole screen.
-        self.game.draw()
-        
-        if not self.game.running:
-            self.game.cleanup()
-            reactor.stop()
-        else:
-            when = next / 1000.0 * 2.0
-            if when < 0:
-                when = 0
-            reactor.callLater(when, self.update)
 
 if __name__ == "__main__":
     """
@@ -541,15 +482,16 @@ if __name__ == "__main__":
     parser.add_option("-i", "--enable-intervalometer", \
         dest="enable_intervalometer", action="store_true", \
         help="Enables the intervalometer at startup.")
-    
     (options, args) = parser.parse_args()
     
     print "ToonLoop - Version " + str(__version__)
-    print "Copyright 2008 Tristan Matthews & Alexandre Quessy"
+    print "Copyright 2008 Alexandre Quessy & Tristan Matthews"
     print "Released under the GNU General Public License"
     print "Using video device %d" % options.device
     print "Press h for usage and instructions\n"
-    print "options:", options
+    #print "options:", options
+    
+    pygame.init()
     try:
         toonloop = ToonLoop(video_device=options.device, \
             auto_rate=options.intervalometer, \
@@ -559,11 +501,12 @@ if __name__ == "__main__":
         print str(e.message)
         print "\nnow exiting"
         sys.exit(1)
-    pygame_timer = PygameTimer(toonloop, options.verbose)
+    pygame_timer = renderer.Renderer(toonloop, options.verbose)
     pygame_timer.desired_fps = options.fps
-    
     try:
         reactor.run()
     except KeyboardInterrupt:
         pass
     print "\nExiting toonloop"
+    sys.exit(0)
+
