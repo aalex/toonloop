@@ -68,7 +68,7 @@ import os
 from toon import osc_protocol 
 from toon import osc_create_and_send
 from toon import mencoder
-from rats import renderer
+from rats import render
 
 import pygame
 import pygame.camera
@@ -200,7 +200,7 @@ class ToonLoopError(Exception):
     """
     pass
 
-class ToonLoop(renderer.Game):
+class ToonLoop(render.Game):
     """
     ToonLoop is a realtime stop motion tool.
     """
@@ -501,7 +501,7 @@ if __name__ == "__main__":
         print str(e.message)
         print "\nnow exiting"
         sys.exit(1)
-    pygame_timer = renderer.Renderer(toonloop, options.verbose)
+    pygame_timer = render.Renderer(toonloop, options.verbose)
     pygame_timer.desired_fps = options.fps
     try:
         reactor.run()
