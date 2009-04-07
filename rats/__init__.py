@@ -26,4 +26,4 @@
 Rats is a renderer for arts and a technological solution
 It is also an anagram for the word "arts".
 """
-__all__ = ["renderer"]
+__all__ = ["render"]
