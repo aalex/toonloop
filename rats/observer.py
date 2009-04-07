@@ -75,7 +75,7 @@ class Subject(object):
         if ob_id not in self.observers:
             self.observers[ob_id] = observer
                     
-    def notify(self, caller, key, value):
+    def notify(self, caller, value, key=None):
         """
         Calls all its observers that an attribute has changed.
 
@@ -83,7 +83,8 @@ class Subject(object):
         WARNING: the signature has changed since miville.
         args key and valud have been interchanged.
         """
-        # if not key:
+        if not key:
+            raise Exception("Warning: support for None keys has been removed")
         #     key = common.get_def_name()
         for observer in self.observers.itervalues():
             observer.update(caller, key, value)
