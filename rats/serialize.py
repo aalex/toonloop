@@ -31,8 +31,6 @@ Support objects as well as simpler data types.
 from twisted.spread import jelly
 import pprint
 
-_verbose = True
-
 class SerializeError(Exception):
     """
     Occur occuring while trying to save or load serialized data.
@@ -62,8 +60,6 @@ def save(filename, obj):
         raise SerializeError(e.message)
     except OSError, e:
         raise SerializeError(e.message)
-    if _verbose:
-        print 'saved', li
 
 def load(filename):
     """
@@ -80,35 +76,5 @@ def load(filename):
     except OSError, e:
         raise SerializeError(e.message)
     obj = jelly.unjelly(li)
-    if _verbose:
-        print 'loaded', li
     return obj 
-
-if __name__ == '__main__':
-    class Test(Serializable):
-        def __init__(self):
-            self.egg = 2
-            self.spam = [3,4,5,6]
-            self.ham = 'werqwer'
-    # test classes with useless data
-    class Cat(Serializable):
-        def __init__(self):
-            self.egg = 1
-            self.spam = 2
-
-    class Rat(Serializable):
-        def __init__(self):
-            self.ham = 3
-            self.cat = Cat()
-
-
-    filename = 'test_serialize.txt'
-    try:
-        s = load(filename)
-        print 'loaded objects', s
-    except SerializeError, e:
-        print 'error: could not load file', e
-    s = [Test(), Rat()]
-    save(filename, s)
-    print 'saved data'
 
