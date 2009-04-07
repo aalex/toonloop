@@ -37,8 +37,23 @@ class Game(object):
     def __init__(self):
         self.renderer = None
 
-    def process_events(pygame_events):
+    def draw(self):
+        """
+        Called on every frame
+        """
         raise NotImplementedError("You must implement this in child classes.")
+
+    def process_events(self, pygame_events):
+        """
+        Called when pygame event occur
+        """
+        pass
+
+    def cleanup(self):
+        """
+        Called just before exiting the application
+        """
+        pass
 
 class Renderer(object):
     """

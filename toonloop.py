@@ -68,7 +68,8 @@ import os
 from toon import opensoundcontrol
 from toon import mencoder
 from rats import render
-from rats import serialize
+from rats.serialize import Serializable
+from rats.observer import Subject
 
 import pygame
 import pygame.camera
@@ -77,9 +78,9 @@ from pygame import time
 
 from twisted.internet import reactor
 
-__version__ = "1.0.2 alpha"
+__version__ = "1.0 alpha"
 
-class ToonSequence(serialize.Serializable):
+class ToonSequence(Serializable):
     """
     Not used yet !!!!!!
     
@@ -97,7 +98,7 @@ class ToonSequence(serialize.Serializable):
         # end of overridable attributes
         self.__dict__.update(argd)
 
-class ToonShot(serialize.Serializable):
+class ToonShot(Serializable):
     """
     Not used yet !!!!!!
 
@@ -130,14 +131,39 @@ class ToonLoopError(Exception):
     """
     pass
 
-class Api(object):
+class Api(Subject):
     """
     The public API for ToonLoop user interfaces.
     """
     def __init__(self, toonloop):
         self.toonloop = toonloop
+
+    def print_help(self):
+        """
+        Prints help and usage.
+        """
+        print "Usage: "
+        print "<Space bar> = add image to loop "
+        print "<Backspace> = remove image from loop "
+        print "r = reset loop"
+        print "p = pause"
+        print "i = print current loop frame number, number of frames in loop and global framerate"
+        print "h = print this help message"
+        print "s = saves all images as jpeg"
+        print "a = enable the intervalometer auto grab"
+        print "k = increase the intervalometer interval"
+        print "j = decrease the intervalometer interval"
+        print "<Esc> or q = quit program\n"
+
+    def print_stats(self):
+        """
+        Print statistics
+        """
+        print "Current playhead: " + str(self.toonloop.current_playhead)
+        print "Num images: " + str(len(self.toonloop.image_list))
+        print "FPS: %d" % (self.toonloop.fps)
     
-class Configuration(serialize.Serializable):
+class Configuration(Serializable):
     """
     Not used yet
     """
@@ -157,6 +183,8 @@ class Configuration(serialize.Serializable):
         self.onionpeal_opacity = 0.3
         self.keying_allowed = False
         self.keying_color = (0.0, 1.0, 0.0)
+        self.toonloop_home = os.getcwd()
+        self.toonloop_file_extension = 'txt'
         # TODO: think about keying
         # end of overridable attributes
         self.__dict__.update(**argd) # overrides some attributes whose defaults and names are below
@@ -178,6 +206,7 @@ class ToonLoop(render.Game):
         self.video_device = 0 
         # end of overridable attributes
         self.__dict__.update(**argd) # overrides some attributes whose defaults and names are below
+        self.api = Api(self)
 
         if os.uname()[0] == 'Darwin':
             self.is_mac = True
@@ -195,8 +224,10 @@ class ToonLoop(render.Game):
         try:
             print "cameras :", pygame.camera.list_cameras()
             if self.is_mac:
+                print "Using camera %s" % (self.video_device)
                 self.camera = pygame.camera.Camera(self.video_device, (self.img_width, self.height))
             else:
+                print "Using camera /dev/video%d" % (self.video_device)
                 self.camera = pygame.camera.Camera("/dev/video%d" % (self.video_device), (self.img_width, self.height))
             self.camera.start()
         except SystemError, e:
@@ -208,11 +239,15 @@ class ToonLoop(render.Game):
         self.clock = pygame.time.Clock()
         self.fps = 0 # for statistics
         self.image_list = []
-        self.image_idx = 0
-        self.renderer = None # Twisted Renderer instance that owns it.
-        self.auto_enabled = False
-        self.auto_rate = 3.0 # in seconds
-        self.auto_delayed_id = None
+        self.current_playhead = 0 
+        self.renderer = None # Renderer instance that owns it.
+        self.intervalometer_on = False
+        self.intervalometer_rate_seconds = 3.0 # in seconds
+        self.intervalometer_delayed_id = None
+        self.osc = None
+        reactor.callLater(0, self.start)
+
+    def start(self):
         self.osc = opensoundcontrol.ToonOsc(self)
 
     def get_and_flip(self):
@@ -224,37 +259,37 @@ class ToonLoop(render.Game):
         else:
             self.last_image = self.camera.get_image()
         self.surface.blit(self.last_image, (0, 0))
-        if len(self.image_list) > self.image_idx:
-            self.surface.blit(self.image_list[self.image_idx], (self.img_width, 0))
-            self.image_idx += 1
+        if self.current_playhead < len(self.image_list):
+            self.surface.blit(self.image_list[self.current_playhead], (self.img_width, 0))
+            self.current_playhead += 1
         else:
-            self.image_idx = 0
+            self.current_playhead = 0
         pygame.display.update()
 
     def toggle_auto(self):
         """
         Toggles on/off the auto mode
         """
-        self.auto_enabled = not self.auto_enabled
-        if self.auto_enabled:
-            self.auto_delayed_id = reactor.callLater(0, self.auto_grab)
+        self.intervalometer_on = not self.intervalometer_on
+        if self.intervalometer_on:
+            self.intervalometer_delayed_id = reactor.callLater(0, self.auto_grab)
             print "enabled intervalometer"
-        elif self.auto_delayed_id.active():
-            self.auto_delayed_id.cancel()
+        elif self.intervalometer_delayed_id.active():
+            self.intervalometer_delayed_id.cancel()
             print "disabled intervalometer"
 
-        # self.auto_enabled = False
-        # self.auto_rate = 3.0 # in seconds
-        # self.auto_delayed_id = None
+        # self.intervalometer_on = False
+        # self.intervalometer_rate_seconds = 3.0 # in seconds
+        # self.intervalometer_delayed_id = None
     
-    def increment_auto_rate(self, dir=1):
+    def increment_intervalometer_rate_seconds(self, dir=1):
         """
         Increase or decreases the intervalometer rate. (in seconds)
         :param dir: by how much increment it.
         """
-        will_be = self.auto_rate + dir
+        will_be = self.intervalometer_rate_seconds + dir
         if will_be > 0 and will_be <= 60:
-            self.auto_rate = will_be
+            self.intervalometer_rate_seconds = will_be
             print "auto rate:", will_be
 
     def auto_grab(self):
@@ -267,9 +302,8 @@ class ToonLoop(render.Game):
         self.grab_image()
         sys.stdout.write("grab ")
         sys.stdout.flush()
-        if self.auto_enabled:
-            self.auto_delayed_id = reactor.callLater(self.auto_rate, self.auto_grab)
-
+        if self.intervalometer_on:
+            self.intervalometer_delayed_id = reactor.callLater(self.intervalometer_rate_seconds, self.auto_grab)
 
     def grab_image(self):
         """
@@ -314,7 +348,7 @@ class ToonLoop(render.Game):
         else:
             print "\nConverting to mjpeg" # done
             filename_pattern = "%s_" % (datetime)
-            path = os.getcwd()
+            path = os.getcwd() # TODO: use config
             fps = self.renderer.desired_fps 
             deferred = mencoder.jpeg_to_movie(filename_pattern, path, fps)
 
@@ -324,6 +358,7 @@ class ToonLoop(render.Game):
         """
         if self.image_list != []:
             self.image_list.pop()
+            # would it be better to also delete it ? calling del
             if self.image_list == []:
                 self.reset_playback_window()
 
@@ -335,36 +370,13 @@ class ToonLoop(render.Game):
         playback_pos = (self.img_width, 0)
         self.surface.blit(blank_surface, playback_pos)
 
-    def print_help(self):
-        """
-        Prints help and usage.
-        """
-        print "Usage: "
-        print "<Space bar> = add image to loop "
-        print "<Backspace> = remove image from loop "
-        print "r = reset loop"
-        print "p = pause"
-        print "i = print current loop frame number, number of frames in loop and global framerate"
-        print "h = print this help message"
-        print "s = saves all images as jpeg"
-        print "a = enable the intervalometer auto grab"
-        print "k = increase the intervalometer interval"
-        print "j = decrease the intervalometer interval"
-        print "<Esc> or q = quit program\n"
-
-    def print_stats(self):
-        """
-        Print statistics
-        """
-        print "Frame idx: " + str(self.image_idx)
-        print "Num images: " + str(len(self.image_list))
-        print "FPS: %s" % (self.fps)
     
     def increment_fps(self, dir=1):
         """
         Increase or decreases the FPS
         :param dir: by how much increment it.
         """
+        #TODO : do not alter the FPS of the renderer, but rather only the playback rate.
         if self.renderer is not None:
             # accesses the Renderer instance that owns this.
             will_be = self.renderer.desired_fps + dir
@@ -383,9 +395,9 @@ class ToonLoop(render.Game):
                 self.running = False
             elif e.type == KEYDOWN: 
                 if e.key == K_k:
-                    self.increment_auto_rate(1)
+                    self.increment_intervalometer_rate_seconds(1)
                 if e.key == K_j:
-                    self.increment_auto_rate(-1)
+                    self.increment_intervalometer_rate_seconds(-1)
                 if e.key == K_UP:
                     self.increment_fps(1)
                 if e.key == K_DOWN:
@@ -397,9 +409,9 @@ class ToonLoop(render.Game):
                 elif e.key == K_p:
                     self.pause()
                 elif e.key == K_i: 
-                    self.print_stats()
+                    self.api.print_stats()
                 elif e.key == K_h:
-                    self.print_help()
+                    self.api.print_help()
                 elif e.key == K_s:
                     self.save_images()
                 if e.key == K_a:
@@ -456,8 +468,8 @@ if __name__ == "__main__":
     pygame.init()
     try:
         toonloop = ToonLoop(video_device=options.device, \
-            auto_rate=options.intervalometer, \
-            auto_enabled=options.enable_intervalometer == True, \
+            intervalometer_rate_seconds=options.intervalometer, \
+            intervalometer_on=options.enable_intervalometer == True, \
             verbose=options.verbose == True)
     except ToonLoopError, e:
         print str(e.message)
