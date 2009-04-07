@@ -68,6 +68,7 @@ import os
 from toon import opensoundcontrol
 from toon import mencoder
 from rats import render
+from rats import serialize
 
 import pygame
 import pygame.camera
@@ -78,9 +79,10 @@ from twisted.internet import reactor
 
 __version__ = "1.0.2 alpha"
 
-
-class ToonSequence(object):
+class ToonSequence(serialize.Serializable):
     """
+    Not used yet !!!!!!
+    
     ToonLoop sequence. 
 
     A sequence is made of many shots.
@@ -89,35 +91,32 @@ class ToonSequence(object):
     and scenes may be thought of as being built out of shots (if one is thinking visually) 
     or beats (if one is thinking in narrative terms).
     """
-    # TODO: translate, rotate
-    # animate, pause... 
-    # keyframe, interpolate
-    # tween
-    pass
+    # TODO: use it !
+    def __init__(self, **argd):
+        self.shots_ids = []
+        # end of overridable attributes
+        self.__dict__.update(argd)
 
-class ToonShot(object):
+class ToonShot(serialize.Serializable):
     """
+    Not used yet !!!!!!
+
     ToonLoop shot.
 
     A shot is a serie of frames. 
     """
-    def __init__(self, fps=12):
-        self.writehead = 0
-        self.playhead = 0
-        self.frames = []
-        self.fps = fps
-
-    def reset(self):
-        pass
-
-    def delete_frame(self):
-        pass
-
-    def add_frame(self):
-        pass
-
-    def next_frame(self):
-        pass
+    # TODO: use it !
+    def __init__(self, **argd):
+        self.writehead_position = 0
+        self.playhead_position = 0
+        self.images_files = []
+        self.framerate = 12
+        self.intervalometer_enabled = False
+        self.intervalometer_rate_seconds = 0.1
+        # end of overridable attributes
+        self.__dict__.update(argd)
+        self._intervalometer_delayed_id = None
+        self.images_list = []
 
 #  int captureFrameNum = 0; //the next captured frame number ... might wrap around
 #  int playFrameNum = 0;
@@ -130,6 +129,37 @@ class ToonLoopError(Exception):
     Any error ToonLoop might encouter
     """
     pass
+
+class Api(object):
+    """
+    The public API for ToonLoop user interfaces.
+    """
+    def __init__(self, toonloop):
+        self.toonloop = toonloop
+    
+class Configuration(serialize.Serializable):
+    """
+    Not used yet
+    """
+    # TODO: use it !
+    def __init__(self, **argd): 
+        self.max_num_frames = 1000
+        self.max_num_shots = 10
+        self.image_width = 640
+        self.image_height = 480
+        self.min_framerate = 0
+        self.max_framerate = 30
+        self.osc_send_port = 33333
+        self.osc_send_host = 'localhost'
+        self.osc_receive_port = 44444
+        self.osc_receive_hosts = ''
+        self.onionpeal_allowed = True
+        self.onionpeal_opacity = 0.3
+        self.keying_allowed = False
+        self.keying_color = (0.0, 1.0, 0.0)
+        # TODO: think about keying
+        # end of overridable attributes
+        self.__dict__.update(**argd) # overrides some attributes whose defaults and names are below
 
 class ToonLoop(render.Game):
     """
@@ -146,6 +176,7 @@ class ToonLoop(render.Game):
         self.paused = False
         pygame.display.set_caption("ToonLoop")
         self.video_device = 0 
+        # end of overridable attributes
         self.__dict__.update(**argd) # overrides some attributes whose defaults and names are below
 
         if os.uname()[0] == 'Darwin':
