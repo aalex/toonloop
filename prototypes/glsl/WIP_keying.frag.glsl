@@ -9,16 +9,17 @@
  * All params are vec3 in the range [0.0, 1.0]
  * 
  * :param keying_color: The RGB keying color that will be made transparent.
- * :param thresh: The distance from the color for a pixel to disappear.
+ * :param thresh: The distance from the color for the middle of the slope.
+ * :param slope: 0.0 for a steep slope. 1.0 for a very gradual gradient.
  * 
  * :author: Alexandre Quessy <alexandre@quessy.net> 2009
  * :license: GNU Public License version 3
- * Fragment shader for keying. (using a green or blue screen)
  */
 
 // user-configurable variables (read-only)
 uniform vec3 keying_color;
-uniform vec3 thresh; 
+uniform vec3 thresh; // how close to this color a pixel disapears.
+uniform float slope; // How fast pixels disappear if below thresh. 
 
 // the texture
 uniform sampler2DRect image;
@@ -38,11 +39,18 @@ void main(void)
 	
 	// for now, not visible if under threshold of proximity
 	// TODO: mix() according the 3 factors of proximity.
-	if (delta.r <= thresh.r && delta.g <= thresh.g && delta.b <= thresh.b)
+	if (delta.r <= (thresh.r + slope) && 
+        delta.g <= (thresh.g + slope) && 
+        delta.b <= (thresh.b + slope))
 	{
-	   output_alpha = 0.0;
+	   //output_alpha = 0.0;
+       // using the average distance and the slope as a factor
+       float avg_delta = ((delta.r + delta.g + delta.b) / 3.0);
+       float avg_thresh = ((thresh.r + thresh.g + thresh.b) / 3.0);
+       output_alpha = mix(0.0, 1.0, );
 	}
     
-    gl_FragColor = vec4(input_color, output_alpha); 
+    // the resulting color
+    gl_FragColor = vec4(input_color, output_alpha) ; // * input_color.a); ???
 }
 
