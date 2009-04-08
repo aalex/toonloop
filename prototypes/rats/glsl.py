@@ -117,40 +117,40 @@ def load_file_contents(file_name):
         f.close()
         return contents
 
-# Taken from http://swiftcoder.wordpress.com/2008/12/19/simple-glsl-wrapper-for-pyglet/
-#  
-# Copyright Tristam Macdonald 2008.  
-#  
-# Distributed under the Boost Software License, Version 1.0  
-# (see http://www.boost.org/LICENSE_1_0.txt)  
-#  
-def uniformf(program, name, *vals):  
-    """
-    uploads a floating point uniform  
-    this program must be currently bound  
-    """
-    # check there are 1-4 values  
-    if len(vals) in range(1, 5):  
-        # select the correct function  
-        { 1 : glUniform1f,  
-          2 : glUniform2f,  
-          3 : glUniform3f,  
-          4 : glUniform4f  
-          # retrieve the uniform location, and set  
-        }[len(vals)](glGetUniformLocation(program, name), *vals)
-
-def uniformi(program, name, *vals):    
-    """
-    Uploads an integer uniform  
-    this program must be currently bound  
-    """
-    # check there are 1-4 values  
-    if len(vals) in range(1, 5):  
-        # select the correct function  
-        { 1 : glUniform1i,  
-          2 : glUniform2i,  
-          3 : glUniform3i,  
-          4 : glUniform4i  
-          # retrieve the uniform location, and set  
-        }[len(vals)](glGetUniformLocation(program, name), *vals)  
-
+# # Taken from http://swiftcoder.wordpress.com/2008/12/19/simple-glsl-wrapper-for-pyglet/
+# #  
+# # Copyright Tristam Macdonald 2008.  
+# #  
+# # Distributed under the Boost Software License, Version 1.0  
+# # (see http://www.boost.org/LICENSE_1_0.txt)  
+# #  
+# def uniformf(program, name, *vals):  
+#     """
+#     uploads a floating point uniform  
+#     this program must be currently bound  
+#     """
+#     # check there are 1-4 values  
+#     if len(vals) in range(1, 5):  
+#         # select the correct function  
+#         { 1 : glUniform1f,  
+#           2 : glUniform2f,  
+#           3 : glUniform3f,  
+#           4 : glUniform4f  
+#           # retrieve the uniform location, and set  
+#         }[len(vals)](glGetUniformLocation(program, name), *vals)
+# 
+# def uniformi(program, name, *vals):    
+#     """
+#     Uploads an integer uniform  
+#     this program must be currently bound  
+#     """
+#     # check there are 1-4 values  
+#     if len(vals) in range(1, 5):  
+#         # select the correct function  
+#         { 1 : glUniform1i,  
+#           2 : glUniform2i,  
+#           3 : glUniform3i,  
+#           4 : glUniform4i  
+#           # retrieve the uniform location, and set  
+#         }[len(vals)](glGetUniformLocation(program, name), *vals)  
+# 
