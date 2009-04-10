@@ -39,7 +39,7 @@ def resize((width, height)):
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     # NOTE : gluOrtho2D sets up a two-dimensional orthographic viewing region. This is equivalent to calling glOrtho with near=-1 and far=1.
-    glOrtho(-1.333333, 1.333333, -1.0, 1.0, -1.0, 1.0)# aalex just added this
+    glOrtho(-4.0, 4.0, -3.0, 3.0, -1.0, 1.0)# aalex just added this
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
@@ -58,14 +58,25 @@ def gl_init():
     glClearColor(0.0, 0.0, 0.0, 0.0) # black background
     program = compile_program(vert, frag)
 
+def draw_textured_square():
+    glBegin(GL_QUADS)
+    glTexCoord2f(0.0,  0.0)
+    glVertex2f( -1.0, -1.0) # Bottom Left
+    glTexCoord2f(1.0,  0.0)
+    glVertex2f(  1.0, -1.0) # Bottom Right
+    glTexCoord2f(1.0,  1.0)
+    glVertex2f(  1.0,  1.0) # Top Right
+    glTexCoord2f(0.0,  1.0)
+    glVertex2f( -1.0,  1.0) # Top Left
+    glEnd()
+    
+    
 def draw():
     """
     Called on every frame rendering
     """
     global program 
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    
     glUseProgram(program)
     #Set the sampler to use the first texture unit (0):
     texture_param = glGetUniformLocation(program, "image");
@@ -78,18 +89,9 @@ def draw():
     # GLfloat is ctypes.c_float
     #    uniformf(program, "keying_color", 0.0, 1.0, 0.0);
     #    uniformf(program, "thresh", 0.3, 0.3, 0.3);
-    
     glPushMatrix()
-    glBegin(GL_QUADS)
-    glTexCoord2f(0.0, 0.0)
-    glVertex2f(-1.33333, -1.0) # Bottom Left
-    glTexCoord2f(1.0, 0.0)
-    glVertex2f( 1.33333, -1.0) # Bottom Right
-    glTexCoord2f(1.0, 1.0)
-    glVertex2f( 1.33333,  1.0) # Top Right
-    glTexCoord2f(0.0, 1.0)
-    glVertex2f(-1.33333,  1.0) # Top Left
-    glEnd()
+    glScalef(4.0, 3.0, 1.0)    
+    draw_textured_square()
     glPopMatrix()
 
 class VideoCapturePlayer(object):

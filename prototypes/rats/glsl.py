@@ -23,6 +23,11 @@ except ImportError:
  
 from OpenGL.GL import *
 from OpenGL.GLU import *
+import pyglew
+pyglew.glewInit()
+
+#PFNGLUNIFORM1FPROC glUniform1f = NULL;
+#glUniform1f = (PFNGLUNIFORM1FPROC) glXGetProcAddress((const GLubyte*)"glUniform1f");
 # from OpenGL.GLUT import *
  
 glCreateShader = gl.glCreateShader
@@ -41,7 +46,7 @@ glGetError = gl.glGetError
 glUseProgram = gl.glUseProgram
 #Get two more functions for GLSL shaders using ctypes:
 glGetUniformLocation = gl.glGetUniformLocation
-glUniform1i = gl.glUniform1i
+#glUniform1i = gl.glUniform1i
 # glUniform2i = gl.glUniform2i
 # glUniform3i = gl.glUniform3i
 # glUniform1f = gl.glUniform1f

@@ -3,6 +3,7 @@
 GLSL shaders with SDL, OpenGL texture and Python
 """
 import os
+import sys
 import pygame
 import pygame.image
 import pygame.camera
@@ -10,6 +11,7 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from rats.glsl import *
+# from OpenGL.arrays.arraydatatype import GLfloatArray
 # ---------------------------- glsl ----------------------------
 #The vertex program needs to pass the texture coordinates through: 
 #(should multiply by the texture matrix here, but we don't care about that)
@@ -30,9 +32,12 @@ frag = """
 // Fragment program
 varying vec3 pos;
 uniform sampler2D texture;
+uniform float mixer;
+varying vec3 offset;
 
 void main() {
-     gl_FragColor.rgb = mix(pos.xyz, tex2D(texture, gl_TexCoord[0].xy).rgb, 0.5);
+     gl_FragColor.rgb = mix(pos.xyz, tex2D(texture, gl_TexCoord[0].xy).rgb, mixer) + offset;
+     //gl_FragColor.rgb = mix(tex2D(texture, gl_TexCoord[0].xy).rgb, offset, mixer);
 }
 """
 
@@ -43,15 +48,11 @@ Trying to get orthographic projection to work
 TODO : add a shader.
 # 1. Basic image capturing and displaying using the camera module
 """
-import os
-import pygame
-import pygame.image
-import pygame.camera
-from pygame.locals import *
 
 textures = [0] # list of texture ID 
 program = None
-
+mixer_ratio = 0.0 # from 0.0 to 1.0
+color_offset = 0.0
 def resize((width, height)):
     """
     Called when we resize the window.
@@ -62,7 +63,7 @@ def resize((width, height)):
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     # NOTE : gluOrtho2D sets up a two-dimensional orthographic viewing region. This is equivalent to calling glOrtho with near=-1 and far=1.
-    glOrtho(-1.333333, 1.333333, -1.0, 1.0, -1.0, 1.0)# aalex just added this
+    glOrtho(-4.0, 4.0, -3.0, 3.0, -1.0, 1.0)# aalex just added this
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
@@ -85,24 +86,37 @@ def draw():
     """
     global program 
     global textures
+    global mixer_ratio
+    global color_offset
+
+    mixer_ratio = (mixer_ratio + 0.01) % 1.0
+    color_offset = (color_offset + 0.1) % 1.0
+    #print "mixer:", mixer_ratio
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     
     glUseProgram(program)
     #Set the sampler to use the first texture unit (0):
     texture_param = glGetUniformLocation(program, "texture");
+    #print "texture uniform location :", texture_param
     glUniform1i(texture_param, 0);
-    
+    #print "mixer uniform location: ", glGetUniformLocation(program, "mixer")
+    glUniform1f(glGetUniformLocation(program, "mixer"),  GLfloat(mixer_ratio))
+    #glUniform3fv(glGetUniformLocation(program, "offset"), 3, GLfloat(color_offset), GLfloat(0.0), GLfloat(0.0))
+    glUniform3f(glGetUniformLocation(program, "offset"), GLfloat(mixer_ratio), GLfloat(0.0), GLfloat(0.0))
+    #glUniform3fv( GLint(program), GLsizei(3), GLfloatArray([1.0, 0, 0]) )
+    #sys.stdout.write("%0.3f " % color_offset)
+    #sys.stdout.flush()
     glPushMatrix()
     glBegin(GL_QUADS)
     glTexCoord2f(0.0, 0.0)
-    glVertex2f(-1.33333, -1.0) # Bottom Left
+    glVertex2f( -4.0, -3.0) # Bottom Left
     glTexCoord2f(1.0, 0.0)
-    glVertex2f( 1.33333, -1.0) # Bottom Right
+    glVertex2f(  4.0, -3.0) # Bottom Right
     glTexCoord2f(1.0, 1.0)
-    glVertex2f( 1.33333,  1.0) # Top Right
+    glVertex2f(  4.0,  3.0) # Top Right
     glTexCoord2f(0.0, 1.0)
-    glVertex2f(-1.33333,  1.0) # Top Left
+    glVertex2f( -4.0,  3.0) # Top Left
     glEnd()
     glPopMatrix()
 
