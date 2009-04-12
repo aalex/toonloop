@@ -162,8 +162,8 @@ class Api(Subject):
     """
     The public API for ToonLoop user interfaces.
     """
-    def __init__(self, toonloop):
-        self.toonloop = toonloop
+    def __init__(self, app):
+        self.app = app
 
     def print_help(self):
         """
@@ -218,6 +218,8 @@ class Configuration(Serializable):
         self.keying_color = (0.0, 1.0, 0.0)
         self.toonloop_home = os.getcwd()
         self.toonloop_file_extension = 'txt'
+        self.keying_thresh = 0.3
+        self.keying_slope = 0.0
         # TODO: think about keying
         # end of overridable attributes
         self.__dict__.update(**argd) # overrides some attributes whose defaults and names are below
@@ -264,6 +266,7 @@ class ToonLoop(render.Game):
         self._setup_camera()
         self._setup_window()
         self._clear_playback_view()
+        self._clear_onion_peal()
         self._playhead_iterator = 0
         self.playhead_iterate_every = 3 # 30/3 = 10 FPS
         reactor.callLater(0, self._setup_services)
@@ -384,9 +387,9 @@ class ToonLoop(render.Game):
         
     def _draw_edit_view(self):
         """
-        render to window
+        Renders edit view (the live camera + onion peal)
         """
-        #self.display.blit(self.most_recent_image, (0, 0)) # TODO: openglize
+        #self.display.blit(self.most_recent_image, (0, 0))
         glPushMatrix()
         glTranslatef(-2.0, 0.0, 0.0)
         glScalef(2.0, 1.5, 1.0)
@@ -426,12 +429,19 @@ class ToonLoop(render.Game):
     def _clear_playback_view(self):
         """
         Sets all pixels in the playback view as black.
-        """ # TODO: openglize
+        """
         blank_surface = pygame.Surface((self.config.image_width, self.config.image_height))
         texture_from_image(self.textures[self.TEXTURE_PLAYBACK], blank_surface)
         playback_pos = (self.config.image_width, 0)
         # self.display.blit(blank_surface, playback_pos)
         
+    def _clear_onion_peal(self):
+        """
+        Sets all pixels in the onion peal as black.
+        """
+        blank_surface = pygame.Surface((self.config.image_width, self.config.image_height))
+        texture_from_image(self.textures[self.TEXTURE_ONION], blank_surface)
+
     def pause(self, val=None):
         """
         Toggles on/off the pause
