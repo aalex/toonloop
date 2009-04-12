@@ -159,10 +159,13 @@ class Api(Subject):
         """
         Print statistics
         """
-        print "Current playhead: " + str(self.toonloop.current_playhead)
-        print "Num images: " + str(len(self.toonloop.image_list))
-        print "FPS: %d" % (self.toonloop.fps)
-    
+        try:
+            print "Current playhead: " + str(self.toonloop.current_playhead)
+            print "Num images: " + str(len(self.toonloop.images_list))
+            print "FPS: %d" % (self.toonloop.fps)
+        except AttributeError, e:
+            print sys.exc_info()
+
 class Configuration(Serializable):
     """
     Not used yet
@@ -197,24 +200,24 @@ class ToonLoop(render.Game):
         """
         Startup poutine.
         """
-        self.img_width = 640
-        self.height = 480 
-        self.last_image = pygame.Surface((self.img_width, self.height))
+        self.config = Configuration(**argd)
+        self.api = Api(self)
+        
+        self.video_device = 0 
         self.running = True
         self.paused = False
-        pygame.display.set_caption("ToonLoop")
-        self.video_device = 0 
-        # end of overridable attributes
         self.__dict__.update(**argd) # overrides some attributes whose defaults and names are below
-        self.api = Api(self)
+        
+        pygame.display.set_caption("ToonLoop")
+        self.last_image = pygame.Surface((self.config.image_width, self.config.image_height))
 
         if os.uname()[0] == 'Darwin':
             self.is_mac = True
         else:
             self.is_mac = False
-        self.width = self.img_width * 2
-        self.size = (self.width, self.height)
-        self.surface = pygame.display.set_mode(self.size)
+        self.width = self.config.image_width * 2
+        self.size = (self.width, self.config.image_height)
+        self.surface = pygame.display.set_mode(self.size) # the screen's surface
         try:
             pygame.camera.init() 
         except Exception, e:
@@ -225,10 +228,10 @@ class ToonLoop(render.Game):
             print "cameras :", pygame.camera.list_cameras()
             if self.is_mac:
                 print "Using camera %s" % (self.video_device)
-                self.camera = pygame.camera.Camera(self.video_device, (self.img_width, self.height))
+                self.camera = pygame.camera.Camera(self.video_device, (self.config.image_width, self.config.image_height))
             else:
                 print "Using camera /dev/video%d" % (self.video_device)
-                self.camera = pygame.camera.Camera("/dev/video%d" % (self.video_device), (self.img_width, self.height))
+                self.camera = pygame.camera.Camera("/dev/video%d" % (self.video_device), (self.config.image_width, self.config.image_height))
             self.camera.start()
         except SystemError, e:
             print sys.exc_info()
@@ -236,53 +239,46 @@ class ToonLoop(render.Game):
         except Exception, e:
             print sys.exc_info()
             raise ToonLoopError("Invalid camera. %s" % (str(e.message)))
+        
         self.clock = pygame.time.Clock()
         self.fps = 0 # for statistics
-        self.image_list = []
+        self.images_list = []
         self.current_playhead = 0 
         self.renderer = None # Renderer instance that owns it.
         self.intervalometer_on = False
         self.intervalometer_rate_seconds = 3.0 # in seconds
-        self.intervalometer_delayed_id = None
         self.osc = None
-        reactor.callLater(0, self.start)
+        self._intervalometer_delayed_id = None
+        reactor.callLater(0, self.start_services)
 
-    def start(self):
+    def start_services(self):
+        """
+        Starts the network services.
+
+        Called once the Twisted reactor has been started. 
+        """
         self.osc = opensoundcontrol.ToonOsc(self)
 
-    def get_and_flip(self):
-        """
-        Image capture from the video camera and pygame pixels update.
-        """
-        if self.is_mac:
-            self.camera.get_image(self.last_image)
-        else:
-            self.last_image = self.camera.get_image()
-        self.surface.blit(self.last_image, (0, 0))
-        if self.current_playhead < len(self.image_list):
-            self.surface.blit(self.image_list[self.current_playhead], (self.img_width, 0))
-            self.current_playhead += 1
-        else:
-            self.current_playhead = 0
-        pygame.display.update()
-
-    def toggle_auto(self):
+    def intervalometer_toggle(self, val=None):
         """
         Toggles on/off the auto mode
         """
-        self.intervalometer_on = not self.intervalometer_on
+        if val is not None:
+            self.intervalometer_on = val
+        else:
+            self.intervalometer_on = not self.intervalometer_on
         if self.intervalometer_on:
-            self.intervalometer_delayed_id = reactor.callLater(0, self.auto_grab)
+            self._intervalometer_delayed_id = reactor.callLater(0, self._intervalometer_frame_add)
             print "enabled intervalometer"
-        elif self.intervalometer_delayed_id.active():
-            self.intervalometer_delayed_id.cancel()
+        elif self._intervalometer_delayed_id.active():
+            self._intervalometer_delayed_id.cancel()
             print "disabled intervalometer"
 
         # self.intervalometer_on = False
         # self.intervalometer_rate_seconds = 3.0 # in seconds
-        # self.intervalometer_delayed_id = None
+        # self._intervalometer_delayed_id = None
     
-    def increment_intervalometer_rate_seconds(self, dir=1):
+    def intervalometer_rate_increase(self, dir=1):
         """
         Increase or decreases the intervalometer rate. (in seconds)
         :param dir: by how much increment it.
@@ -292,58 +288,111 @@ class ToonLoop(render.Game):
             self.intervalometer_rate_seconds = will_be
             print "auto rate:", will_be
 
-    def auto_grab(self):
+    def _intervalometer_frame_add(self):
         """
         Called when it is time to utomatically grab an image.
 
         The auto mode is like an intervalometer to create timelapse animations.
         """
-        # self.get_and_flip()
-        self.grab_image()
+        self.frame_add()
         sys.stdout.write("grab ")
         sys.stdout.flush()
         if self.intervalometer_on:
-            self.intervalometer_delayed_id = reactor.callLater(self.intervalometer_rate_seconds, self.auto_grab)
+            self._intervalometer_delayed_id = reactor.callLater(self.intervalometer_rate_seconds, self._intervalometer_frame_add)
 
-    def grab_image(self):
+    def frame_add(self):
         """
-        Copies the last grabbed to the list of images.
+        Copies the last grabbed frame to the list of images.
         """
         if self.is_mac:
-            self.image_list.append(self.last_image.copy())
+            self.images_list.append(self.last_image.copy())
         else:
-            self.image_list.append(self.last_image)
+            self.images_list.append(self.last_image)
+    
+    
+    def draw(self):
+        """
+        Renders one frame.
+        Called from the event loop. (twisted)
+        """
+        if not self.paused:
+            self._camera_grab_frame() # grab a frame
+            self._draw_edit_view() # render edit view
+            self._draw_playback_view() # render playback view
+            self.clock.tick()
+            self.fps = self.clock.get_fps()
+            pygame.display.update() # specific to pygame pixel window
 
-    def pause(self):
+    def _camera_grab_frame(self):
+        """
+        Image capture from the video camera.
+        """
+        if self.is_mac:
+            self.camera.get_image(self.last_image)
+        else:
+            self.last_image = self.camera.get_image()
+        
+    def _draw_edit_view(self):
+        """
+        render to window
+        """
+        self.surface.blit(self.last_image, (0, 0))
+        
+    def _draw_playback_view(self):
+        """
+        Renders the playback view. 
+        
+        Increments the playhead position of one frame
+        """
+        if self.current_playhead < len(self.images_list):
+            self.surface.blit(self.images_list[self.current_playhead], (self.config.image_width, 0))
+            self.current_playhead += 1
+        else:
+            self.current_playhead = 0
+
+    def _clear_playback_view(self):
+        """
+        Sets all pixels in the playback view as black.
+        """
+        blank_surface = pygame.Surface((self.config.image_width, self.config.image_height))
+        playback_pos = (self.config.image_width, 0)
+        self.surface.blit(blank_surface, playback_pos)
+        
+    def pause(self, val=None):
         """
         Toggles on/off the pause
         """
-        self.paused = not self.paused
+        if val is not None:
+            self.paused = val
+        else:
+            self.paused = not self.paused
 
-    def reset_loop(self):
+    def shot_reset(self):
         """
         Deletes all frames from the current animation
         """
-        self.image_list = []
-        self.reset_playback_window()
+        self.images_list = []
+        self._clear_playback_view()
 
-    def save_images(self):
+    def shot_save(self):
         """
-        Saves all images as jpeg
+        Saves all images as jpeg and encodes them to a MJPEG movie.
+        
+        See _write_next_image
         """
         # TODO : in a thread or using reactor.callLater()
         datetime = strftime("%Y-%m-%d_%Hh%Mm%S")
         print "Saving images ", datetime, " " 
-        reactor.callLater(0, self._save_next_image, datetime, 0)
+        reactor.callLater(0, self._write_next_image, datetime, 0)
 
-    def _save_next_image(self, datetime, index):
+    def _write_next_image(self, datetime, index):
         """
         Saves each image using twisted in order not to freeze the app.
         """
-        if index < len(self.image_list):
+        if index < len(self.images_list):
             name = ("%s_%4d.jpg" % (datetime, index)).replace(' ', '0')
             sys.stdout.write("%d " % index)
-            pygame.image.save(self.image_list[index], name)
+            pygame.image.save(self.images_list[index], name)
             reactor.callLater(0, self._save_next_image, datetime, index + 1)
         else:
             print "\nConverting to mjpeg" # done
@@ -352,26 +401,17 @@ class ToonLoop(render.Game):
             fps = self.renderer.desired_fps 
             deferred = mencoder.jpeg_to_movie(filename_pattern, path, fps)
 
-    def pop_one_frame(self):
+    def frame_remove(self):
         """
         Deletes the last frame from the current list of images.
         """
-        if self.image_list != []:
-            self.image_list.pop()
+        if self.images_list != []:
+            self.images_list.pop()
             # would it be better to also delete it ? calling del
-            if self.image_list == []:
-                self.reset_playback_window()
-
-    def reset_playback_window(self):
-        """
-        Sets all pixels of the window as black.
-        """
-        blank_surface = pygame.Surface((self.img_width, self.height))
-        playback_pos = (self.img_width, 0)
-        self.surface.blit(blank_surface, playback_pos)
-
+            if self.images_list == []:
+                self._clear_playback_view()
     
-    def increment_fps(self, dir=1):
+    def framerate_increase(self, dir=1):
         """
         Increase or decreases the FPS
         :param dir: by how much increment it.
@@ -395,17 +435,17 @@ class ToonLoop(render.Game):
                 self.running = False
             elif e.type == KEYDOWN: 
                 if e.key == K_k:
-                    self.increment_intervalometer_rate_seconds(1)
+                    self.intervalometer_rate_increase(1)
                 if e.key == K_j:
-                    self.increment_intervalometer_rate_seconds(-1)
+                    self.intervalometer_rate_increase(-1)
                 if e.key == K_UP:
-                    self.increment_fps(1)
+                    self.framerate_increase(1)
                 if e.key == K_DOWN:
-                    self.increment_fps(-1)
+                    self.framerate_increase(-1)
                 if e.key == K_SPACE:
-                    self.grab_image()
+                    self.frame_add()
                 elif e.key == K_r:
-                    self.reset_loop()
+                    self.shot_reset()
                 elif e.key == K_p:
                     self.pause()
                 elif e.key == K_i: 
@@ -413,23 +453,13 @@ class ToonLoop(render.Game):
                 elif e.key == K_h:
                     self.api.print_help()
                 elif e.key == K_s:
-                    self.save_images()
+                    self.shot_save()
                 if e.key == K_a:
-                    self.toggle_auto()
+                    self.intervalometer_toggle()
                 elif e.key == K_BACKSPACE:
-                    self.pop_one_frame()
+                    self.frame_remove()
                 elif e.key == K_ESCAPE or e.key == K_q:
                     self.running = False
-    
-    def draw(self):
-        """
-        Renders one frame.
-        Called from the event loop. (twisted)
-        """
-        if not self.paused:
-            self.get_and_flip()
-            self.clock.tick()
-            self.fps = self.clock.get_fps()
     
     def cleanup(self):
         """
