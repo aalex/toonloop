@@ -79,7 +79,7 @@ from OpenGL.GL import *
 
 from twisted.internet import reactor
 
-__version__ = "1.0 alpha"
+__version__ = "1.0 beta"
 
 def texture_from_image(texture, image):
     """
@@ -145,12 +145,6 @@ class ToonShot(Serializable):
         self.__dict__.update(argd)
         self._intervalometer_delayed_id = None
         self.images_list = []
-
-#  int captureFrameNum = 0; //the next captured frame number ... might wrap around
-#  int playFrameNum = 0;
-#  PImage[] images = new PImage[LOOP_MAX_NUM_FRAME];
-#  int seqFrameRate = FRAME_RATE;
-#  int getFrameRate() 
 
 class ToonLoopError(Exception):
     """

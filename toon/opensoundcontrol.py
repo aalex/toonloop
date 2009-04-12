@@ -96,11 +96,11 @@ class ToonOsc(Observer):
         print "received pong from", host
 
     def r_frame_add(self, addr, tags, stuff, host):
-        self.toonloop.grab_image()
+        self.api.frame_add()
         print "received /frame/add from", host
 
-    def __init__(self, toonloop):
-        self.toonloop = toonloop
+    def __init__(self, api):
+        self.api = api
         self.send_port = 3333
         self.receive_port = 4444
         self.send_host = 'localhost'
