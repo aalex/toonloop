@@ -43,3 +43,20 @@ class ToonSequence(Serializable):
         # end of overridable attributes
         self.__dict__.update(argd)
 
+def load_image(file_name, colorkey=None):
+    """
+    Loads an image file.
+    returns surface, width, height
+    """
+    try:
+        image = pygame.image.load(file_name)
+    except pygame.error, message:
+        print 'Cannot load image:', file_name
+    image = image.convert()
+
+    if colorkey is not None:
+        if colorkey is -1:
+            colorkey = image.get_at((0,0))
+            image.set_colorkey(colorkey, RLEACCEL)
+    return image, image.get_rect()
+
