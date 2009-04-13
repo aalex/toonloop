@@ -52,25 +52,6 @@ The camera module for pygame is available from pygame's svn revision
 1744 or greater
 svn co svn://seul.org/svn/pygame/trunk
 """
-# TODO:
-# - Press 'p' to open the Quicktime video camera settings dialog. (if available)
-# - Press LEFT or RIGHT to move the insertion point
-# - OSC messages to set intervalometer rate (timelapse) and enable it.
-# - text for frame number on both sides
-# - OSC callbacks and sends
-# - Modify the ShaderProgram to conform to Python PEP 8. Put it rats.glsl.py. Add the shader inline.
-# - In keying.frag.glsl, pass alpha color from the vertex shader.
-# - redimension rendering area when in full screen
-# - x-offset configuration parameter
-# - no mouse when full screen
-# - unable to delete JPEG images after movie conversion
-# - shot name/id
-# - jellyfy project (name, date, folder, file, images, movies)
-# - gl: take a lot of low-res textures and disply in a loop
-# - gl: display text
-# - web: Rss feed of movie files
-# - web: static twisted web directory
-# - project name choice
  
 import sys
 from time import strftime
@@ -203,6 +184,10 @@ class Configuration(Serializable):
         self.osc_send_host = 'localhost'
         self.osc_receive_port = 44444
         self.verbose = True
+        self.min_framerate = 1
+        self.max_framerate = 30
+        self.min_framerate = 1
+        self.max_framerate = 30
         self.onionpeal_allowed = True
         self.onionpeal_opacity = 0.3
         self.playback_opacity = 0.3
