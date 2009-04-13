@@ -43,11 +43,3 @@ class ToonSequence(Serializable):
         # end of overridable attributes
         self.__dict__.update(argd)
 
-class ToonProject(object):
-    """
-    Project file with shots and sequences.
-    """
-    def __init__(self):
-        self.name = "toonloop"
-
-        
