@@ -41,13 +41,12 @@ class Index(rst.ReStructured, LivePage, Observer):
     """
     Class representing the root (/) of the web server. 
     """
-    
     addSlash = True
-
 
     def __init__(self, subject, **kwargs):
         self.static_files_path = os.curdir
         self.index_file_path = os.path.join(os.curdir, 'toon', 'index.rst')
+        self.port = 8000
         self.__dict__.update(**kwargs)
         
         Observer.__init__(self, subject)
@@ -64,6 +63,7 @@ class Index(rst.ReStructured, LivePage, Observer):
         # child_* attributes serve some static files
         # TODO: RSS feed and web form
         self.child_files = static.File(self.static_files_path) # os.path.join
+        self.child_rss = rss.RSSPage(port=self.port, root=self.static_files_path)
     
     def renderHTTP(self, request):
         """
@@ -85,7 +85,8 @@ def start(subject, port=8000, **kwargs):
     """
     web_config = {
         'static_files_path':os.path.expanduser("~/Documents/toonloop"),
-        'index_file_path':os.path.join(os.curdir, 'toon', 'index.rst')
+        'index_file_path':os.path.join(os.curdir, 'toon', 'index.rst'), 
+        'port':port
     }
     web_config.update(kwargs)
     #Index.static_files_path = web_config['static_files_path']
