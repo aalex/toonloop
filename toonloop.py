@@ -75,6 +75,8 @@ svn co svn://seul.org/svn/pygame/trunk
 import sys
 from time import strftime
 import os
+import shutil
+import glob
 
 from rats import render
 from rats.serialize import Serializable
@@ -84,6 +86,7 @@ from toon import opensoundcontrol
 from toon import mencoder
 from toon.drawing import texture_from_image
 from toon.drawing import draw_textured_square
+from toon import web_server
 
 import pygame
 import pygame.camera
@@ -363,6 +366,10 @@ class ToonLoop(render.Game):
         Called once the Twisted reactor has been started. 
         """
         self.osc = opensoundcontrol.ToonOsc(self)
+        try:
+            self.web = web_server.start(self)
+        except:
+            print "Error loading web UI :", sys.exc_info()
 
     def frame_add(self):
         """
@@ -529,13 +536,20 @@ class ToonLoop(render.Game):
         if self.config.delete_jpeg:
             reactor.callLater(1.0, self._write_04_delete_images, path, file_name, index)
 
+
     def _write_04_delete_images(self, path, file_name, index):
-        for i in range(index):
-            full_name = "%s/%s_%d.jpg" % (path, file_name, i)
+        files = glob.glob("%s/%s_*.jpg" % (path, file_name))
+        for f in files:
             try:
-                os.remove(file_name)
+                os.remove(f)
             except OSError, e:
-                print "%s Error removing file %s" % (e.message, full_name)
+                print "%s Error removing file %s" % (e.message, f)
+        try:
+            src = "%s/%s.avi" % (path, file_name)
+            dest = "%s/movie_%s.avi" % (path, file_name)
+            shutil.move(src, dest)
+        except IOError, e:
+            print "%s Error moving file %s to %s" % (e.message, src, dest)
 
     def frame_remove(self):
         """
