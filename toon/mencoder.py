@@ -49,7 +49,7 @@ except IndexError:
     print "mencoder must be in your $PATH"
     print "mencoder conversion is disabled"
     # sys.exit(1)
-movie_name_suffix = "movie"
+movie_name_suffix = ""
 
 def cb_error(command_failure, args):
     print "FAILURE"
@@ -110,7 +110,7 @@ def jpeg_to_movie(filename_pattern, path='.', fps=12):
         output_file = "%s%s.avi"  %  (abs_filename, movie_name_suffix)
         txt_args = """%s -quiet -mf w=640:h=480:fps=%s:type=jpg -ovc copy -oac copy -o %s""" % (jpegs, fps, output_file) 
         args = txt_args.split()
-        print "starting mencoder %s" % (txt_args)
+        print "$ mencoder %s" % (txt_args)
         try:
             deferred = utils.getProcessOutputAndValue(mencoder_executable, args, os.environ, path, reactor)
             # TODO: get rid of this and, instead, change utils.commands and add it a 
@@ -121,7 +121,7 @@ def jpeg_to_movie(filename_pattern, path='.', fps=12):
             # raise
         else:
             deferred.addErrback(cb_error, args)
-            deferred.addCallback(cb_success, args)
+            #deferred.addCallback(cb_success, args)
             return deferred
 
 if __name__ == '__main__':
@@ -130,7 +130,8 @@ if __name__ == '__main__':
         reactor.stop()
     def start(filename_pattern, path, fps):
         deferred = jpeg_to_movie(filename_pattern, path, fps)
-        deferred.addCallback(stop)
+        deferred.addCallback(cb_success, args)
+        #deferred.addCallback(stop)
         deferred.addErrback(stop)
     
     print "#################################################################"
