@@ -108,8 +108,7 @@ class Channel(object):
         items = ""
         for item in self.items:
             items += str(item)
-        return """
-        <?xml version="1.0" encoding="us-ascii"?>
+        return """<?xml version="1.0" encoding="us-ascii"?>
         <rss version="2.0">
         <channel>
           <title>%s</title>
@@ -137,15 +136,16 @@ class RSSPage(LivePage):
         self.__dict__.update(kwargs)
 
     def renderHTTP(self, request):
-        print "HTTP Request:", request
+        #TODO: make path aware of the host name it should be
+        # print "HTTP Request:", request
         channel = Channel()
-        movie_files = glob.glob("%s/*/*.avi" % (self.root))
+        movie_files = glob.glob("%s/*/movie_*.avi" % (self.root))
         for f in movie_files:
             file_name = os.path.split(f)[1]
             project_name = os.path.dirname(f).split("/")[-1]
-            print "project:", project_name
+            #print "project:", project_name
             link = "http://localhost:%d/files/%s/%s" % (self.port, project_name, file_name)
-            channel.items.append(Item(title=file_name, enclosure_url=link, link=link, guid=file_name))
+            channel.items.append(Item(title=file_name, enclosure_url=link, link=link, guid=file_name, enclosure_type="video/x-msvideo"))
         return str(channel)
 
 if __name__ == '__main__':

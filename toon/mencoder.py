@@ -40,6 +40,7 @@ except ImportError:
 from twisted.internet import reactor, defer, protocol
 from twisted.python import procutils, failure
 from twisted.internet import utils
+# TODO: import twisted log
 
 # variables
 mencoder_executable = ''
@@ -93,7 +94,7 @@ def cb_success(result, args):
 #             print ">>>> Failure !"
 #             print ">>>> signal is ", signal_or_code
 
-def jpeg_to_movie(filename_pattern, path='.', fps=12):
+def jpeg_to_movie(filename_pattern, path='.', fps=12, verbose=False):
     """
     Converts a series a JPEG images to a MJPEG movie.
 
@@ -110,7 +111,8 @@ def jpeg_to_movie(filename_pattern, path='.', fps=12):
         output_file = "%s%s.avi"  %  (abs_filename, movie_name_suffix)
         txt_args = """%s -quiet -mf w=640:h=480:fps=%s:type=jpg -ovc copy -oac copy -o %s""" % (jpegs, fps, output_file) 
         args = txt_args.split()
-        print "$ mencoder %s" % (txt_args)
+        if verbose:
+            print "$ mencoder %s" % (txt_args)
         try:
             deferred = utils.getProcessOutputAndValue(mencoder_executable, args, os.environ, path, reactor)
             # TODO: get rid of this and, instead, change utils.commands and add it a 
@@ -139,7 +141,7 @@ if __name__ == '__main__':
     #path = '/home/aalex/src/toonloop/trunk/py/toon'
     filename_pattern = "2009-03-07_05h13m49_"
     fps = 12
-    reactor.callLater(0, start, filename_pattern, path, fps)
+    reactor.callLater(0, start, filename_pattern, path, fps, True)
     print "starting reactor"
     reactor.run()
 

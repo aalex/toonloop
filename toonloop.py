@@ -511,7 +511,7 @@ class ToonLoop(render.Game):
         if index < len(self.shot.images):
             name = ("%s/%s_%d.jpg" % (path, file_name, index)).replace(' ', '0')
             if self.config.verbose:
-                sys.stdout.write("Saving image %d %s. " % (index, name))
+                sys.stdout.write("%s ..." % (name))
             pygame.image.save(self.shot.images[index], name)
             reactor.callLater(0, self._write_01_next_image, path, file_name, index + 1)
         else:
@@ -520,10 +520,10 @@ class ToonLoop(render.Game):
     def _write_02_images_done(self, path, file_name, index):
         if index > 0:
             if self.config.verbose:
-                print "Converting to mjpeg"
+                print "\nConverting to mjpeg"
             fps = 12 #self.shot.increment_every # self.shot.framerate
             #fps = self.renderer.desired_fps 
-            deferred = mencoder.jpeg_to_movie(file_name, path, fps)
+            deferred = mencoder.jpeg_to_movie(file_name, path, fps, self.config.verbose)
             deferred.addCallback(self._write_03_movie_done, file_name, path, index)
             # to do : serialize shots with file names
             # self.project_file = 'project.txt'
@@ -532,7 +532,8 @@ class ToonLoop(render.Game):
         """
         Called when mencoder conversion is done.
         """
-        print "Done converting %s/%s.avi" % (path, file_name)
+        if self.config.verbose:
+            print "Done converting %s/%s.avi" % (path, file_name)
         if self.config.delete_jpeg:
             reactor.callLater(1.0, self._write_04_delete_images, path, file_name, index)
 
@@ -711,7 +712,7 @@ if __name__ == "__main__":
     parser.add_option("-d", "--device", dest="device", type="int", \
         help="Specifies v4l2 device to grab image from.", default=0)
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true", \
-        help="Sets the output to verbose.", default=True)
+        help="Sets the output to verbose.", default=False)
     parser.add_option("-f", "--fps", type="int", \
         help="Sets the rendering frame rate.", default=30)
     parser.add_option("-t", "--intervalometer-rate-seconds", type="float",  \
