@@ -35,7 +35,7 @@ frag = """
 varying vec3 pos;
 uniform sampler2D texture;
 uniform float mixer;
-varying vec3 offset;
+uniform vec3 offset;
 
 void main() {
      gl_FragColor.rgb = mix(pos.xyz, tex2D(texture, gl_TexCoord[0].xy).rgb, mixer) + offset;
