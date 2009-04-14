@@ -65,8 +65,8 @@ from rats.observer import Subject
 
 from toon import opensoundcontrol
 from toon import mencoder
-from toon.drawing import texture_from_image
-from toon.drawing import draw_textured_square
+from toon.draw import texture_from_image
+from toon.draw import draw_textured_square
 from toon import web_server
 
 import pygame
