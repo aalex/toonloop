@@ -51,8 +51,10 @@ frag = """
  */
 
 // user-configurable variables (read-only)
-uniform vec3 keying_color;
-uniform vec3 thresh; 
+//uniform vec3 keying_color;
+//uniform vec3 thresh; 
+const vec3 keying_color = vec3(0., 1., 0.);
+const vec3 thresh = vec3(0.2, 0.2, 0.2);
 
 // the texture
 uniform sampler2DRect image;
@@ -74,7 +76,7 @@ void main(void)
 	// TODO: mix() according the 3 factors of proximity.
 	if (delta.r <= thresh.r && delta.g <= thresh.g && delta.b <= thresh.b)
 	{
-	   output_alpha = 0.3;
+	   output_alpha = 0.5;
 	}
     
     gl_FragColor = vec4(input_color, output_alpha); 
@@ -107,6 +109,9 @@ def gl_init():
     glShadeModel(GL_SMOOTH)
     textures[0] = glGenTextures(1)
     glClearColor(0.0, 0.0, 0.0, 0.0)
+    glEnable(GL_BLEND)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    glColor3f(1., 1., 1.)
 
     program = ShaderProgram()
     program.add_shader_text(GL_VERTEX_SHADER_ARB, vert)
@@ -124,8 +129,8 @@ def draw():
     
     program.enable()
     program.glUniform1i("image", textures[0])
-    program.glUniform3f("keying_color", 0., 1., 0.)
-    program.glUniform3f("thresh", 0.3, 0.3, 0.3)
+    #program.glUniform3f("keying_color", 0., 1., 0.)
+    #program.glUniform3f("thresh", 0.3, 0.3, 0.3)
     
     glPushMatrix()
     glBegin(GL_QUADS)
@@ -141,6 +146,19 @@ def draw():
     glPopMatrix()
 
     program.disable()
+    glPushMatrix()
+    glTranslate(2, 1.5, 0)
+    glBegin(GL_QUADS)
+    glTexCoord2f(0.0, 0.0)
+    glVertex2f(-1.333, -1.) # Bottom Left
+    glTexCoord2f(1.0, 0.0)
+    glVertex2f(1.333, -1.) # Bottom Right
+    glTexCoord2f(1.0, 1.0)
+    glVertex2f(1.333, 1.) # Top Right
+    glTexCoord2f(0.0, 1.0)
+    glVertex2f(-1.333, 1.) # Top Left
+    glEnd()
+    glPopMatrix()
 
 class VideoCapturePlayer(object):
     size = (640, 480)
