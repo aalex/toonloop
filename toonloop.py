@@ -67,7 +67,11 @@ from toon import opensoundcontrol
 from toon import mencoder
 from toon.draw import texture_from_image
 from toon.draw import draw_textured_square
-from toon import web_server
+try:
+    from toon import web_server
+except ImportError:
+    print "Install python-nevow"
+
 
 import pygame
 import pygame.camera
@@ -332,7 +336,7 @@ class ToonLoop(render.Game):
             print "cameras :", pygame.camera.list_cameras()
             if self.is_mac:
                 print "Using camera %s" % (self.config.video_device)
-                self.camera = pygame.camera.Camera(self.video_device, size)
+                self.camera = pygame.camera.Camera(self.config.video_device, size)
             else:
                 print "Using camera /dev/video%d" % (self.config.video_device)
                 self.camera = pygame.camera.Camera("/dev/video%d" % (self.config.video_device), size)
