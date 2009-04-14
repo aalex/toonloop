@@ -13,48 +13,75 @@ from OpenGL.GLU import *
 from rats.glsl import ShaderProgram
 from rats.glsl import ShaderError
 
-# from OpenGL.arrays.arraydatatype import GLfloatArray
-# ---------------------------- glsl ----------------------------
-#The vertex program needs to pass the texture coordinates through: 
-#(should multiply by the texture matrix here, but we don't care about that)
+# ---------------------------- glsl vertex shader ----------------------------
 vert = """
-// Vertex program
-varying vec3 pos;
+/**
+ * Vertex shader that does nothing
+ */
+// variables passed to the fragment shader
+varying vec2 texcoord0;
+varying vec2 texdim0;
 
-void main() {
-     pos = gl_Vertex.xyz;
-     gl_TexCoord[0] = gl_MultiTexCoord0;
-     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+void main()
+{
+    gl_Position = ftransform();
+    texcoord0 = vec2(gl_TextureMatrix[0] * gl_MultiTexCoord0);
+    texdim0 = vec2(abs(gl_TextureMatrix[0][0][0]), abs(gl_TextureMatrix[0][1][1]));
 }
 """
 
-#Add a uniform sampler2D to the fragment shader, and make it modulate the 
-#colour with the texture:
+# ---------------------------- glsl fragment shader ----------------------------
 frag = """
-// Fragment program
-varying vec3 pos;
-uniform sampler2D texture;
-uniform float mixer;
-uniform vec3 offset;
+/**
+ * Fragment shader for chroma-keying. 
+ * 
+ * (using a green or blue screen, or any background color)
+ * 
+ * Main thing is, make sure the texcoord's arent 
+ * normalized (so they are in the range of [0..w, 0..h] )
+ * 
+ * All params are vec3 in the range [0.0, 1.0]
+ * 
+ * :param keying_color: The RGB keying color that will be made transparent.
+ * :param thresh: The distance from the color for a pixel to disappear.
+ * 
+ * :author: Alexandre Quessy <alexandre@quessy.net> 2009
+ * :license: GNU Public License version 3
+ * Fragment shader for keying. (using a green or blue screen)
+ */
 
-void main() {
-     gl_FragColor.rgb = mix(pos.xyz, tex2D(texture, gl_TexCoord[0].xy).rgb, mixer) + offset;
-     //gl_FragColor.rgb = mix(tex2D(texture, gl_TexCoord[0].xy).rgb, offset, mixer);
+// user-configurable variables (read-only)
+uniform vec3 keying_color;
+uniform vec3 thresh; 
+
+// the texture
+uniform sampler2DRect image;
+
+// data passed from vertex shader:
+varying vec2 texcoord0;
+varying vec2 texdim0;
+
+void main(void)
+{
+    // sample from the texture 
+    vec3 input_color = texture2DRect(image, texcoord0).rgb;
+    float output_alpha = 1.0;
+    
+    // measure distance from keying_color
+    vec3 delta = abs(input_color - keying_color);
+	
+	// for now, not visible if under threshold of proximity
+	// TODO: mix() according the 3 factors of proximity.
+	if (delta.r <= thresh.r && delta.g <= thresh.g && delta.b <= thresh.b)
+	{
+	   output_alpha = 0.3;
+	}
+    
+    gl_FragColor = vec4(input_color, output_alpha); 
 }
 """
-
-# ------------------------------ CAMERA STUFF -------------
-"""
-OpenGL camera with toggle fullscreen. 
-Trying to get orthographic projection to work
-TODO : add a shader.
-# 1. Basic image capturing and displaying using the camera module
-"""
-
 textures = [0] # list of texture ID 
 program = None
-mixer_ratio = 0.0 # from 0.0 to 1.0
-color_offset = 0.0
 
 def resize((width, height)):
     """
@@ -65,8 +92,7 @@ def resize((width, height)):
         height = 1
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    # NOTE : gluOrtho2D sets up a two-dimensional orthographic viewing region. This is equivalent to calling glOrtho with near=-1 and far=1.
-    glOrtho(-4.0, 4.0, -3.0, 3.0, -1.0, 1.0)# aalex just added this
+    glOrtho(-4.0, 4.0, -3.0, 3.0, -1.0, 1.0)
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
@@ -80,15 +106,12 @@ def gl_init():
     glEnable(GL_TEXTURE_2D)
     glShadeModel(GL_SMOOTH)
     textures[0] = glGenTextures(1)
-    glClearColor(0.0, 0.0, 0.0, 0.0) # black background
-    #program = compile_program(vert, frag)
+    glClearColor(0.0, 0.0, 0.0, 0.0)
+
     program = ShaderProgram()
     program.add_shader_text(GL_VERTEX_SHADER_ARB, vert)
     program.add_shader_text(GL_FRAGMENT_SHADER_ARB, frag)
     program.linkShaders()
-
-
-
 
 def draw():
     """
@@ -96,50 +119,31 @@ def draw():
     """
     global program 
     global textures
-    global mixer_ratio
-    global color_offset
-
-    mixer_ratio = (mixer_ratio + 0.01) % 1.0
-    color_offset = (color_offset + 0.1) % 1.0
-    #print "mixer:", mixer_ratio
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     
     program.enable()
-    #glUseProgram(program)
-    #Set the sampler to use the first texture unit (0):
-    #texture_param = glGetUniformLocation(program, "texture");
+    program.glUniform1i("image", textures[0])
+    program.glUniform3f("keying_color", 0., 1., 0.)
+    program.glUniform3f("thresh", 0.3, 0.3, 0.3)
     
-    #print "texture uniform location :", texture_param
-    #glUniform1i(texture_param, 0);
-    program.glUniform1i("texture", 0)
-
-
-    #print "mixer uniform location: ", glGetUniformLocation(program, "mixer")
-    #glUniform1f(glGetUniformLocation(program, "mixer"),  GLfloat(mixer_ratio))
-    program.glUniform1f("mixer", mixer_ratio)
-    #glUniform3fv(glGetUniformLocation(program, "offset"), 3, GLfloat(color_offset), GLfloat(0.0), GLfloat(0.0))
-    #glUniform3f(glGetUniformLocation(program, "offset"), GLfloat(mixer_ratio), GLfloat(0.0), GLfloat(0.0))
-    program.glUniform3f("offset", mixer_ratio, 0.0, 0.0)
-    #glUniform3fv( GLint(program), GLsizei(3), GLfloatArray([1.0, 0, 0]) )
-    #sys.stdout.write("%0.3f " % color_offset)
-    #sys.stdout.flush()
     glPushMatrix()
     glBegin(GL_QUADS)
     glTexCoord2f(0.0, 0.0)
-    glVertex2f( -4.0, -3.0) # Bottom Left
+    glVertex2f(-4.0, -3.0) # Bottom Left
     glTexCoord2f(1.0, 0.0)
-    glVertex2f(  4.0, -3.0) # Bottom Right
+    glVertex2f(4.0, -3.0) # Bottom Right
     glTexCoord2f(1.0, 1.0)
-    glVertex2f(  4.0,  3.0) # Top Right
+    glVertex2f(4.0, 3.0) # Top Right
     glTexCoord2f(0.0, 1.0)
-    glVertex2f( -4.0,  3.0) # Top Left
+    glVertex2f(-4.0, 3.0) # Top Left
     glEnd()
     glPopMatrix()
+
     program.disable()
 
 class VideoCapturePlayer(object):
-    size = ( 640, 480 )
+    size = (640, 480)
     def __init__(self, **argd):
         self.__dict__.update(**argd)
         super(VideoCapturePlayer, self).__init__(**argd)
@@ -221,3 +225,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
