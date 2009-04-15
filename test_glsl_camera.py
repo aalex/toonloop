@@ -35,8 +35,8 @@ uniform sampler2D image;
 
 void main (void)
 {
-    //vec3 texColor = texture2DRect(image, texcoord).rgb;
-    gl_FragColor = texture2D(image, gl_TexCoord[0].st);
+    //vec3 texColor = texture2DRect(image, texcoord).bgr;
+    gl_FragColor = texture2D(image, gl_TexCoord[0].st).gbra;
 }
 """
 
