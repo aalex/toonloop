@@ -39,19 +39,19 @@ class ShaderProgram(object):
     Manages GLSL programs.
     """
     def __init__(self):
-        self.__requiredExtensions = [
+        self._requiredExtensions = [
                 "GL_ARB_fragment_shader",
                 "GL_ARB_vertex_shader",
                 "GL_ARB_shader_objects",
                 "GL_ARB_shading_language_100",
                 "GL_ARB_vertex_shader",
                 "GL_ARB_fragment_shader"]
-        self.checkExtensions(self.__requiredExtensions)
-        self.__shaderProgramID = glCreateProgramObjectARB()
-        self.__checkOpenGLError()
-        self.__programReady = False
-        self.__isEnabled = False
-        self.__shaderObjectList = []
+        self.checkExtensions(self._requiredExtensions)
+        self._shaderProgramID = glCreateProgramObjectARB()
+        self._checkOpenGLError()
+        self._programReady = False
+        self._isEnabled = False
+        self._shaderObjectList = []
 
     def checkExtensions(self, extensions):
         """
@@ -61,7 +61,7 @@ class ShaderProgram(object):
             if not ext:
                 raise ShaderError("Driver does not support extension %s." % (ext))
 
-    def __checkOpenGLError(self):
+    def _checkOpenGLError(self):
         """
         Checks if there are OpenGL error messages.
         """
@@ -73,16 +73,16 @@ class ShaderProgram(object):
         """
         Disables and removes all shader programs.
         """
-        for shaderID in self.__shaderObjectList:
-            glDetachObjectARB(self.__shaderProgramID, shaderID)
+        for shaderID in self._shaderObjectList:
+            glDetachObjectARB(self._shaderProgramID, shaderID)
             glDeleteObjectARB(shaderID)
-            self.__shaderObjectList.remove(shaderID)
-            self.__checkOpenGLError()
-        glDeleteObjectARB(self.__shaderProgramID)
-        self.__checkOpenGLError()
-        self.__shaderProgramID = glCreateProgramObjectARB()
-        self.__checkOpenGLError()
-        self.__programReady = False
+            self._shaderObjectList.remove(shaderID)
+            self._checkOpenGLError()
+        glDeleteObjectARB(self._shaderProgramID)
+        self._checkOpenGLError()
+        self._shaderProgramID = glCreateProgramObjectARB()
+        self._checkOpenGLError()
+        self._programReady = False
 
     def addShader(self, shaderType, fileName):
         """
@@ -98,39 +98,39 @@ class ShaderProgram(object):
         Loads a program from string and compiles it.
         """
         shaderHandle = glCreateShaderObjectARB(shaderType)
-        self.__checkOpenGLError()
+        self._checkOpenGLError()
         glShaderSourceARB(shaderHandle, [sourceString])
-        self.__checkOpenGLError()
+        self._checkOpenGLError()
         glCompileShaderARB(shaderHandle)
         success = glGetObjectParameterivARB(shaderHandle, 
             GL_OBJECT_COMPILE_STATUS_ARB)
         if not success:
             raise ShaderError(glGetInfoLogARB(shaderHandle))
-        glAttachObjectARB(self.__shaderProgramID, shaderHandle)
-        self.__checkOpenGLError()
-        self.__shaderObjectList.append(shaderHandle)
+        glAttachObjectARB(self._shaderProgramID, shaderHandle)
+        self._checkOpenGLError()
+        self._shaderObjectList.append(shaderHandle)
         
     def linkShaders(self):
         """
         Links compiled shader programs.
         """
-        glLinkProgramARB(self.__shaderProgramID)
-        self.__checkOpenGLError()
-        success = glGetObjectParameterivARB(self.__shaderProgramID, 
+        glLinkProgramARB(self._shaderProgramID)
+        self._checkOpenGLError()
+        success = glGetObjectParameterivARB(self._shaderProgramID, 
             GL_OBJECT_LINK_STATUS_ARB)
         if not success:
-            raise ShaderError(glGetInfoLogARB(self.__shaderProgramID))
+            raise ShaderError(glGetInfoLogARB(self._shaderProgramID))
         else:
-            self.__programReady = True
+            self._programReady = True
     
     def enable(self):
         """
         Activates shader programs.
         """
-        if self.__programReady:
-            glUseProgramObjectARB(self.__shaderProgramID)
-            self.__isEnabled=True
-            self.__checkOpenGLError()
+        if self._programReady:
+            glUseProgramObjectARB(self._shaderProgramID)
+            self._isEnabled=True
+            self._checkOpenGLError()
         else:
             print "Shaders not compiled/linked properly, enable() failed"
 
@@ -139,19 +139,19 @@ class ShaderProgram(object):
         De-activates shader programs.
         """
         glUseProgramObjectARB(0)
-        self.__isEnabled=False
-        self.__checkOpenGLError()
+        self._isEnabled=False
+        self._checkOpenGLError()
 
     def indexOfUniformVariable(self, variableName):
         """
         Finds the index of a uniform variable.
         """
-        if not self.__programReady:
+        if not self._programReady:
             print "\nShaders not compiled/linked properly"
             result = -1
         else:
-            result = glGetUniformLocationARB(self.__shaderProgramID, variableName)
-            self.__checkOpenGLError()
+            result = glGetUniformLocationARB(self._shaderProgramID, variableName)
+            self._checkOpenGLError()
         if result < 0:
             raise ShaderError('Variable "%s" not known to the shader' % (variableName))
         else:
@@ -161,19 +161,19 @@ class ShaderProgram(object):
         """
         Finds the index of an attribute variable.
         """
-        if not self.__programReady:
+        if not self._programReady:
             print "\nShaders not compiled/linked properly"
             result = -1
         else:
-            result = glGetAttribLocationARB(self.__shaderProgramID, attributeName)
-            self.__checkOpenGLError()
+            result = glGetAttribLocationARB(self._shaderProgramID, attributeName)
+            self._checkOpenGLError()
         if result < 0:
             raise ShaderError('Attribute "%s" not known to the shader' % (attributeName))
         else:
             return result
     
     def isEnabled(self):
-        return self.__isEnabled
+        return self._isEnabled
 
     def glUniform3f(self, variable_name, a, b, c):
         if self.isEnabled():

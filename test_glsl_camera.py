@@ -15,109 +15,35 @@ from rats.glsl import ShaderError
 
 # ---------------------------- glsl vertex shader ----------------------------
 vert = """
-/**
- * Vertex shader that does nothing
- */
-// variables passed to the fragment shader
-//varying vec2 texcoord0;
-//varying vec2 texdim0;
+// Does the standard action a vertex shader should do.
+// Passes texcoord to the fragment shader.
+//varying vec2 texcoord;
 
-void main()
+void main (void)
 {
-     gl_TexCoord[0] = gl_MultiTexCoord0;
-     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+    gl_TexCoord[0] = gl_MultiTexCoord0;
+    gl_Position = ftransform();
 
-    //l_Position = ftransform();
-    //texcoord0 = vec2(gl_TextureMatrix[0] * gl_MultiTexCoord0);
-    //texdim0 = vec2(abs(gl_TextureMatrix[0][0][0]), abs(gl_TextureMatrix[0][1][1]));
+    //texcoord = vec2(gl_TextureMatrix[0] * gl_MultiTexCoord0);
 }
 """
-
 # ---------------------------- glsl fragment shader ----------------------------
 frag = """
-/**
- * Fragment shader for chroma-keying. 
- * 
- * (using a green or blue screen, or any background color)
- * 
- * Main thing is, make sure the texcoord's arent 
- * normalized (so they are in the range of [0..w, 0..h] )
- * 
- * All params are vec3 in the range [0.0, 1.0]
- * 
- * :param keying_color: The RGB keying color that will be made transparent.
- * :param thresh: The distance from the color for a pixel to disappear.
- * 
- * :author: Alexandre Quessy <alexandre@quessy.net> 2009
- * :license: GNU Public License version 3
- * Fragment shader for keying. (using a green or blue screen)
- */
-
-// user-configurable variables (read-only)
-//uniform vec3 keying_color;
-//uniform vec3 thresh; 
-const vec3 keying_color = vec3(0., 1., 0.);
-const vec3 thresh = vec3(0.2, 0.2, 0.2);
-
-// the texture
-uniform sampler2DRect image;
-
-// data passed from vertex shader:
-//varying vec2 texcoord0;
-//varying vec2 texdim0;
-
-void main(void)
-{
-    // sample from the texture 
-    
-    gl_FragColor.rgba = vec4(texture2DRect(image, gl_TexCoord[0].xy).rgb, 1.0);
-
-    //vec3 input_color = texture2DRect(image, texcoord0).rgb;
-//    float output_alpha = 1.0;
-  //  
-  //    // measure distance from keying_color
-  //    vec3 delta = abs(input_color - keying_color);
-  //    
-  //    // for now, not visible if under threshold of proximity
-  //    // TODO: mix() according the 3 factors of proximity.
-  //    if (delta.r <= thresh.r && delta.g <= thresh.g && delta.b <= thresh.b)
-  //    {
-  //       output_alpha = 0.5;
-  //    }
-  //    
-    //gl_FragColor.rgba = vec4(input_color, output_alpha); 
-}
-"""
-
-
-# ---------------------------- glsl ----------------------------
-#The vertex program needs to pass the texture coordinates through: 
-#(should multiply by the texture matrix here, but we don't care about that)
-vert = """
-// Vertex program
-varying vec3 pos;
-
-void main() {
-     pos = gl_Vertex.xyz;
-     gl_TexCoord[0] = gl_MultiTexCoord0;
-     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-}
-"""
-
-#Add a uniform sampler2D to the fragment shader, and make it modulate the 
-#colour with the texture:
-frag = """
-// Fragment program
-varying vec3 pos;
+//varying vec2 texcoord;
+//uniform sampler2DRect image;
 uniform sampler2D image;
-const float mixer = 0.2;
-const vec3 offset = vec3(0.2, 0.2, 0.2);
 
-void main() {
-     gl_FragColor.rgb = mix(pos.xyz, tex2D(image, gl_TexCoord[0].xy).rgb, mixer) + offset;
-     //gl_FragColor.rgb = mix(tex2D(texture, gl_TexCoord[0].xy).rgb, offset, mixer);
+void main (void)
+{
+    //vec3 texColor = texture2DRect(image, texcoord).rgb;
+    gl_FragColor = texture2D(image, gl_TexCoord[0].st);
 }
 """
+
+def set_program_uniforms():
+    global program
+    program.glUniform1i("image", 0)
+    pass
 
 
 textures = [0] # list of texture ID 
@@ -142,7 +68,7 @@ def gl_init():
     global program 
     global textures
 
-    glEnable(GL_TEXTURE_2D)
+    glEnable(GL_TEXTURE_2D) 
     glShadeModel(GL_SMOOTH)
     textures[0] = glGenTextures(1)
     glClearColor(0.0, 0.0, 0.0, 0.0)
@@ -163,9 +89,7 @@ def draw():
     global textures
 
     program.enable()
-    program.glUniform1i("image", textures[0])
-    #program.glUniform3f("keying_color", 0., 1., 0.)
-    #program.glUniform3f("thresh", 0.3, 0.3, 0.3)
+    set_program_uniforms()
     
     glPushMatrix()
     glBegin(GL_QUADS)
@@ -202,7 +126,7 @@ class VideoCapturePlayer(object):
         super(VideoCapturePlayer, self).__init__(**argd)
 
         # create a display surface. standard pygame stuff
-        self.screen = pygame.display.set_mode( self.size, OPENGL|DOUBLEBUF|HWSURFACE)
+        self.screen = pygame.display.set_mode(self.size, OPENGL | DOUBLEBUF | HWSURFACE)
         pygame.display.set_caption("GLCamera")
         resize(self.size)
         gl_init()
@@ -245,12 +169,13 @@ class VideoCapturePlayer(object):
             self.snapshot = self.camera.get_image(self.snapshot)
         
         self.snapshot = self.camera.get_image(self.snapshot)
-        textureData = pygame.image.tostring(self.snapshot, "RGBA", 1)
+        textureData = pygame.image.tostring(self.snapshot, "RGBX", 1)
     
+        glActiveTexture(GL_TEXTURE0) # IMPORTANT ! sets the texture unit to 0. 
         glBindTexture(GL_TEXTURE_2D, textures[0])
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, self.snapshot.get_width(), self.snapshot.get_height(), 0,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.snapshot.get_width(), self.snapshot.get_height(), 0,
                   GL_RGBA, GL_UNSIGNED_BYTE, textureData )
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) # GL_TEXTURE_RECTANGLE_ARB
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         draw()
         pygame.display.flip()
@@ -280,3 +205,50 @@ if __name__ == '__main__':
     main()
 
 
+# frag = """
+# /**
+#  * Fragment shader for chroma-keying. 
+#  * :author: Alexandre Quessy <alexandre@quessy.net> 2009
+#  * :license: GNU Public License version 3
+#  * Main thing is, make sure the texcoord's arent 
+#  * normalized (so they are in the range of [0..w, 0..h] )
+#  * :param keying_color: The RGB keying color that will be made transparent.
+#  * :param thresh: The distance from the color for a pixel to disappear.
+#  */
+# // user-configurable variables (read-only)
+# //uniform vec3 keying_color;
+# //uniform vec3 thresh; 
+# const vec3 keying_color = vec3(0., 1., 0.);
+# const vec3 thresh = vec3(0.2, 0.2, 0.2);
+# 
+# // the texture
+# uniform sampler2DRect image;
+# 
+# // data passed from vertex shader:
+# //varying vec2 texcoord0;
+# //varying vec2 texdim0;
+# 
+# void main(void)
+# {
+#   // sample from the texture 
+#   //gl_FragColor.rgba = vec4(texture2DRect(image, gl_TexCoord[0].xy).rgb, 1.0);
+# 
+#   vec3 input_color = texture2DRect(image, gl_TexCoord[0].xy);
+#   float output_alpha = 0.8;
+# 
+#   //vec3 input_color = texture2DRect(image, texcoord0).rgb;
+#   //    float output_alpha = 1.0;
+#   //  
+#   //    // measure distance from keying_color
+#   //    vec3 delta = abs(input_color - keying_color);
+#   //    
+#   //    // for now, not visible if under threshold of proximity
+#   //    // TODO: mix() according the 3 factors of proximity.
+#   //    if (delta.r <= thresh.r && delta.g <= thresh.g && delta.b <= thresh.b)
+#   //    {
+#   //       output_alpha = 0.5;
+#   //    }
+#   //    
+#     gl_FragColor.rgba = vec4(input_color, output_alpha); 
+# }
+# """
