@@ -10,8 +10,8 @@ import pygame.camera
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from rats.glsl import ShaderProgram
-from rats.glsl import ShaderError
+from rats.glsl_old import ShaderProgram
+from rats.glsl_old import ShaderError
 
 # from OpenGL.arrays.arraydatatype import GLfloatArray
 # ---------------------------- glsl ----------------------------

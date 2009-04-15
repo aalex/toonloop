@@ -116,7 +116,7 @@ if __name__ == '__main__':
     // Fragment program
     varying vec3 pos;
     void main() {
-        gl_FragColor.rgb = pos.xyz;
+        gl_FragColor.bgr = pos.xyz;
     }
     ''')
  

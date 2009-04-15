@@ -59,6 +59,8 @@ import os
 import shutil
 import glob
 
+#from toon import opensoundcontrol
+from toon import mencoder
 from rats import render
 from rats.serialize import Serializable
 from rats.observer import Subject
@@ -354,7 +356,8 @@ class ToonLoop(render.Game):
 
         Called once the Twisted reactor has been started. 
         """
-        self.osc = opensoundcontrol.ToonOsc(self)
+        #self.osc = opensoundcontrol.ToonOsc(self)
+        pass
         try:
             self.web = web_server.start(self)
         except:

@@ -19,14 +19,17 @@ vert = """
  * Vertex shader that does nothing
  */
 // variables passed to the fragment shader
-varying vec2 texcoord0;
-varying vec2 texdim0;
+//varying vec2 texcoord0;
+//varying vec2 texdim0;
 
 void main()
 {
-    gl_Position = ftransform();
-    texcoord0 = vec2(gl_TextureMatrix[0] * gl_MultiTexCoord0);
-    texdim0 = vec2(abs(gl_TextureMatrix[0][0][0]), abs(gl_TextureMatrix[0][1][1]));
+     gl_TexCoord[0] = gl_MultiTexCoord0;
+     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+
+    //l_Position = ftransform();
+    //texcoord0 = vec2(gl_TextureMatrix[0] * gl_MultiTexCoord0);
+    //texdim0 = vec2(abs(gl_TextureMatrix[0][0][0]), abs(gl_TextureMatrix[0][1][1]));
 }
 """
 
@@ -60,28 +63,63 @@ const vec3 thresh = vec3(0.2, 0.2, 0.2);
 uniform sampler2DRect image;
 
 // data passed from vertex shader:
-varying vec2 texcoord0;
-varying vec2 texdim0;
+//varying vec2 texcoord0;
+//varying vec2 texdim0;
 
 void main(void)
 {
     // sample from the texture 
-    vec3 input_color = texture2DRect(image, texcoord0).rgb;
-    float output_alpha = 1.0;
     
-    // measure distance from keying_color
-    vec3 delta = abs(input_color - keying_color);
-	
-	// for now, not visible if under threshold of proximity
-	// TODO: mix() according the 3 factors of proximity.
-	if (delta.r <= thresh.r && delta.g <= thresh.g && delta.b <= thresh.b)
-	{
-	   output_alpha = 0.5;
-	}
-    
-    gl_FragColor = vec4(input_color, output_alpha); 
+    gl_FragColor.rgba = vec4(texture2DRect(image, gl_TexCoord[0].xy).rgb, 1.0);
+
+    //vec3 input_color = texture2DRect(image, texcoord0).rgb;
+//    float output_alpha = 1.0;
+  //  
+  //    // measure distance from keying_color
+  //    vec3 delta = abs(input_color - keying_color);
+  //    
+  //    // for now, not visible if under threshold of proximity
+  //    // TODO: mix() according the 3 factors of proximity.
+  //    if (delta.r <= thresh.r && delta.g <= thresh.g && delta.b <= thresh.b)
+  //    {
+  //       output_alpha = 0.5;
+  //    }
+  //    
+    //gl_FragColor.rgba = vec4(input_color, output_alpha); 
 }
 """
+
+
+# ---------------------------- glsl ----------------------------
+#The vertex program needs to pass the texture coordinates through: 
+#(should multiply by the texture matrix here, but we don't care about that)
+vert = """
+// Vertex program
+varying vec3 pos;
+
+void main() {
+     pos = gl_Vertex.xyz;
+     gl_TexCoord[0] = gl_MultiTexCoord0;
+     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+}
+"""
+
+#Add a uniform sampler2D to the fragment shader, and make it modulate the 
+#colour with the texture:
+frag = """
+// Fragment program
+varying vec3 pos;
+uniform sampler2D image;
+const float mixer = 0.2;
+const vec3 offset = vec3(0.2, 0.2, 0.2);
+
+void main() {
+     gl_FragColor.rgb = mix(pos.xyz, tex2D(image, gl_TexCoord[0].xy).rgb, mixer) + offset;
+     //gl_FragColor.rgb = mix(tex2D(texture, gl_TexCoord[0].xy).rgb, offset, mixer);
+}
+"""
+
+
 textures = [0] # list of texture ID 
 program = None
 
@@ -96,7 +134,6 @@ def resize((width, height)):
     glLoadIdentity()
     glOrtho(-4.0, 4.0, -3.0, 3.0, -1.0, 1.0)
     glMatrixMode(GL_MODELVIEW)
-    glLoadIdentity()
 
 def gl_init():
     """
@@ -109,8 +146,8 @@ def gl_init():
     glShadeModel(GL_SMOOTH)
     textures[0] = glGenTextures(1)
     glClearColor(0.0, 0.0, 0.0, 0.0)
-    glEnable(GL_BLEND)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    #glEnable(GL_BLEND)
+    #glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     glColor3f(1., 1., 1.)
 
     program = ShaderProgram()
@@ -125,8 +162,6 @@ def draw():
     global program 
     global textures
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    
     program.enable()
     program.glUniform1i("image", textures[0])
     #program.glUniform3f("keying_color", 0., 1., 0.)
@@ -210,7 +245,7 @@ class VideoCapturePlayer(object):
             self.snapshot = self.camera.get_image(self.snapshot)
         
         self.snapshot = self.camera.get_image(self.snapshot)
-        textureData = pygame.image.tostring(self.snapshot, "RGBX", 1)
+        textureData = pygame.image.tostring(self.snapshot, "RGBA", 1)
     
         glBindTexture(GL_TEXTURE_2D, textures[0])
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, self.snapshot.get_width(), self.snapshot.get_height(), 0,
