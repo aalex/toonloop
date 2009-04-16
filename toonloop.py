@@ -58,6 +58,7 @@ from time import strftime
 import os
 import shutil
 import glob
+import pprint
 
 #from toon import opensoundcontrol
 from toon import mencoder
@@ -165,10 +166,11 @@ class Api(Subject):
         Print statistics
         """
         try:
-            print "Current playhead: " + str(self.app.playhead)
+            print "Current playhead: " + str(self.app.shot.playhead)
             print "Num images: " + str(len(self.app.shot.images))
             print "FPS: %d" % (self.app.fps)
             print "Playhead frequency ratio: 30 / %d" % (self.app.shot.playhead_iterate_every)
+            pprint.pprint(self.app.config.__dict__)
         except AttributeError, e:
             print sys.exc_info()
 
@@ -655,10 +657,11 @@ class ToonLoop(render.Game):
                 if self.config.verbose:
                     print "intervalometer ON"
             else:
-                if self._intervalometer_delayed_id.active():
-                    self._intervalometer_delayed_id.cancel()
-                if self.config.verbose:
-                    print "intervalometer OFF"
+                if self._intervalometer_delayed_id is not None:
+                    if self._intervalometer_delayed_id.active():
+                        self._intervalometer_delayed_id.cancel()
+                        if self.config.verbose:
+                            print "intervalometer OFF"
     
     def intervalometer_rate_increase(self, dir=1):
         """
