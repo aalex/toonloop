@@ -28,8 +28,10 @@ RSS Feed Generation
 import os
 import glob
 import datetime
+import pprint
 
-from nevow.athena import LivePage
+from nevow import rend
+from nevow.inevow import IRequest
 
 def _format_date(dt):
     """
@@ -129,22 +131,31 @@ class Channel(object):
         self.docs,
         items)
 
-class RSSPage(LivePage):
+class RSSPage(rend.Page): # page.Element):
     def __init__(self, **kwargs):
         self.root = os.path.expanduser("~/Documents/toonloop")
         self.port = 8000
         self.__dict__.update(kwargs)
 
-    def renderHTTP(self, request):
+    def renderHTTP(self, context):
         #TODO: make path aware of the host name it should be
         # print "HTTP Request:", request
+        # print request
+        # pprint.pprint(request.__dict__)
+        # print 'tag- rss page'
+        # pprint.pprint(request.tag.__dict__)
+        # print 'parent'
+        # pprint.pprint(request.parent.__dict__)
+        request = IRequest(context)
+        server_address = "http://%s"  % (request.getHeader('host'))
+
         channel = Channel()
         movie_files = glob.glob("%s/*/movie_*.avi" % (self.root))
         for f in movie_files:
             file_name = os.path.split(f)[1]
             project_name = os.path.dirname(f).split("/")[-1]
             #print "project:", project_name
-            link = "http://localhost:%d/files/%s/%s" % (self.port, project_name, file_name)
+            link = "%s/files/%s/%s" % (server_address, project_name, file_name)
             channel.items.append(Item(title=file_name, enclosure_url=link, link=link, guid=file_name, enclosure_type="video/x-msvideo"))
         return str(channel)
 

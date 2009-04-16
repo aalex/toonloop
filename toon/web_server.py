@@ -31,13 +31,13 @@ import sys
 from twisted.internet import reactor
 from nevow import static
 from nevow import appserver
-from nevow.athena import LivePage
+from nevow import rend
 
 from rats.observer import Observer
 from toon import rss
 from toon import rst
 
-class Index(rst.ReStructured, LivePage, Observer):
+class Index(rst.ReStructured, rend.Page, Observer):
     """
     Class representing the root (/) of the web server. 
     """
@@ -100,6 +100,5 @@ if __name__ == '__main__':
     start(None)
     try:
         reactor.run()
-    except:
-        raise
+    except:raise
 
