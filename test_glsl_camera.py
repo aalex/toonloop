@@ -30,13 +30,14 @@ void main (void)
 # ---------------------------- glsl fragment shader ----------------------------
 frag = """
 //varying vec2 texcoord;
-//uniform sampler2DRect image;
-uniform sampler2D image;
+uniform sampler2DRect image;
+//uniform sampler2D image;
 
 void main (void)
 {
     //vec3 texColor = texture2DRect(image, texcoord).bgr;
-    gl_FragColor = texture2D(image, gl_TexCoord[0].st).gbra;
+    //gl_FragColor = texture2D(image, gl_TexCoord[0].st).gbra;
+    gl_FragColor = texture2DRect(image, gl_TexCoord[0].st).gbra;
 }
 """
 
@@ -68,7 +69,7 @@ def gl_init():
     global program 
     global textures
 
-    glEnable(GL_TEXTURE_2D) 
+    glEnable(GL_TEXTURE_RECTANGLE_ARB) 
     glShadeModel(GL_SMOOTH)
     textures[0] = glGenTextures(1)
     glClearColor(0.0, 0.0, 0.0, 0.0)
@@ -87,19 +88,22 @@ def draw():
     """
     global program 
     global textures
+    
+    # w = 1; h = 1
+    w = 640.0
+    h = 480.0
 
     program.enable()
     set_program_uniforms()
-    
     glPushMatrix()
     glBegin(GL_QUADS)
     glTexCoord2f(0.0, 0.0)
     glVertex2f(-4.0, -3.0) # Bottom Left
-    glTexCoord2f(1.0, 0.0)
+    glTexCoord2f(w, 0.0)
     glVertex2f(4.0, -3.0) # Bottom Right
-    glTexCoord2f(1.0, 1.0)
+    glTexCoord2f(w, h)
     glVertex2f(4.0, 3.0) # Top Right
-    glTexCoord2f(0.0, 1.0)
+    glTexCoord2f(0.0, h)
     glVertex2f(-4.0, 3.0) # Top Left
     glEnd()
     glPopMatrix()
@@ -110,11 +114,11 @@ def draw():
     glBegin(GL_QUADS)
     glTexCoord2f(0.0, 0.0)
     glVertex2f(-1.333, -1.) # Bottom Left
-    glTexCoord2f(1.0, 0.0)
+    glTexCoord2f(w, 0.0)
     glVertex2f(1.333, -1.) # Bottom Right
-    glTexCoord2f(1.0, 1.0)
+    glTexCoord2f(w, h)
     glVertex2f(1.333, 1.) # Top Right
-    glTexCoord2f(0.0, 1.0)
+    glTexCoord2f(0.0, h)
     glVertex2f(-1.333, 1.) # Top Left
     glEnd()
     glPopMatrix()
@@ -172,11 +176,11 @@ class VideoCapturePlayer(object):
         textureData = pygame.image.tostring(self.snapshot, "RGBX", 1)
     
         glActiveTexture(GL_TEXTURE0) # IMPORTANT ! sets the texture unit to 0. 
-        glBindTexture(GL_TEXTURE_2D, textures[0])
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.snapshot.get_width(), self.snapshot.get_height(), 0,
+        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, textures[0]) # GL_TEXTURE_2D
+        glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, self.snapshot.get_width(), self.snapshot.get_height(), 0,
                   GL_RGBA, GL_UNSIGNED_BYTE, textureData )
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) # GL_TEXTURE_RECTANGLE_ARB
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST) # GL_TEXTURE_RECTANGLE_ARB
+        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         draw()
         pygame.display.flip()
     
