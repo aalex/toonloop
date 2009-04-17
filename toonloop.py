@@ -329,12 +329,12 @@ class ToonLoop(render.Game):
         else:
             self.is_mac = False
         size = (self.config.image_width, self.config.image_height)
-        try:
-            pygame.camera.init() 
-        except Exception, e:
-            print "error calling pygame.camera.init()", e.message
-            print sys.exc_info()
-            raise ToonLoopError("Error initializing the video camera. %s" % (e.message))
+        # try:
+        #     pygame.camera.init() 
+        # except Exception, e:
+        #     print "error calling pygame.camera.init()", e.message
+        #     print sys.exc_info()
+        #     raise ToonLoopError("Error initializing the video camera. %s" % (e.message))
         try:
             print "cameras :", pygame.camera.list_cameras()
             if self.is_mac:
