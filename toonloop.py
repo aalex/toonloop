@@ -738,6 +738,8 @@ if __name__ == "__main__":
     parser.add_option("-e", "--intervalometer-enabled", \
         dest="intervalometer_enabled", action="store_true", \
         help="Enables/disables the use of the intervalometer.", default=True)
+    parser.add_option("-w", "--image-width", type="int", \
+        help="Width of the images grabbed from the camera.")
     (options, args) = parser.parse_args()
     
     print "ToonLoop - Version " + str(__version__)
@@ -751,6 +753,11 @@ if __name__ == "__main__":
     kwargs = {}
     if options.toonloop_home:
         kwargs['toonloop_home'] = options.toonloop_home
+    if options.image_width:
+        #kwargs['toonloop_home'] = options.toonloop_home
+        kwargs['image_width'] = options.image_width
+        kwargs['image_height'] = options.image_width * 3 / 4
+        
     # options that have default values:
     kwargs['video_device'] = options.device
     kwargs['intervalometer_rate_seconds'] = options.intervalometer_rate_seconds
