@@ -172,7 +172,7 @@ class VideoCapturePlayer(object):
 def main():
     pygame.init()
     global Font
-    Font = pygame.font.Font(None, 16)
+    Font = pygame.font.Font(None, 26)
     pygame.camera.init()
     VideoCapturePlayer().main()
     pygame.quit()
