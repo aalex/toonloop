@@ -503,7 +503,7 @@ class ToonLoop(render.Game):
         Saves each image using twisted in order not to freeze the app.
         """
         if index < len(self.shot.images):
-            name = ("%s/%s_%d.jpg" % (path, file_name, index)).replace(' ', '0')
+            name = ("%s/%s_%5d.jpg" % (path, file_name, index)).replace(' ', '0')
             if self.config.verbose:
                 sys.stdout.write("%s ..." % (name))
             pygame.image.save(self.shot.images[index], name)
