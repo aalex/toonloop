@@ -151,6 +151,7 @@ class Api(Subject):
         print "<Backspace> = remove image from loop "
         print "r = reset loop"
         print "p = pause"
+        print "o = toggle onion skin on/off"
         print "i = print current loop frame number, number of frames in loop and global framerate"
         print "h = print this help message"
         print "s = saves all images as jpeg"
@@ -158,7 +159,7 @@ class Api(Subject):
         print "k = increase the intervalometer interval"
         print "j = decrease the intervalometer interval"
         print "[1, 9]  = select the current shot number"
-        print "<Esc> or q = quit program\n"
+        print "<Esc> = quit program\n"
 
     def print_stats(self):
         """
@@ -173,45 +174,6 @@ class Api(Subject):
         except AttributeError, e:
             print sys.exc_info()
 
-class Configuration(Serializable):
-    """
-    Not used yet
-    """
-    # TODO: use it !
-    def __init__(self, **argd): 
-        self.toonloop_home = os.path.expanduser("~/Documents/toonloop")
-        self.project_name = "new_project" # name of the folder
-        self.max_num_shots = 10
-        self.delete_jpeg = False
-        self.image_width = 640
-        self.image_height = 480
-        self.display_width = 1024
-        self.display_height = 768
-        self.osc_send_port = 33333
-        self.osc_send_host = 'localhost'
-        self.osc_receive_port = 44444
-        self.verbose = True
-        self.min_framerate = 1
-        self.max_framerate = 30
-        self.min_framerate = 1
-        self.max_framerate = 30
-        self.onionpeal_allowed = True
-        self.onionpeal_opacity = 0.3
-        self.playback_opacity = 0.3
-        self.video_device = 0 
-        self.intervalometer_on = False
-        self.intervalometer_enabled = False
-        self.intervalometer_rate_seconds = 30.0 # in seconds
-        #self.min_framerate = 0
-        #self.max_framerate = 30
-        #self.project_file = 'project.txt'
-        #self.keying_allowed = False
-        #self.keying_color = (0.0, 1.0, 0.0)
-        #self.keying_thresh = 0.3
-        #self.keying_slope = 0.0
-        #self.max_num_frames = 1000
-        #self.osc_receive_hosts = ''
-        self.__dict__.update(**argd) # overrides some attributes whose defaults and names are below
 
 class ToonLoop(render.Game):
     """
@@ -261,6 +223,8 @@ class ToonLoop(render.Game):
         # copy conf elements
         self.intervalometer_on = self.config.intervalometer_on
         self.intervalometer_rate_seconds = self.config.intervalometer_rate_seconds
+        if self.config.verbose:
+            pprint.pprint(self.config.__dict__)
         reactor.callLater(0, self._setup_services)
 
     def _init_shots(self):
@@ -329,12 +293,12 @@ class ToonLoop(render.Game):
         else:
             self.is_mac = False
         size = (self.config.image_width, self.config.image_height)
-        # try:
-        #     pygame.camera.init() 
-        # except Exception, e:
-        #     print "error calling pygame.camera.init()", e.message
-        #     print sys.exc_info()
-        #     raise ToonLoopError("Error initializing the video camera. %s" % (e.message))
+        try:
+            pygame.camera.init() 
+        except Exception, e:
+            print "error calling pygame.camera.init()", e.message
+            print sys.exc_info()
+            raise ToonLoopError("Error initializing the video camera. %s" % (e.message))
         try:
             print "cameras :", pygame.camera.list_cameras()
             if self.is_mac:
@@ -358,9 +322,11 @@ class ToonLoop(render.Game):
         Called once the Twisted reactor has been started. 
         """
         #self.osc = opensoundcontrol.ToonOsc(self)
-        pass
+        index_file_path = os.path.join(os.curdir, 'toon', 'index.rst') 
         try:
-            self.web = web_server.start(self)
+            self.web = web_server.start(self, self.config.web_server_port,
+                static_files_path=self.config.toonloop_home,
+                index_file_path=index_file_path)
         except:
             print "Error loading web UI :", sys.exc_info()
 
@@ -415,10 +381,11 @@ class ToonLoop(render.Game):
         # most recent grabbed :
         glBindTexture(GL_TEXTURE_2D, self.textures[self.TEXTURE_MOST_RECENT])
         draw_textured_square()
-        # Onion peal :
-        glColor4f(1.0, 1.0, 1.0, self.config.onionpeal_opacity)
-        glBindTexture(GL_TEXTURE_2D, self.textures[self.TEXTURE_ONION])
-        draw_textured_square()
+        # Onion skin :
+        if self.config.onionskin_enabled:
+            glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
+            glBindTexture(GL_TEXTURE_2D, self.textures[self.TEXTURE_ONION])
+            draw_textured_square()
         glPopMatrix()
         # restore normal color
         glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
@@ -607,6 +574,8 @@ class ToonLoop(render.Game):
                     self.api.print_help()
                 elif e.key == K_s: # S 
                     self.shot_save()
+                elif e.key == K_o: # O
+                    self.onionskin_toggle()
                 elif e.key == K_a: # A
                     print "toggle intervalometer"
                     self.intervalometer_toggle()
@@ -638,9 +607,16 @@ class ToonLoop(render.Game):
                     self.frame_add()
                 elif e.key == K_BACKSPACE: # BACKSPACE
                     self.frame_remove()
-                elif e.key == K_ESCAPE or e.key == K_q: # ESCAPE or Q
+                elif e.key == K_ESCAPE: #  or e.key == K_q: # ESCAPE or Q
                     self.running = False
-    
+
+    def onionskin_toggle(self, val=None):
+        if val is not None:
+            self.config.onionskin_enabled = val
+        else:
+            self.config.onionskin_enabled = not self.config.onionskin_enabled
+            
+                
     def intervalometer_toggle(self, val=None):
         """
         Toggles on/off the auto mode
@@ -650,7 +626,6 @@ class ToonLoop(render.Game):
                 self.intervalometer_on = val
             else:
                 self.intervalometer_on = not self.intervalometer_on
-            
             if self.intervalometer_on:
                 self._intervalometer_delayed_id = reactor.callLater(0, self._intervalometer_frame_add)
                 if self.config.verbose:
@@ -693,6 +668,50 @@ class ToonLoop(render.Game):
         pass
         # glDeleteTextures(3, self.textures)
 
+class Configuration(Serializable):
+    """
+    Configuration options.
+    
+    Default values are defined here. 
+    Overriden as **argd arguments to ToonLoop(**argd)
+    """
+    # TODO: use it !
+    def __init__(self, **argd): 
+        self.toonloop_home = os.path.expanduser("~/Documents/toonloop")
+        self.project_name = "new_project" # name of the folder
+        self.max_num_shots = 10
+        self.delete_jpeg = False
+        self.image_width = 640
+        self.image_height = 480
+        self.display_width = 1024
+        self.display_height = 768
+        self.osc_send_port = 33333
+        self.osc_send_host = 'localhost'
+        self.osc_receive_port = 44444
+        self.verbose = True
+        self.min_framerate = 1
+        self.max_framerate = 30
+        self.min_framerate = 1
+        self.max_framerate = 30
+        self.onionskin_enabled = True
+        self.web_server_port = 8000
+        self.onionskin_opacity = 0.3
+        self.playback_opacity = 0.3
+        self.video_device = 0 
+        self.intervalometer_on = False
+        self.intervalometer_enabled = False
+        self.intervalometer_rate_seconds = 30.0 # in seconds
+        #self.min_framerate = 0
+        #self.max_framerate = 30
+        #self.project_file = 'project.txt'
+        #self.keying_allowed = False
+        #self.keying_color = (0.0, 1.0, 0.0)
+        #self.keying_thresh = 0.3
+        #self.keying_slope = 0.0
+        #self.max_num_frames = 1000
+        #self.osc_receive_hosts = ''
+        self.__dict__.update(**argd) # overrides some attributes whose defaults and names are below.
+
 if __name__ == "__main__":
     """
     Starts the application, reading the command-line arguments.
@@ -711,6 +730,8 @@ if __name__ == "__main__":
         help="Sets the rendering frame rate.", default=30)
     parser.add_option("-t", "--intervalometer-rate-seconds", type="float",  \
         help="Sets intervalometer interval in seconds.", default=30.0)
+    parser.add_option("-H", "--toonloop-home", type="string",  \
+        help="Path to saved files.")
     parser.add_option("-i", "--intervalometer-on", \
         dest="intervalometer_on", action="store_true", \
         help="Starts the intervalometer at startup.") # default=False
@@ -727,12 +748,19 @@ if __name__ == "__main__":
     #print "options:", options
     
     pygame.init()
+    kwargs = {}
+    if options.toonloop_home:
+        kwargs['toonloop_home'] = options.toonloop_home
+    # options that have default values:
+    kwargs['video_device'] = options.device
+    kwargs['intervalometer_rate_seconds'] = options.intervalometer_rate_seconds
+    kwargs['intervalometer_on'] = options.intervalometer_on == True
+    kwargs['intervalometer_enabled'] = options.intervalometer_enabled
+    kwargs['verbose'] = options.verbose == True
+    if options.verbose:
+        print "Started in verbose mode."
     try:
-        toonloop = ToonLoop(video_device=options.device, \
-            intervalometer_rate_seconds=options.intervalometer_rate_seconds, \
-            intervalometer_on=options.intervalometer_on == True, \
-            intervalometer_enabled=options.intervalometer_enabled, \
-            verbose=options.verbose == True)
+        toonloop = ToonLoop(**kwargs)
     except ToonLoopError, e:
         print str(e.message)
         print "Exiting toonloop with error"
