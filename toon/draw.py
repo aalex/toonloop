@@ -43,7 +43,7 @@ def texture_from_image(texture, image):
     """
     Copies the pixels from a pygame surface to an OpenGL texture object.
     """
-    textureData = pygame.image.tostring(image, "RGBX", 1)
+    textureData = pygame.image.tostring(image, "RGBX", True) # vertically flipped
     glBindTexture(GL_TEXTURE_2D, texture)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.get_width(), image.get_height(), 0, \
               GL_RGBA, GL_UNSIGNED_BYTE, textureData)

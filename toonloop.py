@@ -73,8 +73,7 @@ from toon.draw import draw_textured_square
 try:
     from toon import web_server
 except ImportError:
-    print "Install python-nevow"
-
+    print "For web support, please install the python-nevow package."
 
 import pygame
 import pygame.camera
@@ -183,7 +182,7 @@ class Configuration(Serializable):
         self.toonloop_home = os.path.expanduser("~/Documents/toonloop")
         self.project_name = "new_project" # name of the folder
         self.max_num_shots = 10
-        self.delete_jpeg = True
+        self.delete_jpeg = False
         self.image_width = 640
         self.image_height = 480
         self.display_width = 1024
@@ -506,7 +505,7 @@ class ToonLoop(render.Game):
             name = ("%s/%s_%5d.jpg" % (path, file_name, index)).replace(' ', '0')
             if self.config.verbose:
                 sys.stdout.write("%s ..." % (name))
-            pygame.image.save(self.shot.images[index], name)
+            pygame.image.save(self.shot.images[index], name) # filename extension makes it a JPEG
             reactor.callLater(0, self._write_01_next_image, path, file_name, index + 1)
         else:
             reactor.callLater(0, self._write_02_images_done, path, file_name, index)
