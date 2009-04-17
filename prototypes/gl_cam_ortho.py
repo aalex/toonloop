@@ -8,10 +8,12 @@ TODO : add a shader.
 import os
 import pygame
 import pygame.camera
+import pygame.font
 from pygame.locals import *
 from OpenGL.GL import *
 #from OpenGL.GLU import *
 
+Font = None
 textures = [0, 0]
 
 def resize((width, height)):
@@ -21,10 +23,10 @@ def resize((width, height)):
     """
     if height == 0:
         height = 1
-    #glViewport(0, 0, width, height)
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    # OLD : gluPerspective(45, 1.0 * width / height, 0.1, 100.0) # 45 degrees camera (like a human)
+
     # NOTE : gluOrtho2D sets up a two-dimensional orthographic viewing region. This is equivalent to calling glOrtho with near=-1 and far=1.
     glOrtho(-1.333333, 1.333333, -1.0, 1.0, -1.0, 1.0)# aalex just added this
     glMatrixMode(GL_MODELVIEW)
@@ -34,24 +36,20 @@ def gl_init():
     """
     Init the window
     """
-    glEnable(GL_TEXTURE_2D)
-    glShadeModel(GL_SMOOTH)
+    global textures
     glClearColor(0.0, 0.0, 0.0, 0.0) # black background
-    #glClearDepth(1.0)
-    #glEnable(GL_DEPTH_TEST)
-    #glDepthFunc(GL_LEQUAL)
-    #glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+    glEnable(GL_BLEND)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    textures = glGenTextures(2)
 
 def draw():
     """
     Called on every frame rendering
     """
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    #glLoadIdentity()
-    #glTranslatef(0.0, 0.0, -5.0)
-    #glOrtho(0, 1, 0, 1, -1, 1) # aalex just added this
+    glClear(GL_COLOR_BUFFER_BIT)
 
     glPushMatrix()
+    glBindTexture(GL_TEXTURE_2D, textures[0])
     glBegin(GL_QUADS)
     # Front Face (note that the texture's corners have to match the quad's corners)
     glTexCoord2f(0.0, 0.0); glVertex2f(-1.33333, -1.0) # Bottom Left Of The Texture and Quad
@@ -59,7 +57,25 @@ def draw():
     glTexCoord2f(1.0, 1.0); glVertex2f( 1.33333,  1.0) # Top Right Of The Texture and Quad
     glTexCoord2f(0.0, 1.0); glVertex2f(-1.33333,  1.0) # Top Left Of The Texture and Quad
     glEnd()
+
+# draw fps
+    
+    x = 1.0
+    y = 1.0
+    h = 0.5
+    w = 0.5
+
+    glBindTexture(GL_TEXTURE_2D, textures[1])
+    glBegin(GL_QUADS)
+    # Front Face (note that the texture's corners have to match the quad's corners)
+    glTexCoord2f(0,0);glVertex2f(0, 0)
+    glTexCoord2f(x,0);glVertex2f(w, 0)
+    glTexCoord2f(x,y);glVertex2f(w, h)
+    glTexCoord2f(0,y);glVertex2f(0, h)
+    glEnd()
+
     glPopMatrix()
+
 
 class VideoCapturePlayer(object):
     size = ( 640, 480 )
@@ -91,6 +107,7 @@ class VideoCapturePlayer(object):
         # starts the camera
         self.camera.start()
         self.clock = pygame.time.Clock()
+        self.fps = 0
 
         # create a surface to capture to.  for performance purposes, you want the
         # bit depth to be the same as that of the display surface.
@@ -110,12 +127,29 @@ class VideoCapturePlayer(object):
         
         self.snapshot = self.camera.get_image(self.snapshot)
         textureData = pygame.image.tostring(self.snapshot, "RGBX", 1)
-    
+
+        global textures 
+
+        glEnable(GL_TEXTURE_2D)
+
         glBindTexture(GL_TEXTURE_2D, textures[0])
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, self.snapshot.get_width(), self.snapshot.get_height(), 0,
                   GL_RGBA, GL_UNSIGNED_BYTE, textureData )
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+
+        global Font
+        # color, bgcolor
+        antialias = False
+        textimg = Font.render(str(int(self.fps)), antialias, (255, 0, 0, 0))
+        textImgData = pygame.image.tostring(textimg, "RGBA", 1)
+
+        glBindTexture(GL_TEXTURE_2D, textures[1])
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, textimg.get_width(), textimg.get_height(), 0,
+                  GL_RGBA, GL_UNSIGNED_BYTE, textImgData )
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+
         draw()
         pygame.display.flip()
     
@@ -132,10 +166,13 @@ class VideoCapturePlayer(object):
 
             self.get_and_flip()
             self.clock.tick(30)
+            self.fps = self.clock.get_fps()
             #print "FPS:", self.clock.get_fps()
 
 def main():
     pygame.init()
+    global Font
+    Font = pygame.font.Font(None, 16)
     pygame.camera.init()
     VideoCapturePlayer().main()
     pygame.quit()

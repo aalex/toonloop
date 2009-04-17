@@ -244,7 +244,9 @@ class VideoCapturePlayer(object):
         self.snapshot = self.camera.get_image(self.snapshot)
         textureData = pygame.image.tostring(self.snapshot, "RGBX", 1)
     
-        glActiveTexture(GL_TEXTURE0) # IMPORTANT ! sets the texture unit to 0. 
+        if bool(glActiveTexture):   # make sure glActiveTexture is defined
+            glActiveTexture(GL_TEXTURE0) # IMPORTANT ! sets the texture unit to 0. 
+
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, textures[0]) # GL_TEXTURE_2D
         glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, self.snapshot.get_width(), self.snapshot.get_height(), 0,
                   GL_RGBA, GL_UNSIGNED_BYTE, textureData )
