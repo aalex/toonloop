@@ -1,21 +1,25 @@
-ToonLoop documentation
-======================
-
-:Author: Alexandre Quessy
+ToonLoop Live Documentation
+===========================
+:Author: Alexandre Quessy & Tristan Matthews
 :Copyright: GNU General Public License.
 
-.. Note:: ToonLoop is a stop motion tool. See http://toonloop.com for more informations.
+You can browse the directory of `ToonLoop saved files`_.
+
+The `ToonLoop Media RSS Feed`_ lists all saved movies. 
+
+.. _`ToonLoop saved files`: /files
+.. _`ToonLoop Media RSS Feed`: /rss
+
+.. Note:: 
+
+  ToonLoop is a stop motion tool. See http://www.toonloop.com for more informations.
   Using a simple video camera, users can take snapshots of drawings
   or objects and create an animation movies with those images. Creating 
   a movie is as simple as that in ToonLoop. 
 
+
+
 .. contents::
-
-You can browse the directory of `ToonLoop saved files`_.
-Soon, there will also be a RSS feed and a web form.
-
--- 
-.. _ToonLoop saved files: files
 
 =======================================================
  ToonLoop Installation Notes for Ubuntu GNU/Linux 8.10
@@ -73,7 +77,6 @@ ToonLoop should now run::
 
 Additional Configuration Notes
 ------------------------------
-
 You might need to properly configure your V4L2 video device::
 
   sudo apt-get install ivtv-utils
@@ -89,8 +92,8 @@ If you use two displays, you might want to use 2 separate X screens::
 
 OpenGL and GLSL for Python
 --------------------------
-It seems like the glUniform3f function doesn't work in the python-opengl 
-package. Let's see if we can get it to work when downloaded from bzr::
+This step is not needed at all, but I leave it here as reference.
+You can get the latest PyOpenGL version using bzr::
 
   sudo apt-get install bzr
   bzr branch lp:pyopengl
