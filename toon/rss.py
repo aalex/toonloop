@@ -150,7 +150,7 @@ class RSSPage(rend.Page): # page.Element):
         server_address = "http://%s"  % (request.getHeader('host'))
 
         channel = Channel()
-        movie_files = glob.glob("%s/*/movie_*.avi" % (self.root))
+        movie_files = glob.glob("%s/*/movie_*.mov" % (self.root))
         for f in movie_files:
             file_name = os.path.split(f)[1]
             project_name = os.path.dirname(f).split("/")[-1]

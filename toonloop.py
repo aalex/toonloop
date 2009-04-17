@@ -483,7 +483,7 @@ class ToonLoop(render.Game):
                 print "\nConverting to mjpeg"
             fps = 12 #self.shot.increment_every # self.shot.framerate
             #fps = self.renderer.desired_fps 
-            deferred = mencoder.jpeg_to_movie(file_name, path, fps, self.config.verbose)
+            deferred = mencoder.jpeg_to_movie(file_name, path, fps, self.config.verbose, self.config.image_width, self.config.image_height)
             deferred.addCallback(self._write_03_movie_done, file_name, path, index)
             # to do : serialize shots with file names
             # self.project_file = 'project.txt'

@@ -94,7 +94,7 @@ def cb_success(result, args):
 #             print ">>>> Failure !"
 #             print ">>>> signal is ", signal_or_code
 
-def jpeg_to_movie(filename_pattern, path='.', fps=12, verbose=False):
+def jpeg_to_movie(filename_pattern, path='.', fps=12, verbose=False, w=640, h=480):
     """
     Converts a series a JPEG images to a MJPEG movie.
 
@@ -108,8 +108,9 @@ def jpeg_to_movie(filename_pattern, path='.', fps=12, verbose=False):
     else:
         abs_filename = os.path.join(path, filename_pattern)
         jpegs = "mf://%s*.jpg" % (abs_filename)
-        output_file = "%s%s.avi"  %  (abs_filename, movie_name_suffix)
-        txt_args = """%s -quiet -mf w=640:h=480:fps=%s:type=jpg -ovc copy -oac copy -o %s""" % (jpegs, fps, output_file) 
+        output_file = "%s%s.mov"  %  (abs_filename, movie_name_suffix)
+        #txt_args = """%s -quiet -mf w=%d:h=%d:fps=%s:type=jpg -ovc copy -oac copy -o %s""" % (jpegs, w, h, fps, output_file) 
+        txt_args = """%s -quiet -mf w=%d:h=%d:fps=%s:type=jpg -ovc copy -oac copy -of lavf -lavfopts format=mov -o %s""" % (jpegs, w, h, fps, output_file) 
         args = txt_args.split()
         if verbose:
             print "$ mencoder %s" % (txt_args)
