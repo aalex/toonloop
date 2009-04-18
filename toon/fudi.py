@@ -2,11 +2,13 @@ import types
 
 from twisted.internet import reactor
 from twisted.internet.protocol import Protocol
+from twisted.internet.protocol import ClientCreator
 from twisted.protocols import basic
-from twisted.internet.defer import Deferred
 from twisted.internet.protocol import Factory
 from twisted.internet.protocol import ClientFactory
 from twisted.python import log
+
+VERBOSE = False
 
 class FUDIProtocol(basic.LineReceiver):
     """
@@ -15,39 +17,51 @@ class FUDIProtocol(basic.LineReceiver):
     Simple ASCII based protocol from Miller Puckette for Pure Data.
     """
     def lineReceived(self, data):
+        if VERBOSE:
+            print "data:", data
         try:
-            messages = data.split(";")[0].strip()
+            message = data.split(";")[0].strip()
         except KeyError:
             log.msg("Got a line without trailing semi-colon.")
         else:
-            for message in messages:
-                atoms = message.split()
-                if len(atoms) > 0:
-                    output = []
-                    selector = atoms[0]
-                    for atom in atoms[1:]:
-                        if atom.isdigit():
-                            output.append(int(atom))
-                        else:
-                            try:
-                                val = float(atom)
-                                output.append(atom)
-                            except ValueError:
-                                output.append(str(atom))
-                    if self.factory.callbacks.has_key(selector):
-                        self.factory.callbacks[selector](output)
+            if VERBOSE:
+                print "message:", message
+            atoms = message.split()
+            if len(atoms) > 0:
+                output = []
+                selector = atoms[0]
+                for atom in atoms[1:]:
+                    atom = atom.strip()
+                    if VERBOSE:
+                        print "> atom:", atom
+                    if atom.isdigit():
+                        output.append(int(atom))
                     else:
-                        log.msg("Invalid selector %s." % (selector))
+                        try:
+                            val = float(atom)
+                            output.append(atom)
+                        except ValueError:
+                            output.append(str(atom))
+                if self.factory.callbacks.has_key(selector):
+                    if VERBOSE:
+                        print "Calling :", selector, output
+                    try:
+                        self.factory.callbacks[selector](output)
+                    except TypeError, e:
+                        print e.message
+                else:
+                    #log.msg("Invalid selector %s." % (selector))
+                    print "Invalid selector %s." % (selector)
 
-    def send_message(self, data):
+    def send_message(self, *data):
         """
         Converts int, float, string to FUDI atoms and sends them.
         :param data: list of basic types variables.
         """
         txt = ""
         for atom in data:
-            txt += "%s" % (atom)
-        data += ";\r\n"
+            txt += "%s " % (atom)
+        txt += ";\r\n"
         self.transport.write(txt)
 
 class FUDIServerFactory(Factory):
@@ -58,41 +72,35 @@ class FUDIServerFactory(Factory):
     def __init__(self):
         self.callbacks = {}
 
-    def register_callback(self, selector, callback):
+    def register_message(self, selector, callback):
         if type(callback) not in (types.FunctionType, types.MethodType):
             raise TypeError("Callback '%s' is not callable" % repr(callback))    
         self.callbacks[selector] = callback
 
-class FUDIClientFactory(ClientFactory):
-    protocol = FUDIProtocol
-    def __init__(self):
-        #self.deferred = Deferred()
-
-    def clientConnectionFailed(self, _, reason):
-        print 'Connection failed. Reason:', reason
-        #self.deferred.errback(reason)
-
-    def startedConnecting(self, connector):
-        print 'Started to connect.'
-    
-    def clientConnectionLost(self, connector, reason):
-        print 'Lost connection.  Reason:', reason
+def create_FUDI_client(host, port):
+    deferred = ClientCreator(reactor, FUDIProtocol).connectTCP(host, port)
+    return deferred
 
 if __name__ == "__main__":
+    VERBOSE = True
+
     def ping(*args):
         print "received ping", args
-        #s.send_message("pong", 1, 2, 3.0)
+        reactor.stop()
 
-    # def pong(*args):
-    #     print "received ping", args
-    #     reactor.stop()
+    def on_connected(protocol):
+        protocol.send_message("ping", 1, 2.0, "bang")
+        print "sent ping"
+
+    def on_error(failure):
+        print "Error trying to connect.", failure
+        reactor.stop()
+        
+    PORT_NUMBER = 15555
 
     s = FUDIServerFactory()
-    s.register_callback("ping", ping)
-    reactor.listenTCP(15555, s)
+    s.register_message("ping", ping)
+    reactor.listenTCP(PORT_NUMBER, s)
     
-    c = FUDIClientFactory()
-    reactor.connectTCP('localhost', 15555, c)
-    
-    reactor.callLater(0, c.send_message, "ping", 4, 5, 6)
+    create_FUDI_client('localhost', PORT_NUMBER).addCallback(on_connected).addErrback(on_error)
     reactor.run()
