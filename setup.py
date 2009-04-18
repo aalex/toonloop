@@ -23,8 +23,9 @@
 # along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
-We are not yet ready to use this installation file.
-But we will. 
+Installation script for ToonLoop.
+
+Usage : sudo python setup.py install --prefix=/usr/local
 """
 from setuptools import find_packages
 from setuptools import setup
