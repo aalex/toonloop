@@ -3,9 +3,9 @@ import types
 from twisted.internet import reactor
 from twisted.internet.protocol import Protocol
 from twisted.internet.protocol import ClientCreator
-from twisted.protocols import basic
 from twisted.internet.protocol import Factory
 from twisted.internet.protocol import ClientFactory
+from twisted.protocols import basic
 from twisted.python import log
 
 VERBOSE = True
@@ -51,23 +51,23 @@ class FUDIProtocol(basic.LineReceiver):
                     if VERBOSE:
                         print "Calling :", selector, output
                     try:
-                        self.factory.callbacks[selector](self, output)
+                        self.factory.callbacks[selector](self, *output)
                     except TypeError, e:
                         print e.message
                 else:
                     #log.msg("Invalid selector %s." % (selector))
                     print "Invalid selector %s." % (selector)
 
-    def send_message(self, *data):
+    def send_message(self, selector, *atoms):
         """
         Converts int, float, string to FUDI atoms and sends them.
         :param data: list of basic types variables.
         """
-        txt = ""
-        for atom in data:
-            txt += "%s " % (atom)
-        txt = txt.strip() + ";\r\n"
-        print "sending", txt
+        txt = str(selector)
+        for atom in atoms:
+            txt += " %s" % (atom)
+        txt += ";\r\n"
+        print "sending", txt,
         self.transport.write(txt)
 
 class FUDIServerFactory(Factory):
