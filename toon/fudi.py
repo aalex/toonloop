@@ -72,7 +72,9 @@ class FUDIProtocol(basic.LineReceiver):
 
 class FUDIServerFactory(Factory):
     """
-    You should attach callbacks to instances of this class.
+    Factory for FUDI receivers.
+    
+    You should attach FUDI message callbacks to an instance of this.
     """
     protocol = FUDIProtocol
     def __init__(self):
@@ -84,6 +86,12 @@ class FUDIServerFactory(Factory):
         self.callbacks[selector] = callback
 
 def create_FUDI_client(host, port):
+    """
+    Creates a FUDI sender.
+
+    When connected, will call its callbacks with the sender instance.
+    :return: deferred instance
+    """
     deferred = ClientCreator(reactor, FUDIProtocol).connectTCP(host, port)
     return deferred
 
