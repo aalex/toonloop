@@ -40,7 +40,7 @@ setup(
     long_description = "ToonLoop Library and application for OpenGL and Twisted Arts",
     install_requires = ["twisted", "PyOpenGL", "nevow", "numpy"], 
     # requires pygame from SVN for now.
-    scripts = ["toonloop.py"], #, "osc_send.py", "osc_receive.py"],
+    scripts = ["toonloop"], #, "osc_send.py", "osc_receive.py"],
     license = "GPL",
     platforms = ["any"],
     zip_safe = False,
