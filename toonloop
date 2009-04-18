@@ -171,6 +171,7 @@ class Api(Subject):
             print "FPS: %d" % (self.app.fps)
             print "Playhead frequency ratio: 30 / %d" % (self.app.shot.playhead_iterate_every)
             pprint.pprint(self.app.config.__dict__)
+            print 'pygame.display.Info(): ', pygame.display.Info()
         except AttributeError, e:
             print sys.exc_info()
 
@@ -205,6 +206,8 @@ class ToonLoop(render.Game):
         self.renderer = None # Renderer instance that owns it.
         self._intervalometer_delayed_id = None
         # the pygame window
+        icon = pygame.image.load(os.path.join(os.path.dirname(__file__), "toon/icon.png"))
+        pygame.display.set_icon(icon) # a 32 x 32 surface
         self.display = pygame.display.set_mode(self._display_size, OPENGL | DOUBLEBUF | HWSURFACE)
         pygame.display.set_caption("ToonLoop")
         pygame.mouse.set_visible(False)
