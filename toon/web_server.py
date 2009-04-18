@@ -83,16 +83,20 @@ def start(subject, port=8000, **kwargs):
     :param subject: The application
     :param port: web server port
     """
+    # These are default values and are overriden in the main toonloop script.
     web_config = {
         'static_files_path':os.path.expanduser("~/Documents/toonloop"),
-        'index_file_path':os.path.join(os.curdir, 'toon', 'index.rst'), 
+        #'index_file_path':os.path.join(os.curdir, 'toon', 'index.rst'), os.path.dirname('/d/f/e/f/sdfsdf')
+        'index_file_path':os.path.join(os.path.dirname(__file__), 'index.rst'), 
         'port':port
     }
     web_config.update(kwargs)
     #Index.static_files_path = web_config['static_files_path']
     #Index.index_file_path = web_config['index_file_path']
     site = appserver.NevowSite(Index(subject, **web_config))
-    print 'Starting web server on port', port
+    if subject.config.verbose:
+        print 'Starting web server on port', port
+        print 'Static Documentation Files Path : ', web_config['index_file_path']
     reactor.listenTCP(port, site)
 
 if __name__ == '__main__':
@@ -100,5 +104,6 @@ if __name__ == '__main__':
     start(None)
     try:
         reactor.run()
-    except:raise
+    except:
+        raise
 

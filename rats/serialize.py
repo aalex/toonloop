@@ -85,6 +85,8 @@ def load(filename):
         obj = jelly.unjelly(li)
     except jelly.InsecureJelly, e:
         raise UnserializeError(e.message)
+    except AttributeError, e:
+        raise UnserializeError(e.message)
     else:
         return obj
 

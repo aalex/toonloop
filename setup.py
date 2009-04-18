@@ -24,8 +24,15 @@
 #
 """
 Installation script for ToonLoop.
+---------------------------------
 
-Usage : sudo python setup.py install --prefix=/usr/local
+Usage::
+  python setup.py build
+  sudo python setup.py install --prefix=/usr/local
+
+For developpers::
+  python setup.py develop --prefix=/usr/local
+  python setup.py develop --prefix=/usr/local --uninstall
 """
 from setuptools import find_packages
 from setuptools import setup
@@ -44,9 +51,10 @@ setup(
     license = "GPL",
     platforms = ["any"],
     zip_safe = False,
-    packages = ['rats', 'toon'] # packages=find_packages()
-    # py_modules = ["libtest"],
-    # data_files=[("", ["freesansbold.ttf"])]
+    packages = ['rats', 'toon'],
+    package_data = {
+        "":["*.ttf", "*.rst", "*.png", "*.jpg"]
+    }
     )
 
 #test_suite='nose.collector',
