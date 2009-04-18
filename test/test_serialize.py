@@ -33,7 +33,7 @@ class Test_Serialize(unittest.TestCase):
     def test_load(self):
         try:
             self.data = serialize.load(filename)
-        except SerializeError:
+        except serialize.SerializeError:
             pass
         # print 'loaded objects', self.data
 

@@ -33,7 +33,13 @@ import pprint
 
 class SerializeError(Exception):
     """
-    Occur occuring while trying to save or load serialized data.
+    Error occuring while trying to save serialized data.
+    """
+    pass
+
+class UnserializeError(Exception):
+    """
+    Error occuring while trying to load serialized data.
     """
     pass
 
@@ -48,7 +54,7 @@ def save(filename, obj):
     """
     Saves any python data type to a file.
 
-    Might throw an IOError
+    Might throw an SerializeError
     """
     global _verbose
     li = jelly.jelly(obj)
@@ -65,16 +71,20 @@ def load(filename):
     """
     Loads any python data type from a file.
 
-    Might throw an IOError
+    Might throw an UnserializeError
     """
     try:
         f = open(filename, 'r')
-        li = eval(f.read())
+        li = eval(f.read()) # do this only on trusted data !
         f.close()
     except IOError, e:
-        raise SerializeError(e.message)
+        raise UnserializeError(e.message)
     except OSError, e:
-        raise SerializeError(e.message)
-    obj = jelly.unjelly(li)
-    return obj 
+        raise UnserializeError(e.message)
+    try:
+        obj = jelly.unjelly(li)
+    except jelly.InsecureJelly, e:
+        raise UnserializeError(e.message)
+    else:
+        return obj
 
