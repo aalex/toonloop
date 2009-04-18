@@ -8,7 +8,7 @@ from twisted.internet.protocol import Factory
 from twisted.internet.protocol import ClientFactory
 from twisted.python import log
 
-VERBOSE = False
+VERBOSE = True
 
 class FUDIProtocol(basic.LineReceiver):
     """
@@ -16,6 +16,11 @@ class FUDIProtocol(basic.LineReceiver):
     
     Simple ASCII based protocol from Miller Puckette for Pure Data.
     """
+    #def connectionMade(self):
+    #    print "connection made", self.transport# , self.factory
+
+    delimiter = ';'
+
     def lineReceived(self, data):
         if VERBOSE:
             print "data:", data
@@ -46,7 +51,7 @@ class FUDIProtocol(basic.LineReceiver):
                     if VERBOSE:
                         print "Calling :", selector, output
                     try:
-                        self.factory.callbacks[selector](output)
+                        self.factory.callbacks[selector](self, output)
                     except TypeError, e:
                         print e.message
                 else:
@@ -61,7 +66,8 @@ class FUDIProtocol(basic.LineReceiver):
         txt = ""
         for atom in data:
             txt += "%s " % (atom)
-        txt += ";\r\n"
+        txt = txt.strip() + ";\r\n"
+        print "sending", txt
         self.transport.write(txt)
 
 class FUDIServerFactory(Factory):
@@ -84,7 +90,7 @@ def create_FUDI_client(host, port):
 if __name__ == "__main__":
     VERBOSE = True
 
-    def ping(*args):
+    def ping(protocol, *args):
         print "received ping", args
         reactor.stop()
 
