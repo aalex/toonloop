@@ -32,17 +32,18 @@ from setuptools import setup
 setup(
     name = "toonloop",
     version = "1.0 beta",
-    author = "Alexandre Quessy",
+    author = "Alexandre Quessy and Tristan Matthews",
     author_email = "alexandre@quessy.net",
     url = "http://www.toonloop.com/",
-    description = "Stop Motion Software - RATS is an Anagram for Arts",
-    long_description = "ToonLoop Library for OpenGL and Twisted Arts",
-    install_requires = ["twisted", "OpenGL", "nevow", "pygame"],
-    scripts = ["toonloop.py", "osc_send.py", "osc_receive.py"],
+    description = "ToonLoop Realtime Stop Motion Software",
+    long_description = "ToonLoop Library and application for OpenGL and Twisted Arts",
+    install_requires = ["twisted", "PyOpenGL", "nevow", "numpy"], 
+    # requires pygame from SVN for now.
+    scripts = ["toonloop.py"], #, "osc_send.py", "osc_receive.py"],
     license = "GPL",
     platforms = ["any"],
     zip_safe = False,
-    packages = [] # packages=find_packages()
+    packages = ['rats', 'toon'] # packages=find_packages()
     # py_modules = ["libtest"],
     # data_files=[("", ["freesansbold.ttf"])]
     )
