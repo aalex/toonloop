@@ -295,6 +295,9 @@ class ToonLoop(render.Game):
         size = (self.config.image_width, self.config.image_height)
         try:
             pygame.camera.init() 
+        # except AttributeError, e:
+        #     print "Sometimes the camera module need it's init()",
+        #     print " to be called and sometimes not."
         except Exception, e:
             print "error calling pygame.camera.init()", e.message
             print sys.exc_info()

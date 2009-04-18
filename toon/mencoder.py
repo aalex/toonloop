@@ -110,7 +110,7 @@ def jpeg_to_movie(filename_pattern, path='.', fps=12, verbose=False, w=640, h=48
         jpegs = "mf://%s*.jpg" % (abs_filename)
         output_file = "%s%s.mov"  %  (abs_filename, movie_name_suffix)
         #txt_args = """%s -quiet -mf w=%d:h=%d:fps=%s:type=jpg -ovc copy -oac copy -o %s""" % (jpegs, w, h, fps, output_file) 
-        txt_args = """%s -quiet -mf w=%d:h=%d:fps=%s:type=jpg -ovc copy -oac copy -of lavf -lavfopts format=mov -o %s""" % (jpegs, w, h, fps, output_file) 
+        txt_args = """%s -quiet -mf w=%d:h=%d:fps=%s:type=jpg -ovc lavc -lavcopts vcodec=mjpeg -oac copy -of lavf -lavfopts format=mov -o %s""" % (jpegs, w, h, fps, output_file) 
         args = txt_args.split()
         if verbose:
             print "$ mencoder %s" % (txt_args)
