@@ -75,7 +75,8 @@ if __name__ == "__main__":
         # self.intervalometer_on = False
         # self.intervalometer_enabled = False
         # self.intervalometer_rate_seconds = 30.0 # in seconds
-    parser = OptionParser(usage="%prog [version]", version=str(__version__))
+    parser = OptionParser(usage="%prog" + __version__ , version=str(__version__))
+    # + " \n\n"  __doc__
     parser.add_option("-d", "--device", dest="device", type="int", \
         help="Specifies v4l2 device to grab image from.", default=0)
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true", \

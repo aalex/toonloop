@@ -156,7 +156,7 @@ class Api(Subject):
         print "o = toggle onion skin on/off"
         print "i = print current loop frame number, number of frames in loop and global framerate"
         print "h = print this help message"
-        print "s = saves all images as jpeg"
+        print "s = saves all images as jpeg and movie"
         print "a = enable the intervalometer auto grab"
         print "k = increase the intervalometer interval"
         print "j = decrease the intervalometer interval"
