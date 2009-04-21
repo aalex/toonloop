@@ -1,0 +1,79 @@
+=======================================================
+ ToonLoop Installation Notes for Ubuntu GNU/Linux 8.10
+=======================================================
+
+Install Dependencies
+--------------------
+
+Subversion::
+
+  sudo apt-get install subversion
+
+Python Packages::
+
+  sudo apt-get install python-twisted python-numpy python-opengl python-pyglew python-dev python-nevow python-docutils python-setuptools
+
+The SDL Library::
+  
+  sudo apt-get install libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl-gfx1.2-dev  libsdl-sound1.2-dev libsmpeg-dev 
+
+libpng, libjpeg and portmidi::
+
+  sudo apt-get install libpng-dev libjpeg-dev libportmidi-dev libtiff4-dev
+
+Mencoder ::
+
+  sudo apt-get install mencoder
+
+Checkout and Build Pygame
+-------------------------
+
+The camera module for pygame is available from pygame's svn revision 
+1744 or greater::
+
+  mkdir ~/src
+  cd ~/src
+  svn checkout svn://seul.org/svn/pygame/trunk pygame
+  cd pygame 
+  python setup.py build
+  sudo python setup.py install
+
+Checkout and Run ToonLoop
+-------------------------
+Check it out using Subversion::
+
+  mkdir ~/src
+  cd ~/src
+  svn checkout https://toonloop.googlecode.com/svn/trunk/py toonloop
+  cd toonloop
+
+ToonLoop should now run::
+
+  cd ~/src/toonloop
+  ./toonloop
+
+Installation
+------------
+You can install it to your computer if you want.::
+
+  python setup.py build
+  sudo setup.py install --prefix=/usr/local
+
+This way you can run it by simply issuing "toonloop" in your terminal. 
+See also the setup.py file for more installation options.
+
+Additional Configuration Notes
+------------------------------
+
+You might need to properly configure your V4L2 video device::
+
+  sudo apt-get install ivtv-utils
+  v4l2-ctl --set-input=1
+  v4l2-ctl --set-standard=ntsc
+  v4l2-ctl --set-fmt-video=width=768,height=480
+  v4l2-ctl --set-ctrl=saturation=65535,contrast=32768
+
+If you use two displays, you might want to use 2 separate X screens::
+
+  sudo nvidia-settings
+  DISPLAY=:0.1 ./toonloop.py
