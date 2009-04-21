@@ -60,28 +60,28 @@ import shutil
 import glob
 import pprint
 
-#from toon import opensoundcontrol
-from toon import mencoder
+from twisted.internet import reactor
+
 from rats import render
 from rats.serialize import Serializable
 from rats.observer import Subject
 
+import toon
 from toon import opensoundcontrol
 from toon import mencoder
 from toon.draw import texture_from_image
 from toon.draw import draw_textured_square
 try:
     from toon import web_server
-except ImportError:
+except ImportError, e:
     print "For web support, please install the python-nevow package."
+    print e.message
 
 import pygame
 import pygame.camera
 from pygame.locals import *
 from pygame import time
 from OpenGL.GL import *
-
-from twisted.internet import reactor
 
 __version__ = "1.0 beta"
 
@@ -184,11 +184,11 @@ class ToonLoop(render.Game):
     TEXTURE_PLAYBACK = 1
     TEXTURE_ONION = 2
 
-    def __init__(self, **argd):
+    def __init__(self, config):
         """
         Startup poutine.
         """
-        self.config = Configuration(**argd)
+        self.config = config
         self.api = Api(self)
         # size of the rendering window
         self._display_size = (self.config.display_width, self.config.display_height)
@@ -205,9 +205,11 @@ class ToonLoop(render.Game):
         self._init_shots()
         self.renderer = None # Renderer instance that owns it.
         self._intervalometer_delayed_id = None
-        # the pygame window
-        icon = pygame.image.load(os.path.join(os.path.dirname(__file__), "toon/icon.png"))
+        # the icon
+        package_base = os.path.dirname(toon.__file__)
+        icon = pygame.image.load(os.path.join(package_base, "icon.png"))
         pygame.display.set_icon(icon) # a 32 x 32 surface
+        # the pygame window
         self.display = pygame.display.set_mode(self._display_size, OPENGL | DOUBLEBUF | HWSURFACE)
         pygame.display.set_caption("ToonLoop")
         pygame.mouse.set_visible(False)
@@ -215,6 +217,7 @@ class ToonLoop(render.Game):
         self.most_recent_image = pygame.surface.Surface(self.image_size) # , 0, self.display)
         
         self.osc = None
+        # self.fudi = None
         self.camera = None
         self.is_mac = False
         self.textures = [0, 0, 0] # list of OpenGL texture objects id
@@ -477,7 +480,7 @@ class ToonLoop(render.Game):
         if index < len(self.shot.images):
             name = ("%s/%s_%5d.jpg" % (path, file_name, index)).replace(' ', '0')
             if self.config.verbose:
-                sys.stdout.write("%s ..." % (name))
+                print "writing %s" % (name)
             pygame.image.save(self.shot.images[index], name) # filename extension makes it a JPEG
             reactor.callLater(0, self._write_01_next_image, path, file_name, index + 1)
         else:
@@ -681,8 +684,9 @@ class Configuration(Serializable):
     
     Default values are defined here. 
     Overriden as **argd arguments to ToonLoop(**argd)
+    
+    Python allows commas at the end of lists and tuples
     """
-    # TODO: use it !
     def __init__(self, **argd): 
         self.toonloop_home = os.path.expanduser("~/Documents/toonloop")
         self.project_name = "new_project" # name of the folder
@@ -717,7 +721,8 @@ class Configuration(Serializable):
         #self.keying_slope = 0.0
         #self.max_num_frames = 1000
         #self.osc_receive_hosts = ''
-        self.__dict__.update(**argd) # overrides some attributes whose defaults and names are below.
+        # overrides some attributes whose defaults and names are below.
+        self.__dict__.update(**argd) 
 
 if __name__ == "__main__":
     """
@@ -757,7 +762,8 @@ if __name__ == "__main__":
     #print "options:", options
     
     pygame.init()
-    kwargs = {}
+    config = Configuration()
+    kwargs = config.__dict__  
     if options.toonloop_home:
         kwargs['toonloop_home'] = options.toonloop_home
     if options.image_width:
@@ -770,14 +776,18 @@ if __name__ == "__main__":
     kwargs['intervalometer_on'] = options.intervalometer_on == True
     kwargs['intervalometer_enabled'] = options.intervalometer_enabled
     kwargs['verbose'] = options.verbose == True
-    if options.verbose:
+    if kwargs['verbose']:
         print "Started in verbose mode."
     try:
-        toonloop = ToonLoop(**kwargs)
+        toonloop = ToonLoop(config)
+        if options.verbose:
+            toonloop.api.print_help()
     except ToonLoopError, e:
         print str(e.message)
         print "Exiting toonloop with error"
         sys.exit(1)
+    else:
+        print "Congratulations ! ToonLoop started gracefully."
     pygame_timer = render.Renderer(toonloop, False) # not verbose !  options.verbose
     pygame_timer.desired_fps = options.fps
     try:
