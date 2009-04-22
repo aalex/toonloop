@@ -45,7 +45,7 @@ setup(
     url = "http://www.toonloop.com/",
     description = "ToonLoop Realtime Stop Motion Software",
     long_description = "ToonLoop Library and application for OpenGL and Twisted Arts",
-    install_requires = ["twisted", "PyOpenGL", "nevow", "numpy"], 
+    install_requires = [], # "twisted", "PyOpenGL", "nevow"], # , "numpy"], 
     # requires pygame from SVN for now.
     scripts = ["toonloop"], #, "osc_send.py", "osc_receive.py"],
     license = "GPL",
