@@ -87,7 +87,7 @@ def start(subject, port=8000, **kwargs):
     web_config = {
         'static_files_path':os.path.expanduser("~/Documents/toonloop"),
         #'index_file_path':os.path.join(os.curdir, 'toon', 'index.rst'), os.path.dirname('/d/f/e/f/sdfsdf')
-        'index_file_path':os.path.join(os.path.dirname(__file__), 'index.rst'), 
+         'index_file_path':os.path.join(os.path.dirname(__file__), 'data', 'index.rst'), 
         'port':port
     }
     web_config.update(kwargs)

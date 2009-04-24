@@ -211,7 +211,7 @@ class ToonLoop(render.Game):
         self._intervalometer_delayed_id = None
         # the icon
         package_base = os.path.dirname(toon.__file__)
-        icon = pygame.image.load(os.path.join(package_base, "icon.png"))
+        icon = pygame.image.load(os.path.join(package_base, 'data', "icon.png"))
         pygame.display.set_icon(icon) # a 32 x 32 surface
         # the pygame window
         self.display = pygame.display.set_mode(self._display_size, OPENGL | DOUBLEBUF | HWSURFACE)
