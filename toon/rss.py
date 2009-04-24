@@ -33,6 +33,8 @@ import pprint
 from nevow import rend
 from nevow.inevow import IRequest
 
+VERBOSE = True
+
 def _format_date(dt):
     """
     Converts a datetime into an RFC 822 formatted date
@@ -142,11 +144,17 @@ class RSSPage(rend.Page): # page.Element):
         Renders the XML RSS text.
         Lists the MOV files whose name starts with "movie_".
         """
+        global VERBOSE
         request = IRequest(context)
         server_address = "http://%s"  % (request.getHeader('host'))
 
         channel = Channel()
-        movie_files = glob.glob("%s/*/movie_*.mov" % (self.root))
+        patt = "%s/*/*.mov" % (self.root)
+        print 'PATH: ', patt
+        movie_files = glob.glob(patt)
+        if VERBOSE:
+            print 'RSS enclosures :', movie_files
+        
         for f in movie_files:
             file_name = os.path.split(f)[1]
             project_name = os.path.dirname(f).split("/")[-1]
