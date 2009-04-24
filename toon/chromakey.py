@@ -11,6 +11,12 @@ from rats.glsl import ShaderError
 # ---------------------------- module variables ----------------------------
 textures = [0] # list of texture ID 
 program = None
+config = {
+    'chromakey_r':0.0,
+    'chromakey_g':1.0,
+    'chromakey_b':0.0,
+    'chromakey_thresh':0.6,
+    }
 
 # ---------------------------- glsl vertex shader ----------------------------
 vert = """
@@ -65,7 +71,7 @@ void main(void)
 {
     // sample from the texture 
     vec3 input_color = texture2DRect(image, texcoord0).rgb;
-    float output_alpha = 1.0;
+    float output_alpha = gl_Color.a;// 1.0;
     
     // measure distance from keying_color
     vec3 delta = abs(input_color - keying_color);
@@ -74,9 +80,8 @@ void main(void)
 	// TODO: mix() according the 3 factors of proximity.
 	if (delta.r <= thresh.r && delta.g <= thresh.g && delta.b <= thresh.b)
 	{
-	   output_alpha = alpha_result;
+	   output_alpha = alpha_result; // 0.0
 	}
-    //output_alpha = 0.1;
     gl_FragColor = vec4(input_color, output_alpha); 
 }
 """
@@ -84,11 +89,11 @@ void main(void)
 
 def set_program_uniforms():
     global program
+    global config 
     program.glUniform1i("image", 0)
-    program.glUniform1f("alpha_result", 0.3)
-    program.glUniform3f("keying_color", 0.0, 1.0, 0.0)
-    program.glUniform3f("thresh", 0.8, 0.5, 0.5)
-
+    program.glUniform1f("alpha_result", 0.2)
+    program.glUniform3f("keying_color", config['chromakey_r'], config['chromakey_g'], config['chromakey_b'])
+    program.glUniform3f("thresh", config['chromakey_thresh'], config['chromakey_thresh'], config['chromakey_thresh'])
 
 def program_init():
     global program

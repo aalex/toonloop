@@ -385,7 +385,12 @@ class ToonLoop(render.Game):
         if self.config.chromakey_enabled and self.config.chromakey_on: 
             chromakey.program_disable()
         # ---------- onion skin
+        if self.config.chromakey_enabled and self.config.chromakey_on: 
+            chromakey.program_enable()
+            chromakey.set_program_uniforms()
         self._draw_onion_skin()
+        if self.config.chromakey_enabled and self.config.chromakey_on: 
+            chromakey.program_disable()
         # ---------- playback view
         if self.config.chromakey_enabled and self.config.chromakey_on: 
             chromakey.program_enable()
@@ -766,6 +771,11 @@ class Configuration(Serializable):
         self.onionskin_opacity = 0.3
         self.playback_opacity = 0.3
         self.chromakey_enabled = True
+        self.chromakey_on = True
+        self.chromakey_r = 0.0
+        self.chromakey_g = 1.0
+        self.chromakey_b = 0.0
+        self.chromakey_thresh = 0.5
         self.chromakey_on = True
         self.video_device = 0 
         self.intervalometer_on = False
