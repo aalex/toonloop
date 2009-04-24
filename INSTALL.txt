@@ -57,10 +57,14 @@ Installation
 You can install it to your computer if you want.::
 
   python setup.py build
-  sudo setup.py install --prefix=/usr/local
+  sudo python setup.py develop --prefix=/usr/local
 
 This way you can run it by simply issuing "toonloop" in your terminal. 
 See also the setup.py file for more installation options.
+If you want a permanent installation, issu the following command and erase the sources.::
+
+  sudo python setup.py develop --prefix=/usr/local --uninstall
+  sudo python setup.py install --prefix=/usr/local
 
 Additional Configuration Notes
 ------------------------------
