@@ -376,18 +376,21 @@ class ToonLoop(render.Game):
                 self._playhead_iterate()
                 # 30/3 = 10 FPS
         self._camera_grab_frame() # grab a frame
-
+        
+        # --------- edit view
         if self.config.chromakey_enabled and self.config.chromakey_on: 
             chromakey.program_enable()
             chromakey.set_program_uniforms()
-        self._draw_edit_view() # render edit view
+        self._draw_edit_view()
         if self.config.chromakey_enabled and self.config.chromakey_on: 
             chromakey.program_disable()
-
+        # ---------- onion skin
+        self._draw_onion_skin()
+        # ---------- playback view
         if self.config.chromakey_enabled and self.config.chromakey_on: 
             chromakey.program_enable()
             chromakey.set_program_uniforms()
-        self._draw_playback_view() # render playback view
+        self._draw_playback_view()
         if self.config.chromakey_enabled and self.config.chromakey_on: 
             chromakey.program_disable()
         
@@ -417,16 +420,21 @@ class ToonLoop(render.Game):
         # most recent grabbed :
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_MOST_RECENT])
         draw_textured_square(self.config.image_width, self.config.image_height)
-        self.display_width = 1024
+        # self.display_width = 1024
+        glPopMatrix()
+        # old: self.display.blit(self.most_recent_image, (0, 0))
+
+    def _draw_onion_skin(self):
         # Onion skin :
         if self.config.onionskin_enabled:
+            glPushMatrix()
+            glTranslatef(-2.0, 0.0, 0.0)
+            glScalef(2.0, 1.5, 1.0)
             glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
             glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
             draw_textured_square(self.config.image_width, self.config.image_height)
-        glPopMatrix()
-        # restore normal color
-        glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
-        # old: self.display.blit(self.most_recent_image, (0, 0))
+            glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
+            glPopMatrix()
 
     def _draw_playback_view(self):
         """
@@ -780,8 +788,10 @@ class Configuration(Serializable):
         Casts to its type and sets the value.
         """
         # try:
+        kind = str(type(self.__dict__[name]))
         self.__dict__[name] = type(self.__dict__[name])(value)
-        return str(type(self.__dict__[name]))
+        print 'set %s = %s (%s)' % (name, value, kind)
+        return kind
         # except Exception, e:
         #    print e.message
 
