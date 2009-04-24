@@ -46,6 +46,10 @@ To print help::
 
   toonloop -h
 
+To set an option::
+ 
+  toonloop -o intervalemeter_on
+
 For verbose output::
 
   toonloop -v

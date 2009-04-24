@@ -31,8 +31,8 @@ Usage::
   sudo python setup.py install --prefix=/usr/local
 
 For developpers::
-  python setup.py develop --prefix=/usr/local
-  python setup.py develop --prefix=/usr/local --uninstall
+  sudo python setup.py develop --prefix=/usr/local
+  sudo python setup.py develop --prefix=/usr/local --uninstall
 """
 from setuptools import find_packages
 from setuptools import setup
@@ -51,9 +51,9 @@ setup(
     license = "GPL",
     platforms = ["any"],
     zip_safe = False,
-    packages = ['rats', 'toon', 'toonloop_data'],
+    packages = ['rats', 'toon', 'toon/data'],
     package_data = {
-        "":["*.ttf", "*.rst", "*.png", "*.jpg"]
+        "":["*.ttf", "*.rst", "*.png", "*.jpg", "*.pd"]
     }
     )
 
