@@ -99,7 +99,7 @@ def jpeg_to_movie(filename_pattern, path='.', fps=12, verbose=False, w=640, h=48
     Converts a series a JPEG images to a MJPEG movie.
 
     :param input_files: string with a wildcard such as "spam_*.jpg"
-    :param output_file: string such as "output.avi"
+    :param output_file: string such as "output.mov"
     """
     global mencoder_executable
     global movie_name_suffix 

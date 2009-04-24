@@ -80,7 +80,12 @@ if __name__ == "__main__":
     parser.add_option("-d", "--device", dest="device", type="int", \
         help="Specifies v4l2 device to grab image from.", default=0)
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true", \
-        help="Sets the output to verbose.", default=False)
+        help="Sets the output to verbose.")
+    parser.add_option("-o", "--option", action="append", nargs=2, \
+        help="Sets any toonloop option by name.")
+    parser.add_option("-l", "--list-options", \
+        dest="list_options", action="store_true", \
+        help="Prints the list of options and exit.") 
     parser.add_option("-f", "--fps", type="int", \
         help="Sets the rendering frame rate.", default=30)
     parser.add_option("-t", "--intervalometer-rate-seconds", type="float",  \
@@ -101,11 +106,20 @@ if __name__ == "__main__":
     print "Copyright 2008 Alexandre Quessy & Tristan Matthews"
     print "Released under the GNU General Public License"
     print "Using video device %d" % options.device
-    print "Press h for usage and instructions\n"
-    
+    print "Press h for usage and instructions"
     pygame.init()
     config = Configuration()
-    kwargs = config.__dict__  
+    kwargs = config.__dict__
+    if options.list_options:
+        print """
+Use ToonLoop options with -o flag :
+    toonloop -o [name] [value]
+        """
+        print "ToonLoop options and their default values : \n"
+        for k, v in kwargs.items():
+            print "    -o %s %s" % (k, v)
+        print "\nExiting."
+        sys.exit(0)
     if options.toonloop_home:
         kwargs['toonloop_home'] = options.toonloop_home
     if options.image_width:
@@ -118,8 +132,15 @@ if __name__ == "__main__":
     kwargs['intervalometer_on'] = options.intervalometer_on == True
     kwargs['intervalometer_enabled'] = options.intervalometer_enabled
     kwargs['verbose'] = options.verbose == True
+    
     if kwargs['verbose']:
         print "Started in verbose mode."
+    if options.option:
+        print 'options', options.option
+        for k, v in options.option:
+            kind = config.set(k, v)
+            # not catching exception
+            print "OPTION \"%s\" : %s       %s" % (k, v, kind)
     try:
         toonloop = ToonLoop(config)
         if options.verbose:

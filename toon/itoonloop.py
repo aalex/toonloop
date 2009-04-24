@@ -233,6 +233,8 @@ class ToonLoop(render.Game):
         self.intervalometer_rate_seconds = self.config.intervalometer_rate_seconds
         if self.config.verbose:
             pprint.pprint(self.config.__dict__)
+        if config.intervalometer_on:
+            self.intervalometer_toggle(True)
         reactor.callLater(0, self._setup_services)
 
     def _init_shots(self):
@@ -465,7 +467,7 @@ class ToonLoop(render.Game):
         See _write_next_image
         """
         # TODO : in a thread
-        file_name = strftime("%Y-%m-%d_%Hh%Mm%S")
+        file_name = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
         path = os.path.join(self.config.toonloop_home, self.config.project_name)
         if self.config.verbose:
             print "Saving images ", path, file_name
@@ -478,6 +480,7 @@ class ToonLoop(render.Game):
     def _write_01_next_image(self, path, file_name, index):
         """
         Saves each image using twisted in order not to freeze the app.
+        Uses the JPG extension.
         """
         if index < len(self.shot.images):
             name = ("%s/%s_%5d.jpg" % (path, file_name, index)).replace(' ', '0')
@@ -489,11 +492,16 @@ class ToonLoop(render.Game):
             reactor.callLater(0, self._write_02_images_done, path, file_name, index)
     
     def _write_02_images_done(self, path, file_name, index):
+        """
+        Converts the list of images in a motion-JPEG .mov video file.
+        """
         if index > 0:
             if self.config.verbose:
-                print "\nConverting to mjpeg"
-            fps = 12 #self.shot.increment_every # self.shot.framerate
+                print "\nConverting to motion JPEG in Quicktime container."
+            fps = 6 # TODO
+            #self.shot.increment_every # self.shot.framerate
             #fps = self.renderer.desired_fps 
+
             deferred = mencoder.jpeg_to_movie(file_name, path, fps, self.config.verbose, self.config.image_width, self.config.image_height)
             deferred.addCallback(self._write_03_movie_done, file_name, path, index)
             # to do : serialize shots with file names
@@ -502,14 +510,19 @@ class ToonLoop(render.Game):
     def _write_03_movie_done(self, results, file_name, path, index):
         """
         Called when mencoder conversion is done.
+        MOV file.
         """
         if self.config.verbose:
-            print "Done converting %s/%s.avi" % (path, file_name)
+            print "Done converting %s/%s.mov" % (path, file_name)
         if self.config.delete_jpeg:
             reactor.callLater(1.0, self._write_04_delete_images, path, file_name, index)
 
 
     def _write_04_delete_images(self, path, file_name, index):
+        """
+        deletes JPG images. 
+        renames MOV file.
+        """
         files = glob.glob("%s/%s_*.jpg" % (path, file_name))
         for f in files:
             try:
@@ -517,8 +530,8 @@ class ToonLoop(render.Game):
             except OSError, e:
                 print "%s Error removing file %s" % (e.message, f)
         try:
-            src = "%s/%s.avi" % (path, file_name)
-            dest = "%s/movie_%s.avi" % (path, file_name)
+            src = "%s/%s.mov" % (path, file_name)
+            dest = "%s/clip_%s.mov" % (path, file_name)
             shutil.move(src, dest)
         except IOError, e:
             print "%s Error moving file %s to %s" % (e.message, src, dest)
@@ -672,7 +685,7 @@ class ToonLoop(render.Game):
         """
         self.frame_add()
         if self.config.verbose:
-            print "grab", # without endline character
+            print "intervalometer auto grab" 
             sys.stdout.flush()
         if self.intervalometer_on:
             self._intervalometer_delayed_id = reactor.callLater(self.intervalometer_rate_seconds, self._intervalometer_frame_add)
@@ -683,6 +696,12 @@ class ToonLoop(render.Game):
         """
         pass
         # glDeleteTextures(3, self.textures)
+
+    def config_set(name, value):
+        """
+        Changes a configuration option.
+        """
+        self.config.set(name, value)
 
 class Configuration(Serializable):
     """
@@ -729,3 +748,15 @@ class Configuration(Serializable):
         #self.osc_receive_hosts = ''
         # overrides some attributes whose defaults and names are below.
         self.__dict__.update(**argd) 
+    
+    def set(self, name, value):
+        """
+        Casts to its type and sets the value.
+        """
+        # try:
+        self.__dict__[name] = type(self.__dict__[name])(value)
+        return str(type(self.__dict__[name]))
+        # except Exception, e:
+        #    print e.message
+
+

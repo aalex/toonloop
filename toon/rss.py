@@ -138,14 +138,10 @@ class RSSPage(rend.Page): # page.Element):
         self.__dict__.update(kwargs)
 
     def renderHTTP(self, context):
-        #TODO: make path aware of the host name it should be
-        # print "HTTP Request:", request
-        # print request
-        # pprint.pprint(request.__dict__)
-        # print 'tag- rss page'
-        # pprint.pprint(request.tag.__dict__)
-        # print 'parent'
-        # pprint.pprint(request.parent.__dict__)
+        """
+        Renders the XML RSS text.
+        Lists the MOV files whose name starts with "movie_".
+        """
         request = IRequest(context)
         server_address = "http://%s"  % (request.getHeader('host'))
 
@@ -156,7 +152,7 @@ class RSSPage(rend.Page): # page.Element):
             project_name = os.path.dirname(f).split("/")[-1]
             #print "project:", project_name
             link = "%s/files/%s/%s" % (server_address, project_name, file_name)
-            channel.items.append(Item(title=file_name, enclosure_url=link, link=link, guid=file_name, enclosure_type="video/x-msvideo"))
+            channel.items.append(Item(title=file_name, enclosure_url=link, link=link, guid=file_name, enclosure_type="video/quicktime"))
         return str(channel)
 
 if __name__ == '__main__':
