@@ -74,6 +74,7 @@ from toon import mencoder
 from toon.draw import texture_from_image
 from toon.draw import draw_textured_square
 from toon import puredata
+from toon import chromakey
 try:
     from toon import web_server
 except ImportError, e:
@@ -268,7 +269,7 @@ class ToonLoop(render.Game):
         # create OpenGL texture objects 
         # window is 1280 x 960
         self._resize_window(self._display_size)
-        glEnable(GL_TEXTURE_2D)
+        glEnable(GL_TEXTURE_RECTANGLE_ARB) # 2D)
         glEnable(GL_BLEND)
         glShadeModel(GL_SMOOTH)
         glClearColor(0.0, 0.0, 0.0, 0.0) # black background
@@ -276,6 +277,8 @@ class ToonLoop(render.Game):
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         for i in range(len(self.textures)):
             self.textures[i] = glGenTextures(1)
+        if self.config.chromakey_enabled: 
+            chromakey.program_init()
         # print "texture names : ", self.textures
 
     def _resize_window(self, (width, height)):
@@ -373,8 +376,21 @@ class ToonLoop(render.Game):
                 self._playhead_iterate()
                 # 30/3 = 10 FPS
         self._camera_grab_frame() # grab a frame
+
+        if self.config.chromakey_enabled and self.config.chromakey_on: 
+            chromakey.program_enable()
+            chromakey.set_program_uniforms()
         self._draw_edit_view() # render edit view
+        if self.config.chromakey_enabled and self.config.chromakey_on: 
+            chromakey.program_disable()
+
+        if self.config.chromakey_enabled and self.config.chromakey_on: 
+            chromakey.program_enable()
+            chromakey.set_program_uniforms()
         self._draw_playback_view() # render playback view
+        if self.config.chromakey_enabled and self.config.chromakey_on: 
+            chromakey.program_disable()
+        
         self.clock.tick()
         self.fps = self.clock.get_fps()
         pygame.display.flip()
@@ -399,13 +415,14 @@ class ToonLoop(render.Game):
         glTranslatef(-2.0, 0.0, 0.0)
         glScalef(2.0, 1.5, 1.0)
         # most recent grabbed :
-        glBindTexture(GL_TEXTURE_2D, self.textures[self.TEXTURE_MOST_RECENT])
-        draw_textured_square()
+        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_MOST_RECENT])
+        draw_textured_square(self.config.image_width, self.config.image_height)
+        self.display_width = 1024
         # Onion skin :
         if self.config.onionskin_enabled:
             glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
-            glBindTexture(GL_TEXTURE_2D, self.textures[self.TEXTURE_ONION])
-            draw_textured_square()
+            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
+            draw_textured_square(self.config.image_width, self.config.image_height)
         glPopMatrix()
         # restore normal color
         glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
@@ -418,8 +435,8 @@ class ToonLoop(render.Game):
         glPushMatrix()
         glTranslatef(2.0, 0.0, 0.0)
         glScalef(2.0, 1.5, 1.0)
-        glBindTexture(GL_TEXTURE_2D, self.textures[self.TEXTURE_PLAYBACK])
-        draw_textured_square()
+        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_PLAYBACK])
+        draw_textured_square(self.config.image_width, self.config.image_height)
         glPopMatrix()
     
     def _playhead_iterate(self):
@@ -740,6 +757,8 @@ class Configuration(Serializable):
         self.web_server_port = 8000
         self.onionskin_opacity = 0.3
         self.playback_opacity = 0.3
+        self.chromakey_enabled = True
+        self.chromakey_on = True
         self.video_device = 0 
         self.intervalometer_on = False
         self.intervalometer_enabled = False

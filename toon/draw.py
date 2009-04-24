@@ -39,28 +39,47 @@ Draws things in OpenGL
 #         glutStrokeCharacter(font, ord(c))
 #         # glutBitmapCharacter(font, ord(c))
 
-def texture_from_image(texture, image):
+def texture_from_image(texture, image, square_texture=False):
     """
     Copies the pixels from a pygame surface to an OpenGL texture object.
     """
     textureData = pygame.image.tostring(image, "RGBX", True) # vertically flipped
-    glBindTexture(GL_TEXTURE_2D, texture)
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.get_width(), image.get_height(), 0, \
-              GL_RGBA, GL_UNSIGNED_BYTE, textureData)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    if square_texture:
+        glBindTexture(GL_TEXTURE_2D, texture)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.get_width(), image.get_height(), 0, \
+                  GL_RGBA, GL_UNSIGNED_BYTE, textureData)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    else:   
+        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, texture)
+        glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, image.get_width(), \
+            image.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)
+        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
-def draw_textured_square():
+def draw_textured_square(w=None, h=None):
     """
     Draws a texture square of 2 x 2 size centered at 0, 0
     """
-    glBegin(GL_QUADS)
-    glTexCoord2f(0.0, 0.0)
-    glVertex2f(-1.0, -1.0) # Bottom Left Of The Texture and Quad
-    glTexCoord2f(1.0, 0.0)
-    glVertex2f(1.0, -1.0) # Bottom Right Of The Texture and Quad
-    glTexCoord2f(1.0, 1.0)
-    glVertex2f(1.0, 1.0) # Top Right Of The Texture and Quad
-    glTexCoord2f(0.0, 1.0)
-    glVertex2f(-1.0, 1.0) # Top Left Of The Texture and Quad
-    glEnd()
+    if w is None or h is None:
+        glBegin(GL_QUADS)
+        glTexCoord2f(0.0, 0.0)
+        glVertex2f(-1.0, -1.0) # Bottom Left Of The Texture and Quad
+        glTexCoord2f(1.0, 0.0)
+        glVertex2f(1.0, -1.0) # Bottom Right Of The Texture and Quad
+        glTexCoord2f(1.0, 1.0)
+        glVertex2f(1.0, 1.0) # Top Right Of The Texture and Quad
+        glTexCoord2f(0.0, 1.0)
+        glVertex2f(-1.0, 1.0) # Top Left Of The Texture and Quad
+        glEnd()
+    else:
+        glBegin(GL_QUADS)
+        glTexCoord2f(0.0, 0.0)
+        glVertex2f(-1.0, -1.0) # Bottom Left
+        glTexCoord2f(w, 0.0)
+        glVertex2f(1.0, -1.0) # Bottom Right
+        glTexCoord2f(w, h)
+        glVertex2f(1.0, 1.0) # Top Right
+        glTexCoord2f(0.0, h)
+        glVertex2f(-1.0, 1.0) # Top Left
+        glEnd()

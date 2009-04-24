@@ -106,6 +106,21 @@ def resize((width, height)):
     glOrtho(-4.0, 4.0, -3.0, 3.0, -1.0, 1.0)
     glMatrixMode(GL_MODELVIEW)
 
+def program_init():
+    global program
+    program = ShaderProgram()
+    program.add_shader_text(GL_VERTEX_SHADER_ARB, vert)
+    program.add_shader_text(GL_FRAGMENT_SHADER_ARB, frag)
+    program.linkShaders()
+
+def program_enable():
+    global program
+    program.enable()
+
+def program_disable():
+    global program
+    program.disable()
+
 def gl_init():
     """
     Init the window
@@ -120,11 +135,7 @@ def gl_init():
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     glColor3f(1., 1., 1.)
-
-    program = ShaderProgram()
-    program.add_shader_text(GL_VERTEX_SHADER_ARB, vert)
-    program.add_shader_text(GL_FRAGMENT_SHADER_ARB, frag)
-    program.linkShaders()
+    program_init()
 
 def draw():
     """
