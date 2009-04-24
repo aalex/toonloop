@@ -21,85 +21,30 @@ The `ToonLoop Media RSS Feed`_ lists all saved movies.
 
 .. contents::
 
-=======================================================
- ToonLoop Installation Notes for Ubuntu GNU/Linux 8.10
-=======================================================
+=============
+ User Manual
+=============
 
-Install Dependencies
---------------------
+Control Keys
+------------
 
-Subversion::
+.. image:: data/keyboard_keys.png
 
-  sudo apt-get install subversion
 
-Python Packages::
 
-  sudo apt-get install python-twisted python-numpy python-opengl python-pyglew python-dev
+Command-line arguments
+----------------------
 
-The SDL Library::
-  
-  sudo apt-get install libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl-gfx1.2-dev  libsdl-sound1.2-dev libsmpeg-dev 
+To list possible options::
 
-libpng, libjpeg and portmidi::
+  toonloop -l
 
-  sudo apt-get install libpng-dev libjpeg-dev libportmidi-dev libtiff4-dev
+To print help::
 
-Mencoder ::
+  toonloop -h
 
-  sudo apt-get install mencoder
+For verbose output::
 
-Checkout and Build Pygame
--------------------------
+  toonloop -v
 
-The camera module for pygame is available from pygame's svn revision 
-1744 or greater::
-
-  mkdir ~/src
-  cd ~/src
-  svn checkout svn://seul.org/svn/pygame/trunk pygame
-  cd pygame 
-  python setup.py build
-  sudo python setup.py install
-
-Checkout and Run ToonLoop
--------------------------
-Check it out using Subversion::
-
-  mkdir ~/src
-  cd ~/src
-  svn checkout https://toonloop.googlecode.com/svn/trunk/py toonloop
-  cd toonloop
-
-ToonLoop should now run::
-
-  cd ~/src/toonloop
-  ./toonloop.py
-
-Additional Configuration Notes
-------------------------------
-You might need to properly configure your V4L2 video device::
-
-  sudo apt-get install ivtv-utils
-  v4l2-ctl --set-input=1
-  v4l2-ctl --set-standard=ntsc
-  v4l2-ctl --set-fmt-video=width=768,height=480
-  v4l2-ctl --set-ctrl=saturation=65535,contrast=32768
-
-If you use two displays, you might want to use 2 separate X screens::
-
-  sudo nvidia-settings
-  DISPLAY=:0.1 ./toonloop.py
-
-OpenGL and GLSL for Python
---------------------------
-This step is not needed at all, but I leave it here as reference.
-You can get the latest PyOpenGL version using bzr::
-
-  sudo apt-get install bzr
-  bzr branch lp:pyopengl
-  bzr branch lp:pyopengl-demo
-  cd pyopengl
-  sudo apt-get remove python-opengl
-  python setup.py build
-  sudo python setup.py install
 

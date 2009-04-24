@@ -45,7 +45,7 @@ class Index(rst.ReStructured, rend.Page, Observer):
 
     def __init__(self, subject, **kwargs):
         self.static_files_path = os.curdir
-        self.index_file_path = os.path.join(os.curdir, 'toon', 'index.rst')
+        self.index_file_path = os.path.join(os.path.dirname(__file__), 'data', 'index.rst')
         self.port = 8000
         self.__dict__.update(**kwargs)
         
@@ -63,6 +63,7 @@ class Index(rst.ReStructured, rend.Page, Observer):
         # child_* attributes serve some static files
         # TODO: RSS feed and web form
         self.child_files = static.File(self.static_files_path) # os.path.join
+        self.child_data = static.File(os.path.join(os.path.dirname(__file__), 'data'))
         self.child_rss = rss.RSSPage(port=self.port, root=self.static_files_path)
     
     def renderHTTP(self, request):
@@ -80,13 +81,14 @@ class Index(rst.ReStructured, rend.Page, Observer):
 def start(subject, port=8000, **kwargs): 
     """
     Called from the main application to start the web UI.
+    Config argmuments ARE overriden from the application.
+
     :param subject: The application
     :param port: web server port
     """
     # These are default values and are overriden in the main toonloop script.
     web_config = {
         'static_files_path':os.path.expanduser("~/Documents/toonloop"),
-        #'index_file_path':os.path.join(os.curdir, 'toon', 'index.rst'), os.path.dirname('/d/f/e/f/sdfsdf')
          'index_file_path':os.path.join(os.path.dirname(__file__), 'data', 'index.rst'), 
         'port':port
     }
