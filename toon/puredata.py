@@ -9,13 +9,15 @@ from rats import observer
 from twisted.internet.error import CannotListenError
 
 class PureData(observer.Observer):
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.receive_port = 15555
         self.send_port = 17777
         self.send_host = "localhost" # TODO: send to many subscribers.
         self.receiver = None
         self.sender = None
         self.verbose = True
+        self.app = None
+        self.__dict__.update(**kwargs)
         
         self._init_receiver()
         self._init_sender()
@@ -27,10 +29,15 @@ class PureData(observer.Observer):
         self.receiver.register_message("/ping", self.ping)
         self.receiver.register_message("/quit", self.quit)
         self.receiver.register_message("/pong", self.pong)
+        self.receiver.register_message("/config/set", self.config_set)
+        self.receiver.register_message("/frame/add", self.frame_add)
+        self.receiver.register_message("/frame/remove", self.frame_remove)
+        self.receiver.register_message("/call", self.call)
         try:
             reactor.listenTCP(self.receive_port, self.receiver)
         except CannotListenError, e:
             print e.message
+            raise
             self.receiver = None
 
     def _init_sender(self):
@@ -60,6 +67,7 @@ class PureData(observer.Observer):
 
     def _on_error(self, failure):
         print "FUDI sender:", failure.getErrorMessage()
+        reactor.callLater(10, self._init_sender)
     
     # --------------- FUDI Message Callbacks : ----------
     def ping(self, receiver, *args):
@@ -80,14 +88,101 @@ class PureData(observer.Observer):
         if self.verbose:
             print "received pong", args
 
+    def config_set(self, receiver, *args):
+        """
+        Sets an option
+        /options/set
+        """
+        if self.verbose:
+            print "config_set", args
+        if self.app is not None:
+            try:
+                k = args[0]
+                v = args[1]
+                kind = self.app.config.set(k, v)
+                print "set %s = %s (%s)" % (k, k, kind)
+            except Exception, e:
+                print e.message
+
+    def frame_add(self, receiver, *args):
+        """
+        Grabs a frame.
+        /frame/add
+        """
+        if self.verbose:
+            print "/frame/add", args
+        if self.app is not None:
+            try:
+                self.app.frame_add()
+            except Exception, e:
+                print e.message
+    
+    def frame_remove(self, receiver, *args):
+        """
+        Grabs a frame.
+        /frame/add
+        """
+        if self.verbose:
+            print "/frame/remove", args
+        if self.app is not None:
+            try:
+                self.app.frame_remove()
+            except Exception, e:
+                print e.message
+
+    def shot_select(self, receiver, *args): 
+        """
+        /shot select <index>
+        index=0
+        """
+        if self.verbose:
+            print "/shot/select", args
+        if self.app is not None:
+            try:
+                self.app.shot_select(int(args[0]))
+            except Exception, e:
+                print e.message
+
+    def call(self, receiver, *args):
+        """
+        Wraps any method from the APP.
+        """
+        if self.verbose:
+            print "ANY:", args
+        if self.app is not None:
+            try:
+                getattr(self.app, args[0])(*args[1:])
+                print 'app.%s(%s)' % (args[0], args[1:])
+            except Exception, e:
+                print e.message
+
+    
     def quit(self, receiver, *args):
         """
         /quit
         """
         if self.verbose:
             print "received quit", args
-        reactor.stop()
+        if self.app is not None:
+            self.app.quit()
+        else:
+            reactor.stop()
         
+def start(app):
+    """
+    **kwargs
+    """
+    fudi.VERBOSE = True
+    kwargs = {
+        'app':app,
+        'receive_port':15555,
+        'send_port':17777,
+        'send_host':"localhost"
+        } # TODO: send to many subscribers.
+    # kwargs.update(options)
+    pd = PureData(**kwargs)
+    return pd
+
 if __name__ == '__main__':
     fudi.VERBOSE = True
     pd = PureData()

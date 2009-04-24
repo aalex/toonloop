@@ -73,6 +73,7 @@ from toon import opensoundcontrol
 from toon import mencoder
 from toon.draw import texture_from_image
 from toon.draw import draw_textured_square
+from toon import puredata
 try:
     from toon import web_server
 except ImportError, e:
@@ -195,6 +196,7 @@ class ToonLoop(render.Game):
         # size of the rendering window
         self._display_size = (self.config.display_width, self.config.display_height)
         self.running = True
+        self.pd = None
         self.paused = False
         self.image_size = (self.config.image_width, self.config.image_height)
         self.clock = pygame.time.Clock()
@@ -341,7 +343,12 @@ class ToonLoop(render.Game):
                 static_files_path=self.config.toonloop_home)
                 #index_file_path=index_file_path)
         except:
-            print "Error loading web UI :", sys.exc_info()
+            print "Error loading web UI :"
+            print sys.exc_info()
+        #try:
+        self.pd = puredata.start(self) #, receive_port=15555, send_port=17777, send_host="localhost")
+        #except:
+        #    print "Error loading puredata:", sys.exc_info()
 
     def frame_add(self):
         """
