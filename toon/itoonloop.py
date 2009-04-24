@@ -279,6 +279,7 @@ class ToonLoop(render.Game):
             self.textures[i] = glGenTextures(1)
         if self.config.chromakey_enabled: 
             chromakey.program_init()
+            chromakey.config = self.config.__dict__
         # print "texture names : ", self.textures
 
     def _resize_window(self, (width, height)):
@@ -551,8 +552,7 @@ class ToonLoop(render.Game):
         """
         if self.config.verbose:
             print "Done converting %s/%s.mov" % (path, file_name)
-        if self.config.delete_jpeg:
-            reactor.callLater(1.0, self._write_04_delete_images, path, file_name, index)
+        reactor.callLater(1.0, self._write_04_delete_images, path, file_name, index)
 
 
     def _write_04_delete_images(self, path, file_name, index):
@@ -560,16 +560,19 @@ class ToonLoop(render.Game):
         deletes JPG images. 
         renames MOV file.
         """
-        files = glob.glob("%s/%s_*.jpg" % (path, file_name))
-        for f in files:
-            try:
-                os.remove(f)
-            except OSError, e:
-                print "%s Error removing file %s" % (e.message, f)
+        if self.config.delete_jpeg:
+            files = glob.glob("%s/%s_*.jpg" % (path, file_name))
+            for f in files:
+                try:
+                    os.remove(f)
+                except OSError, e:
+                    print "%s Error removing file %s" % (e.message, f)
         try:
             src = "%s/%s.mov" % (path, file_name)
             dest = "%s/clip_%s.mov" % (path, file_name)
             shutil.move(src, dest)
+            if self.config.verbose:
+                print 'renamed %s to %s' % (src, dest) 
         except IOError, e:
             print "%s Error moving file %s to %s" % (e.message, src, dest)
 

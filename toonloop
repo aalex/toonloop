@@ -132,7 +132,7 @@ Use ToonLoop options with -o flag :
     kwargs['intervalometer_on'] = options.intervalometer_on == True
     kwargs['intervalometer_enabled'] = options.intervalometer_enabled
     kwargs['verbose'] = options.verbose == True
-    
+
     if kwargs['verbose']:
         print "Started in verbose mode."
     if options.option:

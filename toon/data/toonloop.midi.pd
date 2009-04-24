@@ -1,4 +1,4 @@
-#N canvas 1848 188 794 656 10;
+#N canvas 1812 167 773 693 10;
 #X obj 83 188 ctlin 64;
 #X text 80 164 Pedal;
 #X obj 80 261 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
@@ -14,16 +14,16 @@
 #X text 81 49 |----- MIDI from Oxygen8 keyboard -------------------|
 ;
 #X obj 83 213 sel 127;
-#X obj 518 240 - 12;
-#X obj 518 263 moses 10;
+#X obj 483 259 - 12;
+#X obj 483 282 moses 10;
 #X obj 177 213 sel 0 2 4 5 7 9 11 24;
 #X msg 337 301 /framerate/increase;
 #X msg 337 341 /frame/add;
 #X msg 337 281 /framerate/decrease;
 #X msg 337 261 /shot/save;
 #X msg 337 241 /shot/reset;
-#X msg 518 287 /shot/select \$1;
-#X floatatom 518 316 5 0 0 0 - - -;
+#X msg 483 306 /shot/select \$1;
+#X floatatom 483 335 5 0 0 0 - - -;
 #X obj 337 408 list prepend send;
 #X text 355 466 |----- Send FUDI messages to ToonLoop -------|;
 #X obj 485 52 cnv 15 240 120 empty empty empty 20 12 0 14 -258113 -66577
@@ -31,36 +31,57 @@
 #X text 504 69 TOONLOOP MIDI INTERFACE;
 #X text 503 99 Go to Media> MIDI Settings...;
 #X text 503 113 Choose the right MIDI device.;
-#X obj -1 314 bng 50 250 50 0 empty empty Connect 17 7 0 10 -4034 -1
+#X obj 42 330 bng 50 250 50 0 empty empty Connect 17 7 0 10 -4034 -1
 -1;
 #X obj 337 428 list trim;
-#X obj -1 452 netsend;
-#X msg -1 428 disconnect;
-#X floatatom -1 473 0 0 0 0 - - -;
-#X msg -1 405 connect localhost 15555;
-#X obj 116 508 netreceive 17777;
-#X obj -1 381 t b b;
-#X obj 55 379 loadbang;
-#X obj 116 529 print received;
+#X obj 42 468 netsend;
+#X msg 42 444 disconnect;
+#X floatatom 42 489 0 0 0 0 - - -;
+#X msg 42 421 connect localhost 15555;
+#X obj 109 477 netreceive 17777;
+#X obj 42 397 t b b;
+#X obj 98 395 loadbang;
+#X obj 109 498 print received;
 #X obj 355 450 print sending;
-#X obj 116 629 print sending;
-#X obj 116 549 route /ping;
-#X obj 116 569 list prepend /pong;
-#X obj 116 589 list prepend send;
-#X obj 116 609 list trim;
+#X obj 109 598 print sending;
+#X obj 109 518 route /ping;
+#X obj 109 538 list prepend /pong;
+#X obj 109 558 list prepend send;
+#X obj 109 578 list trim;
 #X obj 614 322 cnv 15 120 120 empty empty empty 20 12 0 14 -258113
 -66577 0;
-#X msg 621 367 /quit;
-#X msg 619 337 /ping hello 1 2;
+#X msg 626 403 /quit;
+#X msg 624 373 /ping hello 1 2;
 #X msg 337 321 /frame/remove;
-#X obj 337 505 hradio 30 1 0 10 empty empty empty 0 -8 0 10 -257985
+#X obj 336 491 hradio 30 1 0 10 empty empty empty 0 -8 0 10 -257985
 -1 -1 0;
-#X msg 337 544 /call shot_select \$1;
+#X msg 336 530 /call shot_select \$1;
 #X obj 346 158 bng 50 250 50 0 empty empty ADD 17 7 0 10 -4034 -1 -1
 ;
 #X obj 401 158 bng 50 250 50 0 empty empty REMOVE 17 7 0 10 -258113
 -1 -1;
-#X msg 167 330 /call shot_save;
+#X msg 622 331 /call shot_save;
+#X obj 391 376 r toonloop;
+#X obj 274 725 s toonloop;
+#X msg 334 667 /config/set chromakey_r \$1;
+#X msg 392 687 /config/set chromakey_g \$1;
+#X msg 434 709 /config/set chromakey_b \$1;
+#X msg 457 729 /config/set chromakey_thresh \$1;
+#X obj 334 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -258113
+-1 -1 0 1;
+#X obj 368 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4034
+-1 -1 0 1;
+#X obj 403 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4160
+-1 -1 0 1;
+#X obj 437 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
+-1 -1 0 1;
+#X text 84 22 This is to be used with toonloop v 1 beta for Python
+;
+#X symbolatom 569 574 25 0 0 0 - - -;
+#X obj 529 598 symbol;
+#X obj 530 572 bng 15 250 50 0 empty empty empty 17 7 0 10 -258113
+-1 -1;
+#X msg 530 620 /config/set project_name \$1;
 #X connect 0 0 11 0;
 #X connect 3 0 6 0;
 #X connect 3 1 5 0;
@@ -113,3 +134,16 @@
 #X connect 50 0 16 0;
 #X connect 51 0 47 0;
 #X connect 52 0 22 0;
+#X connect 53 0 22 0;
+#X connect 55 0 54 0;
+#X connect 56 0 54 0;
+#X connect 57 0 54 0;
+#X connect 58 0 54 0;
+#X connect 59 0 55 0;
+#X connect 60 0 56 0;
+#X connect 61 0 57 0;
+#X connect 62 0 58 0;
+#X connect 64 0 65 1;
+#X connect 65 0 67 0;
+#X connect 66 0 65 0;
+#X connect 67 0 54 0;
