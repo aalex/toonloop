@@ -169,6 +169,7 @@ class Api(Subject):
         """
         Print statistics
         """
+        print ">>>>>>> ToonLoop Statistics >>>>>>>>"
         try:
             print "Current playhead: " + str(self.app.shot.playhead)
             print "Num images: " + str(len(self.app.shot.images))
@@ -176,6 +177,13 @@ class Api(Subject):
             print "Playhead frequency ratio: 30 / %d" % (self.app.shot.playhead_iterate_every)
             pprint.pprint(self.app.config.__dict__)
             print 'pygame.display.Info(): ', pygame.display.Info()
+            total_imgs = 0
+            for clip_num in range(len(self.app.shots)):
+                num_images = len(self.app.shots[clip_num].images)
+                print 'Clip #%d has %d images.' % (clip_num, num_images)
+                total_imgs += num_images
+            print 'TOTAL: %d' % (total_imgs)
+            print "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
         except AttributeError, e:
             print sys.exc_info()
 
@@ -183,6 +191,8 @@ class Api(Subject):
 class ToonLoop(render.Game):
     """
     ToonLoop is a realtime stop motion tool.
+
+    For 1 GB of RAM, one can expect to stock about 3000 images at 640x480, if having much swap memory.
     """
     TEXTURE_MOST_RECENT = 0
     TEXTURE_PLAYBACK = 1
@@ -358,12 +368,16 @@ class ToonLoop(render.Game):
         """
         Copies the last grabbed frame to the list of images.
         """
-        if self.is_mac:
-            self.shot.images.append(self.most_recent_image.copy())
-        else:
-            self.shot.images.append(self.most_recent_image)
-        # Creates an OpenGL texture
-        texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
+        try:
+            if self.is_mac:
+                self.shot.images.append(self.most_recent_image.copy())
+            else:
+                self.shot.images.append(self.most_recent_image)
+            # Creates an OpenGL texture
+            texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
+        except MemoryError, e:
+            print "CRITICAL ERROR : No more RAM Memory !!!", e.message
+
     
     def draw(self):
         """
@@ -772,16 +786,16 @@ class Configuration(Serializable):
         self.onionskin_enabled = False
         self.web_server_port = 8000
         self.onionskin_opacity = 0.3
-        self.playback_opacity = 0.3
+        #self.playback_opacity = 0.3
         self.chromakey_enabled = True
         self.chromakey_on = True
-        self.chromakey_r = 0.0
-        self.chromakey_g = 1.0
+        self.chromakey_r = 0.2
+        self.chromakey_g = 0.9
         self.chromakey_b = 0.0
-        self.chromakey_thresh = 0.5
+        self.chromakey_thresh = 0.2
         self.chromakey_on = True
         self.video_device = 0 
-        self.intervalometer_on = False
+        self.intervalometer_on = False # TODO: clean intervalometer on/enabled stuff
         self.intervalometer_enabled = False
         self.intervalometer_rate_seconds = 30.0 # in seconds
         #self.min_framerate = 0

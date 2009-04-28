@@ -81,11 +81,13 @@ if __name__ == "__main__":
         help="Specifies v4l2 device to grab image from.", default=0)
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true", \
         help="Sets the output to verbose.")
+    # most important, the configuration options:
     parser.add_option("-o", "--option", action="append", nargs=2, \
         help="Sets any toonloop option by name.")
     parser.add_option("-l", "--list-options", \
         dest="list_options", action="store_true", \
         help="Prints the list of options and exit.") 
+    # other args:
     parser.add_option("-f", "--fps", type="int", \
         help="Sets the rendering frame rate.", default=30)
     parser.add_option("-t", "--intervalometer-rate-seconds", type="float",  \
