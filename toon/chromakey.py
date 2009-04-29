@@ -53,7 +53,12 @@ frag = """
  * 
  * :author: Alexandre Quessy <alexandre@quessy.net> 2009
  * :license: GNU Public License version 3
- * Fragment shader for keying. (using a green or blue screen)
+ * 
+ *  smoothstep with distance from target color
+ *  genType smoothStep(genType edge0, genType edge1, genType x);
+ *  The result will be zero if x <= edge0, 1 
+ *  if x >= edge1 and performs smooth Hermite interpolation 
+ *  between 0 and 1 when edge0 < x < edge1. 
  */
 
 // user-configurable variables (read-only)
@@ -75,14 +80,9 @@ void main(void)
     // float input_alpha = gl_Color.a; // used to be 1.0;
     
     //float d = distance(input_color.rgb, keying_color.rgb);
-    float d = abs(length(keying_color.rgb - input_color.rgb));
+    float d = abs(length(abs(keying_color.rgb - input_color.rgb)));
     
 
-    // smoothstep with distance from target color
-    // genType smoothStep(genType edge0, genType edge1, genType x);
-    // The result will be zero if x <= edge0, 1 
-    // if x >= edge1 and performs smooth Hermite interpolation 
-    // between 0 and 1 when edge0 < x < edge1. 
     
     float edge0 = max(thresh - slope, 0.0); // if slope==0 edge0=thresh
     float alpha = smoothstep(edge0, thresh, d);
