@@ -12,10 +12,11 @@ from rats.glsl import ShaderError
 textures = [0] # list of texture ID 
 program = None
 config = {
-    'chromakey_r':0.0,
-    'chromakey_g':1.0,
+    'chromakey_r':0.2,
+    'chromakey_g':0.8,
     'chromakey_b':0.0,
-    'chromakey_thresh':0.6,
+    'chromakey_thresh':0.8,
+    'chromakey_slope':0.2,
     }
 
 # ---------------------------- glsl vertex shader ----------------------------
@@ -57,8 +58,8 @@ frag = """
 
 // user-configurable variables (read-only)
 uniform vec3 keying_color;
-uniform vec3 thresh;
-uniform float alpha_result;
+uniform float thresh;
+uniform float slope;
 
 // the texture
 uniform sampler2DRect image;
@@ -71,44 +72,73 @@ void main(void)
 {
     // sample from the texture 
     vec3 input_color = texture2DRect(image, texcoord0).rgb;
-    float output_alpha = gl_Color.a;// 1.0;
+    // float input_alpha = gl_Color.a; // used to be 1.0;
     
-    // measure distance from keying_color
-    vec3 delta = abs(input_color - keying_color);
-	
-	// for now, not visible if under threshold of proximity
-	// TODO: mix() according the 3 factors of proximity.
-	if (delta.r <= thresh.r && delta.g <= thresh.g && delta.b <= thresh.b)
-	{
-	   output_alpha = alpha_result; // 0.0
-	}
-    gl_FragColor = vec4(input_color, output_alpha); 
+    //float d = distance(input_color.rgb, keying_color.rgb);
+    float d = abs(length(keying_color.rgb - input_color.rgb));
+    
+
+    // smoothstep with distance from target color
+    // genType smoothStep(genType edge0, genType edge1, genType x);
+    // The result will be zero if x <= edge0, 1 
+    // if x >= edge1 and performs smooth Hermite interpolation 
+    // between 0 and 1 when edge0 < x < edge1. 
+    
+    float edge0 = max(thresh - slope, 0.0); // if slope==0 edge0=thresh
+    float alpha = smoothstep(edge0, thresh, d);
+    gl_FragColor = vec4(input_color, alpha); 
 }
 """
+# // float output_alpha = alpha; //  * input_alpha;
+# 
+# uniform float alpha_result;
+#     // measure distance from keying_color
+#     vec3 delta = abs(input_color - keying_color);
+# 	
+# 	// for now, not visible if under threshold of proximity
+# 	// TODO: mix() according the 3 factors of proximity.
+# 	if (delta.r <= thresh.r && delta.g <= thresh.g && delta.b <= thresh.b)
+# 	{
+# 	   output_alpha = alpha_result; // 0.0
+# 	}
+#     gl_FragColor = vec4(input_color, output_alpha); 
+# }
+# """
 # ----------------------------  functions ----------------------------
 
 def set_program_uniforms():
     global program
     global config 
     program.glUniform1i("image", 0)
-    program.glUniform1f("alpha_result", 0.2)
+    # program.glUniform1f("alpha_result", 0.2)
     program.glUniform3f("keying_color", config['chromakey_r'], config['chromakey_g'], config['chromakey_b'])
-    program.glUniform3f("thresh", config['chromakey_thresh'], config['chromakey_thresh'], config['chromakey_thresh'])
+    program.glUniform1f("thresh", config['chromakey_thresh'])
+    program.glUniform1f("slope", config['chromakey_slope'])
+#     print 'color:%s %s %s, thresh:%s, slope:%s' % (config['chromakey_r'], config['chromakey_g'], config['chromakey_b'], thresh, slope)
 
 def program_init():
     global program
-    program = ShaderProgram()
-    program.add_shader_text(GL_VERTEX_SHADER_ARB, vert)
-    program.add_shader_text(GL_FRAGMENT_SHADER_ARB, frag)
-    program.linkShaders()
+    try:
+        program = ShaderProgram()
+        program.add_shader_text(GL_VERTEX_SHADER_ARB, vert)
+        program.add_shader_text(GL_FRAGMENT_SHADER_ARB, frag)
+        program.linkShaders()
+    except Exception, e: 
+        print e.message
 
 def program_enable():
     global program
-    program.enable()
+    try:
+        program.enable()
+    except Exception, e: 
+        print e.message
 
 def program_disable():
     global program
-    program.disable()
+    try:
+        program.disable()
+    except Exception, e: 
+        print e.message
 
 
 # ----------------------------  main  ----------------------------

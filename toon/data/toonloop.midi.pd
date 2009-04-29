@@ -1,4 +1,4 @@
-#N canvas 1812 167 773 693 10;
+#N canvas 1812 167 773 773 10;
 #X obj 83 188 ctlin 64;
 #X text 80 164 Pedal;
 #X obj 80 261 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
@@ -22,7 +22,6 @@
 #X msg 337 281 /framerate/decrease;
 #X msg 337 261 /shot/save;
 #X msg 337 241 /shot/reset;
-#X msg 483 306 /shot/select \$1;
 #X floatatom 483 335 5 0 0 0 - - -;
 #X obj 337 408 list prepend send;
 #X text 355 466 |----- Send FUDI messages to ToonLoop -------|;
@@ -55,12 +54,10 @@
 #X msg 337 321 /frame/remove;
 #X obj 336 491 hradio 30 1 0 10 empty empty empty 0 -8 0 10 -257985
 -1 -1 0;
-#X msg 336 530 /call shot_select \$1;
 #X obj 346 158 bng 50 250 50 0 empty empty ADD 17 7 0 10 -4034 -1 -1
 ;
 #X obj 401 158 bng 50 250 50 0 empty empty REMOVE 17 7 0 10 -258113
 -1 -1;
-#X msg 622 331 /call shot_save;
 #X obj 391 376 r toonloop;
 #X obj 274 725 s toonloop;
 #X msg 334 667 /config/set chromakey_r \$1;
@@ -70,11 +67,11 @@
 #X obj 334 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -258113
 -1 -1 0 1;
 #X obj 368 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 0 1;
+-1 -1 9900 1;
 #X obj 403 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4160
 -1 -1 0 1;
 #X obj 437 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 0 1;
+-1 -1 9900 1;
 #X text 84 22 This is to be used with toonloop v 1 beta for Python
 ;
 #X symbolatom 569 574 25 0 0 0 - - -;
@@ -82,6 +79,21 @@
 #X obj 530 572 bng 15 250 50 0 empty empty empty 17 7 0 10 -258113
 -1 -1;
 #X msg 530 620 /config/set project_name \$1;
+#X obj 475 556 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
+-1 -1 0 1;
+#X msg 495 750 /config/set chromakey_slope \$1;
+#X obj 358 93 key;
+#X obj 577 154 key;
+#X floatatom 577 182 3 0 0 0 - - -;
+#X obj 530 211 sel 32;
+#X obj 529 236 spigot;
+#X obj 549 260 print key;
+#X obj 596 217 tgl 15 0 empty empty empty 17 7 0 10 -260097 -1 -1 1
+1;
+#X obj 626 197 loadbang;
+#X msg 483 306 /clip/select \$1;
+#X msg 622 331 /call clip_save;
+#X msg 336 530 /call clip_select \$1;
 #X connect 0 0 11 0;
 #X connect 3 0 6 0;
 #X connect 3 1 5 0;
@@ -93,57 +105,66 @@
 #X connect 11 0 2 0;
 #X connect 11 0 16 0;
 #X connect 12 0 13 0;
-#X connect 13 0 20 0;
+#X connect 13 0 75 0;
 #X connect 14 0 16 0;
-#X connect 14 1 47 0;
+#X connect 14 1 46 0;
 #X connect 14 3 15 0;
 #X connect 14 4 17 0;
 #X connect 14 6 18 0;
 #X connect 14 7 19 0;
 #X connect 14 8 12 0;
-#X connect 15 0 22 0;
-#X connect 16 0 22 0;
-#X connect 17 0 22 0;
-#X connect 18 0 22 0;
-#X connect 19 0 22 0;
-#X connect 20 0 21 0;
-#X connect 20 0 22 0;
-#X connect 22 0 29 0;
-#X connect 28 0 35 0;
-#X connect 29 0 30 0;
-#X connect 29 0 38 0;
-#X connect 30 0 32 0;
-#X connect 31 0 30 0;
-#X connect 33 0 30 0;
-#X connect 34 0 37 0;
-#X connect 34 0 40 0;
-#X connect 34 1 35 0;
-#X connect 35 0 33 0;
-#X connect 35 1 31 0;
-#X connect 36 0 33 0;
+#X connect 15 0 21 0;
+#X connect 16 0 21 0;
+#X connect 17 0 21 0;
+#X connect 18 0 21 0;
+#X connect 19 0 21 0;
+#X connect 21 0 28 0;
+#X connect 27 0 34 0;
+#X connect 28 0 29 0;
+#X connect 28 0 37 0;
+#X connect 29 0 31 0;
+#X connect 30 0 29 0;
+#X connect 32 0 29 0;
+#X connect 33 0 36 0;
+#X connect 33 0 39 0;
+#X connect 33 1 34 0;
+#X connect 34 0 32 0;
+#X connect 34 1 30 0;
+#X connect 35 0 32 0;
+#X connect 39 0 40 0;
 #X connect 40 0 41 0;
 #X connect 41 0 42 0;
-#X connect 42 0 43 0;
-#X connect 43 0 39 0;
-#X connect 43 0 30 0;
-#X connect 45 0 22 0;
-#X connect 46 0 22 0;
-#X connect 47 0 22 0;
-#X connect 48 0 49 0;
-#X connect 49 0 22 0;
-#X connect 50 0 16 0;
-#X connect 51 0 47 0;
-#X connect 52 0 22 0;
-#X connect 53 0 22 0;
-#X connect 55 0 54 0;
-#X connect 56 0 54 0;
-#X connect 57 0 54 0;
+#X connect 42 0 38 0;
+#X connect 42 0 29 0;
+#X connect 44 0 21 0;
+#X connect 45 0 21 0;
+#X connect 46 0 21 0;
+#X connect 47 0 77 0;
+#X connect 48 0 16 0;
+#X connect 49 0 46 0;
+#X connect 50 0 21 0;
+#X connect 52 0 51 0;
+#X connect 53 0 51 0;
+#X connect 54 0 51 0;
+#X connect 55 0 51 0;
+#X connect 56 0 52 0;
+#X connect 57 0 53 0;
 #X connect 58 0 54 0;
 #X connect 59 0 55 0;
-#X connect 60 0 56 0;
-#X connect 61 0 57 0;
-#X connect 62 0 58 0;
-#X connect 64 0 65 1;
-#X connect 65 0 67 0;
-#X connect 66 0 65 0;
-#X connect 67 0 54 0;
+#X connect 61 0 62 1;
+#X connect 62 0 64 0;
+#X connect 63 0 62 0;
+#X connect 64 0 51 0;
+#X connect 65 0 66 0;
+#X connect 66 0 51 0;
+#X connect 68 0 69 0;
+#X connect 68 0 70 0;
+#X connect 70 0 71 0;
+#X connect 71 0 48 0;
+#X connect 71 0 72 0;
+#X connect 73 0 71 1;
+#X connect 74 0 73 0;
+#X connect 75 0 20 0;
+#X connect 75 0 21 0;
+#X connect 76 0 21 0;
+#X connect 77 0 21 0;

@@ -146,7 +146,7 @@ Use ToonLoop options with -o flag :
     try:
         toonloop = ToonLoop(config)
         if options.verbose:
-            toonloop.api.print_help()
+            toonloop.print_help()
     except ToonLoopError, e:
         print str(e.message)
         print "Exiting toonloop with error"

@@ -32,7 +32,8 @@ try:
     from OpenGL.GL.ARB.fragment_shader import *
     from OpenGL.GL.ARB.vertex_shader import *
 except:
-    raise ShaderError('Error importing GL / shaders')
+    raise
+    # raise ShaderError('Error importing GL / shaders')
 
 class ShaderProgram(object):
     """

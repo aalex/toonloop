@@ -77,9 +77,11 @@ from toon import puredata
 from toon import chromakey
 try:
     from toon import web_server
+    WEB_LOADED = True
 except ImportError, e:
     print "For web support, please install the python-nevow package."
     print e.message
+    WEB_LOADED = False
 
 import pygame
 import pygame.camera
@@ -95,10 +97,10 @@ class ToonLoopError(Exception):
     """
     pass
 
-class ToonShot(Serializable):
+class ToonClip(Serializable):
     """
-    ToonLoop shot.
-    A shot is a serie of frames. 
+    ToonLoop clip.
+    A clip is a serie of frames. 
     """
     def __init__(self, id, **argd):
         """
@@ -106,87 +108,11 @@ class ToonShot(Serializable):
         """
         self.id = id
         self.playhead = 0
-        self.playhead_iterate_every = 3 # Ratio that determines the framerate
-        #self.framerate = 12
+        self.playhead_iterate_every = 3 
+        # Ratio that decides of the framerate
+        # self.framerate = 12
         self.__dict__.update(argd)
         self.images = []
-        # to do:
-        #self.writehead = 0
-        #self.images_file_names = []
-        #self._intervalometer_delayed_id = None
-        #self.intervalometer_enabled = False
-        #self.intervalometer_rate_seconds = 0.1
-
-# class ToonProject(object):
-#     """
-#     Project file with shots and sequences.
-# 
-#     Serializes project and save image files.
-#     """
-#     def __init__(self, name, **kwargs):
-#         self.path = os.path.expanduser("~/toonloop")
-#         self.name = "toonloop"
-#         self.datetime = self.now()
-#         self.__dict__.update(argd)
-#         # self.shots = []
-# 
-#     def now(self):
-#         return strftime("%Y-%m-%d_%Hh%Mm%S")
-#         
-#     def __str__(self):
-#         """
-#         Full path of the project folder.
-#         """
-#         return "%s/%s_%s" % (self.path, self.name, self.datetime)
-        
-class Api(Subject):
-    """
-    The public API for ToonLoop user interfaces.
-    """
-    def __init__(self, app):
-        self.app = app
-
-    def print_help(self):
-        """
-        Prints help and usage.
-        """
-        print "ToonLoop keyboard controls : "
-        print "<Space bar> = add image to loop "
-        print "<Backspace> = remove image from loop "
-        print "r = reset loop"
-        print "p = pause"
-        print "o = toggle onion skin on/off"
-        print "i = print current loop frame number, number of frames in loop and global framerate"
-        print "h = print this help message"
-        print "s = saves all images as jpeg and movie"
-        print "a = enable the intervalometer auto grab"
-        print "k = increase the intervalometer interval"
-        print "j = decrease the intervalometer interval"
-        print "[1, 9]  = select the current shot number"
-        print "<Esc> = quit program\n"
-
-    def print_stats(self):
-        """
-        Print statistics
-        """
-        print ">>>>>>> ToonLoop Statistics >>>>>>>>"
-        try:
-            print "Current playhead: " + str(self.app.shot.playhead)
-            print "Num images: " + str(len(self.app.shot.images))
-            print "FPS: %d" % (self.app.fps)
-            print "Playhead frequency ratio: 30 / %d" % (self.app.shot.playhead_iterate_every)
-            pprint.pprint(self.app.config.__dict__)
-            print 'pygame.display.Info(): ', pygame.display.Info()
-            total_imgs = 0
-            for clip_num in range(len(self.app.shots)):
-                num_images = len(self.app.shots[clip_num].images)
-                print 'Clip #%d has %d images.' % (clip_num, num_images)
-                total_imgs += num_images
-            print 'TOTAL: %d' % (total_imgs)
-            print "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-        except AttributeError, e:
-            print sys.exc_info()
-
 
 class ToonLoop(render.Game):
     """
@@ -203,7 +129,6 @@ class ToonLoop(render.Game):
         Startup poutine.
         """
         self.config = config
-        self.api = Api(self)
         # size of the rendering window
         self._display_size = (self.config.display_width, self.config.display_height)
         self.running = True
@@ -212,12 +137,12 @@ class ToonLoop(render.Game):
         self.image_size = (self.config.image_width, self.config.image_height)
         self.clock = pygame.time.Clock()
         self.fps = 0 # for statistics
-        #self.images_list = [] # only editing one shot for now
-        #self.shot.playhead = 0 
-        self.shot_id = 0 # Currently selected shot
-        self.shot = None # current ToonShot instance
-        self.shots = [] # ToonShot instances
-        self._init_shots()
+        #self.images_list = [] # only editing one clip for now
+        #self.clip.playhead = 0 
+        self.clip_id = 0 # Currently selected clip
+        self.clip = None # current ToonClip instance
+        self.clips = [] # ToonClip instances
+        self._init_clips()
         self.renderer = None # Renderer instance that owns it.
         self._intervalometer_delayed_id = None
         # the icon
@@ -250,26 +175,67 @@ class ToonLoop(render.Game):
             self.intervalometer_toggle(True)
         reactor.callLater(0, self._setup_services)
 
-    def _init_shots(self):
+    def print_stats(self):
+        """
+        Print statistics
+        """
+        print ">>>>>>> ToonLoop Statistics >>>>>>>>"
+        try:
+            print "Current playhead: " + str(self.clip.playhead)
+            print "Num images: " + str(len(self.clip.images))
+            print "FPS: %d" % (self.fps)
+            print "Playhead frequency ratio: 30 / %d" % (self.clip.playhead_iterate_every)
+            pprint.pprint(self.config.__dict__)
+            print 'pygame.display.Info(): ', pygame.display.Info()
+            total_imgs = 0
+            for clip_num in range(len(self.clips)):
+                num_images = len(self.clips[clip_num].images)
+                print 'Clip #%d has %d images.' % (clip_num, num_images)
+                total_imgs += num_images
+            print 'TOTAL: %d' % (total_imgs)
+            print "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+        except AttributeError, e:
+            print sys.exc_info()
+
+    def print_help(self):
+        """
+        Prints help for live keyboard controls.
+        """
+        print "ToonLoop keyboard controls : "
+        print "<Space bar> = add image to loop "
+        print "<Backspace> = remove image from loop "
+        print "r = reset loop"
+        print "p = pause"
+        print "o = toggle onion skin on/off"
+        print "i = prints informations"
+        print "h = prints this help message"
+        print "s = saves current clip as jpeg and movie"
+        print "a = enable the intervalometer auto grab"
+        print "k = increase the intervalometer interval"
+        print "j = decrease the intervalometer interval"
+        print "[1, 9]  = select a clip from the current project"
+        print "<Esc> = quit program\n"
+
+    def _init_clips(self):
         """
         Creates a new project.
         """
-        for i in range(self.config.max_num_shots):
-            self.shots.append(ToonShot(i))
+        for i in range(self.config.max_num_clips):
+            self.clips.append(ToonClip(i))
         try:
-            self.shot = self.shots[self.shot_id]
+            self.clip = self.clips[self.clip_id]
         except IndexError:
-            self.shot_id = 0
-            self.shot = self.shots[self.shot_id]
+            self.clip_id = 0
+            self.clip = self.clips[self.clip_id]
 
-    def shot_select(self, index=0):
+    def clip_select(self, index=0):
         """
-        Selects an other shot
+        Selects an other clip
         """
-        self.shot_id = index
-        self.shot = self.shots[index]
+        self.clip_id = index
+        self.clip = self.clips[index]
         if self.config.verbose:
-            print "Shot #%s"  %(self.shot_id)
+            print "Clip #%s"  % (self.clip_id)
         self._clear_playback_view()
         
     def _setup_window(self):
@@ -352,17 +318,19 @@ class ToonLoop(render.Game):
         """
         #self.osc = opensoundcontrol.ToonOsc(self)
         #index_file_path = os.path.join(os.curdir, 'toon', 'index.rst') 
+        if WEB_LOADED :
+            try:
+                self.web = web_server.start(self, self.config.web_server_port,
+                    static_files_path=self.config.toonloop_home)
+                    #index_file_path=index_file_path)
+            except:
+                print "Error loading web UI :"
+                print sys.exc_info()
         try:
-            self.web = web_server.start(self, self.config.web_server_port,
-                static_files_path=self.config.toonloop_home)
-                #index_file_path=index_file_path)
+            self.pd = puredata.start(self) #, receive_port=15555, send_port=17777, send_host="localhost")
         except:
-            print "Error loading web UI :"
-            print sys.exc_info()
-        #try:
-        self.pd = puredata.start(self) #, receive_port=15555, send_port=17777, send_host="localhost")
-        #except:
-        #    print "Error loading puredata:", sys.exc_info()
+            print "Error loading puredata:", sys.exc_info()
+            raise
 
     def frame_add(self):
         """
@@ -370,9 +338,9 @@ class ToonLoop(render.Game):
         """
         try:
             if self.is_mac:
-                self.shot.images.append(self.most_recent_image.copy())
+                self.clip.images.append(self.most_recent_image.copy())
             else:
-                self.shot.images.append(self.most_recent_image)
+                self.clip.images.append(self.most_recent_image)
             # Creates an OpenGL texture
             texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
         except MemoryError, e:
@@ -386,7 +354,7 @@ class ToonLoop(render.Game):
         """
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         if not self.paused:
-            self._playhead_iterator = (self._playhead_iterator + 1) % self.shot.playhead_iterate_every
+            self._playhead_iterator = (self._playhead_iterator + 1) % self.clip.playhead_iterate_every
             if self._playhead_iterator ==  0:
                 self._playhead_iterate()
                 # 30/3 = 10 FPS
@@ -471,13 +439,13 @@ class ToonLoop(render.Game):
         """ 
         Increments the playhead position of one frame
         """
-        if self.shot.playhead < len(self.shot.images):
-            image = self.shot.images[self.shot.playhead]
+        if self.clip.playhead < len(self.clip.images):
+            image = self.clip.images[self.clip.playhead]
             texture_from_image(self.textures[self.TEXTURE_PLAYBACK], image)
-            self.shot.playhead += 1
-            # old: self.display.blit(self.shot.images[self.shot.playhead], (self.config.image_width, 0))
+            self.clip.playhead += 1
+            # old: self.display.blit(self.clip.images[self.clip.playhead], (self.config.image_width, 0))
         else:
-            self.shot.playhead = 0
+            self.clip.playhead = 0
 
     def _clear_playback_view(self):
         """
@@ -505,14 +473,14 @@ class ToonLoop(render.Game):
         else:
             self.paused = not self.paused
 
-    def shot_reset(self):
+    def clip_reset(self):
         """
         Deletes all frames from the current animation
         """
-        self.shot.images = []
+        self.clip.images = []
         self._clear_playback_view()
 
-    def shot_save(self):
+    def clip_save(self):
         """
         Saves all images as jpeg and encodes them to a MJPEG movie.
         
@@ -524,9 +492,13 @@ class ToonLoop(render.Game):
         if self.config.verbose:
             print "Saving images ", path, file_name
         try:
-            os.makedirs(path)
+            if not os.path.exists(path):
+                os.makedirs(path)
+            data_subdir = os.path.join(path, 'data')
+            if not os.path.exists(data_subdir):
+                os.makedirs(data_subdir)
         except OSError, e:
-            pass # print "error creating directory", path, e.message
+            print 'Error creating directories', path, e.message
         reactor.callLater(0, self._write_01_next_image, path, file_name, 0)
 
     def _write_01_next_image(self, path, file_name, index):
@@ -534,11 +506,11 @@ class ToonLoop(render.Game):
         Saves each image using twisted in order not to freeze the app.
         Uses the JPG extension.
         """
-        if index < len(self.shot.images):
+        if index < len(self.clip.images):
             name = ("%s/%s_%5d.jpg" % (path, file_name, index)).replace(' ', '0')
             if self.config.verbose:
                 print "writing %s" % (name)
-            pygame.image.save(self.shot.images[index], name) # filename extension makes it a JPEG
+            pygame.image.save(self.clip.images[index], name) # filename extension makes it a JPEG
             reactor.callLater(0, self._write_01_next_image, path, file_name, index + 1)
         else:
             reactor.callLater(0, self._write_02_images_done, path, file_name, index)
@@ -551,12 +523,12 @@ class ToonLoop(render.Game):
             if self.config.verbose:
                 print "\nConverting to motion JPEG in Quicktime container."
             fps = 6 # TODO
-            #self.shot.increment_every # self.shot.framerate
+            #self.clip.increment_every # self.clip.framerate
             #fps = self.renderer.desired_fps 
 
             deferred = mencoder.jpeg_to_movie(file_name, path, fps, self.config.verbose, self.config.image_width, self.config.image_height)
             deferred.addCallback(self._write_03_movie_done, file_name, path, index)
-            # to do : serialize shots with file names
+            # to do : serialize clips with file names
             # self.project_file = 'project.txt'
 
     def _write_03_movie_done(self, results, file_name, path, index):
@@ -568,19 +540,31 @@ class ToonLoop(render.Game):
             print "Done converting %s/%s.mov" % (path, file_name)
         reactor.callLater(1.0, self._write_04_delete_images, path, file_name, index)
 
-
     def _write_04_delete_images(self, path, file_name, index):
         """
         deletes JPG images. 
         renames MOV file.
         """
-        if self.config.delete_jpeg:
-            files = glob.glob("%s/%s_*.jpg" % (path, file_name))
-            for f in files:
+
+        files = glob.glob("%s/%s_*.jpg" % (path, file_name))
+        for f in files:
+            if self.config.delete_jpeg:
                 try:
                     os.remove(f)
+                    if self.config.verbose:
+                        print 'removed', f
                 except OSError, e:
                     print "%s Error removing file %s" % (e.message, f)
+            else:
+                try:
+                    dest = os.path.join(path, 'data', os.path.basename(f))
+                    shutil.move(f, dest)
+                    if self.config.verbose:
+                        print 'moved', f, dest
+                except IOError, e:
+                    print "%s Error moving file %s to %s" % (e.message, f, dest)
+                
+        # rename final movie file
         try:
             src = "%s/%s.mov" % (path, file_name)
             dest = "%s/clip_%s.mov" % (path, file_name)
@@ -594,10 +578,10 @@ class ToonLoop(render.Game):
         """
         Deletes the last frame from the current list of images.
         """
-        if self.shot.images != []:
-            self.shot.images.pop()
+        if self.clip.images != []:
+            self.clip.images.pop()
             # would it be better to also delete it ? calling del
-            if self.shot.images == []:
+            if self.clip.images == []:
                 self._clear_playback_view()
             else:
                 pass 
@@ -616,9 +600,9 @@ class ToonLoop(render.Game):
         #     if will_be > 0 and will_be <= 60:
         #         self.renderer.desired_fps = will_be
         #         print "FPS:", will_be
-        will_be = self.shot.playhead_iterate_every - dir
+        will_be = self.clip.playhead_iterate_every - dir
         if will_be > self.config.min_framerate and will_be <= self.config.max_framerate:
-            self.shot.playhead_iterate_every = will_be
+            self.clip.playhead_iterate_every = will_be
             if self.config.verbose:
                 print "Playhead frequency ratio: 30 / %d" % (will_be)
     
@@ -638,53 +622,53 @@ class ToonLoop(render.Game):
                     self.intervalometer_rate_increase(1)
                 elif e.key == K_j: # J
                     self.intervalometer_rate_increase(-1)
-                elif e.key == K_f: # F
+                elif e.key == K_f: # F Fullscreen
                     pygame.display.toggle_fullscreen()
-                elif e.key == K_i: # I
+                elif e.key == K_i: # I Info
                     try:
-                        self.api.print_stats()
+                        self.print_stats()
                     except Exception, e:
                         print e.message
-                elif e.key == K_p: # P
+                elif e.key == K_p: # P Pause
                     self.pause()
-                elif e.key == K_r: # R 
-                    self.shot_reset()
-                elif e.key == K_h: # H
-                    self.api.print_help()
-                elif e.key == K_s: # S 
-                    self.shot_save()
-                elif e.key == K_o: # O
+                elif e.key == K_r: # R Reset
+                    self.clip_reset()
+                elif e.key == K_h: # H Help
+                    self.print_help()
+                elif e.key == K_s: # S Save
+                    self.clip_save()
+                elif e.key == K_o: # O Onion
                     self.onionskin_toggle()
-                elif e.key == K_a: # A
+                elif e.key == K_a: # A Auto
                     print "toggle intervalometer"
                     self.intervalometer_toggle()
-                elif e.key == K_0: # 0 to 9
-                    self.shot_select(0)
+                elif e.key == K_0: # [0, 9] Clip selection
+                    self.clip_select(0)
                 elif e.key == K_1:
-                    self.shot_select(1)
+                    self.clip_select(1)
                 elif e.key == K_2:
-                    self.shot_select(2)
+                    self.clip_select(2)
                 elif e.key == K_3:
-                    self.shot_select(3)
+                    self.clip_select(3)
                 elif e.key == K_4:
-                    self.shot_select(4)
+                    self.clip_select(4)
                 elif e.key == K_5:
-                    self.shot_select(5)
+                    self.clip_select(5)
                 elif e.key == K_6:
-                    self.shot_select(6)
+                    self.clip_select(6)
                 elif e.key == K_7:
-                    self.shot_select(7)
+                    self.clip_select(7)
                 elif e.key == K_8:
-                    self.shot_select(8)
+                    self.clip_select(8)
                 elif e.key == K_9:
-                    self.shot_select(9)
-                elif e.key == K_UP: # UP
+                    self.clip_select(9)
+                elif e.key == K_UP: # UP Speed Increase
                     self.framerate_increase(1)
-                elif e.key == K_DOWN: # DOWN
+                elif e.key == K_DOWN: # DOWN Speed Decrease
                     self.framerate_increase(-1)
-                elif e.key == K_SPACE: # SPACE
+                elif e.key == K_SPACE: # SPACE Add frame
                     self.frame_add()
-                elif e.key == K_BACKSPACE: # BACKSPACE
+                elif e.key == K_BACKSPACE: # BACKSPACE Remove frame
                     self.frame_remove()
                 elif e.key == K_ESCAPE: #  or e.key == K_q: # ESCAPE or Q
                     self.running = False
@@ -739,7 +723,7 @@ class ToonLoop(render.Game):
         """
         self.frame_add()
         if self.config.verbose:
-            print "intervalometer auto grab" 
+            print "intervalometer auto grab", len(self.clip) 
             sys.stdout.flush()
         if self.intervalometer_on:
             self._intervalometer_delayed_id = reactor.callLater(self.intervalometer_rate_seconds, self._intervalometer_frame_add)
@@ -769,7 +753,7 @@ class Configuration(Serializable):
     def __init__(self, **argd): 
         self.toonloop_home = os.path.expanduser("~/Documents/toonloop")
         self.project_name = "new_project" # name of the folder
-        self.max_num_shots = 10
+        self.max_num_clips = 10
         self.delete_jpeg = False
         self.image_width = 640
         self.image_height = 480
@@ -793,18 +777,13 @@ class Configuration(Serializable):
         self.chromakey_g = 0.9
         self.chromakey_b = 0.0
         self.chromakey_thresh = 0.2
+        self.chromakey_slope = 0.2
         self.chromakey_on = True
         self.video_device = 0 
         self.intervalometer_on = False # TODO: clean intervalometer on/enabled stuff
         self.intervalometer_enabled = False
         self.intervalometer_rate_seconds = 30.0 # in seconds
-        #self.min_framerate = 0
-        #self.max_framerate = 30
         #self.project_file = 'project.txt'
-        #self.keying_allowed = False
-        #self.keying_color = (0.0, 1.0, 0.0)
-        #self.keying_thresh = 0.3
-        #self.keying_slope = 0.0
         #self.max_num_frames = 1000
         #self.osc_receive_hosts = ''
         # overrides some attributes whose defaults and names are below.

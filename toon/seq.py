@@ -60,3 +60,33 @@ def load_image(file_name, colorkey=None):
             image.set_colorkey(colorkey, RLEACCEL)
     return image, image.get_rect()
 
+# class ToonClip :
+
+        # to do:
+        #self.writehead = 0
+        #self.images_file_names = []
+        #self._intervalometer_delayed_id = None
+        #self.intervalometer_enabled = False
+        #self.intervalometer_rate_seconds = 0.1
+
+# class ToonProject(object):
+#     """
+#     Project file with clips and sequences.
+# 
+#     Serializes project and save image files.
+#     """
+#     def __init__(self, name, **kwargs):
+#         self.path = os.path.expanduser("~/toonloop")
+#         self.name = "toonloop"
+#         self.datetime = self.now()
+#         self.__dict__.update(argd)
+#         # self.clips = []
+# 
+#     def now(self):
+#         return strftime("%Y-%m-%d_%Hh%Mm%S")
+#         
+#     def __str__(self):
+#         """
+#         Full path of the project folder.
+#         """
+#         return "%s/%s_%s" % (self.path, self.name, self.datetime)

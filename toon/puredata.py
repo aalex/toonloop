@@ -32,6 +32,7 @@ class PureData(observer.Observer):
         self.receiver.register_message("/config/set", self.config_set)
         self.receiver.register_message("/frame/add", self.frame_add)
         self.receiver.register_message("/frame/remove", self.frame_remove)
+        self.receiver.register_message("/clip/select", self.frame_remove)
         self.receiver.register_message("/call", self.call)
         try:
             reactor.listenTCP(self.receive_port, self.receiver)
@@ -130,16 +131,16 @@ class PureData(observer.Observer):
             except Exception, e:
                 print e.message
 
-    def shot_select(self, receiver, *args): 
+    def clip_select(self, receiver, *args): 
         """
-        /shot select <index>
+        /clip select <index>
         index=0
         """
         if self.verbose:
-            print "/shot/select", args
+            print "/clip/select", args
         if self.app is not None:
             try:
-                self.app.shot_select(int(args[0]))
+                self.app.clip_select(int(args[0]))
             except Exception, e:
                 print e.message
 
