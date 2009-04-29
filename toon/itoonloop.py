@@ -119,6 +119,11 @@ class ToonLoop(render.Game):
     ToonLoop is a realtime stop motion tool.
 
     For 1 GB of RAM, one can expect to stock about 3000 images at 640x480, if having much swap memory.
+
+    Private methods starts with _.
+    The draw method is a special one inherited from Game.
+
+    Onion skin effect and chroma key shader are mutually exclusives.
     """
     TEXTURE_MOST_RECENT = 0
     TEXTURE_PLAYBACK = 1
@@ -127,6 +132,12 @@ class ToonLoop(render.Game):
     def __init__(self, config):
         """
         Startup poutine.
+
+        Reads config.
+        Starts pygame, the camera, the clips list.
+        Creates the window. Hides the mouse.
+        Start services (OSC, web and FUDI)
+        Enables the chromakey shader or the onion peal.
         """
         self.config = config
         # size of the rendering window
@@ -359,27 +370,27 @@ class ToonLoop(render.Game):
                 self._playhead_iterate()
                 # 30/3 = 10 FPS
         self._camera_grab_frame() # grab a frame
-        
+        chroma_on = self.config.chromakey_enabled and self.config.chromakey_on
         # --------- edit view
-        if self.config.chromakey_enabled and self.config.chromakey_on: 
+        if chroma_on: 
             chromakey.program_enable()
             chromakey.set_program_uniforms()
         self._draw_edit_view()
-        if self.config.chromakey_enabled and self.config.chromakey_on: 
+        if chroma_on:
             chromakey.program_disable()
         # ---------- onion skin
-        if self.config.chromakey_enabled and self.config.chromakey_on: 
+        if chroma_on:
             chromakey.program_enable()
             chromakey.set_program_uniforms()
         self._draw_onion_skin()
-        if self.config.chromakey_enabled and self.config.chromakey_on: 
+        if chroma_on:
             chromakey.program_disable()
         # ---------- playback view
-        if self.config.chromakey_enabled and self.config.chromakey_on: 
+        if chroma_on:
             chromakey.program_enable()
             chromakey.set_program_uniforms()
         self._draw_playback_view()
-        if self.config.chromakey_enabled and self.config.chromakey_on: 
+        if chroma_on:
             chromakey.program_disable()
         
         self.clock.tick()
@@ -587,6 +598,28 @@ class ToonLoop(render.Game):
                 pass 
                 #texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
     
+    def chromakey_toggle(self):
+        """
+        Mutually exclusive with onionskin_toggle
+        """
+        self.config.chromakey_on = not self.config.chromakey_on
+        if self.config.onionskin_enabled:
+            self.config.onionskin_enabled = False
+        print 'chromakey_toggle', self.config.chromakey_on
+
+    def onionskin_toggle(self, val=None):
+        """
+        Toggles on/off the onion skin. 
+        (see most recent frame grabbed in transparency)
+        Mutually exclusive with chromakey_toggle
+        """
+        if val is not None:
+            self.config.onionskin_enabled = val
+            if self.config.chromakey_on:
+                self.config.chromakey_on = False
+        else:
+            self.config.onionskin_enabled = not self.config.onionskin_enabled
+            
     def framerate_increase(self, dir=1):
         """
         Increase or decreases the FPS
@@ -620,6 +653,9 @@ class ToonLoop(render.Game):
             elif e.type == KEYDOWN: 
                 if e.key == K_k: # K
                     self.intervalometer_rate_increase(1)
+                elif e.key == K_c: # C : chromakey toggle
+                    # self.config.chromakey_on
+                    self.chromakey_toggle()
                 elif e.key == K_j: # J
                     self.intervalometer_rate_increase(-1)
                 elif e.key == K_f: # F Fullscreen
@@ -675,16 +711,6 @@ class ToonLoop(render.Game):
     def quit(self):
         self.running = False
 
-    def onionskin_toggle(self, val=None):
-        """
-        Toggles on/off the onion skin. 
-        (see most recent frame grabbed in transparency)
-        """
-        if val is not None:
-            self.config.onionskin_enabled = val
-        else:
-            self.config.onionskin_enabled = not self.config.onionskin_enabled
-            
                 
     def intervalometer_toggle(self, val=None):
         """
