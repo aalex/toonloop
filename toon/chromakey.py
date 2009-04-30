@@ -63,8 +63,8 @@ frag = """
 
 // user-configurable variables (read-only)
 uniform vec3 keying_color;
-uniform float thresh;
-uniform float slope;
+uniform float thresh; // [0, 1.732]
+uniform float slope; // [0, 1]
 
 // the texture
 uniform sampler2DRect image;
@@ -77,18 +77,16 @@ void main(void)
 {
     // sample from the texture 
     vec3 input_color = texture2DRect(image, texcoord0).rgb;
-    // float input_alpha = gl_Color.a; // used to be 1.0;
-    
-    //float d = distance(input_color.rgb, keying_color.rgb);
-    float d = abs(length(abs(keying_color.rgb - input_color.rgb)));
-    
 
-    
-    float edge0 = max(thresh - slope, 0.0); // if slope==0 edge0=thresh
+    float d = abs(length(abs(keying_color.rgb - input_color.rgb)));
+    float edge0 = thresh * (1.0 - slope); 
     float alpha = smoothstep(edge0, thresh, d);
     gl_FragColor = vec4(input_color, alpha); 
 }
 """
+#//float d = distance(input_color.rgb, keying_color.rgb);
+#// float input_alpha = gl_Color.a; // used to be 1.0;
+#// max(thresh - slope, 0.0); // if slope==0 edge0=thresh
 # // float output_alpha = alpha; //  * input_alpha;
 # 
 # uniform float alpha_result;

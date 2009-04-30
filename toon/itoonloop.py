@@ -72,7 +72,7 @@ import toon
 from toon import opensoundcontrol
 from toon import mencoder
 from toon.draw import texture_from_image
-from toon.draw import draw_textured_square
+from toon.draw import draw_textured_square, draw_square
 from toon import puredata
 from toon import chromakey
 try:
@@ -371,6 +371,9 @@ class ToonLoop(render.Game):
                 # 30/3 = 10 FPS
         self._camera_grab_frame() # grab a frame
         chroma_on = self.config.chromakey_enabled and self.config.chromakey_on
+
+        # now, let's draw something
+        # self._draw_background()
         # --------- edit view
         if chroma_on: 
             chromakey.program_enable()
@@ -397,6 +400,21 @@ class ToonLoop(render.Game):
         self.fps = self.clock.get_fps()
         pygame.display.flip()
         # old : pygame.display.update()
+
+    def _draw_background(self):
+        """
+        Renders the background 
+        """
+        r = self.config.bgcolor_r
+        g = self.config.bgcolor_g
+        b = self.config.bgcolor_b
+
+        glColor(r, g, b, 1.0)
+        glPushMatrix()
+        glScalef(4.0, 3, 1.0)
+        draw_square()
+        glPopMatrix()
+        glColor(1.0, 1.0, 1.0, 1.0)
 
     def _camera_grab_frame(self):
         """
@@ -798,6 +816,9 @@ class Configuration(Serializable):
         self.onionskin_enabled = False
         self.web_server_port = 8000
         self.onionskin_opacity = 0.3
+        self.bgcolor_r = 1.0
+        self.bgcolor_g = 0.8
+        self.bgcolor_b = 0.2
         #self.playback_opacity = 0.3
         self.chromakey_enabled = True
         self.chromakey_on = True

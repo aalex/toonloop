@@ -83,3 +83,15 @@ def draw_textured_square(w=None, h=None):
         glTexCoord2f(0.0, h)
         glVertex2f(-1.0, 1.0) # Top Left
         glEnd()
+
+
+def draw_square():
+    """
+    Draws a square of 2 x 2 size centered at 0, 0
+    """
+    glBegin(GL_QUADS)
+    glVertex2f(-1.0, -1.0) # Bottom Left of Quad
+    glVertex2f(1.0, -1.0) # Bottom Right of Quad
+    glVertex2f(1.0, 1.0) # Top Right Of Quad
+    glVertex2f(-1.0, 1.0) # Top Left Of Quad
+    glEnd()
