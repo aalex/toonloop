@@ -118,7 +118,9 @@ Use ToonLoop options with -o flag :
     toonloop -o [name] [value]
         """
         print "ToonLoop options and their default values : \n"
-        for k, v in kwargs.items():
+        # for k, v in kwargs.items():
+        for k in sorted(kwargs):
+            v = kwargs[k]
             print "    -o %s %s" % (k, v)
         print "\nExiting."
         sys.exit(0)

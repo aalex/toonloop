@@ -196,7 +196,9 @@ class ToonLoop(render.Game):
             print "Num images: " + str(len(self.clip.images))
             print "FPS: %d" % (self.fps)
             print "Playhead frequency ratio: 30 / %d" % (self.clip.playhead_iterate_every)
-            pprint.pprint(self.config.__dict__)
+            for k in sorted(self.config.__dict__):
+                v = self.config.__dict__[k]
+                print "    -o %s %s" % (k, v)
             print 'pygame.display.Info(): ', pygame.display.Info()
             total_imgs = 0
             for clip_num in range(len(self.clips)):
@@ -371,6 +373,7 @@ class ToonLoop(render.Game):
                 # 30/3 = 10 FPS
         self._camera_grab_frame() # grab a frame
         chroma_on = self.config.chromakey_enabled and self.config.chromakey_on
+        # TODO: replace by effect number
 
         # now, let's draw something
         # self._draw_background()
@@ -801,8 +804,8 @@ class Configuration(Serializable):
         self.project_name = "new_project" # name of the folder
         self.max_num_clips = 10
         self.delete_jpeg = False
-        self.image_width = 640
-        self.image_height = 480
+        self.image_width = 320 # 640
+        self.image_height = 240 # 480
         self.display_width = 1024
         self.display_height = 768
         self.osc_send_port = 33333

@@ -9,6 +9,21 @@ from rats import observer
 from twisted.internet.error import CannotListenError
 
 class PureData(observer.Observer):
+    """
+    ToonLoop API for Pure Data FUDI network messages.
+
+    /frame/add
+    /frame/remove
+    /clip/select <int>
+    /ping
+    /pong
+    
+    Restricted / dangerous ones : 
+
+    /config/set <string> <any>
+    /call <string> ...
+    /quit
+    """
     def __init__(self, **kwargs):
         self.receive_port = 15555
         self.send_port = 17777
@@ -17,8 +32,10 @@ class PureData(observer.Observer):
         self.sender = None
         self.verbose = True
         self.app = None
+        self.try_again_delay = 30
+        self.try_again = True
+        self.manhole_enable = True
         self.__dict__.update(**kwargs)
-        
         self._init_receiver()
         self._init_sender()
 
@@ -27,13 +44,14 @@ class PureData(observer.Observer):
             print "starting FUDI server on port", self.receive_port
         self.receiver = fudi.FUDIServerFactory()
         self.receiver.register_message("/ping", self.ping)
-        self.receiver.register_message("/quit", self.quit)
         self.receiver.register_message("/pong", self.pong)
-        self.receiver.register_message("/config/set", self.config_set)
         self.receiver.register_message("/frame/add", self.frame_add)
         self.receiver.register_message("/frame/remove", self.frame_remove)
         self.receiver.register_message("/clip/select", self.frame_remove)
-        self.receiver.register_message("/call", self.call)
+        if self.manhole_enable:
+            self.receiver.register_message("/call", self.call)
+            self.receiver.register_message("/config/set", self.config_set)
+            self.receiver.register_message("/quit", self.quit)
         try:
             reactor.listenTCP(self.receive_port, self.receiver)
         except CannotListenError, e:
@@ -46,16 +64,6 @@ class PureData(observer.Observer):
         deferred.addCallback(self._on_connected)
         deferred.addErrback(self._on_error)
 
-    def _send_message(self, selector, *args):
-        # TODO: if cannot send, delete send and raise Error
-        if self.sender is None:
-            print "Cannot send. Sender is None"
-        else:
-            try:
-                self.sender.send_message(selector, *args)
-            except Exception, e:
-                print e.message
-
     def _on_connected(self, sender):
         if self.verbose:
             print "Connected !"
@@ -67,9 +75,20 @@ class PureData(observer.Observer):
             print "  sent ping"
 
     def _on_error(self, failure):
-        print "FUDI sender:", failure.getErrorMessage()
-        reactor.callLater(10, self._init_sender)
+        print 'FUDI server unavailable:', self.send_host, self.send_port
+        # print "FUDI sender:", failure.getErrorMessage()
+        if self.try_again:
+            reactor.callLater(self.try_again_delay, self._init_sender)
     
+    def _send_message(self, selector, *args):
+        # TODO: if cannot send, delete send and raise Error
+        if self.sender is None:
+            print "Cannot send. Sender is None"
+        else:
+            try:
+                self.sender.send_message(selector, *args)
+            except Exception, e:
+                print e.message
     # --------------- FUDI Message Callbacks : ----------
     def ping(self, receiver, *args):
         """
@@ -147,6 +166,8 @@ class PureData(observer.Observer):
     def call(self, receiver, *args):
         """
         Wraps any method from the APP.
+
+        Warning : protect this port !
         """
         if self.verbose:
             print "ANY:", args
