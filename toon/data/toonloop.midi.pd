@@ -1,4 +1,4 @@
-#N canvas 1812 167 773 773 10;
+#N canvas 1410 142 773 773 10;
 #X obj 83 188 ctlin 64;
 #X text 80 164 Pedal;
 #X obj 80 261 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
@@ -23,8 +23,7 @@
 #X msg 337 261 /shot/save;
 #X msg 337 241 /shot/reset;
 #X floatatom 483 335 5 0 0 0 - - -;
-#X obj 337 408 list prepend send;
-#X text 355 466 |----- Send FUDI messages to ToonLoop -------|;
+#X text 323 458 |----- Send FUDI messages to ToonLoop -------|;
 #X obj 485 52 cnv 15 240 120 empty empty empty 20 12 0 14 -258113 -66577
 0;
 #X text 504 69 TOONLOOP MIDI INTERFACE;
@@ -32,7 +31,7 @@
 #X text 503 113 Choose the right MIDI device.;
 #X obj 42 330 bng 50 250 50 0 empty empty Connect 17 7 0 10 -4034 -1
 -1;
-#X obj 337 428 list trim;
+#X obj 142 342 list trim;
 #X obj 42 468 netsend;
 #X msg 42 444 disconnect;
 #X floatatom 42 489 0 0 0 0 - - -;
@@ -41,7 +40,7 @@
 #X obj 42 397 t b b;
 #X obj 98 395 loadbang;
 #X obj 109 498 print received;
-#X obj 355 450 print sending;
+#X obj 140 365 print sending;
 #X obj 109 598 print sending;
 #X obj 109 518 route /ping;
 #X obj 109 538 list prepend /pong;
@@ -52,35 +51,35 @@
 #X msg 626 403 /quit;
 #X msg 624 373 /ping hello 1 2;
 #X msg 337 321 /frame/remove;
-#X obj 336 491 hradio 30 1 0 10 empty empty empty 0 -8 0 10 -257985
+#X obj 329 478 hradio 30 1 0 10 empty empty empty 0 -8 0 10 -257985
 -1 -1 0;
 #X obj 346 158 bng 50 250 50 0 empty empty ADD 17 7 0 10 -4034 -1 -1
 ;
 #X obj 401 158 bng 50 250 50 0 empty empty REMOVE 17 7 0 10 -258113
 -1 -1;
-#X obj 391 376 r toonloop;
-#X obj 274 725 s toonloop;
+#X obj 144 297 r toonloop;
+#X obj 359 744 s toonloop;
 #X msg 334 667 /config/set chromakey_r \$1;
 #X msg 392 687 /config/set chromakey_g \$1;
 #X msg 434 709 /config/set chromakey_b \$1;
 #X msg 457 729 /config/set chromakey_thresh \$1;
 #X obj 334 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -258113
--1 -1 0 1;
+-1 -1 8600 1;
 #X obj 368 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 9900 1;
+-1 -1 0 1;
 #X obj 403 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4160
 -1 -1 0 1;
 #X obj 437 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 9900 1;
+-1 -1 9600 1;
 #X text 84 22 This is to be used with toonloop v 1 beta for Python
 ;
-#X symbolatom 569 574 25 0 0 0 - - -;
-#X obj 529 598 symbol;
-#X obj 530 572 bng 15 250 50 0 empty empty empty 17 7 0 10 -258113
--1 -1;
-#X msg 530 620 /config/set project_name \$1;
+#X symbolatom 104 672 25 0 0 0 - - -;
+#X obj 64 696 symbol;
+#X obj 65 670 bng 15 250 50 0 empty empty empty 17 7 0 10 -258113 -1
+-1;
+#X msg 65 718 /config/set project_name \$1;
 #X obj 475 556 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 0 1;
+-1 -1 2100 1;
 #X msg 495 750 /config/set chromakey_slope \$1;
 #X obj 358 93 key;
 #X obj 577 154 key;
@@ -93,7 +92,15 @@
 #X obj 626 197 loadbang;
 #X msg 483 306 /clip/select \$1;
 #X msg 622 331 /call clip_save;
-#X msg 336 530 /call clip_select \$1;
+#X msg 329 517 /call clip_select \$1;
+#X obj 143 319 list prepend send;
+#X obj 358 413 s toonloop;
+#X obj 329 537 s toonloop;
+#X obj 581 573 openpanel;
+#X obj 581 550 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 583 619 s toonloop;
+#X msg 581 596 /call bgimage_load \$1;
 #X connect 0 0 11 0;
 #X connect 3 0 6 0;
 #X connect 3 1 5 0;
@@ -105,66 +112,69 @@
 #X connect 11 0 2 0;
 #X connect 11 0 16 0;
 #X connect 12 0 13 0;
-#X connect 13 0 75 0;
+#X connect 13 0 74 0;
 #X connect 14 0 16 0;
-#X connect 14 1 46 0;
+#X connect 14 1 45 0;
 #X connect 14 3 15 0;
 #X connect 14 4 17 0;
 #X connect 14 6 18 0;
 #X connect 14 7 19 0;
 #X connect 14 8 12 0;
-#X connect 15 0 21 0;
-#X connect 16 0 21 0;
-#X connect 17 0 21 0;
-#X connect 18 0 21 0;
-#X connect 19 0 21 0;
-#X connect 21 0 28 0;
-#X connect 27 0 34 0;
-#X connect 28 0 29 0;
-#X connect 28 0 37 0;
-#X connect 29 0 31 0;
-#X connect 30 0 29 0;
-#X connect 32 0 29 0;
-#X connect 33 0 36 0;
-#X connect 33 0 39 0;
-#X connect 33 1 34 0;
-#X connect 34 0 32 0;
-#X connect 34 1 30 0;
-#X connect 35 0 32 0;
+#X connect 15 0 78 0;
+#X connect 16 0 78 0;
+#X connect 17 0 78 0;
+#X connect 18 0 78 0;
+#X connect 19 0 78 0;
+#X connect 26 0 33 0;
+#X connect 27 0 28 0;
+#X connect 27 0 36 0;
+#X connect 28 0 30 0;
+#X connect 29 0 28 0;
+#X connect 31 0 28 0;
+#X connect 32 0 35 0;
+#X connect 32 0 38 0;
+#X connect 32 1 33 0;
+#X connect 33 0 31 0;
+#X connect 33 1 29 0;
+#X connect 34 0 31 0;
+#X connect 38 0 39 0;
 #X connect 39 0 40 0;
 #X connect 40 0 41 0;
-#X connect 41 0 42 0;
-#X connect 42 0 38 0;
-#X connect 42 0 29 0;
-#X connect 44 0 21 0;
-#X connect 45 0 21 0;
-#X connect 46 0 21 0;
-#X connect 47 0 77 0;
-#X connect 48 0 16 0;
-#X connect 49 0 46 0;
-#X connect 50 0 21 0;
-#X connect 52 0 51 0;
-#X connect 53 0 51 0;
-#X connect 54 0 51 0;
+#X connect 41 0 37 0;
+#X connect 41 0 28 0;
+#X connect 43 0 78 0;
+#X connect 44 0 78 0;
+#X connect 45 0 78 0;
+#X connect 46 0 76 0;
+#X connect 47 0 16 0;
+#X connect 48 0 45 0;
+#X connect 49 0 77 0;
+#X connect 51 0 50 0;
+#X connect 52 0 50 0;
+#X connect 53 0 50 0;
+#X connect 54 0 50 0;
 #X connect 55 0 51 0;
 #X connect 56 0 52 0;
 #X connect 57 0 53 0;
 #X connect 58 0 54 0;
-#X connect 59 0 55 0;
-#X connect 61 0 62 1;
-#X connect 62 0 64 0;
-#X connect 63 0 62 0;
-#X connect 64 0 51 0;
-#X connect 65 0 66 0;
-#X connect 66 0 51 0;
-#X connect 68 0 69 0;
-#X connect 68 0 70 0;
+#X connect 60 0 61 1;
+#X connect 61 0 63 0;
+#X connect 62 0 61 0;
+#X connect 63 0 50 0;
+#X connect 64 0 65 0;
+#X connect 65 0 50 0;
+#X connect 67 0 68 0;
+#X connect 67 0 69 0;
+#X connect 69 0 70 0;
+#X connect 70 0 47 0;
 #X connect 70 0 71 0;
-#X connect 71 0 48 0;
-#X connect 71 0 72 0;
-#X connect 73 0 71 1;
-#X connect 74 0 73 0;
-#X connect 75 0 20 0;
-#X connect 75 0 21 0;
-#X connect 76 0 21 0;
-#X connect 77 0 21 0;
+#X connect 72 0 70 1;
+#X connect 73 0 72 0;
+#X connect 74 0 20 0;
+#X connect 74 0 78 0;
+#X connect 75 0 78 0;
+#X connect 76 0 79 0;
+#X connect 77 0 27 0;
+#X connect 80 0 83 0;
+#X connect 81 0 80 0;
+#X connect 83 0 82 0;

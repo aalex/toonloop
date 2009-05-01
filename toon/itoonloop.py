@@ -128,6 +128,7 @@ class ToonLoop(render.Game):
     TEXTURE_MOST_RECENT = 0
     TEXTURE_PLAYBACK = 1
     TEXTURE_ONION = 2
+    TEXTURE_BACKGROUND = 3
 
     def __init__(self, config):
         """
@@ -157,8 +158,7 @@ class ToonLoop(render.Game):
         self.renderer = None # Renderer instance that owns it.
         self._intervalometer_delayed_id = None
         # the icon
-        package_base = os.path.dirname(toon.__file__)
-        icon = pygame.image.load(os.path.join(package_base, 'data', "icon.png"))
+        icon = pygame.image.load(os.path.join(self.config.PACKAGE_PATH, 'data', "icon.png"))
         pygame.display.set_icon(icon) # a 32 x 32 surface
         # the pygame window
         self.display = pygame.display.set_mode(self._display_size, OPENGL | DOUBLEBUF | HWSURFACE)
@@ -171,9 +171,11 @@ class ToonLoop(render.Game):
         # self.fudi = None
         self.camera = None
         self.is_mac = False
-        self.textures = [0, 0, 0] # list of OpenGL texture objects id
+        self.textures = [0, 0, 0, 0] # list of OpenGL texture objects id
         self._setup_camera()
         self._setup_window()
+        self.background_image = None
+        self._setup_background()
         self._clear_playback_view()
         self._clear_onion_peal()
         self._playhead_iterator = 0
@@ -185,6 +187,24 @@ class ToonLoop(render.Game):
         if config.intervalometer_on:
             self.intervalometer_toggle(True)
         reactor.callLater(0, self._setup_services)
+
+    def _setup_background(self):
+        """
+        Loads initial background image.
+        """
+        self.bgimage_load(self.config.bgimage)
+
+    def bgimage_load(self, path):
+        """
+        Replace the background image by a new image file path.
+        """
+        if self.config.bgimage_enabled:
+            self.config.bgimage = path
+            if self.config.verbose:
+                print 'setup background', path
+        self.background_image = pygame.image.load(path)
+        # Create an OpenGL texture
+        texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self.background_image)
 
     def print_stats(self):
         """
@@ -376,7 +396,7 @@ class ToonLoop(render.Game):
         # TODO: replace by effect number
 
         # now, let's draw something
-        # self._draw_background()
+        self._draw_background()
         # --------- edit view
         if chroma_on: 
             chromakey.program_enable()
@@ -408,16 +428,33 @@ class ToonLoop(render.Game):
         """
         Renders the background 
         """
-        r = self.config.bgcolor_r
-        g = self.config.bgcolor_g
-        b = self.config.bgcolor_b
+        # r = self.config.bgcolor_r
+        # g = self.config.bgcolor_g
+        # b = self.config.bgcolor_b
 
-        glColor(r, g, b, 1.0)
-        glPushMatrix()
-        glScalef(4.0, 3, 1.0)
-        draw_square()
-        glPopMatrix()
-        glColor(1.0, 1.0, 1.0, 1.0)
+        # glColor(r, g, b, 1.0)
+        # glPushMatrix()
+        # glScalef(4.0, 3, 1.0)
+        # draw_square()
+        # glPopMatrix()
+        # glColor(1.0, 1.0, 1.0, 1.0)
+
+        if self.config.bgimage_enabled:
+            # left view
+            glColor4f(1.0, 1.0, 1.0, 1.0)
+            glPushMatrix()
+            glTranslatef(-2.0, 0.0, 0.0)
+            glScalef(2.0, 1.5, 1.0)
+            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
+            draw_textured_square(self.config.image_width, self.config.image_height)
+            glPopMatrix()
+            # right view
+            glPushMatrix()
+            glTranslatef(2.0, 0.0, 0.0)
+            glScalef(2.0, 1.5, 1.0)
+            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
+            draw_textured_square(self.config.image_width, self.config.image_height)
+            glPopMatrix()
 
     def _camera_grab_frame(self):
         """
@@ -801,11 +838,13 @@ class Configuration(Serializable):
     """
     def __init__(self, **argd): 
         self.toonloop_home = os.path.expanduser("~/Documents/toonloop")
+        self.PACKAGE_PATH = os.path.dirname(toon.__file__)
         self.project_name = "new_project" # name of the folder
         self.max_num_clips = 10
         self.delete_jpeg = False
         self.image_width = 320 # 640
         self.image_height = 240 # 480
+        #self.playback_opacity = 0.9 # 480
         self.display_width = 1024
         self.display_height = 768
         self.osc_send_port = 33333
@@ -819,9 +858,11 @@ class Configuration(Serializable):
         self.onionskin_enabled = False
         self.web_server_port = 8000
         self.onionskin_opacity = 0.3
-        self.bgcolor_r = 1.0
-        self.bgcolor_g = 0.8
         self.bgcolor_b = 0.2
+        self.bgcolor_g = 0.8
+        self.bgcolor_r = 1.0
+        self.bgimage = os.path.join(self.PACKAGE_PATH, 'data/bgimage_01.jpg')
+        self.bgimage_enabled = True
         #self.playback_opacity = 0.3
         self.chromakey_enabled = True
         self.chromakey_on = True
