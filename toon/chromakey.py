@@ -185,6 +185,7 @@ if __name__ == '__main__':
         # w = 1; h = 1
         w = 640.0
         h = 480.0
+        aspectRatio = w / float(h)
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         program.enable()
@@ -207,13 +208,13 @@ if __name__ == '__main__':
         glTranslate(2, 1.5, 0)
         glBegin(GL_QUADS)
         glTexCoord2f(0.0, 0.0)
-        glVertex2f(-1.333, -1.) # Bottom Left
+        glVertex2f(-aspectRatio, -1.) # Bottom Left
         glTexCoord2f(w, 0.0)
-        glVertex2f(1.333, -1.) # Bottom Right
+        glVertex2f(aspectRatio, -1.) # Bottom Right
         glTexCoord2f(w, h)
-        glVertex2f(1.333, 1.) # Top Right
+        glVertex2f(aspectRatio, 1.) # Top Right
         glTexCoord2f(0.0, h)
-        glVertex2f(-1.333, 1.) # Top Left
+        glVertex2f(-aspectRatio, 1.) # Top Left
         glEnd()
         glPopMatrix()
 
