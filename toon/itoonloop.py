@@ -378,7 +378,8 @@ class ToonLoop(render.Game):
             texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
         except MemoryError, e:
             print "CRITICAL ERROR : No more RAM Memory !!!", e.message
-
+        if self.config.verbose:
+            print 'num frames', len(self.clip.images)
     
     def draw(self):
         """
