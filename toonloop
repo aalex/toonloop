@@ -142,9 +142,14 @@ Use ToonLoop options with -o flag :
     if options.option:
         print 'options', options.option
         for k, v in options.option:
-            kind = config.set(k, v)
-            # not catching exception
-            print "OPTION \"%s\" : %s       %s" % (k, v, kind)
+            try:
+                kind = config.set(k, v)
+                print "OPTION \"%s\" : %s       %s" % (k, v, kind)
+            except KeyError, e:
+                raise ToonLoopError('No such ToonLoop option :', e.message)
+            except Exception, e:
+                print sys.exc_info()
+                raise ToonLoopError('Error with ToonLoop option :', e.message)
     try:
         toonloop = ToonLoop(config)
         if options.verbose:

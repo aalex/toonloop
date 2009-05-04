@@ -156,7 +156,6 @@ class ToonLoop(render.Game):
         self.clips = [] # ToonClip instances
         self._init_clips()
         self.renderer = None # Renderer instance that owns it.
-        self._intervalometer_delayed_id = None
         # the icon
         icon = pygame.image.load(os.path.join(self.config.PACKAGE_PATH, 'data', "icon.png"))
         pygame.display.set_icon(icon) # a 32 x 32 surface
@@ -179,13 +178,19 @@ class ToonLoop(render.Game):
         self._clear_playback_view()
         self._clear_onion_peal()
         self._playhead_iterator = 0
-        # copy conf elements
+        # intervalometer
+        self._intervalometer_delayed_id = None
         self.intervalometer_on = self.config.intervalometer_on
-        self.intervalometer_rate_seconds = self.config.intervalometer_rate_seconds
-        if self.config.verbose:
-            pprint.pprint(self.config.__dict__)
         if config.intervalometer_on:
             self.intervalometer_toggle(True)
+        # autosave
+        self._autosave_delayed_id = None
+        self.autosave_on = self.config.autosave_on
+        if config.autosave_on:
+            self.autosave_toggle(True)
+        # copy conf elements
+        if self.config.verbose:
+            pprint.pprint(self.config.__dict__)
         reactor.callLater(0, self._setup_services)
 
     def _setup_background(self):
@@ -557,19 +562,20 @@ class ToonLoop(render.Game):
         See _write_next_image
         """
         # TODO : in a thread
-        file_name = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
-        path = os.path.join(self.config.toonloop_home, self.config.project_name)
-        if self.config.verbose:
-            print "Saving images ", path, file_name
-        try:
-            if not os.path.exists(path):
-                os.makedirs(path)
-            data_subdir = os.path.join(path, 'data')
-            if not os.path.exists(data_subdir):
-                os.makedirs(data_subdir)
-        except OSError, e:
-            print 'Error creating directories', path, e.message
-        reactor.callLater(0, self._write_01_next_image, path, file_name, 0)
+        if len(self.clip.images) > 1:
+            file_name = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
+            path = os.path.join(self.config.toonloop_home, self.config.project_name)
+            if self.config.verbose:
+                print "Saving images ", path, file_name
+            try:
+                if not os.path.exists(path):
+                    os.makedirs(path)
+                data_subdir = os.path.join(path, 'data')
+                if not os.path.exists(data_subdir):
+                    os.makedirs(data_subdir)
+            except OSError, e:
+                print 'Error creating directories', path, e.message
+            reactor.callLater(0, self._write_01_next_image, path, file_name, 0)
 
     def _write_01_next_image(self, path, file_name, index):
         """
@@ -770,6 +776,25 @@ class ToonLoop(render.Game):
     def quit(self):
         self.running = False
 
+    def autosave_toggle(self, val=None):
+        """
+        Toggles on/off the autosave 
+        """
+        if self.config.autosave_enabled:
+            if val is not None:
+                self.autosave_on = val
+            else:
+                self.autosave_on = not self.autosave_on
+            if self.autosave_on:
+                self._autosave_delayed_id = reactor.callLater(0, self._autosave)
+                if self.config.verbose:
+                    print "autosave ON"
+            else:
+                if self._autosave_delayed_id is not None:
+                    if self._autosave_delayed_id.active():
+                        self._autosave_delayed_id.cancel()
+                        if self.config.verbose:
+                            print "autosave OFF"
                 
     def intervalometer_toggle(self, val=None):
         """
@@ -797,9 +822,9 @@ class ToonLoop(render.Game):
         :param dir: by how much increment it.
         """
         if self.config.intervalometer_enabled:
-            will_be = self.intervalometer_rate_seconds + dir
+            will_be = self.config.intervalometer_rate_seconds + dir
             if will_be > 0 and will_be <= 60:
-                self.intervalometer_rate_seconds = will_be
+                self.config.intervalometer_rate_seconds = will_be
                 print "auto rate:", will_be
 
     def _intervalometer_frame_add(self):
@@ -813,7 +838,18 @@ class ToonLoop(render.Game):
             print "intervalometer auto grab", len(self.clip) 
             sys.stdout.flush()
         if self.intervalometer_on:
-            self._intervalometer_delayed_id = reactor.callLater(self.intervalometer_rate_seconds, self._intervalometer_frame_add)
+            self._intervalometer_delayed_id = reactor.callLater(self.config.intervalometer_rate_seconds, self._intervalometer_frame_add)
+
+    def _autosave(self):
+        """
+        Called when it is time to automatically save a movie
+        """
+        # self.frame_add()
+        if self.config.verbose:
+            print "autosave"
+        self.clip_save()
+        if self.autosave_on:
+            self._autosave_delayed_id = reactor.callLater(self.config.autosave_rate_seconds, self._autosave)
 
     def cleanup(self):
         """
@@ -877,6 +913,9 @@ class Configuration(Serializable):
         self.intervalometer_on = False # TODO: clean intervalometer on/enabled stuff
         self.intervalometer_enabled = False
         self.intervalometer_rate_seconds = 30.0 # in seconds
+        self.autosave_on = False 
+        self.autosave_enabled = False
+        self.autosave_rate_seconds = 600.0 # in seconds
         #self.project_file = 'project.txt'
         #self.max_num_frames = 1000
         #self.osc_receive_hosts = ''
