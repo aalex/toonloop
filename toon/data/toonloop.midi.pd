@@ -1,4 +1,4 @@
-#N canvas 1406 199 1122 764 10;
+#N canvas 255 130 1122 764 10;
 #X obj 83 188 ctlin 64;
 #X text 80 164 Pedal;
 #X obj 80 261 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
@@ -64,13 +64,13 @@
 #X msg 434 709 /config/set chromakey_b \$1;
 #X msg 457 729 /config/set chromakey_thresh \$1;
 #X obj 334 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -258113
--1 -1 9900 1;
+-1 -1 0 1;
 #X obj 368 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 9900 1;
+-1 -1 8400 1;
 #X obj 403 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4160
--1 -1 9900 1;
+-1 -1 0 1;
 #X obj 437 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 2800 1;
+-1 -1 4900 1;
 #X text 84 22 This is to be used with toonloop v 1 beta for Python
 ;
 #X symbolatom 104 672 25 0 0 0 - - -;
@@ -79,7 +79,7 @@
 -1;
 #X msg 65 718 /config/set project_name \$1;
 #X obj 475 556 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 3000 1;
+-1 -1 3300 1;
 #X msg 495 750 /config/set chromakey_slope \$1;
 #X obj 358 93 key;
 #X obj 577 154 key;
@@ -107,10 +107,10 @@
 ;
 #X obj 683 570 symbol;
 #X obj 798 269 hradio 30 1 0 10 empty empty empty 0 -8 0 10 -257985
--1 -1 6;
-#X msg 711 468 /home/aalex/src/toonloop/trunk/py/toon/data/bgimage_0\$1.jpg
-;
+-1 -1 0;
 #X obj 788 352 + 1;
+#X msg 711 468 /home/toonloop/src/toonloop/trunk/py/toon/data/bgimage_0\$1.jpg
+;
 #X connect 0 0 11 0;
 #X connect 3 0 6 0;
 #X connect 3 1 5 0;
@@ -191,6 +191,6 @@
 #X connect 84 0 86 0;
 #X connect 85 0 86 0;
 #X connect 86 0 83 0;
-#X connect 87 0 89 0;
-#X connect 88 0 86 0;
-#X connect 89 0 88 0;
+#X connect 87 0 88 0;
+#X connect 88 0 89 0;
+#X connect 89 0 86 0;

@@ -185,7 +185,6 @@ class ToonLoop(render.Game):
             self.intervalometer_toggle(True)
         # autosave
         self._autosave_delayed_id = None
-        self.autosave_on = self.config.autosave_on
         if config.autosave_on:
             self.autosave_toggle(True)
         # copy conf elements
@@ -407,6 +406,9 @@ class ToonLoop(render.Game):
         if chroma_on: 
             chromakey.program_enable()
             chromakey.set_program_uniforms()
+        else:
+            chromakey.program_disable()
+            
         self._draw_edit_view()
         if chroma_on:
             chromakey.program_disable()
@@ -782,10 +784,10 @@ class ToonLoop(render.Game):
         """
         if self.config.autosave_enabled:
             if val is not None:
-                self.autosave_on = val
+                self.config.autosave_on = val
             else:
-                self.autosave_on = not self.autosave_on
-            if self.autosave_on:
+                self.config.autosave_on = not self.config.autosave_on
+            if self.config.autosave_on:
                 self._autosave_delayed_id = reactor.callLater(0, self._autosave)
                 if self.config.verbose:
                     print "autosave ON"
@@ -835,7 +837,7 @@ class ToonLoop(render.Game):
         """
         self.frame_add()
         if self.config.verbose:
-            print "intervalometer auto grab", len(self.clip) 
+            print "intervalometer auto grab", len(self.clip.images) 
             sys.stdout.flush()
         if self.intervalometer_on:
             self._intervalometer_delayed_id = reactor.callLater(self.config.intervalometer_rate_seconds, self._intervalometer_frame_add)
@@ -848,7 +850,7 @@ class ToonLoop(render.Game):
         if self.config.verbose:
             print "autosave"
         self.clip_save()
-        if self.autosave_on:
+        if self.config.autosave_on:
             self._autosave_delayed_id = reactor.callLater(self.config.autosave_rate_seconds, self._autosave)
 
     def cleanup(self):

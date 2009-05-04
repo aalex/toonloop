@@ -52,9 +52,9 @@ class Index(rst.ReStructured, rend.Page, Observer):
         Observer.__init__(self, subject)
         print "Static files root:", self.static_files_path
         try:
-            self.api = subject.api
+            self.api = subject
         except AttributeError, e:
-            print e.message
+            print 'web_server: Index', e.message
             self.api = None
         try:
             rst.ReStructured.__init__(self, self.index_file_path)
