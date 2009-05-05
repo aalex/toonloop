@@ -4,6 +4,7 @@ Communication with Pure Data.
 start also the pd patch.
 """
 import pprint
+import sys
 
 from twisted.internet import reactor
 from twisted.internet.error import CannotListenError

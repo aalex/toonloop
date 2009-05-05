@@ -256,9 +256,8 @@ class ToonLoop(render.Game):
             print "Num images: " + str(len(self.clip.images))
             print "FPS: %d" % (self.fps)
             print "Playhead frequency ratio: 30 / %d" % (self.clip.playhead_iterate_every)
-            for k in sorted(self.config.__dict__):
-                v = self.config.__dict__[k]
-                print "    -o %s %s" % (k, v)
+            self.config.print_values()
+
             print 'pygame.display.Info(): ', pygame.display.Info()
             total_imgs = 0
             for clip_num in range(len(self.clips)):
@@ -1009,21 +1008,33 @@ class Configuration(Serializable):
         
         # overrides some attributes whose defaults and names are below.
         self.__dict__.update(**argd) 
-    
+
+    def print_values(self):
+        for k in sorted(self.__dict__):
+            v = self.__dict__[k]
+            print "    -o %s %s" % (k, v)
+
     def set(self, name, value):
         """
         Casts to its type and sets the value.
 
         Intended to be used even from ASCII string values. (FUDI, etc.)
+
+        A bool value can be set using 'True' or 1 and 'False' or 0
         """
         # try:
         kind = type(self.__dict__[name])
         if kind is bool:
-            casted_value = bool(int(value))
+            if value == 'True':
+                casted_value = True
+            elif value == 'False':
+                casted_value = False
+            else:
+                casted_value = bool(int(value))
         else:
             casted_value = kind(value)
         self.__dict__[name] = casted_value
-        print '<<< self.config.%s = %s(%s)' % (name, kind, self.__dict__[name])
+        print 'config.%s = %s(%s)' % (name, kind.__name__, self.__dict__[name])
         return kind
         # except Exception, e:
         #    print e.message
