@@ -1,196 +1,219 @@
-#N canvas 255 130 1122 764 10;
-#X obj 83 188 ctlin 64;
-#X text 80 164 Pedal;
-#X obj 80 261 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 240 93 notein;
-#X obj 296 137 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#N canvas 1280 133 1047 755 10;
+#X obj 198 114 ctlin 64;
+#X text 196 96 Pedal;
+#X obj 40 130 notein;
+#X obj 85 149 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 288 115 >= 1;
-#X obj 239 142 spigot;
-#X text 240 71 Notes;
-#X obj 239 168 - 36;
-#X floatatom 249 190 5 0 0 0 - - -;
-#X text 81 49 |----- MIDI from Oxygen8 keyboard -------------------|
-;
-#X obj 83 213 sel 127;
-#X obj 483 259 - 12;
-#X obj 483 282 moses 10;
-#X obj 177 213 sel 0 2 4 5 7 9 11 24;
-#X msg 337 301 /framerate/increase;
-#X msg 337 341 /frame/add;
-#X msg 337 281 /framerate/decrease;
-#X msg 337 261 /shot/save;
-#X msg 337 241 /shot/reset;
-#X floatatom 483 335 5 0 0 0 - - -;
-#X text 323 458 |----- Send FUDI messages to ToonLoop -------|;
-#X obj 485 52 cnv 15 240 120 empty empty empty 20 12 0 14 -258113 -66577
+#X obj 77 127 >= 1;
+#X obj 28 154 spigot;
+#X obj 28 180 - 36;
+#X floatatom 38 202 5 0 0 0 - - -;
+#X obj 198 139 sel 127;
+#X obj 344 237 - 12;
+#X obj 344 260 moses 10;
+#X obj 30 219 sel 0 2 4 5 7 9 11 24;
+#X msg 198 279 /framerate/increase;
+#X msg 198 319 /frame/add;
+#X msg 198 259 /framerate/decrease;
+#X msg 198 239 /shot/save;
+#X msg 198 219 /shot/reset;
+#X floatatom 344 313 5 0 0 0 - - -;
+#X obj 346 30 cnv 15 240 120 empty empty empty 20 12 0 14 -258113 -66577
 0;
-#X text 504 69 TOONLOOP MIDI INTERFACE;
-#X text 503 99 Go to Media> MIDI Settings...;
-#X text 503 113 Choose the right MIDI device.;
-#X obj 42 330 bng 50 250 50 0 empty empty Connect 17 7 0 10 -4034 -1
--1;
-#X obj 142 342 list trim;
-#X obj 42 468 netsend;
-#X msg 42 444 disconnect;
-#X floatatom 42 489 0 0 0 0 - - -;
-#X msg 42 421 connect localhost 15555;
-#X obj 109 477 netreceive 17777;
-#X obj 42 397 t b b;
-#X obj 98 395 loadbang;
-#X obj 109 498 print received;
-#X obj 140 365 print sending;
-#X obj 109 598 print sending;
-#X obj 109 518 route /ping;
-#X obj 109 538 list prepend /pong;
-#X obj 109 558 list prepend send;
-#X obj 109 578 list trim;
-#X obj 614 322 cnv 15 120 120 empty empty empty 20 12 0 14 -258113
+#X text 358 57 Go to Media> MIDI Settings...;
+#X text 349 69 Choose the right MIDI device.;
+#X obj 386 309 cnv 15 120 120 empty empty empty 20 12 0 14 -258113
 -66577 0;
-#X msg 626 403 /quit;
-#X msg 624 373 /ping hello 1 2;
-#X msg 337 321 /frame/remove;
-#X obj 329 478 hradio 30 1 0 10 empty empty empty 0 -8 0 10 -257985
+#X msg 398 390 /quit;
+#X msg 396 360 /ping hello 1 2;
+#X msg 198 299 /frame/remove;
+#X obj 170 436 hradio 30 1 0 10 empty empty CLIP_NUMBER 0 -8 0 14 -258113
 -1 -1 0;
-#X obj 346 158 bng 50 250 50 0 empty empty ADD 17 7 0 10 -4034 -1 -1
+#X obj 199 164 bng 50 250 50 0 empty empty ADD 17 7 0 10 -4034 -1 -1
 ;
-#X obj 401 158 bng 50 250 50 0 empty empty REMOVE 17 7 0 10 -258113
+#X obj 254 164 bng 50 250 50 0 empty empty REMOVE 17 7 0 10 -258113
 -1 -1;
-#X obj 144 297 r toonloop;
-#X obj 359 744 s toonloop;
-#X msg 334 667 /config/set chromakey_r \$1;
-#X msg 392 687 /config/set chromakey_g \$1;
-#X msg 434 709 /config/set chromakey_b \$1;
-#X msg 457 729 /config/set chromakey_thresh \$1;
-#X obj 334 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -258113
+#X obj 220 722 s toonloop;
+#X msg 195 645 /config/set chromakey_r \$1;
+#X msg 252 665 /config/set chromakey_g \$1;
+#X msg 295 687 /config/set chromakey_b \$1;
+#X msg 318 707 /config/set chromakey_thresh \$1;
+#X obj 195 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -258113
 -1 -1 0 1;
-#X obj 368 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 8400 1;
-#X obj 403 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4160
--1 -1 0 1;
-#X obj 437 557 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 4900 1;
-#X text 84 22 This is to be used with toonloop v 1 beta for Python
+#X obj 229 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4034
+-1 -1 7000 1;
+#X obj 264 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4160
+-1 -1 900 1;
+#X obj 321 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
+-1 -1 6300 1;
+#X obj 428 608 symbol;
+#X msg 429 630 /config/set project_name \$1;
+#X obj 379 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
+-1 -1 2300 1;
+#X msg 356 728 /config/set chromakey_slope \$1;
+#X obj 360 155 key;
+#X floatatom 396 168 3 0 0 0 - - -;
+#X obj 391 189 sel 32;
+#X obj 390 214 spigot;
+#X obj 410 238 print key;
+#X obj 352 113 tgl 35 0 empty empty enable_space_key_in_pd 35 15 0
+14 -4160 -1 -1 1 1;
+#X obj 354 90 loadbang;
+#X msg 344 284 /clip/select \$1;
+#X msg 394 318 /call clip_save;
+#X msg 170 475 /call clip_select \$1;
+#X obj 219 391 s toonloop;
+#X obj 170 495 s toonloop;
+#X obj 897 441 openpanel;
+#X obj 899 332 bng 35 250 50 0 empty empty openpanel 35 7 0 14 -258113
+-1 -1;
+#X obj 608 497 s toonloop;
+#X msg 609 474 /call bgimage_load \$1;
+#X obj 605 445 symbol;
+#X obj 590 336 hradio 30 1 0 10 empty empty BACKGROUND_IMAGE 0 -8 0
+14 -258113 -1 -1 6;
+#X msg 584 373 /home/toonloop/src/toonloop/trunk/py/toon/data/bgimage_0\$1.jpg
 ;
-#X symbolatom 104 672 25 0 0 0 - - -;
-#X obj 64 696 symbol;
-#X obj 65 670 bng 15 250 50 0 empty empty empty 17 7 0 10 -258113 -1
+#X msg 608 413 /home/aalex/src/toonloop/trunk/py/toon/data/bgimage_0\$1.jpg
+;
+#X msg 510 270 /config/set onionskin_opacity \$1;
+#X obj 507 164 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
+-1 -1 4700 1;
+#X obj 553 201 hradio 30 1 0 3 empty empty EFFECT 0 -8 0 14 -258113
+-1 -1 2;
+#X obj 508 294 s toonloop;
+#X msg 553 242 /call effect_select \$1;
+#X text 547 164 |--- Effect (none \, chromakey \, onionskin) ---|;
+#X text 166 512 |----- Chromakey colors \, thresh \, slope -------|
+;
+#X obj 431 536 cnv 15 240 65 empty empty empty 20 12 0 14 -258113 -66577
+0;
+#X symbolatom 484 568 25 0 0 0 - - -;
+#X obj 443 556 bng 35 250 50 0 empty empty empty 17 7 0 10 -128992
+-1 -1;
+#X text 29 83 Keyboard Notes;
+#N canvas 1373 452 313 469 NETWORK_SUB_PATCH 0;
+#X obj 18 93 bng 50 250 50 0 empty empty Connect 17 7 0 10 -4034 -1
 -1;
-#X msg 65 718 /config/set project_name \$1;
-#X obj 475 556 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 3300 1;
-#X msg 495 750 /config/set chromakey_slope \$1;
-#X obj 358 93 key;
-#X obj 577 154 key;
-#X floatatom 577 182 3 0 0 0 - - -;
-#X obj 530 211 sel 32;
-#X obj 529 236 spigot;
-#X obj 549 260 print key;
-#X obj 596 217 tgl 15 0 empty empty empty 17 7 0 10 -260097 -1 -1 1
-1;
-#X obj 626 197 loadbang;
-#X msg 483 306 /clip/select \$1;
-#X msg 622 331 /call clip_save;
-#X msg 329 517 /call clip_select \$1;
-#X obj 143 319 list prepend send;
-#X obj 358 413 s toonloop;
-#X obj 329 537 s toonloop;
-#X obj 581 573 openpanel;
-#X obj 581 550 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
-#X obj 583 619 s toonloop;
-#X msg 581 596 /call bgimage_load \$1;
-#X msg 700 492 /home/aalex/src/toonloop/trunk/py/toon/data/bgimage_01.jpg
-;
-#X msg 700 513 /home/aalex/src/toonloop/trunk/py/toon/data/bgimage_02.jpg
-;
-#X obj 683 570 symbol;
-#X obj 798 269 hradio 30 1 0 10 empty empty empty 0 -8 0 10 -257985
--1 -1 0;
-#X obj 788 352 + 1;
-#X msg 711 468 /home/toonloop/src/toonloop/trunk/py/toon/data/bgimage_0\$1.jpg
-;
-#X connect 0 0 11 0;
-#X connect 3 0 6 0;
-#X connect 3 1 5 0;
-#X connect 5 0 4 0;
-#X connect 5 0 6 1;
-#X connect 6 0 8 0;
-#X connect 8 0 9 0;
-#X connect 8 0 14 0;
-#X connect 11 0 2 0;
-#X connect 11 0 16 0;
+#X obj 84 114 list trim;
+#X obj 18 231 netsend;
+#X msg 18 207 disconnect;
+#X floatatom 18 252 0 0 0 0 - - -;
+#X msg 18 184 connect localhost 15555;
+#X obj 85 240 netreceive 17777;
+#X obj 18 160 t b b;
+#X obj 74 158 loadbang;
+#X obj 85 261 print received;
+#X obj 82 137 print sending;
+#X obj 85 361 print sending;
+#X obj 85 281 route /ping;
+#X obj 85 301 list prepend /pong;
+#X obj 85 321 list prepend send;
+#X obj 85 341 list trim;
+#X obj 85 71 r toonloop;
+#X obj 85 91 list prepend send;
+#X text 15 49 |--- FUDI ASCII with ToonLoop ---|;
+#X obj 25 23 inlet;
+#X connect 0 0 7 0;
+#X connect 1 0 2 0;
+#X connect 1 0 10 0;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 5 0 2 0;
+#X connect 6 0 9 0;
+#X connect 6 0 12 0;
+#X connect 6 1 7 0;
+#X connect 7 0 5 0;
+#X connect 7 1 3 0;
+#X connect 8 0 5 0;
 #X connect 12 0 13 0;
-#X connect 13 0 74 0;
-#X connect 14 0 16 0;
-#X connect 14 1 45 0;
-#X connect 14 3 15 0;
-#X connect 14 4 17 0;
-#X connect 14 6 18 0;
-#X connect 14 7 19 0;
-#X connect 14 8 12 0;
-#X connect 15 0 78 0;
-#X connect 16 0 78 0;
-#X connect 17 0 78 0;
-#X connect 18 0 78 0;
-#X connect 19 0 78 0;
-#X connect 26 0 33 0;
-#X connect 27 0 28 0;
-#X connect 27 0 36 0;
-#X connect 28 0 30 0;
+#X connect 13 0 14 0;
+#X connect 14 0 15 0;
+#X connect 15 0 11 0;
+#X connect 15 0 2 0;
+#X connect 16 0 17 0;
+#X connect 17 0 1 0;
+#X connect 19 0 0 0;
+#X restore 436 95 pd NETWORK_SUB_PATCH;
+#X text 17 67 |-- MIDI from Oxygen8 keyboard --|;
+#X msg 901 462 set \$1;
+#X msg 900 481;
+#X text 436 538 |----- Project name (path) ----|;
+#X text 593 58 <-- This is to be used with toonloop v 1 beta for Python
+;
+#X text 592 74 <-- Main Network sub patch is HERE;
+#X text 593 89 <-- It communicates with ToonLoop using FUDI (ASCII)
+;
+#X text 360 39 TOONLOOP MIDI/GUI INTERFACE;
+#X text 594 104 <-- Made by Alexandre Quessy in 2009;
+#X text 592 119 <-- GNU GPL version 3;
+#X obj 594 5 bng 50 250 50 0 empty empty Connect 17 7 0 10 -4034 -1
+-1;
+#X connect 0 0 8 0;
+#X connect 2 0 5 0;
+#X connect 2 1 4 0;
+#X connect 4 0 3 0;
+#X connect 4 0 5 1;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 6 0 11 0;
+#X connect 8 0 26 0;
+#X connect 9 0 10 0;
+#X connect 10 0 48 0;
+#X connect 11 0 13 0;
+#X connect 11 1 24 0;
+#X connect 11 3 12 0;
+#X connect 11 4 14 0;
+#X connect 11 6 15 0;
+#X connect 11 7 16 0;
+#X connect 11 8 9 0;
+#X connect 12 0 51 0;
+#X connect 13 0 51 0;
+#X connect 14 0 51 0;
+#X connect 15 0 51 0;
+#X connect 16 0 51 0;
+#X connect 22 0 51 0;
+#X connect 23 0 51 0;
+#X connect 24 0 51 0;
+#X connect 25 0 50 0;
+#X connect 26 0 13 0;
+#X connect 27 0 24 0;
 #X connect 29 0 28 0;
+#X connect 30 0 28 0;
 #X connect 31 0 28 0;
-#X connect 32 0 35 0;
-#X connect 32 0 38 0;
-#X connect 32 1 33 0;
-#X connect 33 0 31 0;
-#X connect 33 1 29 0;
-#X connect 34 0 31 0;
-#X connect 38 0 39 0;
+#X connect 32 0 28 0;
+#X connect 33 0 29 0;
+#X connect 34 0 30 0;
+#X connect 35 0 31 0;
+#X connect 36 0 32 0;
+#X connect 37 0 38 0;
+#X connect 38 0 28 0;
 #X connect 39 0 40 0;
-#X connect 40 0 41 0;
-#X connect 41 0 37 0;
-#X connect 41 0 28 0;
-#X connect 43 0 78 0;
-#X connect 44 0 78 0;
-#X connect 45 0 78 0;
-#X connect 46 0 76 0;
-#X connect 47 0 16 0;
-#X connect 48 0 45 0;
-#X connect 49 0 77 0;
-#X connect 51 0 50 0;
-#X connect 52 0 50 0;
-#X connect 53 0 50 0;
-#X connect 54 0 50 0;
-#X connect 55 0 51 0;
-#X connect 56 0 52 0;
-#X connect 57 0 53 0;
-#X connect 58 0 54 0;
-#X connect 60 0 61 1;
-#X connect 61 0 63 0;
+#X connect 40 0 28 0;
+#X connect 41 0 42 0;
+#X connect 41 0 43 0;
+#X connect 43 0 44 0;
+#X connect 44 0 26 0;
+#X connect 44 0 45 0;
+#X connect 46 0 44 1;
+#X connect 47 0 46 0;
+#X connect 48 0 17 0;
+#X connect 48 0 51 0;
+#X connect 49 0 51 0;
+#X connect 50 0 52 0;
+#X connect 53 0 56 0;
+#X connect 53 0 74 0;
+#X connect 54 0 53 0;
+#X connect 56 0 55 0;
+#X connect 57 0 56 0;
+#X connect 58 0 60 0;
+#X connect 59 0 57 0;
+#X connect 60 0 57 0;
+#X connect 61 0 64 0;
 #X connect 62 0 61 0;
-#X connect 63 0 50 0;
-#X connect 64 0 65 0;
-#X connect 65 0 50 0;
-#X connect 67 0 68 0;
-#X connect 67 0 69 0;
-#X connect 69 0 70 0;
-#X connect 70 0 47 0;
-#X connect 70 0 71 0;
-#X connect 72 0 70 1;
-#X connect 73 0 72 0;
-#X connect 74 0 20 0;
-#X connect 74 0 78 0;
-#X connect 75 0 78 0;
-#X connect 76 0 79 0;
-#X connect 77 0 27 0;
-#X connect 80 0 83 0;
-#X connect 81 0 80 0;
-#X connect 83 0 82 0;
-#X connect 84 0 86 0;
-#X connect 85 0 86 0;
-#X connect 86 0 83 0;
-#X connect 87 0 88 0;
-#X connect 88 0 89 0;
-#X connect 89 0 86 0;
+#X connect 63 0 65 0;
+#X connect 65 0 64 0;
+#X connect 69 0 37 1;
+#X connect 70 0 37 0;
+#X connect 74 0 75 0;
+#X connect 83 0 72 0;

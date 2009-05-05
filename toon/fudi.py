@@ -23,14 +23,14 @@ class FUDIProtocol(basic.LineReceiver):
 
     def lineReceived(self, data):
         if VERBOSE:
-            print "data:", data
+            print "FUDI: data:", data
         try:
             message = data.split(";")[0].strip()
         except KeyError:
             log.msg("Got a line without trailing semi-colon.")
         else:
             if VERBOSE:
-                print "message:", message
+                print "FUDI: message:", message
             atoms = message.split()
             if len(atoms) > 0:
                 output = []
@@ -38,7 +38,7 @@ class FUDIProtocol(basic.LineReceiver):
                 for atom in atoms[1:]:
                     atom = atom.strip()
                     if VERBOSE:
-                        print "> atom:", atom
+                        print "FUDI: > atom:", atom
                     if atom.isdigit():
                         output.append(int(atom))
                     else:
@@ -49,14 +49,14 @@ class FUDIProtocol(basic.LineReceiver):
                             output.append(str(atom))
                 if self.factory.callbacks.has_key(selector):
                     if VERBOSE:
-                        print "Calling :", selector, output
+                        print "FUDI: Calling :", selector, output
                     try:
                         self.factory.callbacks[selector](self, *output)
                     except TypeError, e:
-                        print e.message
+                        print "FUDI:lineReceived():", e.message
                 else:
                     #log.msg("Invalid selector %s." % (selector))
-                    print "Invalid selector %s." % (selector)
+                    print "FUDI: Invalid selector %s." % (selector)
 
     def send_message(self, selector, *atoms):
         """
@@ -67,7 +67,8 @@ class FUDIProtocol(basic.LineReceiver):
         for atom in atoms:
             txt += " %s" % (atom)
         txt += ";\r\n"
-        print "sending", txt,
+        if VERBOSE:
+            print "FUDI: sending", txt,
         self.transport.write(txt)
 
 class FUDIServerFactory(Factory):

@@ -3,10 +3,13 @@
 Communication with Pure Data. 
 start also the pd patch.
 """
+import pprint
+
 from twisted.internet import reactor
+from twisted.internet.error import CannotListenError
+
 from toon import fudi 
 from rats import observer
-from twisted.internet.error import CannotListenError
 
 class PureData(observer.Observer):
     """
@@ -66,9 +69,9 @@ class PureData(observer.Observer):
 
     def _on_connected(self, sender):
         if self.verbose:
-            print "Connected !"
-            print "  sender:", sender
-            print "  receiver:", self.receiver
+            print "pd: Connected !"
+            print "pd:   sender:", sender
+            print "pd:   receiver:", self.receiver
         self.sender = sender
         self.sender.send_message("/ping", 1, 2.0, "bang")
         if self.verbose:
@@ -83,7 +86,7 @@ class PureData(observer.Observer):
     def _send_message(self, selector, *args):
         # TODO: if cannot send, delete send and raise Error
         if self.sender is None:
-            print "Cannot send. Sender is None"
+            print "pd: Cannot send. Sender is None"
         else:
             try:
                 self.sender.send_message(selector, *args)
@@ -95,10 +98,10 @@ class PureData(observer.Observer):
         /ping
         """
         if self.verbose:
-            print "received ping", args
+            print "pd: received ping", args
         response = list(args)
         if self.verbose:
-            print "will send", "pong", response
+            print "pd: will send", "pong", response
         self._send_message("pong", *response)
 
     def pong(self, receiver, *args):
@@ -106,7 +109,7 @@ class PureData(observer.Observer):
         /pong
         """
         if self.verbose:
-            print "received pong", args
+            print "pd: received pong", args
 
     def config_set(self, receiver, *args):
         """
@@ -114,13 +117,13 @@ class PureData(observer.Observer):
         /options/set
         """
         if self.verbose:
-            print "config_set", args
+            print "pd: config_set", args
         if self.app is not None:
             try:
                 k = args[0]
                 v = args[1]
                 kind = self.app.config.set(k, v)
-                print "set %s = %s (%s)" % (k, k, kind)
+                print "      set %s = %s (%s)" % (k, k, kind)
             except Exception, e:
                 print e.message
 
@@ -130,7 +133,7 @@ class PureData(observer.Observer):
         /frame/add
         """
         if self.verbose:
-            print "/frame/add", args
+            print "pd: /frame/add", args
         if self.app is not None:
             try:
                 self.app.frame_add()
@@ -143,7 +146,7 @@ class PureData(observer.Observer):
         /frame/add
         """
         if self.verbose:
-            print "/frame/remove", args
+            print "pd: /frame/remove", args
         if self.app is not None:
             try:
                 self.app.frame_remove()
@@ -156,7 +159,7 @@ class PureData(observer.Observer):
         index=0
         """
         if self.verbose:
-            print "/clip/select", args
+            print "pd: /clip/select", args
         if self.app is not None:
             try:
                 self.app.clip_select(int(args[0]))
@@ -170,13 +173,19 @@ class PureData(observer.Observer):
         Warning : protect this port !
         """
         if self.verbose:
-            print "ANY:", args
-        if self.app is not None:
+            print "pd: puredata.call(%s)" % str(args)
+        if self.app is None:
+            print 'ERROR: puredata.app is None'
+        else:
             try:
-                getattr(self.app, args[0])(*args[1:])
-                print 'app.%s(%s)' % (args[0], args[1:])
+                method = getattr(self.app, args[0])
+                method(*args[1:])
+                print '      puredata.%s(%s)' % (args[0], str(args[1:]))
+                print method
             except Exception, e:
-                print e.message
+                print "ERROR @ puredata.call:", e.message
+                print sys.exc_info()
+
 
     
     def quit(self, receiver, *args):
@@ -184,24 +193,30 @@ class PureData(observer.Observer):
         /quit
         """
         if self.verbose:
-            print "received quit", args
+            print "pd: received quit", args
         if self.app is not None:
             self.app.quit()
         else:
             reactor.stop()
         
-def start(app):
+def start(**kwargs): 
+    #receive_port=15555, send_port=17777, send_host='localhost'):
     """
+    Factory for the TOonLoOp FUDI service.
+
     **kwargs
     """
+#     kwargs = {
+#         'app':app,
+#         'receive_port':receive_port,
+#         'send_port':send_port,
+#         'send_host':send_host
+#         } # TODO: send to many subscribers.
+#     # kwargs.update(options)
     fudi.VERBOSE = True
-    kwargs = {
-        'app':app,
-        'receive_port':15555,
-        'send_port':17777,
-        'send_host':"localhost"
-        } # TODO: send to many subscribers.
-    # kwargs.update(options)
+    print "Starting PureData"
+    pprint.pprint(kwargs)
+    
     pd = PureData(**kwargs)
     return pd
 
@@ -210,3 +225,4 @@ if __name__ == '__main__':
     pd = PureData()
     reactor.callLater(15, pd._init_sender) 
     reactor.run()
+

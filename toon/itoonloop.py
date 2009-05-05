@@ -190,7 +190,43 @@ class ToonLoop(render.Game):
         # copy conf elements
         if self.config.verbose:
             pprint.pprint(self.config.__dict__)
-        reactor.callLater(0, self._setup_services)
+        reactor.callLater(0, self._start_services)
+
+    def _start_services(self):
+        """
+        Starts the TOonLoOp network services.
+
+        Called once the Twisted reactor has been started. 
+
+        Implemented services : 
+         * web server with Media RSS and Restructured text
+         * FUDI protocol with PureData
+        """
+        # OSC
+        #self.osc = opensoundcontrol.ToonOsc(self)
+        #index_file_path = os.path.join(os.curdir, 'toon', 'index.rst') 
+        # WEB
+        if WEB_LOADED and self.config.web_enabled:
+            try:
+                self.web = web_server.start(self, self.config.web_server_port,
+                    static_files_path=self.config.toonloop_home)
+                    #index_file_path=index_file_path)
+            except:
+                print "Error loading web UI :"
+                print sys.exc_info()
+        # FUDI
+        if self.config.fudi_enabled:
+            try:
+                # TODO: subscription push mecanism
+                app = self
+                fudi_recv = self.config.fudi_receive_port
+                fudi_send = self.config.fudi_send_port
+                fudi_send_host = self.config.fudi_send_host
+
+                self.pd = puredata.start(app=app, receive_port=fudi_recv, send_port=fudi_send, send_host=fudi_send_host)
+            except:
+                print "Error loading puredata:", sys.exc_info()
+                raise
 
     def _setup_background(self):
         """
@@ -346,28 +382,6 @@ class ToonLoop(render.Game):
         except Exception, e:
             print sys.exc_info()
             raise ToonLoopError("Invalid camera. %s" % (str(e.message)))
-        
-    def _setup_services(self):
-        """
-        Starts the network services.
-
-        Called once the Twisted reactor has been started. 
-        """
-        #self.osc = opensoundcontrol.ToonOsc(self)
-        #index_file_path = os.path.join(os.curdir, 'toon', 'index.rst') 
-        if WEB_LOADED :
-            try:
-                self.web = web_server.start(self, self.config.web_server_port,
-                    static_files_path=self.config.toonloop_home)
-                    #index_file_path=index_file_path)
-            except:
-                print "Error loading web UI :"
-                print sys.exc_info()
-        try:
-            self.pd = puredata.start(self) #, receive_port=15555, send_port=17777, send_host="localhost")
-        except:
-            print "Error loading puredata:", sys.exc_info()
-            raise
 
     def frame_add(self):
         """
@@ -397,34 +411,35 @@ class ToonLoop(render.Game):
                 self._playhead_iterate()
                 # 30/3 = 10 FPS
         self._camera_grab_frame() # grab a frame
-        chroma_on = self.config.chromakey_enabled and self.config.chromakey_on
+        CHROMA_ON = self.config.chromakey_enabled and self.config.chromakey_on
         # TODO: replace by effect number
 
         # now, let's draw something
         self._draw_background()
         # --------- edit view
-        if chroma_on: 
+        if CHROMA_ON: 
             chromakey.program_enable()
             chromakey.set_program_uniforms()
         else:
             chromakey.program_disable()
             
         self._draw_edit_view()
-        if chroma_on:
+        if CHROMA_ON:
             chromakey.program_disable()
         # ---------- onion skin
-        if chroma_on:
+        if CHROMA_ON:
             chromakey.program_enable()
             chromakey.set_program_uniforms()
-        self._draw_onion_skin()
-        if chroma_on:
+        if self.config.onionskin_enabled and self.config.onionskin_on:
+            self._draw_onion_skin()
+        if CHROMA_ON:
             chromakey.program_disable()
         # ---------- playback view
-        if chroma_on:
+        if CHROMA_ON:
             chromakey.program_enable()
             chromakey.set_program_uniforms()
         self._draw_playback_view()
-        if chroma_on:
+        if CHROMA_ON:
             chromakey.program_disable()
         
         self.clock.tick()
@@ -491,15 +506,14 @@ class ToonLoop(render.Game):
 
     def _draw_onion_skin(self):
         # Onion skin :
-        if self.config.onionskin_enabled:
-            glPushMatrix()
-            glTranslatef(-2.0, 0.0, 0.0)
-            glScalef(2.0, 1.5, 1.0)
-            glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
-            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
-            draw_textured_square(self.config.image_width, self.config.image_height)
-            glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
-            glPopMatrix()
+        glPushMatrix()
+        glTranslatef(-2.0, 0.0, 0.0)
+        glScalef(2.0, 1.5, 1.0)
+        glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
+        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
+        draw_textured_square(self.config.image_width, self.config.image_height)
+        glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
+        glPopMatrix()
 
     def _draw_playback_view(self):
         """
@@ -665,14 +679,46 @@ class ToonLoop(render.Game):
                 pass 
                 #texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
     
-    def chromakey_toggle(self):
+    def chromakey_toggle(self, val=None):
         """
         Mutually exclusive with onionskin_toggle
         """
-        self.config.chromakey_on = not self.config.chromakey_on
-        if self.config.onionskin_enabled:
-            self.config.onionskin_enabled = False
-        print 'chromakey_toggle', self.config.chromakey_on
+        if val is not None:
+            self.config.chromakey_on = val is True # set
+        else:
+            self.config.chromakey_on = not self.config.chromakey_on # toggle
+        print 'config.chromakey_on =', self.config.chromakey_on
+        # check chroma key and disables it if so
+        if self.config.chromakey_on:
+            if self.config.onionskin_on:
+                self.config.onionskin_on = False
+                print 'config.onionskin_on =', self.config.onionskin_on
+    
+    def effect_select(self, index=0):
+        """
+        Selects an effect.
+
+        Current choices :
+        * 0 : None
+        * 1 : chromakey
+        * 2 : onionskin
+        """
+
+        if index == 1:
+            if self.config.verbose:
+                print 'EFFECT: chromakey'
+            self.config.chromakey_on = True
+            self.config.onionskin_on = False
+        elif index == 2:
+            if self.config.verbose:
+                print 'EFFECT: onionskin'
+            self.config.chromakey_on = False
+            self.config.onionskin_on = True
+        else:
+            if self.config.verbose:
+                print 'EFFECT: None'
+            self.config.chromakey_on = False
+            self.config.onionskin_on = False
 
     def onionskin_toggle(self, val=None):
         """
@@ -681,11 +727,15 @@ class ToonLoop(render.Game):
         Mutually exclusive with chromakey_toggle
         """
         if val is not None:
-            self.config.onionskin_enabled = val
+            self.config.onionskin_on = val is True # set to val
+        else:
+            self.config.onionskin_on = not self.config.onionskin_on # toggle
+        print 'config.onionskin_on =', self.config.onionskin_on
+        # check onionskin and disables it if so
+        if self.config.onionskin_on:
             if self.config.chromakey_on:
                 self.config.chromakey_on = False
-        else:
-            self.config.onionskin_enabled = not self.config.onionskin_enabled
+                print 'config.chromakey_on =', self.config.chromakey_on
             
     def framerate_increase(self, dir=1):
         """
@@ -701,7 +751,7 @@ class ToonLoop(render.Game):
         #         self.renderer.desired_fps = will_be
         #         print "FPS:", will_be
         will_be = self.clip.playhead_iterate_every - dir
-        if will_be > self.config.min_framerate and will_be <= self.config.max_framerate:
+        if will_be > self.config.framerate_min and will_be <= self.config.framerate_max:
             self.clip.playhead_iterate_every = will_be
             if self.config.verbose:
                 print "Playhead frequency ratio: 30 / %d" % (will_be)
@@ -776,6 +826,10 @@ class ToonLoop(render.Game):
                 elif e.key == K_ESCAPE: #  or e.key == K_q: # ESCAPE or Q
                     self.quit()
     def quit(self):
+        """Quits the application in a short while.
+        """
+        reactor.callLater(0.1, self._quit)
+    def _quit(self):
         self.running = False
 
     def autosave_toggle(self, val=None):
@@ -876,62 +930,100 @@ class Configuration(Serializable):
     Python allows commas at the end of lists and tuples
     """
     def __init__(self, **argd): 
-        self.toonloop_home = os.path.expanduser("~/Documents/toonloop")
+        # constants
         self.PACKAGE_PATH = os.path.dirname(toon.__file__)
+        
+        # basics
+        self.verbose = True
+        self.video_device = 0 
+        
+        # project
+        self.toonloop_home = os.path.expanduser("~/Documents/toonloop")
         self.project_name = "new_project" # name of the folder
+        #self.project_file = 'project.txt'
         self.max_num_clips = 10
         self.delete_jpeg = False
+        
+        # framerate
+        self.framerate_min = 1
+        self.framerate_max = 30
+        # TODO: framerate value
+
+        # image size
         self.image_width = 320 # 640
         self.image_height = 240 # 480
-        #self.playback_opacity = 0.9 # 480
+        #self.playback_opacity = 0.3
+        #self.max_num_frames = 1000
+        
+        # window
         self.display_width = 1024
         self.display_height = 768
-        self.osc_send_port = 33333
-        self.osc_send_host = 'localhost'
-        self.osc_receive_port = 44444
-        self.verbose = True
-        self.min_framerate = 1
-        self.max_framerate = 30
-        self.min_framerate = 1
-        self.max_framerate = 30
-        self.onionskin_enabled = False
+        
+        # web services
         self.web_server_port = 8000
+        self.web_enabled = False
+        
+        # fudi puredata interface
+        self.fudi_enabled = False
+        self.fudi_receive_port = 15555
+        self.fudi_send_port = 17777
+        self.fudi_send_host = 'localhost'
+        
+        # osc is not implemented right now.
+        #self.osc_send_port = 33333
+        #self.osc_send_host = 'localhost'
+        #self.osc_receive_port = 44444
+        #self.osc_receive_hosts = ''
+        
+        # onionskin
+        self.onionskin_enabled = True
+        self.onionskin_on = False
         self.onionskin_opacity = 0.3
-        self.bgcolor_b = 0.2
+        
+        # background
+        self.bgimage_enabled = True
+        self.bgimage = os.path.join(self.PACKAGE_PATH, 'data/bgimage_01.jpg')
+        self.bgcolor_b = 0.2 #TODO: not used so much.
         self.bgcolor_g = 0.8
         self.bgcolor_r = 1.0
-        self.bgimage = os.path.join(self.PACKAGE_PATH, 'data/bgimage_01.jpg')
-        self.bgimage_enabled = True
-        #self.playback_opacity = 0.3
+        
+        # chromakey
         self.chromakey_enabled = True
-        self.chromakey_on = True
+        self.chromakey_on = False
         self.chromakey_r = 0.2
         self.chromakey_g = 0.9
         self.chromakey_b = 0.0
-        self.chromakey_thresh = 0.2
+        self.chromakey_thresh = 0.5
         self.chromakey_slope = 0.2
-        self.chromakey_on = True
-        self.video_device = 0 
-        self.intervalometer_on = False # TODO: clean intervalometer on/enabled stuff
+        
+        # intervalometer
+        self.intervalometer_on = False 
         self.intervalometer_enabled = False
         self.intervalometer_rate_seconds = 30.0 # in seconds
+        # TODO: clean intervalometer on/enabled stuff
+        
+        # autosave
         self.autosave_on = False 
-        self.autosave_enabled = False
+        self.autosave_enabled = True
         self.autosave_rate_seconds = 600.0 # in seconds
-        #self.project_file = 'project.txt'
-        #self.max_num_frames = 1000
-        #self.osc_receive_hosts = ''
+        
         # overrides some attributes whose defaults and names are below.
         self.__dict__.update(**argd) 
     
     def set(self, name, value):
         """
         Casts to its type and sets the value.
+
+        Intended to be used even from ASCII string values. (FUDI, etc.)
         """
         # try:
-        kind = str(type(self.__dict__[name]))
-        self.__dict__[name] = type(self.__dict__[name])(value)
-        print 'set %s = %s (%s)' % (name, value, kind)
+        kind = type(self.__dict__[name])
+        if kind is bool:
+            casted_value = bool(int(value))
+        else:
+            casted_value = kind(value)
+        self.__dict__[name] = casted_value
+        print '<<< self.config.%s = %s(%s)' % (name, kind, self.__dict__[name])
         return kind
         # except Exception, e:
         #    print e.message
