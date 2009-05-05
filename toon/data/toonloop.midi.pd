@@ -1,4 +1,4 @@
-#N canvas 1391 156 1047 755 10;
+#N canvas -142 365 1047 755 10;
 #X obj 198 114 ctlin 64;
 #X text 196 96 Pedal;
 #X obj 33 111 notein;
@@ -9,7 +9,7 @@
 #X obj 28 180 - 36;
 #X floatatom 38 202 5 0 0 0 - - -;
 #X obj 198 139 sel 127;
-#X obj 344 237 - 12;
+#X obj 339 204 - 12;
 #X obj 344 260 moses 10;
 #X obj 30 219 sel 0 2 4 5 7 9 11 24;
 #X msg 198 279 /framerate/increase;
@@ -17,7 +17,7 @@
 #X msg 198 259 /framerate/decrease;
 #X msg 198 239 /shot/save;
 #X msg 198 219 /shot/reset;
-#X floatatom 344 313 5 0 0 0 - - -;
+#X floatatom 461 286 5 0 0 0 - - -;
 #X obj 346 30 cnv 15 240 120 empty empty empty 20 12 0 14 -258113 -66577
 0;
 #X text 358 57 Go to Media> MIDI Settings...;
@@ -41,11 +41,11 @@
 #X obj 195 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -258113
 -1 -1 0 1;
 #X obj 229 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 0 1;
+-1 -1 7406 1;
 #X obj 264 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4160
 -1 -1 0 1;
 #X obj 321 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 8300 1;
+-1 -1 0 1;
 #X obj 428 608 symbol;
 #X msg 429 630 /config/set project_name \$1;
 #X obj 379 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
@@ -71,14 +71,14 @@
 #X msg 609 474 /call bgimage_load \$1;
 #X obj 605 445 symbol;
 #X obj 609 316 hradio 30 1 0 10 empty empty BACKGROUND_IMAGE 0 -8 0
-14 -258113 -1 -1 0;
+14 -258113 -1 -1 9;
 #X msg 584 373 /home/toonloop/src/toonloop/trunk/py/toon/data/bgimage_0\$1.jpg
 ;
 #X msg 608 413 /home/aalex/src/toonloop/trunk/py/toon/data/bgimage_0\$1.jpg
 ;
 #X msg 510 270 /config/set onionskin_opacity \$1;
 #X obj 507 164 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 0 1;
+-1 -1 3500 1;
 #X obj 553 201 hradio 30 1 0 3 empty empty EFFECT 0 -8 0 14 -258113
 -1 -1 1;
 #X obj 508 294 s toonloop;
@@ -150,6 +150,27 @@
 #X obj 594 5 bng 50 250 50 0 empty empty Connect 17 7 0 10 -4034 -1
 -1;
 #X obj 607 351 + 1;
+#X obj 16 298 print notein.on;
+#X obj 337 232 moses 0;
+#X obj 41 648 ctlin;
+#X floatatom 37 676 5 0 0 0 - - -;
+#X floatatom 87 678 5 0 0 0 - - -;
+#X floatatom 131 680 5 0 0 0 - - -;
+#X obj 14 337 ctlin 74;
+#X obj 14 358 / 127;
+#X obj 81 357 / 127;
+#X obj 18 456 / 127;
+#X obj 86 454 / 127;
+#X obj 19 554 / 127;
+#X obj 18 435 ctlin 76;
+#X obj 85 434 ctlin 32;
+#X obj 18 534 ctlin 78;
+#X floatatom 16 383 5 0 0 0 - - -;
+#X floatatom 79 384 5 0 0 0 - - -;
+#X floatatom 88 475 5 0 0 0 - - -;
+#X floatatom 20 482 5 0 0 0 - - -;
+#X floatatom 19 576 5 0 0 0 - - -;
+#X obj 81 336 ctlin 71;
 #X connect 0 0 8 0;
 #X connect 2 0 5 0;
 #X connect 2 1 4 0;
@@ -158,9 +179,11 @@
 #X connect 5 0 6 0;
 #X connect 6 0 7 0;
 #X connect 6 0 11 0;
+#X connect 6 0 85 0;
 #X connect 8 0 26 0;
-#X connect 9 0 10 0;
+#X connect 9 0 86 0;
 #X connect 10 0 48 0;
+#X connect 10 0 17 0;
 #X connect 11 0 13 0;
 #X connect 11 1 24 0;
 #X connect 11 3 12 0;
@@ -198,7 +221,6 @@
 #X connect 44 0 45 0;
 #X connect 46 0 44 1;
 #X connect 47 0 46 0;
-#X connect 48 0 17 0;
 #X connect 48 0 51 0;
 #X connect 49 0 51 0;
 #X connect 50 0 52 0;
@@ -218,4 +240,23 @@
 #X connect 70 0 37 0;
 #X connect 74 0 75 0;
 #X connect 83 0 72 0;
-#X connect 84 0 60 0;
+#X connect 84 0 59 0;
+#X connect 86 1 10 0;
+#X connect 87 0 88 0;
+#X connect 87 1 89 0;
+#X connect 87 2 90 0;
+#X connect 91 0 92 0;
+#X connect 92 0 33 0;
+#X connect 92 0 100 0;
+#X connect 93 0 34 0;
+#X connect 93 0 101 0;
+#X connect 94 0 35 0;
+#X connect 94 0 103 0;
+#X connect 95 0 36 0;
+#X connect 95 0 102 0;
+#X connect 96 0 39 0;
+#X connect 96 0 104 0;
+#X connect 97 0 94 0;
+#X connect 98 0 95 0;
+#X connect 99 0 96 0;
+#X connect 105 0 93 0;
