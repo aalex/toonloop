@@ -981,7 +981,7 @@ class Configuration(Serializable):
         
         # background
         self.bgimage_enabled = True
-        self.bgimage = os.path.join(self.PACKAGE_PATH, 'data/bgimage_01.jpg')
+        self.bgimage = os.path.join(self.PACKAGE_PATH, 'data/bgimage_05.jpg')
         self.bgcolor_b = 0.2 #TODO: not used so much.
         self.bgcolor_g = 0.8
         self.bgcolor_r = 1.0
