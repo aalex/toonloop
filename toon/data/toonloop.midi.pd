@@ -1,6 +1,6 @@
-#N canvas -142 365 1047 755 10;
-#X obj 198 114 ctlin 64;
-#X text 196 96 Pedal;
+#N canvas 1280 146 1047 755 10;
+#X obj 184 107 ctlin 64;
+#X text 182 89 Pedal;
 #X obj 33 111 notein;
 #X obj 90 167 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
@@ -8,7 +8,7 @@
 #X obj 28 154 spigot;
 #X obj 28 180 - 36;
 #X floatatom 38 202 5 0 0 0 - - -;
-#X obj 198 139 sel 127;
+#X obj 184 132 sel 127;
 #X obj 339 204 - 12;
 #X obj 344 260 moses 10;
 #X obj 30 219 sel 0 2 4 5 7 9 11 24;
@@ -29,27 +29,27 @@
 #X msg 198 299 /frame/remove;
 #X obj 170 436 hradio 30 1 0 10 empty empty CLIP_NUMBER 0 -8 0 14 -258113
 -1 -1 0;
-#X obj 199 164 bng 50 250 50 0 empty empty ADD 17 7 0 10 -4034 -1 -1
+#X obj 194 154 bng 50 250 50 0 empty empty ADD 17 7 0 10 -4034 -1 -1
 ;
-#X obj 254 164 bng 50 250 50 0 empty empty REMOVE 17 7 0 10 -258113
+#X obj 259 155 bng 50 250 50 0 empty empty REMOVE 17 7 0 10 -258113
 -1 -1;
 #X obj 220 722 s toonloop;
 #X msg 195 645 /config/set chromakey_r \$1;
 #X msg 252 665 /config/set chromakey_g \$1;
 #X msg 295 687 /config/set chromakey_b \$1;
 #X msg 318 707 /config/set chromakey_thresh \$1;
-#X obj 195 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -258113
--1 -1 0 1;
+#X obj 198 525 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -258113
+-1 -1 9900 1;
 #X obj 229 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 7406 1;
+-1 -1 7400 1;
 #X obj 264 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4160
--1 -1 0 1;
+-1 -1 5100 1;
 #X obj 321 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 0 1;
+-1 -1 5900 1;
 #X obj 428 608 symbol;
 #X msg 429 630 /config/set project_name \$1;
 #X obj 379 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 0 1;
+-1 -1 900 1;
 #X msg 356 728 /config/set chromakey_slope \$1;
 #X obj 360 155 key;
 #X floatatom 396 168 3 0 0 0 - - -;
@@ -58,7 +58,6 @@
 #X obj 410 238 print key;
 #X obj 352 113 tgl 35 0 empty empty enable_space_key_in_pd 35 15 0
 14 -4160 -1 -1 1 1;
-#X obj 354 90 loadbang;
 #X msg 344 284 /clip/select \$1;
 #X msg 394 318 /call clip_save;
 #X msg 170 475 /call clip_select \$1;
@@ -71,16 +70,16 @@
 #X msg 609 474 /call bgimage_load \$1;
 #X obj 605 445 symbol;
 #X obj 609 316 hradio 30 1 0 10 empty empty BACKGROUND_IMAGE 0 -8 0
-14 -258113 -1 -1 9;
+14 -258113 -1 -1 0;
 #X msg 584 373 /home/toonloop/src/toonloop/trunk/py/toon/data/bgimage_0\$1.jpg
 ;
 #X msg 608 413 /home/aalex/src/toonloop/trunk/py/toon/data/bgimage_0\$1.jpg
 ;
 #X msg 510 270 /config/set onionskin_opacity \$1;
 #X obj 507 164 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 3500 1;
+-1 -1 0 1;
 #X obj 553 201 hradio 30 1 0 3 empty empty EFFECT 0 -8 0 14 -258113
--1 -1 1;
+-1 -1 0;
 #X obj 508 294 s toonloop;
 #X msg 553 242 /call effect_select \$1;
 #X text 547 164 |--- Effect (none \, chromakey \, onionskin) ---|;
@@ -152,7 +151,7 @@
 #X obj 607 351 + 1;
 #X obj 16 298 print notein.on;
 #X obj 337 232 moses 0;
-#X obj 41 648 ctlin;
+#X obj 37 615 ctlin;
 #X floatatom 37 676 5 0 0 0 - - -;
 #X floatatom 87 678 5 0 0 0 - - -;
 #X floatatom 131 680 5 0 0 0 - - -;
@@ -171,6 +170,13 @@
 #X floatatom 20 482 5 0 0 0 - - -;
 #X floatatom 19 576 5 0 0 0 - - -;
 #X obj 81 336 ctlin 71;
+#X msg 799 224 /call bgimage_glob_next 1;
+#X obj 153 147 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 97 637 spigot;
+#X msg 797 254 /call bgimage_glob_next 55;
+#X obj 781 276 s toonloop;
+#X obj 352 92 loadbang;
 #X connect 0 0 8 0;
 #X connect 2 0 5 0;
 #X connect 2 1 4 0;
@@ -179,10 +185,11 @@
 #X connect 5 0 6 0;
 #X connect 6 0 7 0;
 #X connect 6 0 11 0;
-#X connect 6 0 85 0;
-#X connect 8 0 26 0;
-#X connect 9 0 86 0;
-#X connect 10 0 48 0;
+#X connect 6 0 84 0;
+#X connect 8 0 106 0;
+#X connect 8 0 13 0;
+#X connect 9 0 85 0;
+#X connect 10 0 47 0;
 #X connect 10 0 17 0;
 #X connect 11 0 13 0;
 #X connect 11 1 24 0;
@@ -191,15 +198,15 @@
 #X connect 11 6 15 0;
 #X connect 11 7 16 0;
 #X connect 11 8 9 0;
-#X connect 12 0 51 0;
-#X connect 13 0 51 0;
-#X connect 14 0 51 0;
-#X connect 15 0 51 0;
-#X connect 16 0 51 0;
-#X connect 22 0 51 0;
-#X connect 23 0 51 0;
-#X connect 24 0 51 0;
-#X connect 25 0 50 0;
+#X connect 12 0 50 0;
+#X connect 13 0 50 0;
+#X connect 14 0 50 0;
+#X connect 15 0 50 0;
+#X connect 16 0 50 0;
+#X connect 22 0 50 0;
+#X connect 23 0 50 0;
+#X connect 24 0 50 0;
+#X connect 25 0 49 0;
 #X connect 26 0 13 0;
 #X connect 27 0 24 0;
 #X connect 29 0 28 0;
@@ -220,43 +227,44 @@
 #X connect 44 0 26 0;
 #X connect 44 0 45 0;
 #X connect 46 0 44 1;
-#X connect 47 0 46 0;
-#X connect 48 0 51 0;
+#X connect 47 0 50 0;
+#X connect 48 0 50 0;
 #X connect 49 0 51 0;
-#X connect 50 0 52 0;
-#X connect 53 0 56 0;
-#X connect 53 0 74 0;
-#X connect 54 0 53 0;
+#X connect 52 0 55 0;
+#X connect 52 0 73 0;
+#X connect 53 0 52 0;
+#X connect 55 0 54 0;
 #X connect 56 0 55 0;
-#X connect 57 0 56 0;
-#X connect 58 0 84 0;
-#X connect 59 0 57 0;
-#X connect 60 0 57 0;
-#X connect 61 0 64 0;
-#X connect 62 0 61 0;
-#X connect 63 0 65 0;
-#X connect 65 0 64 0;
-#X connect 69 0 37 1;
-#X connect 70 0 37 0;
-#X connect 74 0 75 0;
-#X connect 83 0 72 0;
-#X connect 84 0 59 0;
-#X connect 86 1 10 0;
-#X connect 87 0 88 0;
-#X connect 87 1 89 0;
-#X connect 87 2 90 0;
-#X connect 91 0 92 0;
-#X connect 92 0 33 0;
+#X connect 57 0 83 0;
+#X connect 58 0 56 0;
+#X connect 59 0 56 0;
+#X connect 60 0 63 0;
+#X connect 61 0 60 0;
+#X connect 62 0 64 0;
+#X connect 64 0 63 0;
+#X connect 68 0 37 1;
+#X connect 69 0 37 0;
+#X connect 73 0 74 0;
+#X connect 82 0 71 0;
+#X connect 83 0 58 0;
+#X connect 85 1 10 0;
+#X connect 86 0 87 0;
+#X connect 86 1 88 0;
+#X connect 86 2 89 0;
+#X connect 90 0 91 0;
+#X connect 91 0 99 0;
+#X connect 91 0 29 0;
 #X connect 92 0 100 0;
-#X connect 93 0 34 0;
-#X connect 93 0 101 0;
-#X connect 94 0 35 0;
-#X connect 94 0 103 0;
-#X connect 95 0 36 0;
-#X connect 95 0 102 0;
-#X connect 96 0 39 0;
-#X connect 96 0 104 0;
+#X connect 93 0 102 0;
+#X connect 93 0 31 0;
+#X connect 94 0 101 0;
+#X connect 94 0 32 0;
+#X connect 95 0 103 0;
+#X connect 95 0 40 0;
+#X connect 96 0 93 0;
 #X connect 97 0 94 0;
 #X connect 98 0 95 0;
-#X connect 99 0 96 0;
-#X connect 105 0 93 0;
+#X connect 104 0 92 0;
+#X connect 105 0 109 0;
+#X connect 108 0 109 0;
+#X connect 110 0 46 0;

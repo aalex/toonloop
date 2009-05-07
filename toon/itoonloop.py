@@ -181,6 +181,7 @@ class ToonLoop(render.Game):
         # intervalometer
         self._intervalometer_delayed_id = None
         self.intervalometer_on = self.config.intervalometer_on
+        self._bgimage_glob_index = 0
         if config.intervalometer_on:
             self.intervalometer_toggle(True)
         # autosave
@@ -245,6 +246,40 @@ class ToonLoop(render.Game):
         self.background_image = pygame.image.load(path)
         # Create an OpenGL texture
         texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self.background_image)
+    
+    def bgimage_glob_next(self, increment=1):
+        """
+        Loads the next image from the list of JPG images in a directory.
+
+        lowercase .jpg extension.
+        """
+        if self.config.bgimage_glob_enabled:
+            dir = self.config.bgimage_glob
+            ext = '.jpg'
+            pattern = '%s/*%s' % (dir, ext)
+            files = glob.glob(pattern)
+            if self.config.verbose:
+                print 'bgimage_glob_next pattern :', pattern
+                print 'bgimage_glob_next len(files) :', len(files)
+                # print 'bgimage_glob_next files :', files
+                now = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
+                print 'bgimage_glob_next now :', now
+
+            if len(files) > 0:
+                old_val = self._bgimage_glob_index
+                new_val = (self._bgimage_glob_index + increment) % len(files)
+                print 'bgimage_glob_next old_val :', old_val
+                print 'bgimage_glob_next new_val :', new_val
+                if old_val == new_val:
+                    if self.config.verbose:
+                        print 'bgimage_glob_next same val. Not changing:', old_val
+                else:
+                    file_path = files[new_val]
+                    self._bgimage_glob_index = new_val 
+                    print 'bgimage_glob_next self._bgimage_glob_index:', self._bgimage_glob_index
+                    if self.config.verbose:
+                        print 'bgimage_glob_next file_path:', file_path
+                    self.bgimage_load(file_path)
 
     def print_stats(self):
         """
@@ -985,6 +1020,8 @@ class Configuration(Serializable):
         self.bgcolor_b = 0.2 #TODO: not used so much.
         self.bgcolor_g = 0.8
         self.bgcolor_r = 1.0
+        self.bgimage_glob_enabled = False # list of glob JPG files that can be browsed using +/- iteration
+        self.bgimage_glob = os.path.join(self.toonloop_home, self.project_name, 'data') # defaults to the images from the current project !
         
         # chromakey
         self.chromakey_enabled = True
