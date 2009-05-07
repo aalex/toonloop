@@ -558,6 +558,8 @@ class ToonLoop(render.Game):
         glScalef(2.0, 1.5, 1.0)
         # most recent grabbed :
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_MOST_RECENT])
+        if self.config.image_flip_horizontal:
+            glRotatef(180., 0., 1., 0.)
         draw_textured_square(self.config.image_width, self.config.image_height)
         # self.display_width = 1024
         glPopMatrix()
@@ -1011,6 +1013,7 @@ class Configuration(Serializable):
         # image size
         self.image_width = 320 # 640
         self.image_height = 240 # 480
+        self.image_flip_horizontal = False
         #self.playback_opacity = 0.3
         #self.max_num_frames = 1000
         
@@ -1046,7 +1049,6 @@ class Configuration(Serializable):
         self.bgcolor_g = 0.8
         self.bgcolor_r = 1.0
         self.bgimage_glob_enabled = False # list of glob JPG files that can be browsed using +/- iteration
-        self.bgimage_glob = os.path.join(self.toonloop_home, self.project_name, 'data') # defaults to the images from the current project !
         
         # white flash
         self.fx_white_flash = True
@@ -1075,6 +1077,9 @@ class Configuration(Serializable):
         
         # overrides some attributes whose defaults and names are below.
         self.__dict__.update(**argd) 
+
+        # this one is special : it needs other values to set itself. Let's find a way to prevent this
+        self.bgimage_glob = os.path.join(self.toonloop_home, self.project_name, 'data') # defaults to the images from the current project !
 
     def print_values(self):
         for k in sorted(self.__dict__):
