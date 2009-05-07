@@ -173,21 +173,17 @@ class PureData(observer.Observer):
 
         Warning : protect this port !
         """
-        if self.verbose:
-            print "pd: puredata.call(%s)" % str(args)
         if self.app is None:
             print 'ERROR: puredata.app is None'
         else:
             try:
                 method = getattr(self.app, args[0])
+                if self.verbose:
+                    print '      puredata.%s(%s)' % (args[0], str(args[1:])), method
                 method(*args[1:])
-                print '      puredata.%s(%s)' % (args[0], str(args[1:]))
-                print method
             except Exception, e:
                 print "ERROR @ puredata.call:", e.message
                 print sys.exc_info()
-
-
     
     def quit(self, receiver, *args):
         """

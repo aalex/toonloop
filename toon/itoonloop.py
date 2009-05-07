@@ -255,12 +255,14 @@ class ToonLoop(render.Game):
         lowercase .jpg extension.
         """
         if self.config.bgimage_glob_enabled:
+            if self.config.bgimage_glob == '':
+                self.config.bgimage_glob = os.path.join(self.config.toonloop_home, self.config.project_name, 'data')
             dir = self.config.bgimage_glob
             ext = '.jpg'
             pattern = '%s/*%s' % (dir, ext)
             files = glob.glob(pattern)
             if self.config.verbose:
-                print '----------------'
+                #print '----------------'
                 print 'bgimage_glob_next pattern :', pattern
                 print 'bgimage_glob_next len(files) :', len(files)
                 # print 'bgimage_glob_next files :', sorted(files)
@@ -270,7 +272,7 @@ class ToonLoop(render.Game):
             if len(files) > 0:
                 old_val = self._bgimage_glob_index
                 new_val = (self._bgimage_glob_index + increment) % len(files)
-                print 'bgimage_glob_next old_val :', old_val
+                #print 'bgimage_glob_next old_val :', old_val
                 print 'bgimage_glob_next new_val :', new_val
                 if old_val == new_val:
                     if self.config.verbose:
@@ -278,9 +280,9 @@ class ToonLoop(render.Game):
                 else:
                     file_path = sorted(files)[new_val]
                     self._bgimage_glob_index = new_val 
-                    print 'bgimage_glob_next self._bgimage_glob_index:', self._bgimage_glob_index
-                    if self.config.verbose:
-                        print 'bgimage_glob_next file_path:', file_path
+                    # print 'bgimage_glob_next self._bgimage_glob_index:', self._bgimage_glob_index
+                    #if self.config.verbose:
+                        # print 'bgimage_glob_next file_path:', file_path
                     self.bgimage_load(file_path)
                     # if self.config.verbose:
                     #     print 'bgimage_glob_next done'
@@ -640,35 +642,44 @@ class ToonLoop(render.Game):
         """
         # TODO : in a thread
         if len(self.clip.images) > 1:
-            file_name = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
             path = os.path.join(self.config.toonloop_home, self.config.project_name)
+            file_name = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
+            file_name += '_%s' % (self.clip_id)
             if self.config.verbose:
-                print "Saving images ", path, file_name
+                print "Will save images", path, file_name
             try:
                 if not os.path.exists(path):
                     os.makedirs(path)
-                data_subdir = os.path.join(path, 'data')
-                if not os.path.exists(data_subdir):
-                    os.makedirs(data_subdir)
+                    print 'mkdir', path
             except OSError, e:
                 print 'Error creating directories', path, e.message
-            reactor.callLater(0, self._write_01_next_image, path, file_name, 0)
+            else:
+                try:
+                    data_subdir = os.path.join(path, 'data')
+                    if not os.path.exists(data_subdir):
+                        os.makedirs(data_subdir)
+                        print 'mkdir', data_subdir
+                except OSError, e:
+                    print 'Error creating directories', data_subdir, e.message
+                else:
+                    reactor.callLater(0, self._write_01_next_image, path, file_name, 0, self.clip_id)
 
-    def _write_01_next_image(self, path, file_name, index):
+    def _write_01_next_image(self, path, file_name, index, clip_id):
         """
         Saves each image using twisted in order not to freeze the app.
         Uses the JPG extension.
         """
-        if index < len(self.clip.images):
+        # TODO : use clip_id
+        if index < len(self.clips[clip_id].images):
             name = ("%s/%s_%5d.jpg" % (path, file_name, index)).replace(' ', '0')
             if self.config.verbose:
                 print "writing %s" % (name)
-            pygame.image.save(self.clip.images[index], name) # filename extension makes it a JPEG
-            reactor.callLater(0, self._write_01_next_image, path, file_name, index + 1)
+            pygame.image.save(self.clips[clip_id].images[index], name) # filename extension makes it a JPEG
+            reactor.callLater(0, self._write_01_next_image, path, file_name, index + 1, clip_id)
         else:
-            reactor.callLater(0, self._write_02_images_done, path, file_name, index)
+            reactor.callLater(0, self._write_02_images_done, path, file_name, index, clip_id)
     
-    def _write_02_images_done(self, path, file_name, index):
+    def _write_02_images_done(self, path, file_name, index, clip_id):
         """
         Converts the list of images in a motion-JPEG .mov video file.
         """
@@ -680,25 +691,24 @@ class ToonLoop(render.Game):
             #fps = self.renderer.desired_fps 
 
             deferred = mencoder.jpeg_to_movie(file_name, path, fps, self.config.verbose, self.config.image_width, self.config.image_height)
-            deferred.addCallback(self._write_03_movie_done, file_name, path, index)
+            deferred.addCallback(self._write_03_movie_done, file_name, path, index, clip_id)
             # to do : serialize clips with file names
             # self.project_file = 'project.txt'
 
-    def _write_03_movie_done(self, results, file_name, path, index):
+    def _write_03_movie_done(self, results, file_name, path, index, clip_id):
         """
         Called when mencoder conversion is done.
         MOV file.
         """
         if self.config.verbose:
             print "Done converting %s/%s.mov" % (path, file_name)
-        reactor.callLater(1.0, self._write_04_delete_images, path, file_name, index)
+        reactor.callLater(1.0, self._write_04_delete_images, path, file_name, index, clip_id)
 
-    def _write_04_delete_images(self, path, file_name, index):
+    def _write_04_delete_images(self, path, file_name, index, clip_id):
         """
-        deletes JPG images. 
+        deletes JPG images or moves them to the 'data' folder in the project folder.
         renames MOV file.
         """
-
         files = glob.glob("%s/%s_*.jpg" % (path, file_name))
         for f in files:
             if self.config.delete_jpeg:
@@ -724,6 +734,7 @@ class ToonLoop(render.Game):
             shutil.move(src, dest)
             if self.config.verbose:
                 print 'renamed %s to %s' % (src, dest) 
+                print 'DONE SAVING CLIP', clip_id
         except IOError, e:
             print "%s Error moving file %s to %s" % (e.message, src, dest)
 
@@ -764,7 +775,6 @@ class ToonLoop(render.Game):
         * 1 : chromakey
         * 2 : onionskin
         """
-
         if index == 1:
             if self.config.verbose:
                 print 'EFFECT: chromakey'
@@ -1049,6 +1059,7 @@ class Configuration(Serializable):
         self.bgcolor_g = 0.8
         self.bgcolor_r = 1.0
         self.bgimage_glob_enabled = False # list of glob JPG files that can be browsed using +/- iteration
+        self.bgimage_glob = '' # os.path.join(self.toonloop_home, self.project_name, 'data') # defaults to the images from the current project !
         
         # white flash
         self.fx_white_flash = True
@@ -1079,7 +1090,6 @@ class Configuration(Serializable):
         self.__dict__.update(**argd) 
 
         # this one is special : it needs other values to set itself. Let's find a way to prevent this
-        self.bgimage_glob = os.path.join(self.toonloop_home, self.project_name, 'data') # defaults to the images from the current project !
 
     def print_values(self):
         for k in sorted(self.__dict__):
