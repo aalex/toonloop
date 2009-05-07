@@ -39,17 +39,17 @@
 #X msg 295 687 /config/set chromakey_b \$1;
 #X msg 318 707 /config/set chromakey_thresh \$1;
 #X obj 198 525 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -258113
--1 -1 9900 1;
+-1 -1 0 1;
 #X obj 229 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 7400 1;
+-1 -1 0 1;
 #X obj 264 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4160
--1 -1 5100 1;
+-1 -1 0 1;
 #X obj 321 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 5900 1;
+-1 -1 9900 1;
 #X obj 428 608 symbol;
 #X msg 429 630 /config/set project_name \$1;
 #X obj 379 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 900 1;
+-1 -1 0 1;
 #X msg 356 728 /config/set chromakey_slope \$1;
 #X obj 360 155 key;
 #X floatatom 396 168 3 0 0 0 - - -;
@@ -170,13 +170,18 @@
 #X floatatom 20 482 5 0 0 0 - - -;
 #X floatatom 19 576 5 0 0 0 - - -;
 #X obj 81 336 ctlin 71;
-#X msg 799 224 /call bgimage_glob_next 1;
+#X msg 794 210 /call bgimage_glob_next 1;
 #X obj 153 147 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X obj 97 637 spigot;
-#X msg 797 254 /call bgimage_glob_next 55;
 #X obj 781 276 s toonloop;
 #X obj 352 92 loadbang;
+#X obj 920 147 bng 35 250 50 0 empty empty empty 17 7 0 10 -128992
+-1 -1;
+#X msg 789 232 /call bgimage_glob_next 10;
+#X msg 792 252 /call bgimage_glob_next 100;
+#X obj 873 120 bng 35 250 50 0 empty empty empty 17 7 0 10 -128992
+-1 -1;
 #X connect 0 0 8 0;
 #X connect 2 0 5 0;
 #X connect 2 1 4 0;
@@ -265,6 +270,9 @@
 #X connect 97 0 94 0;
 #X connect 98 0 95 0;
 #X connect 104 0 92 0;
-#X connect 105 0 109 0;
-#X connect 108 0 109 0;
-#X connect 110 0 46 0;
+#X connect 105 0 108 0;
+#X connect 109 0 46 0;
+#X connect 110 0 112 0;
+#X connect 111 0 108 0;
+#X connect 112 0 108 0;
+#X connect 113 0 105 0;

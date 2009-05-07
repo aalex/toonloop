@@ -191,6 +191,7 @@ class ToonLoop(render.Game):
         # copy conf elements
         if self.config.verbose:
             pprint.pprint(self.config.__dict__)
+        self._has_just_added_frame = False
         reactor.callLater(0, self._start_services)
 
     def _start_services(self):
@@ -259,11 +260,12 @@ class ToonLoop(render.Game):
             pattern = '%s/*%s' % (dir, ext)
             files = glob.glob(pattern)
             if self.config.verbose:
+                print '----------------'
                 print 'bgimage_glob_next pattern :', pattern
                 print 'bgimage_glob_next len(files) :', len(files)
-                # print 'bgimage_glob_next files :', files
-                now = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
-                print 'bgimage_glob_next now :', now
+                # print 'bgimage_glob_next files :', sorted(files)
+                # now = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
+                # print 'bgimage_glob_next (debug) time is now :', now
 
             if len(files) > 0:
                 old_val = self._bgimage_glob_index
@@ -274,12 +276,16 @@ class ToonLoop(render.Game):
                     if self.config.verbose:
                         print 'bgimage_glob_next same val. Not changing:', old_val
                 else:
-                    file_path = files[new_val]
+                    file_path = sorted(files)[new_val]
                     self._bgimage_glob_index = new_val 
                     print 'bgimage_glob_next self._bgimage_glob_index:', self._bgimage_glob_index
                     if self.config.verbose:
                         print 'bgimage_glob_next file_path:', file_path
                     self.bgimage_load(file_path)
+                    # if self.config.verbose:
+                    #     print 'bgimage_glob_next done'
+                    #     print '----------------'
+                    
 
     def print_stats(self):
         """
@@ -428,6 +434,7 @@ class ToonLoop(render.Game):
                 self.clip.images.append(self.most_recent_image)
             # Creates an OpenGL texture
             texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
+            self._has_just_added_frame = True
         except MemoryError, e:
             print "CRITICAL ERROR : No more RAM Memory !!!", e.message
         if self.config.verbose:
@@ -468,6 +475,11 @@ class ToonLoop(render.Game):
             self._draw_onion_skin()
         if CHROMA_ON:
             chromakey.program_disable()
+        if self._has_just_added_frame:
+            self._has_just_added_frame = False
+            if self.config.fx_white_flash:
+                self._draw_white_flash()
+
         # ---------- playback view
         if CHROMA_ON:
             chromakey.program_enable()
@@ -480,6 +492,19 @@ class ToonLoop(render.Game):
         self.fps = self.clock.get_fps()
         pygame.display.flip()
         # old : pygame.display.update()
+
+    def _draw_white_flash(self):
+        # TODO: use time.time() to create tween.
+        if self.config.verbose:
+            print 'white flash'
+        # left view
+        a = self.config.fx_white_flash_alpha
+        glColor4f(1.0, 1.0, 1.0, a)
+        glPushMatrix()
+        glTranslatef(-2.0, 0.0, 0.0)
+        glScalef(2.0, 1.5, 1.0)
+        draw_square()
+        glPopMatrix()
 
     def _draw_background(self):
         """
@@ -1022,6 +1047,11 @@ class Configuration(Serializable):
         self.bgcolor_r = 1.0
         self.bgimage_glob_enabled = False # list of glob JPG files that can be browsed using +/- iteration
         self.bgimage_glob = os.path.join(self.toonloop_home, self.project_name, 'data') # defaults to the images from the current project !
+        
+        # white flash
+        self.fx_white_flash = True
+        self.fx_white_flash_alpha = 1.0
+        # todo:duration
         
         # chromakey
         self.chromakey_enabled = True

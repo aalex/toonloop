@@ -116,7 +116,9 @@ if __name__ == "__main__":
         # self.intervalometer_on = False
         # self.intervalometer_enabled = False
         # self.intervalometer_rate_seconds = 30.0 # in seconds
-    parser = OptionParser(usage="%prog", version=str(__version__))
+    EPILOG="ToonLoop is a realtime stop motion performance tool. The idea is to spread its use for teaching new medias to children and to give a professional tool for movie creators. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop."
+    parser = OptionParser(usage="%prog", version='ToonLoop ' + str(__version__), \
+        epilog=EPILOG)
     # + " \n\n"  __doc__
     parser.add_option("-d", "--device", dest="device", type="int", \
         help="Specifies v4l2 device to grab image from.", default=0)
