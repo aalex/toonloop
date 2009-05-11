@@ -1,4 +1,4 @@
-#N canvas 1280 146 1047 755 10;
+#N canvas 120 162 1047 755 10;
 #X obj 184 107 ctlin 64;
 #X text 182 89 Pedal;
 #X obj 33 111 notein;
@@ -45,7 +45,7 @@
 #X obj 264 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4160
 -1 -1 0 1;
 #X obj 321 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 9900 1;
+-1 -1 4700 1;
 #X obj 428 608 symbol;
 #X msg 429 630 /config/set project_name \$1;
 #X obj 379 535 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
@@ -57,7 +57,7 @@
 #X obj 390 214 spigot;
 #X obj 410 238 print key;
 #X obj 352 113 tgl 35 0 empty empty enable_space_key_in_pd 35 15 0
-14 -4160 -1 -1 1 1;
+14 -4160 -1 -1 0 1;
 #X msg 344 284 /clip/select \$1;
 #X msg 394 318 /call clip_save;
 #X msg 170 475 /call clip_select \$1;
@@ -71,7 +71,7 @@
 #X obj 605 445 symbol;
 #X obj 609 316 hradio 30 1 0 10 empty empty BACKGROUND_IMAGE 0 -8 0
 14 -258113 -1 -1 0;
-#X msg 584 373 /home/toonloop/src/toonloop/trunk/py/toon/data/bgimage_0\$1.jpg
+#X msg 575 377 /home/toonloop/src/toonloop/trunk/py/toon/data/bgimage_0\$1.jpg
 ;
 #X msg 608 413 /home/aalex/src/toonloop/trunk/py/toon/data/bgimage_0\$1.jpg
 ;
@@ -182,6 +182,20 @@
 #X msg 792 252 /call bgimage_glob_next 100;
 #X obj 873 120 bng 35 250 50 0 empty empty empty 17 7 0 10 -128992
 -1 -1;
+#X text 49 32 http://alexandre.quessy.net;
+#X text 53 17 Alexandre Quessy;
+#X text 807 8 patrick_boivin_stop_motion;
+#X text 811 25 le roi et l'oiseau;
+#X msg 646 641 /home/aalex/toon/images_320x240/texture\$1.jpg;
+#X floatatom 659 614 5 0 0 0 - - -;
+#X floatatom 814 516 5 0 0 0 - - -;
+#X msg 704 556 /home/aalex/toon/images_320x240/ciel\$1.jpg;
+#X obj 674 717 s toonloop;
+#X obj 678 674 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 676 694 /config/set image_flip_horizontal \$1;
+#X floatatom 739 586 5 0 0 0 - - -;
+#X msg 732 617 /home/aalex/toon/images_320x240/barcelone\$1.jpg;
 #X connect 0 0 8 0;
 #X connect 2 0 5 0;
 #X connect 2 1 4 0;
@@ -251,7 +265,7 @@
 #X connect 69 0 37 0;
 #X connect 73 0 74 0;
 #X connect 82 0 71 0;
-#X connect 83 0 58 0;
+#X connect 83 0 59 0;
 #X connect 85 1 10 0;
 #X connect 86 0 87 0;
 #X connect 86 1 88 0;
@@ -276,3 +290,11 @@
 #X connect 111 0 108 0;
 #X connect 112 0 108 0;
 #X connect 113 0 105 0;
+#X connect 118 0 56 0;
+#X connect 119 0 118 0;
+#X connect 120 0 121 0;
+#X connect 121 0 56 0;
+#X connect 123 0 124 0;
+#X connect 124 0 122 0;
+#X connect 125 0 126 0;
+#X connect 126 0 56 0;
