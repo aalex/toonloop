@@ -27,6 +27,8 @@ Converts a series a JPEG images to a MJPEG-4 video file using mencoder.
 The output will be in the same dirctory than the inputs. 
 It is possible to append the path to the mencoder executable like this :
 os.environ['PATH'] += ":/Applications/ToonLoop.app/Contents/Resources/bin"
+
+An other useful beautiful line of code : mencoder -oac copy -ovc copy *.mov -o final_movie.mov
 """
 
 import os
