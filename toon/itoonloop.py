@@ -405,6 +405,8 @@ class ToonLoop(render.Game):
         # except AttributeError, e:
         #     print "Sometimes the camera module need it's init()",
         #     print " to be called and sometimes not."
+        except AttributeError, e:
+            print 'ERROR: pygame.camera has no method init() !', e.message
         except Exception, e:
             print "error calling pygame.camera.init()", e.message
             print sys.exc_info()
