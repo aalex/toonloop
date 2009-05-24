@@ -9,7 +9,7 @@ import sys
 from twisted.internet import reactor
 from twisted.internet.error import CannotListenError
 
-from toon import fudi 
+from rats import fudi 
 from rats import observer
 
 class PureData(observer.Observer):
