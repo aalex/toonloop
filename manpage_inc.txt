@@ -1,0 +1,88 @@
+[DESCRIPTION]
+The ToonLoop Live Stop Motion Tool. 
+
+[SYNOPSIS]
+toonloop [options]
+
+[EXAMPLES]
+You can launch ToonLoop with a whole bunch of options. Options are set
+using the -o flag :
+
+toonloop \
+    -o toonloop_home ~/Public/toonloop \
+    -o project_name hello \
+    -o intervalometer_enabled False \
+    -o bgimage_glob_enabled True \
+    -o image_flip_horizontal True \
+    -o chromakey_on True \
+    -o chromakey_on True \
+    -o chromakey_r 0.2 \
+    -o chromakey_g 0.9 \
+    -o chromakey_b 0.0 \
+    -o chromakey_thresh 0.5 \
+    -o chromakey_slope 0.2 \
+    -o fudi_enabled True \
+    -w 320 \
+    -v
+
+[other]
+Here is the list of options with their default values:
+    -o autosave_enabled True
+    -o autosave_on False
+    -o autosave_rate_seconds 600.0
+    -o bgcolor_b 0.2
+    -o bgcolor_g 0.8
+    -o bgcolor_r 1.0
+    -o bgimage_enabled True
+    -o bgimage_glob 
+    -o bgimage_glob_enabled False
+    -o chromakey_b 0.0
+    -o chromakey_enabled True
+    -o chromakey_g 0.9
+    -o chromakey_on False
+    -o chromakey_r 0.2
+    -o chromakey_slope 0.2
+    -o chromakey_thresh 0.5
+    -o delete_jpeg False
+    -o display_height 768
+    -o display_width 1024
+    -o framerate_max 30
+    -o framerate_min 1
+    -o fudi_enabled False
+    -o fudi_receive_port 15555
+    -o fudi_send_host localhost
+    -o fudi_send_port 17777
+    -o fx_white_flash True
+    -o fx_white_flash_alpha 1.0
+    -o image_flip_horizontal False
+    -o image_height 240
+    -o image_width 320
+    -o intervalometer_enabled True
+    -o intervalometer_on False
+    -o intervalometer_rate_seconds 30.0
+    -o max_num_clips 10
+    -o onionskin_enabled True
+    -o onionskin_on False
+    -o onionskin_opacity 0.3
+    -o project_name new_project
+    -o toonloop_home ~/Documents/toonloop
+    -o verbose False
+    -o video_device 0
+    -o web_enabled False
+    -o web_server_port 8000
+
+[AUTHOR]
+Alexandre Quessy and Tristan Matthews
+
+[REPORTING BUGS]
+http://www.toonloop.com
+
+[COPYRIGHT]
+Copyright 2008 Alexandre Quessy & Tristan Matthews
+<alexandre@quessy.net> & <le.businessman@gmail.com>
+
+ToonLoop is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+

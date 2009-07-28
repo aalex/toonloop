@@ -62,11 +62,13 @@ class PureData(observer.Observer):
             print e.message
             raise
             self.receiver = None
+        return receiver
 
     def _init_sender(self):
         deferred = fudi.create_FUDI_client(self.send_host, self.send_port)
         deferred.addCallback(self._on_connected)
         deferred.addErrback(self._on_error)
+        return deferred
 
     def _on_connected(self, sender):
         if self.verbose:
@@ -96,6 +98,7 @@ class PureData(observer.Observer):
     # --------------- FUDI Message Callbacks : ----------
     def ping(self, receiver, *args):
         """
+        Answers /pong to /ping
         /ping
         """
         if self.verbose:
@@ -107,6 +110,7 @@ class PureData(observer.Observer):
 
     def pong(self, receiver, *args):
         """
+        Receives Pong.
         /pong
         """
         if self.verbose:
@@ -114,8 +118,8 @@ class PureData(observer.Observer):
 
     def config_set(self, receiver, *args):
         """
-        Sets an option
-        /options/set
+        Sets an configuration option.
+        /options/set <name> <value>
         """
         if self.verbose:
             print "pd: config_set", args
@@ -143,8 +147,8 @@ class PureData(observer.Observer):
     
     def frame_remove(self, receiver, *args):
         """
-        Grabs a frame.
-        /frame/add
+        removes a frame.
+        /frame/remove
         """
         if self.verbose:
             print "pd: /frame/remove", args
@@ -156,6 +160,8 @@ class PureData(observer.Observer):
 
     def clip_select(self, receiver, *args): 
         """
+        Select a clip by number.
+
         /clip select <index>
         index=0
         """
@@ -172,6 +178,9 @@ class PureData(observer.Observer):
         Wraps any method from the APP.
 
         Warning : protect this port !
+        Do not use this FUDI protocol when network is not secure.
+
+        call <method> <args...>
         """
         if self.app is None:
             print 'ERROR: puredata.app is None'
@@ -187,6 +196,11 @@ class PureData(observer.Observer):
     
     def quit(self, receiver, *args):
         """
+        Quits the application.
+
+        Warning : protect this port !
+        Do not use this FUDI protocol when network is not secure.
+        
         /quit
         """
         if self.verbose:
@@ -199,7 +213,7 @@ class PureData(observer.Observer):
 def start(**kwargs): 
     #receive_port=15555, send_port=17777, send_host='localhost'):
     """
-    Factory for the TOonLoOp FUDI service.
+    Factory for the ToonLoop FUDI service.
 
     **kwargs
     """
@@ -211,7 +225,7 @@ def start(**kwargs):
 #         } # TODO: send to many subscribers.
 #     # kwargs.update(options)
     fudi.VERBOSE = True
-    print "Starting PureData"
+    print "Starting PureData service."
     pprint.pprint(kwargs)
     
     pd = PureData(**kwargs)

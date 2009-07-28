@@ -500,7 +500,7 @@ class ToonLoop(render.Game):
     def _draw_white_flash(self):
         # TODO: use time.time() to create tween.
         if self.config.verbose:
-            print 'white flash'
+            pass #print 'white flash'
         # left view
         a = self.config.fx_white_flash_alpha
         glColor4f(1.0, 1.0, 1.0, a)

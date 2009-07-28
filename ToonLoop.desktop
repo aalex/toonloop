@@ -1,0 +1,13 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Exec=/usr/local/bin/toonloop 
+Type=Application
+Terminal=true
+Name=Lunch
+Name[en_CA]=ToonLoop
+Comment=The ToonLoop Live Stop Motion Tool
+Comment[en_CA]=The ToonLoop Live Stop Motion Tool
+Icon=/usr/local/share/icons/ToonLoop.svg

@@ -39,12 +39,13 @@ from setuptools import setup
 
 setup(
     name = "toonloop",
-    version = "1.0 beta",
+    version = "1.0 rc1",
     author = "Alexandre Quessy and Tristan Matthews",
     author_email = "alexandre@quessy.net",
     url = "http://www.toonloop.com/",
     description = "ToonLoop Realtime Stop Motion Software",
-    long_description = "ToonLoop Library and application for OpenGL and Twisted Arts",
+    long_description = """ToonLoop stop motion tool and the rats package for OpenGL and Twisted Arts. 
+    Requires: twisted, pygame 1.9, PyOpenGL, nevow and numpy.""",
     install_requires = [], # "twisted", "PyOpenGL", "nevow"], # , "numpy"], 
     # requires pygame from SVN for now.
     scripts = ["toonloop"], #, "osc_send.py", "osc_receive.py"],
