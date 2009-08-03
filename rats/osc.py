@@ -112,9 +112,12 @@ class OscServer(object):
         """
         Used to change the OSC port to listen to.
         """
-        self.port = port
-        if self.started:
-            self._setup()
+        if port == self.port:
+            print "Port is already %d" % (port)
+        else:
+            self.port = port
+            if self.started:
+                self._setup()
         
     def add_callback(self, addr, types, callback, *args):
         """
