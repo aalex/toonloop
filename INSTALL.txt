@@ -44,7 +44,7 @@ Check it out using Subversion::
 
   mkdir ~/src
   cd ~/src
-  svn checkout https://toonloop.googlecode.com/svn/trunk/py toonloop
+  svn checkout http://toonloop.googlecode.com/svn/trunk/py toonloop
   cd toonloop
 
 ToonLoop should now run::
