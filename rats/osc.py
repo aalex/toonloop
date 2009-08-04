@@ -96,7 +96,7 @@ class OscServer(object):
         :param interval: duration in seconds to wait between each poll
         """
         self.port = port
-        self._callbacks = {} # dict of ...
+        self._callbacks = [] # list of lists
         self.interval = interval
         self._server = None
         self._delayed_id = None
@@ -127,8 +127,21 @@ class OscServer(object):
         :param type: string that enumerates the OSC types the method accepts
         :param callback: pointer to a python function or method
         :param args: List of any number of user data.
+
+        What liblo does is to check for matching callbacks in the order they
+        were registered, and when a match is found, the callback function is
+        called immediately. This means that, if the fallback is to be called
+        only when nothing else matches, it needs to be registered last.
         """
-        self._callbacks[addr] = [types, callback, args]
+        global VERBOSE
+        for i in range(len(self._callbacks)):
+            if self._callbacks[i][0] == addr:
+                if VERBOSE:
+                    print("Overriding the previous %s callback." % (addr))
+                self._callbacks[i] = [addr, types, callbacks, args]
+                return
+        # else
+        self._callbacks.append([addr, types, callback, args])
 
     def _setup(self):
         """ Called once it is time to start the server or change the port to listen to. """
@@ -140,13 +153,11 @@ class OscServer(object):
         except liblo.ServerError, e:
             raise # OscServerError(str(e)) # TODO: what about the traceback?
         else:
-            keys = self._callbacks.keys()
-            keys.sort(None, None, True) # reverse so that None key is last
-            for key in keys:
-                value = self._callbacks[key]
+            for callback_list in self._callbacks:
+                addr, types, callback, args = callback_list
                 if VERBOSE:
-                    print("Adding OSC method %s %s %s %s" % (key, value[0], value[1], value[2]))
-                self._server.add_method(key, value[0], value[1], *value[2])
+                    print("Adding OSC method %s %s %s %s" % (addr, types, callback, args))
+                self._server.add_method(addr, types, callback, *args)
             self.started = True
             self._delayed_id = reactor.callLater(self.interval, self._poll)
 
