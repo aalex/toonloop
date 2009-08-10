@@ -27,6 +27,21 @@ Implementation of the OSC protocol for Twisted.
 
 Server and clients use the pyliblo library to integrate well with a twisted 
 asynchronous networking application. 
+
+To use, install liblo from source (not from Ubuntu 8.10's package) and pyliblo.::
+
+ mkdir -p ~/src
+ pushd ~/src
+ svn co https://liblo.svn.sourceforge.net/svnroot/liblo/trunk liblo 
+ cd liblo
+ ./autogen.sh
+ make
+ sudo make install
+ popd
+ pushd ~/src
+ cd pyliblo-0.7.2/
+ python setup.py  build
+ sudo python setup.py install --prefix=/usr/local
 """
 import liblo
 import sys
@@ -51,29 +66,36 @@ class OscClientError(Exception):
 class OscClient(object):
     """
     An OSC client can send OSC messages.
+    :param args: one or two arguments. 
+    If one, it is either the port number or url. 
+    If two, it is the host and the port.
+    [host], [port]
+    [addr | port]
     """
-    def __init__(self, port=1234):
-        self.port = port
+    def __init__(self, *args):
+        self.args = args
+        if len(args) == 0:
+            args = 1234 # default
         self._target = None
         self._setup()
 
     def _setup(self):
         try:
-            self._target = liblo.Address(self.port)
+            self._target = liblo.Address(*self.args)
         except liblo.AddressError, e:
             raise # OscClientError(str(e)) # TODO: what about the traceback?
 
-    def set_port(self, port):
+    def set_args(self, *args):
         """
-        Changes the port to send to.
+        Changes the port|host to send to.
         """
-        if port == self.port:
-            print "Port is already %d" % (port)
-        else:
-            self.port = port
-            self._setup()
+        #if port == self.port:
+        #    print "Port is already %d" % (port)
+        #else:
+        self.args = args
+        self._setup()
 
-    def send_message(addr, *args):
+    def send_message(self, addr, *args):
         """
         See liblo.send : Simply omit the first argument.
 
@@ -83,7 +105,7 @@ class OscClient(object):
         You can use tuple of (type, value)
         Types are "i", "s", "f", etc.
         """
-        liblo.send(self._target, *args)
+        liblo.send(self._target, addr, *args)
 
 class OscServer(object):
     """
@@ -189,13 +211,26 @@ if __name__ == "__main__":
         for a, t in zip(args, types):
             print "argument of type '%s': %s" % (t, a)
     
+    def ping_callback(path, args):
+        i, f, s = args
+        print "received message '%s' with arguments '%d', '%f' and '%s'" % (path, i, f, s)
+    
+    def send_something():
+        # UDP broadcasting
+        # could be to 255.255.255.255 or 192.168.0.255 or so.
+        # c = OscClient("127.0.0.1", 1234)
+        c = OscClient("osc.udp://127.0.0.1:1234")
+        c.send_message("/ping", ('i', 123), ('f', 3.13159), ('s', "hello"))
+
     s = OscServer(1234)
     s.add_callback("/foo/bar", "if", foo_bar_callback)
     s.add_callback("/set/port", "i", set_port_callback, s) # passing the server itself as user data
     s.add_callback("/foo/baz", "b", foo_baz_callback, "blah")
+    s.add_callback("/ping", "ifs", ping_callback)
     s.add_callback(None, None, fallback)
-    s.start()
-    
+    s.start() # this hangs on Ubuntu 8.10. Update liblo-dev to latest tarball.
+    reactor.callLater(1.0, send_something)
+
     try:
         reactor.run()
     except KeyboardInterrupt:
