@@ -215,21 +215,26 @@ if __name__ == "__main__":
         i, f, s = args
         print "received message '%s' with arguments '%d', '%f' and '%s'" % (path, i, f, s)
     
-    def send_something():
-        # UDP broadcasting
-        # could be to 255.255.255.255 or 192.168.0.255 or so.
-        # c = OscClient("127.0.0.1", 1234)
-        c = OscClient("osc.udp://127.0.0.1:1234")
+    def send_something(client_addr):
+        c = OscClient(client_addr)
         c.send_message("/ping", ('i', 123), ('f', 3.13159), ('s', "hello"))
 
+    # UDP broadcasting
+    # could be to 255.255.255.255 or 192.168.0.255 or so.
+    client_addr = "osc.udp://127.0.0.1:1234"
+    # client_addr = "osc.udp://192.168.1.255:1234"
+    # client_addr = "osc.udp://255.255.255.255:1234"
+    # client_addr = "osc.udp://74.57.167.255:1234"
     s = OscServer(1234)
     s.add_callback("/foo/bar", "if", foo_bar_callback)
     s.add_callback("/set/port", "i", set_port_callback, s) # passing the server itself as user data
     s.add_callback("/foo/baz", "b", foo_baz_callback, "blah")
     s.add_callback("/ping", "ifs", ping_callback)
     s.add_callback(None, None, fallback)
+    print("Will now start listening OSC server...")
     s.start() # this hangs on Ubuntu 8.10. Update liblo-dev to latest tarball.
-    reactor.callLater(1.0, send_something)
+    print("Server started. ")
+    reactor.callLater(1.0, send_something, client_addr)
 
     try:
         reactor.run()
