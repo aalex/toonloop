@@ -59,4 +59,10 @@ setup(
     )
 
 #test_suite='nose.collector',
-    
+#      data_files = [
+#         ('share/man/man1', [
+#             'scripts/send_osc.1',
+#             'scripts/dump_osc.1',
+#         ]),
+#     ],
+ 
