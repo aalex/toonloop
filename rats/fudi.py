@@ -116,14 +116,17 @@ class FUDIServerFactory(Factory):
             raise TypeError("Callback '%s' is not callable" % repr(callback))    
         self.callbacks[selector] = callback
 
-def create_FUDI_client(host, port):
+def create_FUDI_client(host, port, tcp=True):
     """
     Creates a FUDI sender.
 
     When connected, will call its callbacks with the sender instance.
     :return: deferred instance
     """
-    deferred = ClientCreator(reactor, FUDIProtocol).connectTCP(host, port)
+    if tcp:
+        deferred = ClientCreator(reactor, FUDIProtocol).connectTCP(host, port)
+    else:
+        deferred = ClientCreator(reactor, FUDIProtocol).connectUDP(host, port)
     return deferred
 
 if __name__ == "__main__":
