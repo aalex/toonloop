@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# 
+# Purepy
+# Copyright (C) 2009 Alexandre Quessy
+# http://alexandre.quessy.net
+# All rights reserved.
+#
+# This file is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Purepy is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Lunch. If not, see <http://www.gnu.org/licenses/>.
+
+import os
+import sys
+import subprocess
+import rats.purepy
+from optparse import OptionParser
+
+VERBOSE = True
+
+class ChildKilledError(Exception):
+    """Raised when child is killed"""
+    pass
+
+def run_command(command_str, variables_dict={}, die_on_ctrl_c=True):
+    """
+    Creates and launches a process. 
+
+    Uses subprocess to launch a process. Blocking.
+    When called, might throw a OSError or ValueError.
+    Throws a ChildKilledError if ctrl-C is pressed.
+    """
+    global VERBOSE
+    retcode = None
+    environment = {}
+    environment.update(os.environ)
+    environment.update(variables_dict)
+    try:
+        if VERBOSE:
+            print("--------")
+        print("COMMAND: %s" % (command_str))
+        p = subprocess.Popen(command_str, shell=True, env=environment)
+        print("PID: %s" % (p.pid))
+        if VERBOSE:
+            print("ENV: %s" % (str(variables_dict)))
+            print("--------")
+        retcode = p.wait() # blocking
+        if retcode < 0:
+            err = "Child was terminated by signal %d\n" % (retcode)
+            sys.stderr.write(err)
+        else:
+            err = "Child returned %s\n" % (retcode)
+            sys.stderr.write(err)
+    except OSError, e:
+        err = "Execution of child failed: %s\n" % (e.message)
+        sys.stderr.write(err)
+        retcode = 1
+    except KeyboardInterrupt, e:
+        if die_on_ctrl_c:
+            print("Ctrl-C has been pressed in a slave terminal. Dying.")
+            sys.exit(1)
+        else:
+            raise ChildKilledError("Ctrl-C has been pressed in the master's terminal and caught by a worker.")
+    except ValueError, e:
+        err = "Wrong arguments to subprocess.Popen: %s\n" % (e.message)
+        sys.stderr.write(err)
+        raise
+    #else:
+        #print("Success\n") # retrcode is p.wait() return val
+    return retcode
+
+if __name__ == "__main__":
+    default_patch = os.path.join(os.path.dirname(rats.purepy.__file__), "dynamic_patch.pd")
+    parser = OptionParser(usage="%prog [options]")
+    parser.add_option("-p", "--patch", type="string", help="Pure Data Patch to open.", default=default_patch)
+    (options, args) = parser.parse_args()
+
+    patch = options.patch
+    command = "pd"
+    command += " %s " % (patch)
+    run_command(command, variables_dict={}, die_on_ctrl_c=True)
+    
+

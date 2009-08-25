@@ -48,11 +48,11 @@ setup(
     Requires: twisted, pygame 1.9, PyOpenGL, nevow and numpy.""",
     install_requires = [], # "twisted", "PyOpenGL", "nevow"], # , "numpy"], 
     # requires pygame from SVN for now.
-    scripts = ["toonloop"], #, "osc_send.py", "osc_receive.py"],
+    scripts = ["toonloop"], # pd-purepy, purepy.py #, "osc_send.py", "osc_receive.py"],
     license = "GPL",
     platforms = ["any"],
     zip_safe = False,
-    packages = ['rats', 'toon', 'toon/data'],
+    packages = ['rats', 'rats/purepy', 'toon', 'toon/data'],
     package_data = {
         "":["*.ttf", "*.rst", "*.png", "*.jpg", "*.pd"]
     }
