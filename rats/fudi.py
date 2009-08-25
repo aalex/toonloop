@@ -40,6 +40,18 @@ from twisted.python import log
 
 VERBOSE = True
 
+def to_fudi(self, selector, *atoms):
+    """
+    Converts int, float, string to FUDI atoms string.
+    :param data: list of basic types variables.
+    Public FUDI message converter
+    """
+    txt = str(selector)
+    for atom in atoms:
+        txt += " %s" % (atom)
+    txt += ";\r\n"
+    return txt
+
 class FUDIProtocol(basic.LineReceiver):
     """
     FUDI protocol implementation in Python.
@@ -93,10 +105,7 @@ class FUDIProtocol(basic.LineReceiver):
         Converts int, float, string to FUDI atoms and sends them.
         :param data: list of basic types variables.
         """
-        txt = str(selector)
-        for atom in atoms:
-            txt += " %s" % (atom)
-        txt += ";\r\n"
+        txt = to_fudi(selector, *atoms)
         if VERBOSE:
             print "FUDI: sending", txt,
         self.transport.write(txt)
