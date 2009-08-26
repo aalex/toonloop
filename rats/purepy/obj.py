@@ -21,35 +21,55 @@
 
 import random 
 from rats import fudi
-from zope.interface import implements # TODO
+from zope import interface
+
+VERBOSE = True
+VERY_VERBOSE = False
+
+class IElement(interface.Interface):
+    """
+    Any Pure Data Element. (object or message)
+    """
+    parent = interface.Attribute("""A pointer to the parent Element.""")
+    def get_fudi(self):
+        """
+        Return list of list of atoms. 
+        A FUDI creation message.
+        """
+        pass
+
+    def set_parent(self, obj):
+        """
+        Sets the parent. 
+        :param obj: An Element.
+        """
+        pass
 
 class Obj(object):
     """
     Generic Pure Data Object.
     """
-    # TODO implements IElement
+    interface.implements(IElement)
     def __init__(self, name, *args, **keywords):
+        self.parent = None
         self.name = name
         self.args = args
-        #self.subpatch_name = "default"
         self.pos = [random.randrange(10, 600), random.randrange(10, 400)]
         if keywords.has_key("pos"):
             self.pos = keywords["pos"]
 
     def get_fudi(self):
-        """ 
-        Converts to list suitable for FUDI creation message. 
-        """
-        # self.subpatch_name, 
         li = ["obj", self.pos[0], self.pos[1], self.name]
         li.extend(self.args)
         return li
+    
+    def set_parent(self, obj):
+        self.parent = obj
 
 class Receive(Obj):
     """
     The [receive] Pure Data object.
     """
-    # TODO implements IElement
     def __init__(self, receive_symbol):
         self.receive_symbol = receive_symbol
         Obj.__init__(self, "r", receive_symbol)
@@ -66,8 +86,9 @@ class Connection(object):
     """
     Connection between two Pure Data objects.
     """
-    # TODO implements IElement
+    interface.implements(IElement)
     def __init__(self, from_object, from_outlet, to_object, to_inlet):
+        self.parent = None
         self.from_object = from_object
         self.from_outlet = from_outlet
         self.to_object = to_object
@@ -81,14 +102,25 @@ class Connection(object):
         # self.subpatch_name, 
         return ["connect", self.from_object.id, self.from_outlet, self.to_object.id, self.to_inlet]
 
+    def set_parent(self, obj):
+        self.parent = obj
+
 class SubPatch(object):
     """
     Pure Data Subpatch. 
+    
+    The default name is "main" for the [pd main] subpatch.
+    It can be found in rats/purepy/dynamic_patch.pd
     """
-    def __init__(self, name=None):
+    interface.implements(IElement)
+    def __init__(self, name="main"):
+        self.parent = None
         self.name = name
         self.objects = []
         self.connections = []
+    
+    def set_parent(self, obj):
+        self.parent = obj
     
     def get_fudi(self):
         """
@@ -96,26 +128,41 @@ class SubPatch(object):
         Objects and connections
         """
         li = []
-        print "objects"
-        for obj in self.objects:
-            if self.name is None:
-                l = []
-            else:
-                l = [self.name]
-            l.extend(obj.get_fudi())
+        if self.name != "main":
+            # TODO: random position... 
+            l = ["pd-%s" % (self.parent.name), "obj", 100, 100, "pd", self.name]
             li.append(l)
-            print l
-        print "connections"
+        if VERY_VERBOSE:
+            print "objects"
+        for obj in self.objects: 
+            if type(obj) is SubPatch: # subpatch
+                li.extend(obj.get_fudi())
+            else: # standard obj
+                l = ["pd-%s" % (self.name)]
+                l.extend(obj.get_fudi())
+                li.append(l)
+                if VERY_VERBOSE:
+                    print l
+        if VERY_VERBOSE:
+            print "connections"
         for conn in self.connections:
-            if self.name is None:
-                l = []
-            else:
-                l = [self.name]
+            l = ["pd-%s" % (self.name)]
             l.extend(conn.get_fudi())
             li.append(l)
-            print l
-        print "done creating FUDI list"
+            if VERY_VERBOSE:
+                print l
+        if VERY_VERBOSE:
+            print "done creating FUDI list"
         return li
+
+    def subpatch(self, name):
+        """
+        Adds a subpatch to the supatch.
+        Factory that wraps the SubPatch constructor.
+        @return SubPatch instance.
+        """
+        obj = SubPatch(name)
+        return self._add_object(obj)
 
     def obj(self, name, *args, **keywords):
         """
@@ -127,9 +174,11 @@ class SubPatch(object):
         return self._add_object(obj)
 
     def _add_object(self, obj):
-        """ Common to obj() and receive(). """
+        """
+        Common to self.obj(), self.subpatch() and self.receive(). 
+        """
         obj.id = len(self.objects)
-        # obj.subpatch_name = self.name
+        obj.set_parent(self)
         self.objects.append(obj)
         return obj
         
@@ -165,18 +214,27 @@ class SubPatch(object):
         return ["pd-%s" % (self.name), "clear"]
 
 if __name__ == "__main__":
-    sub = SubPatch("hello_01")
-    tgl = sub.obj("tgl")
-    metro = sub.obj("metro", 50)
-    sub.connect(tgl, 0, metro, 0)
-    li = sub.get_fudi()
-    print "result:"
-    print li
+    def test_1(main):
+        # subpatch
+        test1 = main.subpatch("test1")
+        # objects
+        r = test1.receive("startme")
+        tgl = test1.obj("tgl")
+        metro = test1.obj("metro", 50)
+        # connections
+        test1.connect(r, 0, tgl, 0)
+        test1.connect(tgl, 0, metro, 0)
+
+    main = SubPatch()
+    for test in [test_1]:
+        test(main)
+    print("------ test results ------")
+    li = main.get_fudi() 
     for i in li:
         if len(i) == 0:
-            print(fudi.to_fudi(i[0]))
+            print(fudi.to_fudi(i[0]).strip())
         else:
-            print(fudi.to_fudi(i[0], *i[1:]))
+            print(fudi.to_fudi(i[0], *i[1:]).strip())
 
 
 

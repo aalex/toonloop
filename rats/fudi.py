@@ -46,7 +46,8 @@ def to_fudi(selector, *atoms):
     :param data: list of basic types variables.
     Public FUDI message converter
     """
-    print "FUDI: to_fudi", selector, atoms
+    # if VERBOSE:
+    #     print "FUDI: to_fudi", selector, atoms
     txt = str(selector)
     for atom in atoms:
         txt = txt + " %s" % (atom)
