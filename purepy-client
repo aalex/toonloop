@@ -66,8 +66,8 @@ class PurePy(object):
     def on_client_connected(self, protocol):
         """ Client can send messages to Pure Data """
         self.client_protocol = protocol
-        self.client_protocol.send_message("ping", 1, 2.0, "bang")
-        print "sent ping"
+        # self.client_protocol.send_message("ping", 1, 2.0, "bang")
+        # print "sent ping"
 
     def on_client_error(self, failure):
         """ Client cannot send data to pd """
@@ -76,16 +76,21 @@ class PurePy(object):
         # reactor.stop()
 
 
-    def send_message(self, *args):
+    def send_message(self, selector, *args):
         """ Send a message to pure data """
         if self.client_protocol is not None:
             # if fudi.VERBOSE:
-            print("sending %s" % (str(args)))
-            self.client_protocol.send_message(*args)
+            # print("sending %s" % (str(args)))
+            # print args[0], args[1:]
+            # args = list(args[1:])
+            # atom = args[0]
+            print("will send %s %s" % (selector, args))
+            self.client_protocol.send_message(selector, *args)
         else:
             print("Could not send %s" % (str(args)))
         if self.quit:
             print "stopping the application"
+            # TODO: try/catch
             reactor.callLater(0, reactor.stop)
 
 if __name__ == "__main__":        
@@ -113,7 +118,10 @@ if __name__ == "__main__":
         )
 
     def test_message(purepy):
-        purepy.send_message("obj", 100, 100, "metro", 60)
+        purepy.send_message("pd-main", "clear")
+        purepy.send_message("pd-main", "obj", 50, 50, "tgl", 60)
+        purepy.send_message("pd-main", "obj", 100, 100, "metro", 60)
+        purepy.send_message("pd-main", "connect", 0, 0, 1, 0)
         
     #TODO: listen server
     # deferred = purepy.server_start()
