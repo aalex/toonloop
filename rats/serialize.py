@@ -27,6 +27,8 @@ State saving utilies.
 
 Easily readable and editable.
 Support objects as well as simpler data types.
+
+The original file is : toonloop/trunk/py/rats/serialize.py
 """
 from twisted.spread import jelly
 import pprint

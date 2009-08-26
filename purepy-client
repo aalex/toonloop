@@ -25,6 +25,7 @@ Simpler FUDI sender.
 from twisted.internet import reactor
 from rats import fudi
 from optparse import OptionParser
+from rats.purepy.obj import SubPatch
 
 class PurePy(object):
     """
@@ -122,12 +123,37 @@ if __name__ == "__main__":
         purepy.send_message("pd-main", "obj", 50, 50, "tgl", 60)
         purepy.send_message("pd-main", "obj", 100, 100, "metro", 60)
         purepy.send_message("pd-main", "connect", 0, 0, 1, 0)
-        
+
+    def other_test(purepy):
+        main = SubPatch()
+        # subpatch
+        test1 = main.subpatch("test1")
+        # objects
+        r = test1.receive("startme")
+        tgl = test1.obj("tgl")
+        metro = test1.obj("metro", 50)
+        # connections
+        test1.connect(r, 0, tgl, 0)
+        test1.connect(tgl, 0, metro, 0)
+        # send messages
+        li = main.get_fudi() # list of (fudi) lists
+        print(li)
+        for mess in li:
+            print mess
+            message = fudi.to_fudi(*mess)
+            print message
+            purepy.send_message(*mess)
+#         for i in li:
+#             if len(i) == 0:
+#                 message = fudi.to_fudi(i[0])
+#             else:
+#                 message = fudi.to_fudi(i[0], *i[1:])
     #TODO: listen server
     # deferred = purepy.server_start()
     other_deferred = purepy.client_start()  # use_tcp)
     #other_deferred.addCallback(purepy.send_message, "obj", 100, 100, "metro", 60)
-    reactor.callLater(0.01, test_message, purepy)
+    #reactor.callLater(0.01, test_message, purepy)
+    reactor.callLater(0.01, other_test, purepy)
     try:
         reactor.run()
     except KeyboardInterrupt, e:
