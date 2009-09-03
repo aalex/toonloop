@@ -21,24 +21,43 @@
 """
 The Item prototype
 """
+import os
 import pygame
 from pygame.locals import *
 from OpenGL.GL import *
+import toon
 from toon import draw
 import sys
 from optparse import OptionParser
 from twisted.internet import reactor
 from pygame import time
 from rats import render
-from toon.draw import texture_from_image
 from toon.draw import draw_textured_square
 
+def texture_from_image_transparent(texture, image, square_texture=False):
+    """
+    Copies the pixels from a pygame surface to an OpenGL texture object.
+    Transparent PNG version !
+    """
+    textureData = pygame.image.tostring(image, "RGBA", True) # vertically flipped
+    if square_texture:
+        glBindTexture(GL_TEXTURE_2D, texture)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.get_width(), image.get_height(), 0, \
+                  GL_RGBA, GL_UNSIGNED_BYTE, textureData)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    else:   
+        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, texture)
+        glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, image.get_width(), \
+            image.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)
+        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 class TheItem(render.Game):
     """
     The Item Dress-Up Game.
     """
     def __init__(self, image_files):
-        self.image_width, self.image_height = 640, 480
+        self.image_width, self.image_height = 512, 512
         self.paused = False
         self._display_size = (self.image_width, self.image_height)
         self.image_size = (self.image_width, self.image_height)
@@ -54,12 +73,37 @@ class TheItem(render.Game):
         # the images
         self.images = []
         self.textures = [] # list of OpenGL texture objects id
-        for i in range(3):
-            self.images.append(pygame.image.load(image_files[i]))
-            self.textures.append(0)
-            texture_from_image(self.textures[i], self.images[i])
+        for i in range(len(image_files)):
+            self.images.append(0)
+            self.textures.append(0) # list of OpenGL texture objects id
         self._setup_window()
+        for i in range(len(image_files)):# transparent PNG
+            self.images[i] = pygame.image.load(image_files[i]).convert_alpha()
+            texture_from_image_transparent(self.textures[i], self.images[i])
 
+    def process_events(self, events):
+        """
+        Processes pygame events.
+        :param events: got them using pygame.event.get()
+        """
+        for e in events:
+            if e.type == QUIT:
+                self.running = False
+            # TODO : catch window new size when resized.
+            elif e.type == pygame.VIDEORESIZE:
+                print "VIDEORESIZE", e
+            elif e.type == KEYDOWN: 
+                if e.key == K_f: # F Fullscreen
+                    pygame.display.toggle_fullscreen()
+                # elif e.key == K_i: # I Info
+                    # try:
+                    #     self.print_stats()
+                    # except Exception, e:
+                    #     print e.message
+                # elif e.key == K_p: # P Pause
+                #     self.pause()
+                elif e.key == K_ESCAPE: #  or e.key == K_q: # ESCAPE or Q
+                    self.running = False # self.quit()
     def draw(self):
         """
         Renders one frame.
@@ -71,7 +115,7 @@ class TheItem(render.Game):
                 glColor4f(1.0, 1.0, 1.0, 1.0)
                 glPushMatrix()
                 glTranslatef(0.0, 0.0, 0.0)
-                glScalef(3.0, 3.0, 1.0)
+                glScalef(4.0, 3.0, 1.0)
                 glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[i])
                 draw_textured_square(self.image_width, self.image_height)
                 glPopMatrix()
@@ -120,6 +164,10 @@ if __name__ == "__main__":
         prefix + "bottom.png",
         prefix + "top.png",
     ] # 3 items list
+    path = os.path.dirname(toon.__file__)
+    for i in range(len(images)):
+        images[i] = os.path.join(path, 'data', images[i])
+        print(images[i])
     try:
         app = TheItem(images)
     except:
