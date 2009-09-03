@@ -92,6 +92,12 @@ class TheItem(render.Game):
             # TODO : catch window new size when resized.
             elif e.type == pygame.VIDEORESIZE:
                 print "VIDEORESIZE", e
+            elif e.type == MOUSEBUTTONDOWN:
+                print("%s DOWN" % (e.button))
+            elif e.type == MOUSEBUTTONUP:
+                print("%s UP" % (e.button))
+            elif e.type == MOUSEMOTION:
+                print("MOTION: %s " % (str(pygame.mouse.get_pos())))
             elif e.type == KEYDOWN: 
                 if e.key == K_f: # F Fullscreen
                     pygame.display.toggle_fullscreen()
