@@ -1,0 +1,136 @@
+#!/usr/bin/env python
+#
+# The Item
+#
+# Copyright 2009 Alexandre Quessy
+# http://www.toonloop.com
+#
+# ToonLoop is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# ToonLoop is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the gnu general public license
+# along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
+#
+"""
+The Item prototype
+"""
+import pygame
+from pygame.locals import *
+from OpenGL.GL import *
+from toon import draw
+import sys
+from optparse import OptionParser
+from twisted.internet import reactor
+from pygame import time
+from rats import render
+from toon.draw import texture_from_image
+from toon.draw import draw_textured_square
+
+class TheItem(render.Game):
+    """
+    The Item Dress-Up Game.
+    """
+    def __init__(self, image_files):
+        self.image_width, self.image_height = 640, 480
+        self.paused = False
+        self._display_size = (self.image_width, self.image_height)
+        self.image_size = (self.image_width, self.image_height)
+        self.renderer = None # Renderer instance that owns it.
+        self.clock = pygame.time.Clock()
+        self.running = True
+        #icon = pygame.image.load(os.path.join(self.config.PACKAGE_PATH, 'data', "icon.png"))
+        #pygame.display.set_icon(icon) # a 32 x 32 surface
+        # the pygame window
+        self.display = pygame.display.set_mode(self._display_size, OPENGL | DOUBLEBUF | HWSURFACE)
+        pygame.display.set_caption("The Item")
+        pygame.mouse.set_visible(True)
+        # the images
+        self.images = []
+        self.textures = [] # list of OpenGL texture objects id
+        for i in range(3):
+            self.images.append(pygame.image.load(image_files[i]))
+            self.textures.append(0)
+            texture_from_image(self.textures[i], self.images[i])
+        self._setup_window()
+
+    def draw(self):
+        """
+        Renders one frame.
+        Called from the event loop. (twisted)
+        """
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        if not self.paused:
+            for i in range(len(self.textures)):
+                glColor4f(1.0, 1.0, 1.0, 1.0)
+                glPushMatrix()
+                glTranslatef(0.0, 0.0, 0.0)
+                glScalef(3.0, 3.0, 1.0)
+                glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[i])
+                draw_textured_square(self.image_width, self.image_height)
+                glPopMatrix()
+        self.clock.tick()
+        self.fps = self.clock.get_fps()
+        pygame.display.flip()
+
+    def _setup_window(self):
+        """
+        OpenGL setup.
+        """
+        # create OpenGL texture objects 
+        # window is 1280 x 960
+        self._resize_window(self._display_size)
+        glEnable(GL_TEXTURE_RECTANGLE_ARB) # 2D)
+        glEnable(GL_BLEND)
+        glShadeModel(GL_SMOOTH)
+        glClearColor(0.0, 0.0, 0.0, 0.0) # black background
+        glColor4f(1.0, 1.0, 1.0, 1.0)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        for i in range(len(self.textures)):
+            self.textures[i] = glGenTextures(1)
+
+    def _resize_window(self, (width, height)):
+        """
+        Called when we resize the window.
+        (fullscreen on/off)
+
+        The OpenGL coordinates go from -4 to 4 horizontally
+        and -3 to 3 vertically.
+        (ratio is 4:3)
+        """
+        print "resize", width, height
+        if height == 0:
+            height = 1
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(-4.0, 4.0, -3.0, 3.0, -1.0, 1.0)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+
+if __name__ == "__main__":
+    prefix = "01_"
+    images = [
+        prefix + "model.png",
+        prefix + "bottom.png",
+        prefix + "top.png",
+    ] # 3 items list
+    try:
+        app = TheItem(images)
+    except:
+        raise
+    else:
+        print "Congratulations ! TheItem started gracefully."
+    pygame_timer = render.Renderer(app, False) # not verbose !  options.verbose
+    pygame_timer.desired_fps = 24
+    try:
+        reactor.run()
+    except KeyboardInterrupt:
+        pass
+    print "Exiting"
+    sys.exit(0)
