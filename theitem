@@ -57,6 +57,7 @@ class TheItem(render.Game):
     The Item Dress-Up Game.
     """
     def __init__(self, image_files):
+        self.visible = [True, True, True]
         self.image_width, self.image_height = 512, 512
         self.paused = False
         self._display_size = (self.image_width, self.image_height)
@@ -101,6 +102,12 @@ class TheItem(render.Game):
             elif e.type == KEYDOWN: 
                 if e.key == K_f: # F Fullscreen
                     pygame.display.toggle_fullscreen()
+                if e.key == K_1:
+                    self.visible[0] = not self.visible[0]
+                if e.key == K_2:
+                    self.visible[1] = not self.visible[0]
+                if e.key == K_3:
+                    self.visible[2] = not self.visible[0]
                 # elif e.key == K_i: # I Info
                     # try:
                     #     self.print_stats()
@@ -118,13 +125,14 @@ class TheItem(render.Game):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         if not self.paused:
             for i in range(len(self.textures)):
-                glColor4f(1.0, 1.0, 1.0, 1.0)
-                glPushMatrix()
-                glTranslatef(0.0, 0.0, 0.0)
-                glScalef(4.0, 3.0, 1.0)
-                glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[i])
-                draw_textured_square(self.image_width, self.image_height)
-                glPopMatrix()
+                if self.visible[i]: 
+                    glColor4f(1.0, 1.0, 1.0, 1.0)
+                    glPushMatrix()
+                    glTranslatef(0.0, 0.0, 0.0)
+                    glScalef(4.0, 3.0, 1.0)
+                    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[i])
+                    draw_textured_square(self.image_width, self.image_height)
+                    glPopMatrix()
         self.clock.tick()
         self.fps = self.clock.get_fps()
         pygame.display.flip()
