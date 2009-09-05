@@ -105,9 +105,9 @@ class TheItem(render.Game):
                 if e.key == K_1:
                     self.visible[0] = not self.visible[0]
                 if e.key == K_2:
-                    self.visible[1] = not self.visible[0]
+                    self.visible[1] = not self.visible[1]
                 if e.key == K_3:
-                    self.visible[2] = not self.visible[0]
+                    self.visible[2] = not self.visible[2]
                 # elif e.key == K_i: # I Info
                     # try:
                     #     self.print_stats()
