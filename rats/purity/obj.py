@@ -26,6 +26,17 @@ from zope import interface
 VERBOSE = True
 VERY_VERBOSE = False
 
+_gen_pos_index = 0
+
+def _gen_position(be_random=False):
+    global _gen_pos_index
+    increment = 30 
+    if be_random:
+        return [random.randrange(10, 600), random.randrange(10, 400)]
+    else:
+        _gen_pos_index += increment
+        return [100, _gen_pos_index]
+    
 class IElement(interface.Interface):
     """
     Any Pure Data Element. (object or message)
@@ -54,7 +65,7 @@ class Obj(object):
         self.parent = None
         self.name = name
         self.args = args
-        self.pos = [random.randrange(10, 600), random.randrange(10, 400)]
+        self.pos = _gen_position() # [random.randrange(10, 600), random.randrange(10, 400)]
         if keywords.has_key("pos"):
             self.pos = keywords["pos"]
 
@@ -130,7 +141,8 @@ class SubPatch(object):
         result = []
         if self.name != "main":
             # TODO: random position... 
-            l = ["pd-%s" % (self.parent.name), "obj", 100, 100, "pd", self.name]
+            pos = _gen_position(True)
+            l = ["pd-%s" % (self.parent.name), "obj", pos[0], pos[1], "pd", self.name]
             result.append(l)
         if VERY_VERBOSE:
             print "objects"

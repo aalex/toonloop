@@ -146,8 +146,8 @@ if __name__ == "__main__":
         reactor.callLater(0.01, clear_all, purityclient)
         reactor.callLater(0.2, metro_patch, purityclient)
         reactor.callLater(0.3, audio_patch, purityclient)
-        reactor.callLater(10, stop_all, purityclient)
-        print "will stop in 10 seconds"
+        # reactor.callLater(10, stop_all, purityclient)
+        # print "will stop in 10 seconds"
         try:
             reactor.run()
         except KeyboardInterrupt, e:

@@ -87,6 +87,7 @@ class PurityClient(object):
             # args = list(args[1:])
             # atom = args[0]
             # print("will send %s %s" % (selector, args))
+            # self.client_protocol.send_message(*args, selector)
             self.client_protocol.send_message(selector, *args)
         else:
             print("Could not send %s" % (str(args)))
