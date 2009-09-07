@@ -32,14 +32,15 @@ from optparse import OptionParser
 from rats import fudi
 from rats.purity import obj
 from rats.purity import client
+from rats.purity import server
 
 RUNNING = True
 
 def clear_all(purityclient):
     purityclient.send_message("pd-main", "clear")
-    purityclient.send_message("pd-main", "obj", 50, 50, "tgl", 60)
-    purityclient.send_message("pd-main", "obj", 100, 100, "metro", 60)
-    purityclient.send_message("pd-main", "connect", 0, 0, 1, 0)
+    # purityclient.send_message("pd-main", "obj", 50, 50, "tgl", 60)
+    # purityclient.send_message("pd-main", "obj", 100, 100, "metro", 60)
+    # purityclient.send_message("pd-main", "connect", 0, 0, 1, 0)
 
 def metro_patch(purityclient):
     """
@@ -76,7 +77,7 @@ def audio_patch(purityclient):
     line = patch.obj("line~")
     osc = patch.obj("osc~", 440)
     mult = patch.obj("*~", 0.125)
-    dac = patch.obj("dac~")
+    dac = patch.obj("dac~", 1, 2)
     # connections
     patch.connect(r, 0, line, 0)
     patch.connect(line, 0, osc, 0)
@@ -110,7 +111,6 @@ def stop_all(purityclient):
 def fork_and_start_pd():
     pid = os.fork()
     if pid == 0: # child
-        from rats.purity import server
         pd = server.PureData()
         success = pd.start()
         return 0

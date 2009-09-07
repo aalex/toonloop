@@ -26,16 +26,18 @@ from zope import interface
 VERBOSE = True
 VERY_VERBOSE = False
 
-_gen_pos_index = 0
+_gen_pos_indexes = {}
 
-def _gen_position(be_random=False):
-    global _gen_pos_index
-    increment = 30 
+def _gen_position(parent, be_random=False):
+    global _gen_pos_indexes
+    if parent not in _gen_pos_indexes.keys():
+        _gen_pos_indexes[parent] = 0
+    increment = 25
     if be_random:
-        return [random.randrange(10, 600), random.randrange(10, 400)]
+        return [random.randrange(10, 300), random.randrange(10, 200)]
     else:
-        _gen_pos_index += increment
-        return [100, _gen_pos_index]
+        _gen_pos_indexes[parent] += increment
+        return [100, _gen_pos_indexes[parent]]
     
 class IElement(interface.Interface):
     """
@@ -65,7 +67,7 @@ class Obj(object):
         self.parent = None
         self.name = name
         self.args = args
-        self.pos = _gen_position() # [random.randrange(10, 600), random.randrange(10, 400)]
+        self.pos = [0, 0] # _gen_position(self.parent) # [random.randrange(10, 600), random.randrange(10, 400)]
         if keywords.has_key("pos"):
             self.pos = keywords["pos"]
 
@@ -141,12 +143,13 @@ class SubPatch(object):
         result = []
         if self.name != "main":
             # TODO: random position... 
-            pos = _gen_position(True)
+            pos = _gen_position(self)
             l = ["pd-%s" % (self.parent.name), "obj", pos[0], pos[1], "pd", self.name]
             result.append(l)
         if VERY_VERBOSE:
             print "objects"
         for obj in self.objects: 
+            obj.pos = _gen_position(self)
             if type(obj) is SubPatch: # subpatch
                 result.extend(obj.get_fudi())
             else: # standard obj
