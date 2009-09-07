@@ -21,11 +21,14 @@
 #
 """
 Simpler FUDI sender.
+
+TODO: port 5400 + n
 """
+import random
 from twisted.internet import reactor
 from optparse import OptionParser
 from rats import fudi
-from rats.purity.obj import SubPatch
+from rats.purity.obj import get_main_patch
 
 class PurityClient(object):
     """
@@ -73,6 +76,7 @@ class PurityClient(object):
     def on_client_error(self, failure):
         """ Client cannot send data to pd """
         print "Error trying to connect.", failure
+        raise Exception("Could not connect to pd.... Dying.")
         # print "stop"
         # reactor.stop()
 
@@ -85,7 +89,7 @@ class PurityClient(object):
             # print args[0], args[1:]
             # args = list(args[1:])
             # atom = args[0]
-            print("will send %s %s" % (selector, args))
+            # print("will send %s %s" % (selector, args))
             self.client_protocol.send_message(selector, *args)
         else:
             print("Could not send %s" % (str(args)))
@@ -95,6 +99,85 @@ class PurityClient(object):
             reactor.callLater(0, reactor.stop)
 
 if __name__ == "__main__":        
+    def test_message(purityclient):
+        purityclient.send_message("pd-main", "clear")
+        purityclient.send_message("pd-main", "obj", 50, 50, "tgl", 60)
+        purityclient.send_message("pd-main", "obj", 100, 100, "metro", 60)
+        purityclient.send_message("pd-main", "connect", 0, 0, 1, 0)
+
+    def other_test(purityclient):
+        """
+        [r startme] --> [tgl] --> [metro 500] --> [bng]
+        """
+        main = get_main_patch()
+        # subpatch
+        patch = main.subpatch("metropatch")
+        # objects
+        r = patch.receive("startme")
+        tgl = patch.obj("tgl")
+        metro = patch.obj("metro", 500)
+        bang = patch.obj("bng")
+        # connections
+        patch.connect(r, 0, tgl, 0)
+        patch.connect(tgl, 0, metro, 0)
+        patch.connect(metro, 0, bang, 0)
+        # send messages
+        mess_list = main.get_fudi() # list of (fudi) lists
+        # print(mess_list)
+        for mess in mess_list:
+            purityclient.send_message(*mess)
+            message = fudi.to_fudi(*mess)
+            print "sent FUDI message:", message
+        print "sent FUDI message:", "startme", 1
+        purityclient.send_message("startme", 1)
+
+    def start_server():
+        #TODO: listen server
+        # deferred = purityclient.server_start()
+        other_deferred = purityclient.client_start()  # use_tcp)
+        #other_deferred.addCallback(purityclient.send_message, "obj", 100, 100, "metro", 60)
+    
+    def audio_test(purityclient):
+        """
+        [r sine] --> [line~] --> [osc~] --> [*~ 0.25] --> [dac~]
+        """
+        main = get_main_patch()
+        patch = main.subpatch("sinepatch")
+        # objects
+        r = patch.receive("sine")
+        line = patch.obj("line~")
+        osc = patch.obj("osc~", 440)
+        mult = patch.obj("*~", 0.125)
+        dac = patch.obj("dac~")
+        # connections
+        patch.connect(r, 0, line, 0)
+        patch.connect(line, 0, osc, 0)
+        patch.connect(osc, 0, mult, 0)
+        patch.connect(mult, 0, dac, 0)
+        patch.connect(mult, 0, dac, 1) # stereo
+
+        def start_audio(purityclient):
+            purityclient.send_message("pd", "dsp", 1)
+        def send_random_note(purityclient, send_random_note):
+            note = random.randint(220, 880)
+            delay = 500
+            purityclient.send_message("sine", note, delay) # ms
+            reactor.callLater(delay / 1000., send_random_note, purityclient, send_random_note)
+        # send messages
+        mess_list = main.get_fudi() # list of (fudi) lists
+        # print(mess_list)
+        for mess in mess_list:
+            purityclient.send_message(*mess)
+        reactor.callLater(0.1, start_audio, purityclient)
+        reactor.callLater(0.1, send_random_note, purityclient, send_random_note)
+
+    def stop_all(purityclient):
+        print "stopping"
+        mess = ["pd", "quit"]
+        purityclient.send_message(*mess)
+        reactor.stop()
+
+    # -----------------------------------------------
     parser = OptionParser(usage="%prog options message...")
     parser.add_option("-s", "--send-port", type="int", \
         help="FUDI Send port.", default=17777)
@@ -107,7 +190,6 @@ if __name__ == "__main__":
     parser.add_option("-q", "--quit", action="store_true", \
         help="Quits right after sending message.")
     (options, args) = parser.parse_args()
-
     use_tcp = not options.tcp
 
     fudi.VERBOSE = options.verbose
@@ -117,43 +199,12 @@ if __name__ == "__main__":
         quit=options.quit, 
         use_tcp=True
         )
-
-    def test_message(purityclient):
-        purityclient.send_message("pd-main", "clear")
-        purityclient.send_message("pd-main", "obj", 50, 50, "tgl", 60)
-        purityclient.send_message("pd-main", "obj", 100, 100, "metro", 60)
-        purityclient.send_message("pd-main", "connect", 0, 0, 1, 0)
-
-    def other_test(purityclient):
-        main = SubPatch()
-        # subpatch
-        test1 = main.subpatch("test1")
-        # objects
-        r = test1.receive("startme")
-        tgl = test1.obj("tgl")
-        metro = test1.obj("metro", 50)
-        # connections
-        test1.connect(r, 0, tgl, 0)
-        test1.connect(tgl, 0, metro, 0)
-        # send messages
-        li = main.get_fudi() # list of (fudi) lists
-        print(li)
-        for mess in li:
-            print mess
-            message = fudi.to_fudi(*mess)
-            print message
-            purityclient.send_message(*mess)
-#         for i in li:
-#             if len(i) == 0:
-#                 message = fudi.to_fudi(i[0])
-#             else:
-#                 message = fudi.to_fudi(i[0], *i[1:])
-    #TODO: listen server
-    # deferred = purityclient.server_start()
-    other_deferred = purityclient.client_start()  # use_tcp)
-    #other_deferred.addCallback(purityclient.send_message, "obj", 100, 100, "metro", 60)
+    deferred = purityclient.client_start()
     #reactor.callLater(0.01, test_message, purityclient)
-    reactor.callLater(0.01, other_test, purityclient)
+    reactor.callLater(0.1, other_test, purityclient)
+    reactor.callLater(0.2, audio_test, purityclient)
+    reactor.callLater(10, stop_all, purityclient)
+    print "will stop in 10 seconds"
     try:
         reactor.run()
     except KeyboardInterrupt, e:

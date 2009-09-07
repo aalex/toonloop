@@ -38,7 +38,7 @@ from twisted.internet.protocol import ClientFactory
 from twisted.protocols import basic
 from twisted.python import log
 
-VERBOSE = True
+VERBOSE = False
 
 def to_fudi(selector, *atoms):
     """
@@ -107,7 +107,8 @@ class FUDIProtocol(basic.LineReceiver):
         Converts int, float, string to FUDI atoms and sends them.
         :param data: list of basic types variables.
         """
-        print "send_message", selector, atoms
+        if VERBOSE:
+            print "send_message", selector, atoms
         txt = to_fudi(selector, *atoms)
         if VERBOSE:
             print "FUDI: sending", txt

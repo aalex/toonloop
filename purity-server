@@ -85,7 +85,9 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
 
     patch = options.patch
-    command = "pd"
+    pd_args = "-jack -r 48000 -listdev -inchannels 2 -outchannels 2 -verbose"
+    # pd_args += " -nogui " 
+    command = "pd " + pd_args
     command += " %s " % (patch)
     run_command(command, variables_dict={}, die_on_ctrl_c=True)
     

@@ -127,20 +127,20 @@ class SubPatch(object):
         Return FUDI lists for the whole subpatch.
         Objects and connections
         """
-        li = []
+        result = []
         if self.name != "main":
             # TODO: random position... 
             l = ["pd-%s" % (self.parent.name), "obj", 100, 100, "pd", self.name]
-            li.append(l)
+            result.append(l)
         if VERY_VERBOSE:
             print "objects"
         for obj in self.objects: 
             if type(obj) is SubPatch: # subpatch
-                li.extend(obj.get_fudi())
+                result.extend(obj.get_fudi())
             else: # standard obj
                 l = ["pd-%s" % (self.name)]
                 l.extend(obj.get_fudi())
-                li.append(l)
+                result.append(l)
                 if VERY_VERBOSE:
                     print l
         if VERY_VERBOSE:
@@ -148,12 +148,12 @@ class SubPatch(object):
         for conn in self.connections:
             l = ["pd-%s" % (self.name)]
             l.extend(conn.get_fudi())
-            li.append(l)
+            result.append(l)
             if VERY_VERBOSE:
                 print l
         if VERY_VERBOSE:
             print "done creating FUDI list"
-        return li
+        return result
 
     def subpatch(self, name):
         """
@@ -212,6 +212,12 @@ class SubPatch(object):
         self.connections = []
         self.objects = []
         return ["pd-%s" % (self.name), "clear"]
+
+def get_main_patch():
+    """
+    Returns a sub patch which is [pd main] in the dynamic_patch.pd patch.
+    """
+    return SubPatch() # default arg is that one
 
 if __name__ == "__main__":
     def test_1(main):
