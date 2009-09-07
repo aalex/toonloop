@@ -25,11 +25,15 @@ Simpler FUDI sender.
 TODO: port 5400 + n
 """
 import random
+import time
+import os
 from twisted.internet import reactor
 from optparse import OptionParser
 from rats import fudi
 from rats.purity import obj
 from rats.purity import client
+
+RUNNING = True
 
 def clear_all(purityclient):
     purityclient.send_message("pd-main", "clear")
@@ -83,10 +87,12 @@ def audio_patch(purityclient):
     def start_audio(purityclient):
         purityclient.send_message("pd", "dsp", 1)
     def send_random_note(purityclient, send_random_note):
+        global RUNNING
         note = random.randint(220, 880)
         delay = 500
         purityclient.send_message("sine", note, delay) # ms
-        reactor.callLater(delay / 1000., send_random_note, purityclient, send_random_note)
+        if RUNNING:
+            reactor.callLater(delay / 1000., send_random_note, purityclient, send_random_note)
     # send messages
     mess_list = main.get_fudi() # list of (fudi) lists
     # print(mess_list)
@@ -100,6 +106,16 @@ def stop_all(purityclient):
     mess = ["pd", "quit"]
     purityclient.send_message(*mess)
     reactor.stop()
+
+def fork_and_start_pd():
+    pid = os.fork()
+    if pid == 0: # child
+        from rats.purity import server
+        pd = server.PureData()
+        success = pd.start()
+        return 0
+    else: # parent
+        return pid
 
 if __name__ == "__main__":        
     parser = OptionParser(usage="%prog options message...")
@@ -116,20 +132,24 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
     use_tcp = not options.tcp
     fudi.VERBOSE = options.verbose
-    purityclient = client.PurityClient(
-        receive_port=options.receive_port, 
-        send_port=options.send_port, 
-        quit=options.quit, 
-        use_tcp=True) # create the client
-    deferred = purityclient.client_start() # start it
-    # examples of what one can do:
-    reactor.callLater(0.01, clear_all, purityclient)
-    reactor.callLater(0.2, metro_patch, purityclient)
-    reactor.callLater(0.3, audio_patch, purityclient)
-    reactor.callLater(10, stop_all, purityclient)
-    print "will stop in 10 seconds"
-    try:
-        reactor.run()
-    except KeyboardInterrupt, e:
-        print "quit"
+
+    pid = fork_and_start_pd()
+    if pid != 0:
+        time.sleep(1.0) # ...
+        purityclient = client.PurityClient(
+            receive_port=options.receive_port, 
+            send_port=options.send_port, 
+            quit=options.quit, 
+            use_tcp=True) # create the client
+        deferred = purityclient.client_start() # start it
+        # examples of what one can do:
+        reactor.callLater(0.01, clear_all, purityclient)
+        reactor.callLater(0.2, metro_patch, purityclient)
+        reactor.callLater(0.3, audio_patch, purityclient)
+        reactor.callLater(10, stop_all, purityclient)
+        print "will stop in 10 seconds"
+        try:
+            reactor.run()
+        except KeyboardInterrupt, e:
+            print "quit"
 

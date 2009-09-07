@@ -28,7 +28,6 @@ from twisted.internet import defer
 
 VERBOSE = True
 
-
 class ChildKilledError(Exception):
     """Raised when child is killed"""
     pass
@@ -94,7 +93,7 @@ class PureData(object):
         self.driver = driver
         self.nogui = nogui
         self.blocking=blocking
-        if patch is None:
+        if patch is None: # default patch:
             patch = os.path.join(os.path.dirname(purity.__file__), "dynamic_patch.pd")
         self.patch = patch
         # ready to go
@@ -102,7 +101,8 @@ class PureData(object):
     def start(self):
         """
         Creates args to start pd.
-        Returns a deferred.
+        Returns True
+        TODO: return a deferred.
         TODO: really wait until pd is started.
         """
         command = "pd"
@@ -115,7 +115,7 @@ class PureData(object):
         command += " -outchannels %d" % (self.outchannels)
         command += " %s" % (self.patch)
         run_command(command, variables_dict={}, die_on_ctrl_c=True)
-        return defer.succeed(True)
+        return True # return defer.succeed(True)
         
     def stop(self):
         raise NotImplementedError("This is still to be done.")

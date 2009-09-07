@@ -22,7 +22,6 @@
 """
 Simpler FUDI sender.
 
-TODO: port 5400 + n
 """
 from twisted.internet import reactor
 from rats import fudi
@@ -32,6 +31,7 @@ class PurityClient(object):
     Dynamic patching Pure Data message sender.
     Used for dynamic patching with Pd.
     """
+    # TODO: connect directly to pd-gui port, which is 5400 + n
     def __init__(self, receive_port=14444, send_port = 15555, use_tcp=True, quit=quit):
         self.send_port = send_port
         self.receive_port = receive_port

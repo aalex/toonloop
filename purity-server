@@ -19,7 +19,11 @@
 # You should have received a copy of the gnu general public license
 # along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
 #
-from rats import purity
+"""
+Starts Pure Data with the Purity dynamic patching patch. 
+
+Blocking.
+"""
 from rats.purity import server
 from optparse import OptionParser
 from twisted.internet import reactor
@@ -30,10 +34,9 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
     # patch = options.patch
     pd = server.PureData()
-    deferred = pd.start()
-    def success(result):
-        print("started")
-    deferred.addCallback(success)
-    reactor.run()
-    
+    success = pd.start()
+    try:
+        reactor.run()
+    except KeyboardInterrupt, e:
+        print "Bye."
 
