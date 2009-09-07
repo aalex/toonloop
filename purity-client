@@ -23,13 +23,13 @@
 Simpler FUDI sender.
 """
 from twisted.internet import reactor
-from rats import fudi
 from optparse import OptionParser
-from rats.purepy.obj import SubPatch
+from rats import fudi
+from rats.purity.obj import SubPatch
 
-class PurePy(object):
+class PurityClient(object):
     """
-    Pure Py Pure Data message sender.
+    Dynaminc patching Pure Data message sender.
     Used for dynamic patching with Pd.
     """
     def __init__(self, receive_port=14444, send_port = 15555, use_tcp=True, quit=quit):
@@ -111,20 +111,20 @@ if __name__ == "__main__":
     use_tcp = not options.tcp
 
     fudi.VERBOSE = options.verbose
-    purepy = PurePy(
+    purityclient = PurityClient(
         receive_port=options.receive_port, 
         send_port=options.send_port, 
         quit=options.quit, 
         use_tcp=True
         )
 
-    def test_message(purepy):
-        purepy.send_message("pd-main", "clear")
-        purepy.send_message("pd-main", "obj", 50, 50, "tgl", 60)
-        purepy.send_message("pd-main", "obj", 100, 100, "metro", 60)
-        purepy.send_message("pd-main", "connect", 0, 0, 1, 0)
+    def test_message(purityclient):
+        purityclient.send_message("pd-main", "clear")
+        purityclient.send_message("pd-main", "obj", 50, 50, "tgl", 60)
+        purityclient.send_message("pd-main", "obj", 100, 100, "metro", 60)
+        purityclient.send_message("pd-main", "connect", 0, 0, 1, 0)
 
-    def other_test(purepy):
+    def other_test(purityclient):
         main = SubPatch()
         # subpatch
         test1 = main.subpatch("test1")
@@ -142,18 +142,18 @@ if __name__ == "__main__":
             print mess
             message = fudi.to_fudi(*mess)
             print message
-            purepy.send_message(*mess)
+            purityclient.send_message(*mess)
 #         for i in li:
 #             if len(i) == 0:
 #                 message = fudi.to_fudi(i[0])
 #             else:
 #                 message = fudi.to_fudi(i[0], *i[1:])
     #TODO: listen server
-    # deferred = purepy.server_start()
-    other_deferred = purepy.client_start()  # use_tcp)
-    #other_deferred.addCallback(purepy.send_message, "obj", 100, 100, "metro", 60)
-    #reactor.callLater(0.01, test_message, purepy)
-    reactor.callLater(0.01, other_test, purepy)
+    # deferred = purityclient.server_start()
+    other_deferred = purityclient.client_start()  # use_tcp)
+    #other_deferred.addCallback(purityclient.send_message, "obj", 100, 100, "metro", 60)
+    #reactor.callLater(0.01, test_message, purityclient)
+    reactor.callLater(0.01, other_test, purityclient)
     try:
         reactor.run()
     except KeyboardInterrupt, e:

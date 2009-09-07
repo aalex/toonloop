@@ -22,7 +22,7 @@
 import os
 import sys
 import subprocess
-import rats.purepy
+from rats import purity
 from optparse import OptionParser
 
 VERBOSE = True
@@ -79,7 +79,7 @@ def run_command(command_str, variables_dict={}, die_on_ctrl_c=True):
     return retcode
 
 if __name__ == "__main__":
-    default_patch = os.path.join(os.path.dirname(rats.purepy.__file__), "dynamic_patch.pd")
+    default_patch = os.path.join(os.path.dirname(purity.__file__), "dynamic_patch.pd")
     parser = OptionParser(usage="%prog [options]")
     parser.add_option("-p", "--patch", type="string", help="Pure Data Patch to open.", default=default_patch)
     (options, args) = parser.parse_args()
