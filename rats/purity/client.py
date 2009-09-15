@@ -24,7 +24,9 @@ Simpler FUDI sender.
 
 """
 from twisted.internet import reactor
+from twisted.internet import defer
 from rats import fudi
+from rats.purity import server
 
 class PurityClient(object):
     """
@@ -69,6 +71,7 @@ class PurityClient(object):
         self.client_protocol = protocol
         # self.client_protocol.send_message("ping", 1, 2.0, "bang")
         # print "sent ping"
+        return protocol # pass it to the next
 
     def on_client_error(self, failure):
         """ Client cannot send data to pd """
@@ -95,4 +98,32 @@ class PurityClient(object):
             print "stopping the application"
             # TODO: try/catch
             reactor.callLater(0, reactor.stop)
+
+def create_simple_client():
+    """
+    Creates a purity server (Pure Data process manager)
+    and a purity client. 
+    """
+    # TODO: receive message from pd to know when it is really ready.
+    def _callback(protocol, deferred1, client):
+        deferred1.callback(client)
+        return True
+    def _later(deferred1, client):
+        # time.sleep(1.0) # Wait until pd is ready. #TODO: use netsend instead.
+        deferred2 = client.client_start() # start it
+        deferred2.addCallback(_callback, deferred1, client)
+    deferred = defer.Deferred()
+    pid = server.fork_and_start_pd()
+    if pid != 0:
+        the_client = PurityClient(
+            receive_port=15555, 
+            send_port=17777, 
+            quit=False, 
+            use_tcp=True) # create the client
+        reactor.callLater(5.0, _later, deferred, the_client)
+    else:
+        sys.exit(0) # do not do anything else here !
+    return deferred
+
+
 

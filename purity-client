@@ -20,7 +20,7 @@
 # along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
-Simpler FUDI sender.
+Simpler example FUDI sender.
 
 TODO: port 5400 + n
 """
@@ -38,9 +38,6 @@ RUNNING = True
 
 def clear_all(purityclient):
     purityclient.send_message("pd-main", "clear")
-    # purityclient.send_message("pd-main", "obj", 50, 50, "tgl", 60)
-    # purityclient.send_message("pd-main", "obj", 100, 100, "metro", 60)
-    # purityclient.send_message("pd-main", "connect", 0, 0, 1, 0)
 
 def metro_patch(purityclient):
     """
@@ -108,14 +105,6 @@ def stop_all(purityclient):
     purityclient.send_message(*mess)
     reactor.stop()
 
-def fork_and_start_pd():
-    pid = os.fork()
-    if pid == 0: # child
-        pd = server.PureData()
-        success = pd.start()
-        return 0
-    else: # parent
-        return pid
 
 if __name__ == "__main__":        
     parser = OptionParser(usage="%prog options message...")
@@ -133,9 +122,9 @@ if __name__ == "__main__":
     use_tcp = not options.tcp
     fudi.VERBOSE = options.verbose
 
-    pid = fork_and_start_pd()
+    pid = server.fork_and_start_pd()
     if pid != 0:
-        time.sleep(1.0) # ...
+        time.sleep(1.0) # Wait until pd is ready. #TODO: use netsend instead.
         purityclient = client.PurityClient(
             receive_port=options.receive_port, 
             send_port=options.send_port, 

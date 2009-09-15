@@ -32,6 +32,7 @@ class ChildKilledError(Exception):
     """Raised when child is killed"""
     pass
 
+
 def run_command(command_str, variables_dict={}, die_on_ctrl_c=True):
     """
     Creates and launches a process. 
@@ -120,3 +121,15 @@ class PureData(object):
     def stop(self):
         raise NotImplementedError("This is still to be done.")
 
+def fork_and_start_pd():
+    """
+    Please exit the program if pid value is 0 
+    We return the pid 
+    """
+    pid = os.fork()
+    if pid == 0: # child
+        pd = PureData()
+        success = pd.start()
+        return 0
+    else: # parent
+        return pid
