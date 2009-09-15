@@ -126,9 +126,10 @@ class SubPatch(object):
     It can be found in rats/purepy/dynamic_patch.pd
     """
     interface.implements(IElement)
-    def __init__(self, name="main"):
+    def __init__(self, name="main", visible=False):
         self.parent = None
         self.name = name
+        self.visible = visible
         self.objects = []
         self.connections = []
     
@@ -166,17 +167,22 @@ class SubPatch(object):
             result.append(l)
             if VERY_VERBOSE:
                 print l
+        if not self.visible:
+            l = ["pd-%s" % (self.name), "vis", 0]
+            result.append(l)
+            if VERY_VERBOSE:
+                print l
         if VERY_VERBOSE:
             print "done creating FUDI list"
         return result
 
-    def subpatch(self, name):
+    def subpatch(self, name, visible=False):
         """
         Adds a subpatch to the supatch.
         Factory that wraps the SubPatch constructor.
         @return SubPatch instance.
         """
-        obj = SubPatch(name)
+        obj = SubPatch(name, visible=visible)
         return self._add_object(obj)
 
     def obj(self, name, *args, **keywords):

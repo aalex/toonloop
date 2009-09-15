@@ -36,7 +36,7 @@ def creation_callback(client):
     """
     main_patch = obj.get_main_patch()
     # subpatch
-    patch = main_patch.subpatch("metropatch")
+    patch = main_patch.subpatch("metropatch", visible=True)
     # objects
     r = patch.receive("startme")
     tgl = patch.obj("tgl")

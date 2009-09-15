@@ -42,13 +42,20 @@ class PurityClient(object):
         self.fudi_server = None
         self.use_tcp = use_tcp # TODO
         self.quit = quit
+        self._server_startup_deferred = None
 
     def server_start(self):
         """ returns server """
+        self._server_startup_deferred = defer.Deferred()
         self.fudi_server = fudi.FUDIServerFactory()
-        self.fudi_server.register_message("pong", self.pong)
+        self.fudi_server.register_message("__pong__", self.on_pong)
+        self.fudi_server.register_message("__ping__", self.on_ping)
+        self.fudi_server.register_message("__confirm__", self.on_confirm)
+        self.fudi_server.register_message("__connected__", self.on_connected)
         reactor.listenTCP(self.receive_port, self.fudi_server)
-        return self.fudi_server
+        #return self.fudi_server
+        # TODO: add a timeout to this callback
+        return self._server_startup_deferred
 
     def client_start(self):
         """ 
@@ -61,12 +68,31 @@ class PurityClient(object):
         deferred.addErrback(self.on_client_error)
         return deferred
 
-    def pong(self, protocol, *args):
-        """ Receives FUDI pong """
-        print "received pong", args
+    def on_pong(self, protocol, *args):
+        """ Receives FUDI __pong__"""
+        print "received __pong__", args
         # print("stopping reactor")
         # reactor.stop()
 
+    def on_ping(self, protocol, *args):
+        """ Receives FUDI __ping__"""
+        print "received __ping__", args
+
+    def on_confirm(self, protocol, *args):
+        """ 
+        Receives FUDI __confirm__ for the confirmation of every FUDI message sent
+        to Pure Data. You need to send Pure Data a "__enable_confirm__ 1" message.
+        """
+        print "received __confirm__", args
+
+    def on_connected(self, protocol, *args):
+        """ 
+        Receives FUDI __connected__ when the Pure Data application 
+        is ready and can send FUDI message to Python.
+        """
+        print "received __connected__", args
+        self._server_startup_deferred.callback(self.fudi_server)
+    
     def on_client_connected(self, protocol):
         """ Client can send messages to Pure Data """
         self.client_protocol = protocol
@@ -80,7 +106,6 @@ class PurityClient(object):
         raise Exception("Could not connect to pd.... Dying.")
         # print "stop"
         # reactor.stop()
-
 
     def send_message(self, selector, *args):
         """ Send a message to pure data """
@@ -106,14 +131,16 @@ def create_simple_client():
     and a purity client. 
     """
     # TODO: receive message from pd to know when it is really ready.
-    def _callback(protocol, deferred1, client):
-        deferred1.callback(client)
+    def _callback(protocol, my_deferred, the_client):
+        my_deferred.callback(the_client)
         return True
-    def _later(deferred1, client):
+    
+    def _connected(the_server, my_deferred, the_client):
         # time.sleep(1.0) # Wait until pd is ready. #TODO: use netsend instead.
-        deferred2 = client.client_start() # start it
-        deferred2.addCallback(_callback, deferred1, client)
-    deferred = defer.Deferred()
+        c_deferred = the_client.client_start() # start it
+        c_deferred.addCallback(_callback, my_deferred, the_client)
+    
+    my_deferred = defer.Deferred()
     pid = server.fork_and_start_pd()
     if pid != 0:
         the_client = PurityClient(
@@ -121,10 +148,13 @@ def create_simple_client():
             send_port=17777, 
             quit=False, 
             use_tcp=True) # create the client
-        reactor.callLater(5.0, _later, deferred, the_client)
+        s_deferred = the_client.server_start()
+        # TODO: use deferred with __connected__ instead of callLater.
+        #reactor.callLater(5.0, _later, my_deferred, the_client)
+        s_deferred.addCallback(_connected, my_deferred, the_client)
     else:
         sys.exit(0) # do not do anything else here !
-    return deferred
+    return my_deferred
 
 
 
