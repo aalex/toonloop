@@ -23,6 +23,7 @@
 Simpler FUDI sender.
 
 """
+import sys
 from twisted.internet import reactor
 from twisted.internet import defer
 from rats import fudi

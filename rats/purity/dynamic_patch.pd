@@ -1,4 +1,4 @@
-#N canvas 310 224 498 333 10;
+#N canvas 567 69 498 548 10;
 #X obj 114 248 s;
 #X obj 47 99 list split 1;
 #X obj 29 173 list;
@@ -9,11 +9,17 @@
 #X floatatom 154 44 5 0 0 0 - - -;
 #X obj 221 185 route verbose;
 #X obj 176 211 spigot;
-#X obj 230 159 r PURITY;
 #X obj 210 19 cnv 15 100 100 empty empty purity 20 12 0 14 -258113
 -66577 0;
 #N canvas 1470 150 450 300 main 0;
 #X restore 235 56 pd main;
+#X obj 42 405 netsend;
+#X msg 53 351 connect localhost 15555;
+#X obj 50 322 loadbang;
+#X obj 71 455 sel 1 0;
+#X obj 160 400 delay 100;
+#X msg 66 487 send __purity__ connected;
+#X obj 230 159 r __purity__;
 #X connect 1 0 3 0;
 #X connect 1 1 2 1;
 #X connect 2 0 4 0;
@@ -25,4 +31,11 @@
 #X connect 5 1 7 0;
 #X connect 8 0 9 1;
 #X connect 9 0 6 0;
-#X connect 10 0 8 0;
+#X connect 12 0 15 0;
+#X connect 13 0 12 0;
+#X connect 14 0 13 0;
+#X connect 15 0 17 0;
+#X connect 15 1 16 0;
+#X connect 16 0 13 0;
+#X connect 17 0 12 0;
+#X connect 18 0 8 0;

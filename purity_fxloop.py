@@ -71,28 +71,28 @@ class FxPatch(object):
     ARRAY_DURATION = 10.0
     def __init__(self):
         self.main_patch = obj.get_main_patch()
-        self.tables_subpatch = slef.main_patch.subpatch("tables")
+        self.tables_subpatch = self.main_patch.subpatch("tables")
         self.samplers = {} # key is an index.
         for i in range(self.NUM_TABLES):
-            self.patch.obj("table", "table_" + str(i), int(self.SAMPLING_RATE * self.ARRAY_DURATION))
-        for i in range(self.NUM_SAMPLERS):
+            self.tables_subpatch.obj("table", "table_" + str(i), int(self.SAMPLING_RATE * self.ARRAY_DURATION))
+        for i in range(self.NUM_PLAYERS):
             self.samplers[i] = SamplerSubpatch(i, self.main_patch)
+        # objects
+        # r = 
+        # tgl = patch.obj("tgl")
+        # metro = patch.obj("metro", 500)
+        # bang = patch.obj("bng")
+        # # connections
+        # patch.connect(r, 0, tgl, 0)
+        # patch.connect(tgl, 0, metro, 0)
+        # patch.connect(metro, 0, bang, 0)
 
     def creation_callback(self, client):
         """
         :param client: PurityClient instance.
         """
-        # objects
-        r = 
-        tgl = patch.obj("tgl")
-        metro = patch.obj("metro", 500)
-        bang = patch.obj("bng")
-        # connections
-        patch.connect(r, 0, tgl, 0)
-        patch.connect(tgl, 0, metro, 0)
-        patch.connect(metro, 0, bang, 0)
         # send messages
-        mess_list = main_patch.get_fudi() # list of (fudi) lists
+        mess_list = self.main_patch.get_fudi() # list of (fudi) lists
         # print(mess_list)
         for mess in mess_list:
             print("%s" % (mess))
