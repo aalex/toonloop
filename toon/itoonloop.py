@@ -69,7 +69,7 @@ from rats.serialize import Serializable
 from rats.observer import Subject
 
 import toon
-from toon import opensoundcontrol
+# from toon import opensoundcontrol
 from toon import mencoder
 from toon.draw import texture_from_image
 from toon.draw import draw_textured_square, draw_square
