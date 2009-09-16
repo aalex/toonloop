@@ -1,24 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Purepy
-# Copyright (C) 2009 Alexandre Quessy
-# http://alexandre.quessy.net
-# All rights reserved.
 #
-# This file is free software: you can redistribute it and/or modify
+# The Purity library for Pure Data dynamic patching.
+#
+# Copyright 2009 Alexandre Quessy
+# <alexandre@quessy.net>
+# http://alexandre.quessy.net
+#
+# Purity is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 2 of the License, or
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Purepy is distributed in the hope that it will be useful,
+# Purity is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with Purepy. If not, see <http://www.gnu.org/licenses/>.
-
+# You should have received a copy of the gnu general public license
+# along with Purity.  If not, see <http://www.gnu.org/licenses/>.
+#
+"""
+Tools to create Pure Data objects and subpatches.
+"""
+#TODO: rename this file to patch.py
 import random 
 from rats import fudi
 from zope import interface
@@ -29,25 +34,33 @@ VERY_VERBOSE = False
 _gen_pos_indexes = {}
 
 def _gen_position(parent, be_random=False):
+    """
+    Generates positions for an object within a parent patch.
+    Keeps track of the previous object Y position using 
+    the memory address of the parent object as a key in the dict.
+    """
     global _gen_pos_indexes
-    if parent not in _gen_pos_indexes.keys():
-        _gen_pos_indexes[parent] = 0
-    increment = 25
+    parent_id = id(parent)
+    increment = 25 # distance between objects in the patches.
+    if parent_id not in _gen_pos_indexes.keys():
+        _gen_pos_indexes[parent_id] = 0 # start at 0
     if be_random:
         return [random.randrange(10, 300), random.randrange(10, 200)]
     else:
-        _gen_pos_indexes[parent] += increment
-        return [100, _gen_pos_indexes[parent]]
+        _gen_pos_indexes[parent_id] += increment # and then increment
+        return [100, _gen_pos_indexes[parent_id]] # object pos
     
 class IElement(interface.Interface):
     """
     Any Pure Data Element. (object or message)
     """
     parent = interface.Attribute("""A pointer to the parent Element.""")
+
     def get_fudi(self):
         """
-        Return list of list of atoms. 
+        Returns a (Python) list of lists of (string) atoms. 
         A FUDI creation message.
+        That list must then be converted to real ASCII fudi using the fudi module.
         """
         pass
 
@@ -82,6 +95,8 @@ class Obj(object):
 class Receive(Obj):
     """
     The [receive] Pure Data object.
+    It has a send method, which you can be used to send it a message
+    directly.
     """
     def __init__(self, receive_symbol):
         self.receive_symbol = receive_symbol
@@ -238,6 +253,7 @@ def get_main_patch():
     """
     Returns a sub patch which is [pd main] in the dynamic_patch.pd patch.
     """
+    #TODO: rename to [pd __main__]
     return SubPatch() # default arg is that one
 
 if __name__ == "__main__":

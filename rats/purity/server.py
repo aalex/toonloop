@@ -1,25 +1,28 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #
-# ToonLoop for Python
+# The Purity library for Pure Data dynamic patching.
 #
-# Copyright 2008 Alexandre Quessy & Tristan Matthews
-# <alexandre@quessy.net> & <le.businessman@gmail.com>
-# http://www.toonloop.com
+# Copyright 2009 Alexandre Quessy
+# <alexandre@quessy.net>
+# http://alexandre.quessy.net
 #
-# ToonLoop is free software: you can redistribute it and/or modify
+# Purity is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# ToonLoop is distributed in the hope that it will be useful,
+# Purity is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the gnu general public license
-# along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
+# along with Purity.  If not, see <http://www.gnu.org/licenses/>.
 #
-
+"""
+Launcher for a Pure Data process.
+"""
 import os
 import sys
 import subprocess
@@ -31,7 +34,6 @@ VERBOSE = True
 class ChildKilledError(Exception):
     """Raised when child is killed"""
     pass
-
 
 def run_command(command_str, variables_dict={}, die_on_ctrl_c=True):
     """
@@ -83,7 +85,6 @@ def run_command(command_str, variables_dict={}, die_on_ctrl_c=True):
 class PureData(object):
     """
     Launches Pure Data software. 
-    Blocking.
     """
     def __init__(self, rate=48000, listdev=True, inchannels=2, outchannels=2, verbose=True, driver="jack", nogui=False, blocking=True, patch=None):
         self.rate = rate
@@ -101,11 +102,13 @@ class PureData(object):
 
     def start(self):
         """
-        Creates args to start pd.
+        Creates args and start pd.
+        
         Returns True
-        TODO: return a deferred.
-        TODO: really wait until pd is started.
+        Blocking.
         """
+        #TODO: return a deferred.
+        #TODO: really wait until pd is started.
         command = "pd"
         if self.driver == "jack":
             command += " -jack"
@@ -126,6 +129,7 @@ def fork_and_start_pd():
     Please exit the program if pid value is 0 
     We return the pid 
     """
+    # TODO: Also create a twisted ProcessProtocol for Pure Data.
     pid = os.fork()
     if pid == 0: # child
         pd = PureData()
