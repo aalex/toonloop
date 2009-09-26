@@ -1,0 +1,198 @@
+#!/usr/bin/env python
+#
+# FxLoop
+#
+# Copyright 2009 Alexandre Quessy
+# http://www.toonloop.com
+#
+# FxLoop is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# FxLoop is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the gnu general public license
+# along with FxLoop.  If not, see <http://www.gnu.org/licenses/>.
+#
+"""
+The Item prototype
+"""
+import os
+import pygame
+from pygame.locals import *
+from OpenGL.GL import *
+import toon
+from toon import draw
+import sys
+from optparse import OptionParser
+from twisted.internet import reactor
+from pygame import time
+from rats import render
+from toon.draw import draw_textured_square
+
+class Step(object):
+    def __init__(self, index):
+        self.has_sound = False
+        self.index = index
+        self.sample_id = None
+
+def draw_square():
+    """
+    Draws a square of 2 x 2 size centered at 0, 0
+    """
+    glBegin(GL_QUADS)
+    glVertex2f(-1.0, -1.0) # Bottom Left
+    glVertex2f(1.0, -1.0) # Bottom Right
+    glVertex2f(1.0, 1.0) # Top Right
+    glVertex2f(-1.0, 1.0) # Top Left
+    glEnd()
+
+class FxLoop(render.Game):
+    """
+    FxLoop audio sampler/sequencer for stop-motion animations.
+    """
+    def __init__(self):
+        self.image_width, self.image_height = 640, 480
+        self.paused = False
+        self._display_size = (self.image_width, self.image_height)
+        self.image_size = (self.image_width, self.image_height)
+        self.renderer = None # Renderer instance that owns it.
+        self.clock = pygame.time.Clock()
+        self.running = True
+        self.steps = []
+        for index in range(10):
+            self.steps.append(Step(index))
+        self.current_index = 0
+        #icon = pygame.image.load(os.path.join(self.config.PACKAGE_PATH, 'data', "icon.png"))
+        #pygame.display.set_icon(icon) # a 32 x 32 surface
+        # the pygame window
+        self.display = pygame.display.set_mode(self._display_size, OPENGL | DOUBLEBUF | HWSURFACE)
+        pygame.display.set_caption("FxLoop")
+        pygame.mouse.set_visible(False)
+
+
+    def process_events(self, events):
+        """
+        Processes pygame events.
+        :param events: got them using pygame.event.get()
+        """
+        for e in events:
+            if e.type == QUIT:
+                self.running = False
+            # TODO : catch window new size when resized.
+            elif e.type == pygame.VIDEORESIZE:
+                print "VIDEORESIZE", e
+            elif e.type == MOUSEBUTTONDOWN:
+                print("%s DOWN" % (e.button))
+            elif e.type == MOUSEBUTTONUP:
+                print("%s UP" % (e.button))
+            elif e.type == MOUSEMOTION:
+                print("MOTION: %s " % (str(pygame.mouse.get_pos())))
+            elif e.type == KEYDOWN: 
+                if e.key == K_f: # F Fullscreen
+                    pygame.display.toggle_fullscreen()
+                if e.key == K_1:
+                    # TODO
+                    pass
+                # if e.key == K_2:
+                #     self.visible[1] = not self.visible[1]
+                # if e.key == K_3:
+                #     self.visible[2] = not self.visible[2]
+                # elif e.key == K_i: # I Info
+                    # try:
+                    #     self.print_stats()
+                    # except Exception, e:
+                    #     print e.message
+                elif e.key == K_ESCAPE: #  or e.key == K_q: # ESCAPE or Q
+                    self.running = False # self.quit()
+
+    def draw(self):
+        """
+        Renders one frame.
+        Called from the event loop. (twisted)
+        """
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        if not self.paused:
+            #TODO
+            steps_len = len(self.steps)
+            for step in self.steps:
+                if step.has_sound:
+                    color = (0.5, 0.5, 0.5, 0.0)
+                else:
+                    color = (0.2, 0.2, 0.2, 0.0)
+                if self.current_index == step.index:
+                    if step.has_sound:
+                        color = (1.0, 1.0, 1.0, 0.0)
+                    else:
+                        color = (0.8, 0.8, 0.8, 0.0)
+                # draw it
+                glPushMatrix()
+                display_w = 4.0
+                x = ((step.index / (steps_len * 1.0)) * display_w) - (display_w / 2)
+                y = 0.0
+                glTranslatef(x, y, 0.0)
+                scale = (display_w / steps_len) * 0.1
+                glScalef(scale, scale, 1.0)
+                glColor4f(*color)
+                draw_square()
+                glPopMatrix()
+                # XXX
+            self.current_index = (self.current_index + 1) % (steps_len)
+        self.clock.tick()
+        self.fps = self.clock.get_fps()
+        pygame.display.flip()
+
+    def _setup_window(self):
+        """
+        OpenGL setup.
+        """
+        # create OpenGL texture objects 
+        # window is 1280 x 960
+        self._resize_window(self._display_size)
+        #glEnable(GL_TEXTURE_RECTANGLE_ARB) # 2D)
+        glEnable(GL_BLEND)
+        glShadeModel(GL_SMOOTH)
+        glClearColor(0.0, 0.0, 0.0, 0.0) # black background
+        glColor4f(1.0, 1.0, 1.0, 1.0)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        #for i in range(len(self.textures)):
+        #    self.textures[i] = glGenTextures(1)
+
+    def _resize_window(self, (width, height)):
+        """
+        Called when we resize the window.
+        (fullscreen on/off)
+
+        The OpenGL coordinates go from -4 to 4 horizontally
+        and -3 to 3 vertically.
+        (ratio is 4:3)
+        """
+        print("resize %d x %d" % (width, height))
+        if height == 0:
+            height = 1
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(-4.0, 4.0, -3.0, 3.0, -1.0, 1.0)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+
+if __name__ == "__main__":
+    try:
+        app = FxLoop()
+    except:
+        raise
+    else:
+        print "Congratulations ! FxLoop started gracefully."
+    pygame_timer = render.Renderer(app, False) # not verbose !  options.verbose
+    pygame_timer.desired_fps = 6
+    try:
+        reactor.run()
+    except KeyboardInterrupt:
+        pass
+    print "Exiting"
+    sys.exit(0)
+

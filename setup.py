@@ -33,22 +33,25 @@ Usage::
 For developpers::
   sudo python setup.py develop --prefix=/usr/local
   sudo python setup.py develop --prefix=/usr/local --uninstall
+
+To make package::
+  python setup.py sdist
 """
 from setuptools import find_packages
 from setuptools import setup
 
 setup(
     name = "toonloop",
-    version = "1.0 rc1",
+    version = "1.0",
     author = "Alexandre Quessy and Tristan Matthews",
     author_email = "alexandre@quessy.net",
     url = "http://www.toonloop.com/",
-    description = "ToonLoop Realtime Stop Motion Software",
+    description = "ToonLoop Live Stop Motion Software",
     long_description = """ToonLoop stop motion tool and the rats package for OpenGL and Twisted Arts. 
     Requires: twisted, pygame 1.9, PyOpenGL, nevow and numpy.""",
     install_requires = [], # "twisted", "PyOpenGL", "nevow"], # , "numpy"], 
     # requires pygame from SVN for now.
-    scripts = ["toonloop", "scripts/theitem", "scripts/purity-example.py"], # pd-purepy, purepy.py #, "osc_send.py", "osc_receive.py"],
+    scripts = ["toonloop"], #, "scripts/theitem", "scripts/purity-example.py"], # pd-purepy, purepy.py #, "osc_send.py", "osc_receive.py"],
     license = "GPL",
     platforms = ["any"],
     zip_safe = False,
