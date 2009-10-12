@@ -33,15 +33,18 @@ To use, install liblo from source (not from Ubuntu 8.10's package) and pyliblo.:
  mkdir -p ~/src
  pushd ~/src
  svn co https://liblo.svn.sourceforge.net/svnroot/liblo/trunk liblo 
- cd liblo
+ pushd liblo
  ./autogen.sh
  make
  sudo make install
  popd
- pushd ~/src
- cd pyliblo-0.7.2/
+ wget http://das.nasophon.de/download/pyliblo-0.8.0.tar.gz
+ tar -zxvf pyliblo-0.8.0.tar.gz
+ pushd pyliblo-0.8.0/
  python setup.py  build
  sudo python setup.py install --prefix=/usr/local
+ popd
+ popd
 """
 import liblo
 import sys
