@@ -4,6 +4,10 @@ Simple configuration file/line parser.
 """
 import shlex
 
+STRIPPED = "\"' " # quotes are stripped.
+ASSIGNATION_OPERATORS = "=:" # key/values are separated by those
+COMMENTERS = "#"
+
 class ParsingError(Exception):
     """
     Any error that can be raised parsing a string or file.
@@ -22,9 +26,9 @@ def parse_line(txt):
 
 class ConfigFileParser(object):
     """
-     * Shell-like commands.
-     * quoted strings.
-     * value-options pairs
+    Parses flat key-value pairs in a text file.
+
+    Removes quotes from quoted strings.
     """
     def __init__(self):
         self.verbose = False
@@ -41,6 +45,9 @@ class ConfigFileParser(object):
         A list of tuples makes possible the use of many times the same key.
         That is lost if you convert the result to a dict.
         """
+        global STRIPPED
+        global ASSIGNATION_OPERATORS
+        global COMMENTERS
         #ret = {}
         ret = []
         try:
@@ -49,23 +56,22 @@ class ConfigFileParser(object):
             raise ParsingError("Could not open file '%s': %s" % (file_name, e.message))
         try:
             lexer = shlex.shlex(f, file_name, posix=False)
-            lexer.commenters = "#" # default
+            lexer.commenters = COMMENTERS # default
             #lexer.wordchars += "|/.,$^\\():;@-+?<>!%&*`~"
-            assignation_operators = ["=", ":"]
             key = None
             for token in lexer:
-                if token in assignation_operators:
+                if token in ASSIGNATION_OPERATORS:
                     if key is None: # assignation
                         raise ParsingError("No key defined, but found '%s' in file '%s' on line %d. Try using quotes." % (token, file_name, lexer.lineno))
                 else:
                     if key is None: # key
-                        key = token.strip("\"")
+                        key = token.strip(STRIPPED)
                         #if key in ret.keys(): # TODO: allow non-uniques
                         #    raise ParsingError("Key %s already defined but found again in file '%s' on line %d." % (key, file_name, lexer.lineno))
                         if self.verbose:
                             print("Found key '%s'" % (key))
                     else: # value
-                        value = token.strip("\"")
+                        value = token.strip(STRIPPED)
                         #ret[key] = value
                         ret.append((key, value))
                         if self.verbose:
@@ -77,6 +83,8 @@ class ConfigFileParser(object):
         return ret
 
 if __name__ == "__main__":
+    # this is just for test purposes.
+    # better tests are in the test/ directory
     """
     # EXAMPLE FILE:
     # comment
