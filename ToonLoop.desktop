@@ -2,7 +2,7 @@
 
 [Desktop Entry]
 Encoding=UTF-8
-Version=1.0
+Version=1.0.1
 Exec=/usr/local/bin/toonloop 
 Type=Application
 Terminal=true
