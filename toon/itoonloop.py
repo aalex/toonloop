@@ -89,7 +89,7 @@ from pygame.locals import *
 from pygame import time
 from OpenGL.GL import *
 
-__version__ = "1.0 beta"
+#__version__ = "1.0 beta" let's use the version from the mainscript.
 
 class ToonLoopError(Exception):
     """

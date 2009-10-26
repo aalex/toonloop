@@ -94,7 +94,7 @@ The camera module for pygame is available from pygame's svn revision
 svn co svn://seul.org/svn/pygame/trunk
 """
  
-__version__ = "1.0 beta"
+__version__ = "1.0.1"
 
 import sys
 from optparse import OptionParser
