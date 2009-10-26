@@ -20,4 +20,5 @@ clean:
 	find . -name \*.pyc  -exec rm {} \;
 	@echo DONE
 
-	
+check:
+	trial rats/test

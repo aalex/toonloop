@@ -1,8 +1,8 @@
 """
 Unit test for rats/serialize.py
 """
+from twisted.trial import unittest
 
-import unittest
 from rats import serialize
 
 # test classes with useless data
@@ -31,6 +31,7 @@ class Test_Serialize(unittest.TestCase):
         self.filename = filename
 
     def test_load(self):
+        raise unittest.SkipTest('This serialize module is deprecated')
         try:
             self.data = serialize.load(filename)
         except serialize.SerializeError:
@@ -38,6 +39,7 @@ class Test_Serialize(unittest.TestCase):
         # print 'loaded objects', self.data
 
     def test_save(self):
+        raise unittest.SkipTest('This serialize module is deprecated')
         self.data = [Test(), Rat()]
         serialize.save(filename, self.data)
         # print 'saved data'
