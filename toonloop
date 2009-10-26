@@ -103,9 +103,9 @@ from twisted.internet import reactor
 
 # the core: 
 from rats import render
-from toon.itoonloop import ToonLoopError
-from toon.itoonloop import ToonLoop
-from toon.itoonloop import Configuration
+from toon.core import ToonLoopError
+from toon.core import ToonLoop
+from toon.core import Configuration
 
 if __name__ == "__main__":
     """
