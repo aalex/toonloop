@@ -24,6 +24,65 @@ def parse_line(txt):
     except ValueError, e:
         raise ParsingError("Error parsing text '%s': %s" %(txt, e.message))
 
+class NoOptionError(Exception):
+    """
+    Exception raised when a specified option is not found.
+    """
+    pass
+
+class ParsingError(Exception):
+    """
+    Exception raised when errors occur attempting to parse a file.
+    """
+    pass
+
+class ConfigParser(object):
+    """
+    This prototype is not yet used.
+    """
+    def __init__(self):
+        self.file_name = None
+        self._options = []
+
+    def read(self, file_names):
+        """
+        Attempt to read and parse a list of filenames, returning a list of filenames which were successfully parsed. If filenames is a string or Unicode string, it is treated as a single filename. If a file named in filenames cannot be opened, that file will be ignored. This is designed so that you can specify a list of potential configuration file locations (for example, the current directory, the user's home directory, and some system-wide directory), and all existing configuration files in the list will be read. If none of the named files exist, the ConfigParser instance will contain an empty dataset. 
+        """
+
+    def options(self):
+        """
+        Returns a list of options available.
+        """
+        return dict(self._options).keys()
+    
+    def get(self, option):
+        """
+        Get an option value.
+
+        Might raise a KeyError if the option is not specified.
+        """
+        return dict(self._options)[option]
+
+    def get_float(self, option):
+        """
+        A convenience method which coerces the option to a floating point number.
+        """
+        return float(self.get(option))
+    
+    def get_int(self, option):
+        """
+        A convenience method which coerces the option to a floating point number.
+        """
+        return int(self.get(option))
+
+    def get_boolean(self, option):
+        """
+        A convenience method which coerces the option to a boolean.
+        Note that the accepted values for the option are "1", "yes", "true", and "on", which cause this method to return True, and "0", "no", "false", and "off", which cause it to return False. These string values are checked in a case-insensitive manner. Any other value will cause it to raise ValueError.
+        """
+        raise NotImplementedError("TODO")
+        return bool(self.get(option))
+
 class ConfigFileParser(object):
     """
     Parses flat key-value pairs in a text file.
