@@ -97,15 +97,14 @@ svn co svn://seul.org/svn/pygame/trunk
 __version__ = "1.0.1"
 
 import sys
-from optparse import OptionParser
 import pygame 
+import optparse
+
 from twisted.internet import reactor
 
 # the core: 
 from rats import render
-from toon.core import ToonLoopError
-from toon.core import ToonLoop
-from toon.core import Configuration
+from toon import core # Configuration, ToonLoop, ToonLoopError
 
 if __name__ == "__main__":
     """
@@ -115,7 +114,7 @@ if __name__ == "__main__":
         # self.intervalometer_enabled = False
         # self.intervalometer_rate_seconds = 30.0 # in seconds
     EPILOG="ToonLoop is a live stop motion performance tool. The objective is to spread its use for teaching new medias to children and to give a professional tool for movie creators. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop."
-    parser = OptionParser(usage="%prog", version='ToonLoop ' + str(__version__), \
+    parser = optparse.OptionParser(usage="%prog", version='ToonLoop ' + str(__version__), \
         epilog=EPILOG)
     # + " \n\n"  __doc__
     parser.add_option("-d", "--device", dest="device", type="int", \
@@ -150,7 +149,7 @@ if __name__ == "__main__":
     print "Using video device %d" % options.device
     print "Press h for usage and instructions"
     pygame.init()
-    config = Configuration()
+    config = core.Configuration()
     kwargs = config.__dict__
     if options.toonloop_home:
         kwargs['toonloop_home'] = options.toonloop_home
@@ -173,10 +172,10 @@ if __name__ == "__main__":
                 kind = config.set(k, v)
                 print "OPTION \"%s\" : %s       %s" % (k, v, kind)
             except KeyError, e:
-                raise ToonLoopError('No such ToonLoop option :', e.message)
+                raise core.ToonLoopError('No such ToonLoop option :', e.message)
             except Exception, e:
                 print sys.exc_info()
-                raise ToonLoopError('Error with ToonLoop option :', e.message)
+                raise core.ToonLoopError('Error with ToonLoop option :', e.message)
     if options.list_options:
         print """Use ToonLoop options with -o flag :
         toonloop -o [name] [value]"""
@@ -185,10 +184,10 @@ if __name__ == "__main__":
         print "\nExiting."
         sys.exit(0)
     try:
-        toonloop = ToonLoop(config)
+        toonloop = core.ToonLoop(config)
         if options.verbose:
             toonloop.print_help()
-    except ToonLoopError, e:
+    except core.ToonLoopError, e:
         print str(e.message)
         print "Exiting toonloop with error"
         sys.exit(1)
