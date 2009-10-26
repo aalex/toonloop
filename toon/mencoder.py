@@ -39,9 +39,12 @@ try:
     import cStringIO as StringIO
 except ImportError:
     import StringIO
-from twisted.internet import reactor, defer, protocol
-from twisted.python import procutils, failure
+from twisted.internet import defer
+from twisted.internet import reactor
+from twisted.internet import protocol
 from twisted.internet import utils
+from twisted.python import failure
+from twisted.python import procutils
 # TODO: import twisted log
 
 # variables
@@ -53,6 +56,12 @@ except IndexError:
     print "mencoder conversion is disabled"
     # sys.exit(1)
 movie_name_suffix = ""
+
+class MencoderError(Exception):
+    """
+    Any error this module can raise.
+    """
+    pass
 
 def cb_error(command_failure, args):
     print "FAILURE"
@@ -106,7 +115,8 @@ def jpeg_to_movie(filename_pattern, path='.', fps=12, verbose=False, w=640, h=48
     global mencoder_executable
     global movie_name_suffix 
     if mencoder_executable is '':
-        print "mencoder not currently installed. Cannot save to movie."
+        msg = "mencoder not currently installed. Cannot save to movie."
+        return failure.Failure(MencoderError(msg))
     else:
         abs_filename = os.path.join(path, filename_pattern)
         jpegs = "mf://%s*.jpg" % (abs_filename)
