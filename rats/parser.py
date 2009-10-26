@@ -20,7 +20,7 @@ def parse_line(txt):
     except ValueError, e:
         raise ParsingError("Error parsing text '%s': %s" %(txt, e.message))
 
-class Parser(object):
+class ConfigFileParser(object):
     """
      * Shell-like commands.
      * quoted strings.
@@ -59,20 +59,20 @@ class Parser(object):
                         raise ParsingError("No key defined, but found '%s' in file '%s' on line %d. Try using quotes." % (token, file_name, lexer.lineno))
                 else:
                     if key is None: # key
-                        key = token
+                        key = token.strip("\"")
                         #if key in ret.keys(): # TODO: allow non-uniques
                         #    raise ParsingError("Key %s already defined but found again in file '%s' on line %d." % (key, file_name, lexer.lineno))
                         if self.verbose:
                             print("Found key '%s'" % (key))
                     else: # value
-                        value = token
+                        value = token.strip("\"")
                         #ret[key] = value
                         ret.append((key, value))
                         if self.verbose:
                             print("Found value '%s' for key '%s'" % (value, key))
                         key = None
         except ValueError, e:
-            raise ParsingError("Error parsing file '%s': %s" %(file_name, e.message))
+            raise ParsingError("Error parsing file '%s': %s" % (file_name, e.message))
         f.close()
         return ret
 
