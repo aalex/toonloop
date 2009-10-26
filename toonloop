@@ -90,7 +90,7 @@ List of Command-line TOonLoOp Options:
 
 INSTALLATION NOTES : 
 The camera module for pygame is available from pygame's svn revision 
-1744 or greater
+1744 or greater, such as Pygame 1.9
 svn co svn://seul.org/svn/pygame/trunk
 """
  
@@ -98,13 +98,11 @@ __version__ = "1.0 beta"
 
 import sys
 from optparse import OptionParser
-
 import pygame 
 from twisted.internet import reactor
 
-from rats import render
-
 # the core: 
+from rats import render
 from toon.itoonloop import ToonLoopError
 from toon.itoonloop import ToonLoop
 from toon.itoonloop import Configuration
@@ -116,17 +114,17 @@ if __name__ == "__main__":
         # self.intervalometer_on = False
         # self.intervalometer_enabled = False
         # self.intervalometer_rate_seconds = 30.0 # in seconds
-    EPILOG="ToonLoop is a realtime stop motion performance tool. The idea is to spread its use for teaching new medias to children and to give a professional tool for movie creators. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop."
+    EPILOG="ToonLoop is a live stop motion performance tool. The objective is to spread its use for teaching new medias to children and to give a professional tool for movie creators. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop."
     parser = OptionParser(usage="%prog", version='ToonLoop ' + str(__version__), \
         epilog=EPILOG)
     # + " \n\n"  __doc__
     parser.add_option("-d", "--device", dest="device", type="int", \
-        help="Specifies v4l2 device to grab image from.", default=0)
+        help="Specifies V4L2 device to grab image from.", default=0)
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true", \
         help="Sets the output to verbose.")
     # most important, the configuration options:
     parser.add_option("-o", "--option", action="append", nargs=2, \
-        help="Sets any toonloop option by name.")
+        help="Sets any toonloop option by name. See list-options for a list of possible options.")
     parser.add_option("-l", "--list-options", \
         dest="list_options", action="store_true", \
         help="Prints the list of options and exit.") 
@@ -146,7 +144,6 @@ if __name__ == "__main__":
     parser.add_option("-w", "--image-width", type="int", \
         help="Width of the images grabbed from the camera.")
     (options, args) = parser.parse_args()
-    
     print "ToonLoop - Version " + str(__version__)
     print "Copyright 2008 Alexandre Quessy & Tristan Matthews"
     print "Released under the GNU General Public License"
@@ -160,7 +157,6 @@ if __name__ == "__main__":
     if options.image_width:
         kwargs['image_width'] = options.image_width
         kwargs['image_height'] = options.image_width * 3 / 4
-        
     # options that have default values:
     kwargs['video_device'] = options.device
     kwargs['intervalometer_rate_seconds'] = options.intervalometer_rate_seconds
