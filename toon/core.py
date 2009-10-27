@@ -67,7 +67,12 @@ from rats import render
 from rats.observer import Subject
 #from rats.serialize import Serializable
 import toon
-from toon import opensoundcontrol
+try:
+    from toon import opensoundcontrol
+    OSC_LOADED = True
+except ImportError, e:
+    print("For OSC support, please install pyliblo.")
+    OSC_LOADED = False
 from toon import mencoder
 from toon import draw
 from toon import puredata
@@ -206,7 +211,7 @@ class ToonLoop(render.Game):
          * MIDI input (not quite a service, but we start it here)
         """
         # OSC
-        if self.config.osc_enabled:
+        if self.config.osc_enabled and OSC_LOADED:
             self.osc = opensoundcontrol.ToonOsc(self, 
                 listen_port=self.config.osc_listen_port, 
                 send_port=self.config.osc_send_port, 
