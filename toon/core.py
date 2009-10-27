@@ -72,6 +72,7 @@ from toon import mencoder
 from toon import draw
 from toon import puredata
 from toon import chromakey
+from toon import midi
 try:
     from toon import web
     WEB_LOADED = True
@@ -143,6 +144,7 @@ class ToonLoop(render.Game):
         self._display_size = (self.config.display_width, self.config.display_height)
         self.running = True
         self.pd = None
+        self.midi_manager = None
         self.paused = False
         self.image_size = (self.config.image_width, self.config.image_height)
         self.clock = pygame.time.Clock()
@@ -201,6 +203,7 @@ class ToonLoop(render.Game):
         Implemented services : 
          * web server with Media RSS and Restructured text
          * FUDI protocol with PureData
+         * MIDI input (not quite a service, but we start it here)
         """
         # OSC
         #self.osc = opensoundcontrol.ToonOsc(self)
@@ -227,6 +230,28 @@ class ToonLoop(render.Game):
             except:
                 print "Error loading puredata:", sys.exc_info()
                 raise
+        # MIDI
+        if self.config.midi_enabled:
+            self.midi_manager = midi.SimpleMidiInput(self.config.midi_input_id)
+            self.midi_manager.register_callback(self._cb_midi_event)
+            try:
+                self.midi_manager.start()
+            except midi.NotConnectedError, e:
+                print("Could not setup MIDI device %d" % (self.config.midi_input_id))
+
+    def _cb_midi_event(self, event):
+        MIDI_NOTE = 144
+        MIDI_CTRL = 176
+        if event.status == MIDI_NOTE: # MIDI note
+            if self.config.midi_verbose:
+                print("MIDI note: Pitch: %s Velocity: %s" % (event.data1, event.data2))
+        elif event.status == MIDI_CTRL: # MIDI control
+            if self.config.midi_verbose:
+                print("MIDI control: ID: %s Value: %s" % (event.data1, event.data2))
+            ctrl_id = event.data1
+            val = event.data2
+            if ctrl_id == self.config.midi_pedal_control_id and val >= 1:
+                self.frame_add()
 
     def _setup_background(self):
         """
@@ -1055,7 +1080,7 @@ class Configuration(object): #Serializable):
         self.onionskin_opacity = 0.3
         
         # background
-        self.bgimage_enabled = True
+        self.bgimage_enabled = False
         self.bgimage = os.path.join(self.PACKAGE_PATH, 'data/bgimage_05.jpg')
         self.bgcolor_b = 0.2 #TODO: not used so much.
         self.bgcolor_g = 0.8
@@ -1065,7 +1090,7 @@ class Configuration(object): #Serializable):
         
         # white flash
         self.fx_white_flash = True
-        self.fx_white_flash_alpha = 1.0
+        self.fx_white_flash_alpha = 0.5
         # todo:duration
         
         # chromakey
@@ -1087,7 +1112,13 @@ class Configuration(object): #Serializable):
         self.autosave_on = False 
         self.autosave_enabled = True
         self.autosave_rate_seconds = 600.0 # in seconds
-        
+
+        # midi
+        self.midi_enabled = False
+        self.midi_verbose = False
+        self.midi_input_id = -1 # FIXME
+        self.midi_pedal_control_id = 64
+
         # overrides some attributes whose defaults and names are below.
         self.__dict__.update(**argd) 
 

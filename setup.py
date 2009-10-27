@@ -57,7 +57,7 @@ setup(
     zip_safe = False,
     packages = ['rats', 'toon', 'toon/data'],
     package_data = {
-        "":["*.ttf", "*.rst", "*.png", "*.jpg", "*.pd"]
+        "":["*.ttf", "*.rst", "*.cfg", "*.png", "*.jpg", "*.pd"]
     }
     )
 
