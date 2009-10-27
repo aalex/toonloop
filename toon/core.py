@@ -55,7 +55,7 @@ The startup file to execute is toonloop
 """
  
 import sys
-import time 
+from time import strftime
 import os
 import shutil
 import glob
@@ -667,7 +667,7 @@ class ToonLoop(render.Game):
         # TODO : in a thread
         if len(self.clip.images) > 1:
             path = os.path.join(self.config.toonloop_home, self.config.project_name)
-            file_name = time.strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
+            file_name = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
             file_name += '_%s' % (self.clip_id)
             if self.config.verbose:
                 print "Will save images", path, file_name

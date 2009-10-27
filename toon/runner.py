@@ -100,13 +100,15 @@ def run():
     if kwargs['verbose']:
         print("Started in verbose mode.")
     if options.option:
-        print('options', options.option)
+        print('options: %s' % (options.option))
         for k, v in options.option:
             try:
                 kind = config.set(k, v)
                 print("OPTION \"%s\" : %s       %s" % (k, v, kind))
             except KeyError, e:
-                raise core.ToonLoopError('No such ToonLoop option :', e.message)
+                print("Error. No such ToonLoop option : %s" % (e.message))
+                sys.exit(1)
+                #raise core.ToonLoopError('No such ToonLoop option :', e.message)
             except Exception, e:
                 print(sys.exc_info())
                 raise core.ToonLoopError('Error with ToonLoop option :', e.message)
