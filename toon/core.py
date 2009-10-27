@@ -67,7 +67,7 @@ from rats import render
 from rats.observer import Subject
 #from rats.serialize import Serializable
 import toon
-# from toon import opensoundcontrol
+from toon import opensoundcontrol
 from toon import mencoder
 from toon import draw
 from toon import puredata
@@ -206,7 +206,12 @@ class ToonLoop(render.Game):
          * MIDI input (not quite a service, but we start it here)
         """
         # OSC
-        #self.osc = opensoundcontrol.ToonOsc(self)
+        if self.config.osc_enabled:
+            self.osc = opensoundcontrol.ToonOsc(self, 
+                listen_port=self.config.osc_listen_port, 
+                send_port=self.config.osc_send_port, 
+                send_host=self.config.osc_send_port, 
+                )
         #index_file_path = os.path.join(os.curdir, 'toon', 'index.rst') 
         # WEB
         if WEB_LOADED and self.config.web_enabled:
@@ -1066,10 +1071,11 @@ class Configuration(object): #Serializable):
         self.fudi_send_port = 17777
         self.fudi_send_host = 'localhost'
         
-        # osc is not implemented right now.
-        #self.osc_send_port = 33333
-        #self.osc_send_host = 'localhost'
-        #self.osc_receive_port = 44444
+        # osc
+        self.osc_enabled = False
+        self.osc_send_port = 12345
+        self.osc_send_host = 'localhost'
+        self.osc_listen_port = 12346
         #self.osc_receive_hosts = ''
         
         # onionskin
