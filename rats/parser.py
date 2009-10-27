@@ -156,6 +156,8 @@ class ConfigParser(object):
                         if self.verbose:
                             print("Found value '%s' for key '%s'" % (value, key))
                         key = None
+            if key is not None:
+                raise ParsingError("No value for key %s" % (key))
         except ValueError, e:
             raise ParsingError("Error parsing file '%s': %s" % (file_name, e.message))
         f.close()
