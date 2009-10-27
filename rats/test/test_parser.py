@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import tempfile
 
-from rats import parser
+from rats import flatconfig 
 
 from twisted.trial import unittest
 from twisted.internet import defer
@@ -35,7 +35,7 @@ class Test_Config_File(unittest.TestCase):
         pass
 
     def test_01_parse(self):
-        cp = parser.ConfigParser()
+        cp = flatconfig.ConfigParser()
         cp.read(self.file_name)
         res = cp.items()
         verb("Result is %s" % (res))
@@ -60,7 +60,7 @@ class Test_Config_File(unittest.TestCase):
             self.fail("Expected a dict of %d items, but has %s." % (dict_len, len(d)))
 
     def test_02_list(self):
-        cp = parser.ConfigParser()
+        cp = flatconfig.ConfigParser()
         cp.read(self.file_name)
         # many entries with same key + int type
         numbers = cp.get_list("number", int)
@@ -71,7 +71,7 @@ class Test_Config_File(unittest.TestCase):
                 self.fail("Could not find value %d" % (i))
 
     def test_03_types(self):
-        cp = parser.ConfigParser()
+        cp = flatconfig.ConfigParser()
         cp.read(self.file_name)
         # bool 
         val = cp.get("bool_val", bool)
@@ -94,10 +94,10 @@ class Test_Invalid_Config_File(unittest.TestCase):
         pass
 
     def test_01_no_value_for_key(self):
-        cp = parser.ConfigParser()
+        cp = flatconfig.ConfigParser()
         try:
             cp.read(self.file_name)
-        except parser.ParsingError, e:
+        except flatconfig.ParsingError, e:
             pass
         else:
             res = cp.items()
