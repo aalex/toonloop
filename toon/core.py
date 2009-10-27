@@ -22,9 +22,8 @@
 # You should have received a copy of the gnu general public license
 # along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
 #
-
 """
-ToonLoop is a realtime stop motion performance tool. 
+Toonloop is a live stop motion performance tool. 
 
 The idea is to spread its use for teaching new medias to children and to 
 give a professional tool for movie creators.
@@ -56,7 +55,7 @@ The startup file to execute is toonloop
 """
  
 import sys
-from time import strftime
+import time 
 import os
 import shutil
 import glob
@@ -65,22 +64,20 @@ import pprint
 from twisted.internet import reactor
 
 from rats import render
-from rats.serialize import Serializable
 from rats.observer import Subject
-
+#from rats.serialize import Serializable
 import toon
 # from toon import opensoundcontrol
 from toon import mencoder
-from toon.draw import texture_from_image
-from toon.draw import draw_textured_square, draw_square
+from toon import draw
 from toon import puredata
 from toon import chromakey
 try:
     from toon import web_server
     WEB_LOADED = True
 except ImportError, e:
-    print "For web support, please install the python-nevow package."
-    print e.message
+    print("For web support, please install the python-nevow package.")
+    print(e.message)
     WEB_LOADED = False
 
 import pygame
@@ -97,7 +94,7 @@ class ToonLoopError(Exception):
     """
     pass
 
-class ToonClip(Serializable):
+class ToonClip(object): #Serializable):
     """
     ToonLoop clip.
     A clip is a serie of frames. 
@@ -125,6 +122,7 @@ class ToonLoop(render.Game):
 
     Onion skin effect and chroma key shader are mutually exclusives.
     """
+    # OpenGL textures indices in the list
     TEXTURE_MOST_RECENT = 0
     TEXTURE_PLAYBACK = 1
     TEXTURE_ONION = 2
@@ -196,7 +194,7 @@ class ToonLoop(render.Game):
 
     def _start_services(self):
         """
-        Starts the TOonLoOp network services.
+        Starts the Toonloop network services.
 
         Called once the Twisted reactor has been started. 
 
@@ -246,7 +244,7 @@ class ToonLoop(render.Game):
                 print 'setup background', path
         self.background_image = pygame.image.load(path)
         # Create an OpenGL texture
-        texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self.background_image)
+        draw.texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self.background_image)
     
     def bgimage_glob_next(self, increment=1):
         """
@@ -287,7 +285,6 @@ class ToonLoop(render.Game):
                     # if self.config.verbose:
                     #     print 'bgimage_glob_next done'
                     #     print '----------------'
-                    
 
     def print_stats(self):
         """
@@ -316,20 +313,20 @@ class ToonLoop(render.Game):
         """
         Prints help for live keyboard controls.
         """
-        print "ToonLoop keyboard controls : "
-        print "<Space bar> = add image to loop "
-        print "<Backspace> = remove image from loop "
-        print "r = reset loop"
-        print "p = pause"
-        print "o = toggle onion skin on/off"
-        print "i = prints informations"
-        print "h = prints this help message"
-        print "s = saves current clip as jpeg and movie"
-        print "a = enable the intervalometer auto grab"
-        print "k = increase the intervalometer interval"
-        print "j = decrease the intervalometer interval"
-        print "[1, 9]  = select a clip from the current project"
-        print "<Esc> = quit program\n"
+        print("ToonLoop keyboard controls : ")
+        print("<Space bar> = add image to loop ")
+        print("<Backspace> = remove image from loop ")
+        print("r = reset loop")
+        print("p = pause")
+        print("o = toggle onion skin on/off")
+        print("i = prints informations")
+        print("h = prints this help message")
+        print("s = saves current clip as jpeg and movie")
+        print("a = enable the intervalometer auto grab")
+        print("k = increase the intervalometer interval")
+        print("j = decrease the intervalometer interval")
+        print("[0, 9]  = select a clip from the current project")
+        print("<Esc> = quit program\n")
 
     def _init_clips(self):
         """
@@ -437,7 +434,7 @@ class ToonLoop(render.Game):
             else:
                 self.clip.images.append(self.most_recent_image)
             # Creates an OpenGL texture
-            texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
+            draw.texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
             self._has_just_added_frame = True
         except MemoryError, e:
             print "CRITICAL ERROR : No more RAM Memory !!!", e.message
@@ -507,7 +504,7 @@ class ToonLoop(render.Game):
         glPushMatrix()
         glTranslatef(-2.0, 0.0, 0.0)
         glScalef(2.0, 1.5, 1.0)
-        draw_square()
+        draw.draw_square()
         glPopMatrix()
 
     def _draw_background(self):
@@ -532,14 +529,14 @@ class ToonLoop(render.Game):
             glTranslatef(-2.0, 0.0, 0.0)
             glScalef(2.0, 1.5, 1.0)
             glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
-            draw_textured_square(self.config.image_width, self.config.image_height)
+            draw.draw_textured_square(self.config.image_width, self.config.image_height)
             glPopMatrix()
             # right view
             glPushMatrix()
             glTranslatef(2.0, 0.0, 0.0)
             glScalef(2.0, 1.5, 1.0)
             glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
-            draw_textured_square(self.config.image_width, self.config.image_height)
+            draw.draw_textured_square(self.config.image_width, self.config.image_height)
             glPopMatrix()
 
     def _camera_grab_frame(self):
@@ -551,7 +548,7 @@ class ToonLoop(render.Game):
         else:
             self.most_recent_image = self.camera.get_image()
         # Create an OpenGL texture
-        texture_from_image(self.textures[self.TEXTURE_MOST_RECENT], self.most_recent_image)
+        draw.texture_from_image(self.textures[self.TEXTURE_MOST_RECENT], self.most_recent_image)
         
     def _draw_edit_view(self):
         """
@@ -564,7 +561,7 @@ class ToonLoop(render.Game):
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_MOST_RECENT])
         if self.config.image_flip_horizontal:
             glRotatef(180., 0., 1., 0.)
-        draw_textured_square(self.config.image_width, self.config.image_height)
+        draw.draw_textured_square(self.config.image_width, self.config.image_height)
         # self.display_width = 1024
         glPopMatrix()
         # old: self.display.blit(self.most_recent_image, (0, 0))
@@ -576,7 +573,7 @@ class ToonLoop(render.Game):
         glScalef(2.0, 1.5, 1.0)
         glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
-        draw_textured_square(self.config.image_width, self.config.image_height)
+        draw.draw_textured_square(self.config.image_width, self.config.image_height)
         glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
         glPopMatrix()
 
@@ -588,7 +585,7 @@ class ToonLoop(render.Game):
         glTranslatef(2.0, 0.0, 0.0)
         glScalef(2.0, 1.5, 1.0)
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_PLAYBACK])
-        draw_textured_square(self.config.image_width, self.config.image_height)
+        draw.draw_textured_square(self.config.image_width, self.config.image_height)
         glPopMatrix()
     
     def _playhead_iterate(self):
@@ -597,7 +594,7 @@ class ToonLoop(render.Game):
         """
         if self.clip.playhead < len(self.clip.images):
             image = self.clip.images[self.clip.playhead]
-            texture_from_image(self.textures[self.TEXTURE_PLAYBACK], image)
+            draw.texture_from_image(self.textures[self.TEXTURE_PLAYBACK], image)
             self.clip.playhead += 1
             # old: self.display.blit(self.clip.images[self.clip.playhead], (self.config.image_width, 0))
         else:
@@ -608,7 +605,7 @@ class ToonLoop(render.Game):
         Sets all pixels in the playback view as black.
         """
         blank_surface = pygame.Surface((self.config.image_width, self.config.image_height))
-        texture_from_image(self.textures[self.TEXTURE_PLAYBACK], blank_surface)
+        draw.texture_from_image(self.textures[self.TEXTURE_PLAYBACK], blank_surface)
         # old:
         # playback_pos = (self.config.image_width, 0)
         # self.display.blit(blank_surface, playback_pos)
@@ -618,7 +615,7 @@ class ToonLoop(render.Game):
         Sets all pixels in the onion peal as black.
         """
         blank_surface = pygame.Surface((self.config.image_width, self.config.image_height))
-        texture_from_image(self.textures[self.TEXTURE_ONION], blank_surface)
+        draw.texture_from_image(self.textures[self.TEXTURE_ONION], blank_surface)
 
     def pause(self, val=None):
         """
@@ -645,7 +642,7 @@ class ToonLoop(render.Game):
         # TODO : in a thread
         if len(self.clip.images) > 1:
             path = os.path.join(self.config.toonloop_home, self.config.project_name)
-            file_name = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
+            file_name = time.strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
             file_name += '_%s' % (self.clip_id)
             if self.config.verbose:
                 print "Will save images", path, file_name
@@ -898,10 +895,13 @@ class ToonLoop(render.Game):
                     self.frame_remove()
                 elif e.key == K_ESCAPE: #  or e.key == K_q: # ESCAPE or Q
                     self.quit()
+
     def quit(self):
-        """Quits the application in a short while.
+        """
+        Quits the application in a short while.
         """
         reactor.callLater(0.1, self._quit)
+
     def _quit(self):
         self.running = False
 
@@ -993,7 +993,7 @@ class ToonLoop(render.Game):
         """
         self.config.set(name, value)
 
-class Configuration(Serializable):
+class Configuration(object): #Serializable):
     """
     Configuration options.
     
@@ -1122,5 +1122,4 @@ class Configuration(Serializable):
         return kind
         # except Exception, e:
         #    print e.message
-
 
