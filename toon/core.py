@@ -106,7 +106,7 @@ class ToonClip(object): #Serializable):
         """
         self.id = id
         self.playhead = 0
-        self.playhead_iterate_every = 3 
+        self.playhead_iterate_every = 1
         # Ratio that decides of the framerate
         # self.framerate = 12
         self.__dict__.update(argd)
@@ -482,18 +482,17 @@ class ToonLoop(render.Game):
         # TODO: replace by effect number
 
         # now, let's draw something
-        self._draw_background()
+        self._draw_background() # only if enabled
         # --------- edit view
         if CHROMA_ON: 
             chromakey.program_enable()
             chromakey.set_program_uniforms()
         else:
             chromakey.program_disable()
-            
         self._draw_edit_view()
         if CHROMA_ON:
             chromakey.program_disable()
-        # ---------- onion skin
+        # ---------- onion skin (rendered after the edit view, over it)
         if CHROMA_ON:
             chromakey.program_enable()
             chromakey.set_program_uniforms()
@@ -505,7 +504,6 @@ class ToonLoop(render.Game):
             self._has_just_added_frame = False
             if self.config.fx_white_flash:
                 self._draw_white_flash()
-
         # ---------- playback view
         if CHROMA_ON:
             chromakey.program_enable()
@@ -513,7 +511,7 @@ class ToonLoop(render.Game):
         self._draw_playback_view()
         if CHROMA_ON:
             chromakey.program_disable()
-        
+        # ----------- done drawing.
         self.clock.tick()
         self.fps = self.clock.get_fps()
         pygame.display.flip()
