@@ -4,9 +4,11 @@ Simple configuration file/line parser.
 """
 import shlex
 
-STRIPPED = "\"' " # quotes are stripped.
-ASSIGNATION_OPERATORS = "=:" # key/values are separated by those
-COMMENTERS = "#"
+class FileNotFoundError(Exception):
+    """
+    Exception raised when a config file is not found.
+    """
+    pass
 
 class NoSuchOptionError(Exception):
     """
@@ -41,11 +43,12 @@ class ConfigParser(object):
 
     This ConfigParser is different from the one from the ConfigParser module, 
     since it does not use the concept of sections. Also, there can be many options
-    with the same key name.
+    with the same key name. This class is partly insprired from ConfigParser. 
     """
     STRIPPED = "\"' " # quotes are stripped.
     ASSIGNATION_OPERATORS = "=:" # key/values are separated by those
     COMMENTERS = "#"
+
     def __init__(self):
         self.file_name = None
         self._options = [] # list of (key, value) tuples
@@ -132,7 +135,7 @@ class ConfigParser(object):
         try:
             f = open(file_name, 'r')
         except IOError, e:
-            raise ParsingError("Could not open file '%s': %s" % (file_name, e.message))
+            raise FileNotFoundError("Could not open file '%s': %s" % (file_name, e.message))
         try:
             lexer = shlex.shlex(f, file_name, posix=False)
             lexer.commenters = self.COMMENTERS # default

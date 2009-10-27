@@ -101,4 +101,14 @@ class Test_Invalid_Config_File(unittest.TestCase):
             pass
         else:
             res = cp.items()
-            self.fail("Excepted an error parsing the file but got %s" % (res))
+            self.fail("Expected an error parsing the file but got %s" % (res))
+
+class Test_File_Not_Found(unittest.TestCase):
+    def test_not_found(self):
+        cp = flatconfig.ConfigParser()
+        try:
+            cp.read(tempfile.mktemp())
+        except flatconfig.FileNotFoundError, e:
+            pass
+        else:
+            self.fail("Expected an error trying to read non-existant file.")
