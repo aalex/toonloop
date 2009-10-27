@@ -8,23 +8,7 @@ STRIPPED = "\"' " # quotes are stripped.
 ASSIGNATION_OPERATORS = "=:" # key/values are separated by those
 COMMENTERS = "#"
 
-class ParsingError(Exception):
-    """
-    Any error that can be raised parsing a string or file.
-    """
-    pass
-
-def parse_line(txt):
-    """
-    Parses one line.
-    Separates correctly the arguments when using quotes.
-    """
-    try:
-        return shlex.split(txt)
-    except ValueError, e:
-        raise ParsingError("Error parsing text '%s': %s" %(txt, e.message))
-
-class NoOptionError(Exception):
+class NoSuchOptionError(Exception):
     """
     Exception raised when a specified option is not found.
     """
@@ -36,125 +20,161 @@ class ParsingError(Exception):
     """
     pass
 
+# def parse_line(txt):
+#     """
+#     Parses one line.
+#     Separates correctly the arguments when using quotes.
+#     """
+#     try:
+#         return shlex.split(txt)
+#     except ValueError, e:
+#         raise ParsingError("Error parsing text '%s': %s" %(txt, e.message))
+
 class ConfigParser(object):
     """
-    This prototype is not yet used.
+    Parses flat key-value pairs in a text file.
+    
+    Removes quotes from quoted strings.
+    
+    A list of tuples makes possible the use of many times the same key.
+    That is lost if you convert the result to a dict.
+
+    This ConfigParser is different from the one from the ConfigParser module, 
+    since it does not use the concept of sections. Also, there can be many options
+    with the same key name.
     """
+    STRIPPED = "\"' " # quotes are stripped.
+    ASSIGNATION_OPERATORS = "=:" # key/values are separated by those
+    COMMENTERS = "#"
     def __init__(self):
         self.file_name = None
-        self._options = []
+        self._options = [] # list of (key, value) tuples
+        self.verbose = False
 
-    def read(self, file_names):
+    def read(self, file_name):
         """
-        Attempt to read and parse a list of filenames, returning a list of filenames which were successfully parsed. If filenames is a string or Unicode string, it is treated as a single filename. If a file named in filenames cannot be opened, that file will be ignored. This is designed so that you can specify a list of potential configuration file locations (for example, the current directory, the user's home directory, and some system-wide directory), and all existing configuration files in the list will be read. If none of the named files exist, the ConfigParser instance will contain an empty dataset. 
+        Attempts to read a file and parse its configuration entries.
+        It might throw a ParsingError.
         """
+        self._read(file_name)
 
     def options(self):
         """
         Returns a list of options available.
         """
         return dict(self._options).keys()
+
+    def has_option(self, option):
+        """
+        Checks for the existence of a given option.
+        """
+        return option in self.options()
     
-    def get(self, option):
+    def get(self, option, cast=str):
         """
-        Get an option value.
+        Get an option value as a string.
 
-        Might raise a KeyError if the option is not specified.
-        """
-        return dict(self._options)[option]
+        The cast argument allows you to cast the type of the value to int, float or bool.
+        Just pass it a type. 
 
-    def get_float(self, option):
-        """
-        A convenience method which coerces the option to a floating point number.
-        """
-        return float(self.get(option))
-    
-    def get_int(self, option):
-        """
-        A convenience method which coerces the option to a floating point number.
-        """
-        return int(self.get(option))
+        Might raise a NoSuchOptionError if the option is not found.
+        Might raise a ValueError if the value is not of the given type.
 
-    def get_boolean(self, option):
-        """
-        A convenience method which coerces the option to a boolean.
+        If a key is defined many times, behavious is undefined. It it likely to return 
+        the last item with that key.
+
         Note that the accepted values for the option are "1", "yes", "true", and "on", which cause this method to return True, and "0", "no", "false", and "off", which cause it to return False. These string values are checked in a case-insensitive manner. Any other value will cause it to raise ValueError.
         """
-        raise NotImplementedError("TODO")
-        return bool(self.get(option))
+        try:
+            value = dict(self._options)[option]
+        except KeyError, e:
+            raise NoSuchOptionError("Could not find option named %s." % (e.message))
+        return self.cast(value, cast)
 
-class ConfigFileParser(object):
-    """
-    Parses flat key-value pairs in a text file.
+    _boolean_states = {'1': True, 'yes': True, 'true': True, 'on': True,
+                       '0': False, 'no': False, 'false': False, 'off': False}
 
-    Removes quotes from quoted strings.
-    """
-    def __init__(self):
-        self.verbose = False
-
-    def parse_config_file(self, file_name):
+    def get_list(self, option, cast=str):
         """
-        Parses a file for key-value pairs.
-        
-        Returns a list of tuples. 
-        If you prefer a dict, just cast it to a dict. Like this::
-
-          entries = dict(parse_config_file(file_name))
-        
-        A list of tuples makes possible the use of many times the same key.
-        That is lost if you convert the result to a dict.
+        Returns a list of values for a given key name.
         """
-        global STRIPPED
-        global ASSIGNATION_OPERATORS
-        global COMMENTERS
-        #ret = {}
         ret = []
+        for k, v in self._options:
+            if k == option:
+                ret.append(self.cast(v, cast))
+        if len(ret) == 0:
+            raise NoSuchOptionError("Could not find option named %s." % (option))
+        return ret
+    
+    def cast(self, value, cast):
+        """
+        Casts a value to a given type. 
+        Type can be int, float, str or bool.
+        """
+        if cast in [float, int]:
+            return cast(value)
+        elif cast is bool:
+            if value.lower() not in self._boolean_states:
+                raise ValueError("Value %s is not a valid boolean." % (value))
+            return self._boolean_states[value.lower()]
+        else: # str
+            return value
+
+    def items(self):
+        """
+        Return a list of tuples with (name, value) for each option.
+        """
+        return self._options
+
+    def _read(self, file_name):
+        self.file_name = file_name
+        self._options = []
         try:
             f = open(file_name, 'r')
         except IOError, e:
             raise ParsingError("Could not open file '%s': %s" % (file_name, e.message))
         try:
             lexer = shlex.shlex(f, file_name, posix=False)
-            lexer.commenters = COMMENTERS # default
+            lexer.commenters = self.COMMENTERS # default
             #lexer.wordchars += "|/.,$^\\():;@-+?<>!%&*`~"
             key = None
             for token in lexer:
-                if token in ASSIGNATION_OPERATORS:
+                if token in self.ASSIGNATION_OPERATORS:
                     if key is None: # assignation
                         raise ParsingError("No key defined, but found '%s' in file '%s' on line %d. Try using quotes." % (token, file_name, lexer.lineno))
                 else:
                     if key is None: # key
-                        key = token.strip(STRIPPED)
+                        key = token.strip(self.STRIPPED)
                         #if key in ret.keys(): # TODO: allow non-uniques
                         #    raise ParsingError("Key %s already defined but found again in file '%s' on line %d." % (key, file_name, lexer.lineno))
                         if self.verbose:
                             print("Found key '%s'" % (key))
                     else: # value
-                        value = token.strip(STRIPPED)
+                        value = token.strip(self.STRIPPED)
                         #ret[key] = value
-                        ret.append((key, value))
+                        self._options.append((key, value))
                         if self.verbose:
                             print("Found value '%s' for key '%s'" % (value, key))
                         key = None
         except ValueError, e:
             raise ParsingError("Error parsing file '%s': %s" % (file_name, e.message))
         f.close()
-        return ret
+        return self._options
 
-if __name__ == "__main__":
-    # this is just for test purposes.
-    # better tests are in the test/ directory
-    """
-    # EXAMPLE FILE:
-    # comment
-    hello = "ma belle"
-    "you are" = "the best"
-    banane = blue
-    fraise = "je taime"
-    """
-    p = Parser()
-    print(parse_line("c -l -o qwerqwe 'hello dude'"))
-    print(p.parse_config_file('/var/tmp/cfg'))
-
+# if __name__ == "__main__":
+#     # this is just for test purposes.
+#     # better tests are in the test/ directory
+#     """
+#     # EXAMPLE FILE:
+#     # comment
+#     hello = "ma belle"
+#     "you are" = "the best"
+#     banane = blue
+#     fraise = "je taime"
+#     """
+#     print(parse_line("c -l -o qwerqwe 'hello dude'"))
+# 
+#     p = ConfigParser()
+#     print(p.read('/var/tmp/cfg'))
 
 

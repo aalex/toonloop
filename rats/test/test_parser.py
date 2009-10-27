@@ -32,8 +32,9 @@ class Test_Config_File(unittest.TestCase):
         pass
 
     def test_01_parse(self):
-        fp = parser.ConfigFileParser()
-        res = fp.parse_config_file(self.file_name)
+        cp = parser.ConfigParser()
+        cp.read(self.file_name)
+        res = cp.items()
         verb("Result is %s" % (res))
         has_ham = False
         num_eggs = 0
