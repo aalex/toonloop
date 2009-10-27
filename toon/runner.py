@@ -51,18 +51,18 @@ def run():
         epilog=EPILOG)
     # + " \n\n"  __doc__
     parser.add_option("-d", "--device", dest="device", type="int", \
-        help="Specifies V4L2 device to grab image from.", default=0)
+        help="Specifies V4L2 device to grab image from. Expects an integer such as 0, 1 or 2.", default=0)
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true", \
         help="Sets the output to verbose.")
     # most important, the configuration options:
     parser.add_option("-o", "--option", action="append", nargs=2, \
-        help="Sets any toonloop option by name. See list-options for a list of possible options.")
+        help="Sets any toonloop option by name. See list-options for a list of possible options. Example : -o project_name example")
     parser.add_option("-l", "--list-options", \
         dest="list_options", action="store_true", \
-        help="Prints the list of options and exit.") 
+        help="Prints the list of options and exits.") 
     # other args:
     parser.add_option("-f", "--fps", type="int", \
-        help="Sets the rendering frame rate.", default=30)
+        help="Sets the rendering frame rate. Default is 30 FPS.", default=30)
     parser.add_option("-t", "--intervalometer-rate-seconds", type="float",  \
         help="Sets intervalometer interval in seconds.", default=30.0)
     parser.add_option("-H", "--toonloop-home", type="string",  \
@@ -74,13 +74,14 @@ def run():
         dest="intervalometer_enabled", action="store_true", \
         help="Enables/disables the use of the intervalometer.", default=True)
     parser.add_option("-w", "--image-width", type="int", \
-        help="Width of the images grabbed from the camera.")
+        help="Width of the images grabbed from the camera. Using this flag also sets the height, with a 4:3 ratio.")
     (options, args) = parser.parse_args()
-    print "ToonLoop - Version " + str(__version__)
-    print "Copyright 2008 Alexandre Quessy & Tristan Matthews"
-    print "Released under the GNU General Public License"
-    print "Using video device %d" % options.device
-    print "Press h for usage and instructions"
+    print("ToonLoop - Version " + str(__version__))
+    print("Copyright 2008 Alexandre Quessy & Tristan Matthews")
+    print("Released under the GNU General Public License")
+    print("Using video device %d" % options.device)
+    print("Press h for usage and instructions.")
+    print("Press i for informations and statistics.")
     pygame.init()
     config = core.Configuration()
     kwargs = config.__dict__
@@ -97,41 +98,41 @@ def run():
     kwargs['verbose'] = options.verbose == True
 
     if kwargs['verbose']:
-        print "Started in verbose mode."
+        print("Started in verbose mode.")
     if options.option:
-        print 'options', options.option
+        print('options', options.option)
         for k, v in options.option:
             try:
                 kind = config.set(k, v)
-                print "OPTION \"%s\" : %s       %s" % (k, v, kind)
+                print("OPTION \"%s\" : %s       %s" % (k, v, kind))
             except KeyError, e:
                 raise core.ToonLoopError('No such ToonLoop option :', e.message)
             except Exception, e:
-                print sys.exc_info()
+                print(sys.exc_info())
                 raise core.ToonLoopError('Error with ToonLoop option :', e.message)
     if options.list_options:
-        print """Use ToonLoop options with -o flag :
-        toonloop -o [name] [value]"""
-        print "ToonLoop options and their current values :"
+        print("""Use ToonLoop options with -o flag :
+        toonloop -o [name] [value]""")
+        print("ToonLoop options and their current values :")
         config.print_values()
-        print "\nExiting."
+        print("\nExiting.")
         sys.exit(0)
     try:
         toonloop = core.ToonLoop(config)
         if options.verbose:
             toonloop.print_help()
     except core.ToonLoopError, e:
-        print str(e.message)
-        print "Exiting toonloop with error"
+        print(str(e.message))
+        print("Exiting toonloop with error")
         sys.exit(1)
     else:
-        print "Congratulations ! ToonLoop started gracefully."
+        print("Congratulations ! ToonLoop started gracefully.")
     pygame_timer = render.Renderer(toonloop, False) # not verbose !  options.verbose
     pygame_timer.desired_fps = options.fps
     try:
         reactor.run()
     except KeyboardInterrupt:
         pass
-    print "Exiting toonloop"
+    print("Exiting toonloop")
     sys.exit(0)
 
