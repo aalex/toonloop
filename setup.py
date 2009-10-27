@@ -55,7 +55,7 @@ setup(
     license = "GPL",
     platforms = ["any"],
     zip_safe = False,
-    packages = ['rats', 'rats/purity', 'toon', 'toon/data'],
+    packages = ['rats', 'toon', 'toon/data'],
     package_data = {
         "":["*.ttf", "*.rst", "*.png", "*.jpg", "*.pd"]
     }

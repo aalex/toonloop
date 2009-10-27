@@ -18,6 +18,7 @@ clean:
 	@echo "You might to run make clean as root. Try sudo make clean."
 	rm -rf toonloop.1 build dist toonloop.egg-info
 	find . -name \*.pyc  -exec rm {} \;
+	find . -name _trial_temp -exec rm -rf {} \;
 	@echo DONE
 
 check:
