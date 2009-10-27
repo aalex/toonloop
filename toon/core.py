@@ -73,7 +73,7 @@ from toon import draw
 from toon import puredata
 from toon import chromakey
 try:
-    from toon import web_server
+    from toon import web
     WEB_LOADED = True
 except ImportError, e:
     print("For web support, please install the python-nevow package.")
@@ -208,7 +208,7 @@ class ToonLoop(render.Game):
         # WEB
         if WEB_LOADED and self.config.web_enabled:
             try:
-                self.web = web_server.start(self, self.config.web_server_port,
+                self.web = web.start(self, self.config.web_server_port,
                     static_files_path=self.config.toonloop_home)
                     #index_file_path=index_file_path)
             except:
