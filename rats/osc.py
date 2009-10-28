@@ -172,7 +172,8 @@ class OscServer(object):
         """ Called once it is time to start the server or change the port to listen to. """
         global VERBOSE 
         if VERBOSE:
-            print "OSC server on port %d"  % (self.port)
+            print("STarting OSC server on port %d"  % (self.port))
+            print("If you experience a long delay while the application is frozen, you might need to upgrade you liblo to the latest version instead of the version packaged with your operating system. Use the latest tarball instead of the .deb.")
         try:
             self._server = liblo.Server(self.port)
         except liblo.ServerError, e:

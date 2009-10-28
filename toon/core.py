@@ -225,8 +225,8 @@ class ToonLoop(render.Game):
                     static_files_path=self.config.toonloop_home)
                     #index_file_path=index_file_path)
             except:
-                print "Error loading web UI :"
-                print sys.exc_info()
+                print("Error loading web UI :")
+                print(sys.exc_info())
         # FUDI
         if self.config.fudi_enabled:
             try:
@@ -238,7 +238,7 @@ class ToonLoop(render.Game):
 
                 self.pd = puredata.start(app=app, receive_port=fudi_recv, send_port=fudi_send, send_host=fudi_send_host)
             except:
-                print "Error loading puredata:", sys.exc_info()
+                print("Error loading puredata: %s" % (sys.exc_info()))
                 raise
         # MIDI
         if self.config.midi_enabled:
@@ -258,6 +258,7 @@ class ToonLoop(render.Game):
                 note = event.data1
                 on = event.data2 >= 1 # bool
                 if self.osc is not None:
+                    #TODO: this needs to be put in an other file/class
                     if note == self.config.midi_note_record:
                         if on:
                             print("start recording sample")
@@ -272,8 +273,6 @@ class ToonLoop(render.Game):
                         else:
                             print("stop playing sample")
                             self.osc.send_play_stop(1) #FIXME
-
-                        
 
         elif event.status == MIDI_CTRL: # MIDI control
             if self.config.midi_verbose:
@@ -296,7 +295,7 @@ class ToonLoop(render.Game):
         if self.config.bgimage_enabled:
             self.config.bgimage = path
             if self.config.verbose:
-                print 'setup background', path
+                print('setup background %s' % (path))
         self.background_image = pygame.image.load(path)
         # Create an OpenGL texture
         draw.texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self.background_image)
@@ -316,20 +315,20 @@ class ToonLoop(render.Game):
             files = glob.glob(pattern)
             if self.config.verbose:
                 #print '----------------'
-                print 'bgimage_glob_next pattern :', pattern
-                print 'bgimage_glob_next len(files) :', len(files)
-                # print 'bgimage_glob_next files :', sorted(files)
-                # now = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
-                # print 'bgimage_glob_next (debug) time is now :', now
+                print("bgimage_glob_next pattern :" % ( pattern))
+                print("bgimage_glob_next len(files) :" % (len(files)))
+                # print 'bgimage_glob_next files :', so % (ted(files))
+                # now = strftime("%Y-%m-%d_%Hh%Mm%S") # wit % (out an extension.)
+                # print 'bgimage_glob_next (debug) time is  % (ow :', now)
 
             if len(files) > 0:
                 old_val = self._bgimage_glob_index
                 new_val = (self._bgimage_glob_index + increment) % len(files)
                 #print 'bgimage_glob_next old_val :', old_val
-                print 'bgimage_glob_next new_val :', new_val
+                print('bgimage_glob_next new_val :' % (new_val))
                 if old_val == new_val:
                     if self.config.verbose:
-                        print 'bgimage_glob_next same val. Not changing:', old_val
+                        print('bgimage_glob_next same val. Not changing:' % (old_val))
                 else:
                     file_path = sorted(files)[new_val]
                     self._bgimage_glob_index = new_val 
@@ -345,22 +344,22 @@ class ToonLoop(render.Game):
         """
         Print statistics
         """
-        print ">>>>>>> ToonLoop Statistics >>>>>>>>"
+        print(">>>>>>> ToonLoop Statistics >>>>>>>>")
         try:
-            print "Current playhead: " + str(self.clip.playhead)
-            print "Num images: " + str(len(self.clip.images))
-            print "FPS: %d" % (self.fps)
-            print "Playhead frequency ratio: 30 / %d" % (self.clip.playhead_iterate_every)
+            print("Current playhead: " + str(self.clip.playhead))
+            print("Num images: " + str(len(self.clip.images)))
+            print("FPS: %d" % (self.fps))
+            print("Playhead frequency ratio: 30 / %d" % (self.clip.playhead_iterate_every))
             self.config.print_values()
 
-            print 'pygame.display.Info(): ', pygame.display.Info()
+            print('pygame.display.Info(): ' % (pygame.display.Info()))
             total_imgs = 0
             for clip_num in range(len(self.clips)):
                 num_images = len(self.clips[clip_num].images)
-                print 'Clip #%d has %d images.' % (clip_num, num_images)
+                print('Clip #%d has %d images.' % (clip_num, num_images))
                 total_imgs += num_images
-            print 'TOTAL: %d' % (total_imgs)
-            print "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+            print('TOTAL: %d' % (total_imgs))
+            print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
         except AttributeError, e:
             print sys.exc_info()
 
@@ -402,7 +401,7 @@ class ToonLoop(render.Game):
         self.clip_id = index
         self.clip = self.clips[index]
         if self.config.verbose:
-            print "Clip #%s"  % (self.clip_id)
+            print("Clip #%s"  % (self.clip_id))
         self._clear_playback_view()
         
     def _setup_window(self):
@@ -434,7 +433,7 @@ class ToonLoop(render.Game):
         and -3 to 3 vertically.
         (ratio is 4:3)
         """
-        print "resize", width, height
+        print("resize", width, height)
         if height == 0:
             height = 1
         glMatrixMode(GL_PROJECTION)
@@ -458,25 +457,25 @@ class ToonLoop(render.Game):
         #     print "Sometimes the camera module need it's init()",
         #     print " to be called and sometimes not."
         except AttributeError, e:
-            print 'ERROR: pygame.camera has no method init() !', e.message
+            print('ERROR: pygame.camera has no method init() !', e.message)
         except Exception, e:
-            print "error calling pygame.camera.init()", e.message
-            print sys.exc_info()
+            print("error calling pygame.camera.init()", e.message)
+            print(sys.exc_info())
             raise ToonLoopError("Error initializing the video camera. %s" % (e.message))
         try:
-            print "cameras :", pygame.camera.list_cameras()
+            print("cameras :", pygame.camera.list_cameras())
             if self.is_mac:
-                print "Using camera %s" % (self.config.video_device)
+                print("Using camera %s" % (self.config.video_device))
                 self.camera = pygame.camera.Camera(self.config.video_device, size)
             else:
-                print "Using camera /dev/video%d" % (self.config.video_device)
+                print("Using camera /dev/video%d" % (self.config.video_device))
                 self.camera = pygame.camera.Camera("/dev/video%d" % (self.config.video_device), size)
             self.camera.start()
         except SystemError, e:
-            print sys.exc_info()
+            print(sys.exc_info())
             raise ToonLoopError("Invalid camera. %s" % (str(e.message)))
         except Exception, e:
-            print sys.exc_info()
+            print(sys.exc_info())
             raise ToonLoopError("Invalid camera. %s" % (str(e.message)))
 
     def frame_add(self):
@@ -492,9 +491,9 @@ class ToonLoop(render.Game):
             draw.texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
             self._has_just_added_frame = True
         except MemoryError, e:
-            print "CRITICAL ERROR : No more RAM Memory !!!", e.message
+            print("CRITICAL ERROR : No more RAM Memory !!!", e.message)
         if self.config.verbose:
-            print 'num frames', len(self.clip.images)
+            print('num frames', len(self.clip.images))
     
     def draw(self):
         """
@@ -607,6 +606,7 @@ class ToonLoop(render.Game):
         """
         Renders edit view (the live camera + onion peal)
         """
+        glColor4f(1.0, 1.0, 1.0, 1.0)
         glPushMatrix()
         glTranslatef(-2.0, 0.0, 0.0)
         glScalef(2.0, 1.5, 1.0)
@@ -634,6 +634,7 @@ class ToonLoop(render.Game):
         """
         Renders the playback view. 
         """
+        glColor4f(1.0, 1.0, 1.0, 1.0)
         glPushMatrix()
         glTranslatef(2.0, 0.0, 0.0)
         glScalef(2.0, 1.5, 1.0)
@@ -698,21 +699,21 @@ class ToonLoop(render.Game):
             file_name = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
             file_name += '_%s' % (self.clip_id)
             if self.config.verbose:
-                print "Will save images", path, file_name
+                print("Will save images %s %s" % (path, file_name))
             try:
                 if not os.path.exists(path):
                     os.makedirs(path)
-                    print 'mkdir', path
+                    print('mkdir %s' % (path))
             except OSError, e:
-                print 'Error creating directories', path, e.message
+                print('Error creating directories' % (path, e.message))
             else:
                 try:
                     data_subdir = os.path.join(path, 'data')
                     if not os.path.exists(data_subdir):
                         os.makedirs(data_subdir)
-                        print 'mkdir', data_subdir
+                        print('mkdir %s' % (data_subdir))
                 except OSError, e:
-                    print 'Error creating directories', data_subdir, e.message
+                    print('Error creating directories' % (data_subdir, e.message))
                 else:
                     reactor.callLater(0, self._write_01_next_image, path, file_name, 0, self.clip_id)
 
@@ -725,7 +726,7 @@ class ToonLoop(render.Game):
         if index < len(self.clips[clip_id].images):
             name = ("%s/%s_%5d.jpg" % (path, file_name, index)).replace(' ', '0')
             if self.config.verbose:
-                print "writing %s" % (name)
+                print("writing %s" % (name))
             pygame.image.save(self.clips[clip_id].images[index], name) # filename extension makes it a JPEG
             reactor.callLater(0, self._write_01_next_image, path, file_name, index + 1, clip_id)
         else:
@@ -737,7 +738,7 @@ class ToonLoop(render.Game):
         """
         if index > 0:
             if self.config.verbose:
-                print "\nConverting to motion JPEG in Quicktime container."
+                print("\nConverting to motion JPEG in Quicktime container.")
             fps = 6 # TODO
             #self.clip.increment_every # self.clip.framerate
             #fps = self.renderer.desired_fps 
@@ -753,7 +754,7 @@ class ToonLoop(render.Game):
         MOV file.
         """
         if self.config.verbose:
-            print "Done converting %s/%s.mov" % (path, file_name)
+            print("Done converting %s/%s.mov" % (path, file_name))
         reactor.callLater(1.0, self._write_04_delete_images, path, file_name, index, clip_id)
 
     def _write_04_delete_images(self, path, file_name, index, clip_id):
@@ -767,17 +768,17 @@ class ToonLoop(render.Game):
                 try:
                     os.remove(f)
                     if self.config.verbose:
-                        print 'removed', f
+                        print('removed %s' % (f))
                 except OSError, e:
-                    print "%s Error removing file %s" % (e.message, f)
+                    print("%s Error removing file %s" % (e.message, f))
             else:
                 try:
                     dest = os.path.join(path, 'data', os.path.basename(f))
                     shutil.move(f, dest)
                     if self.config.verbose:
-                        print 'moved', f, dest
+                        print('moved %s %s' % (f, dest))
                 except IOError, e:
-                    print "%s Error moving file %s to %s" % (e.message, f, dest)
+                    print("%s Error moving file %s to %s" % (e.message, f, dest))
                 
         # rename final movie file
         try:
@@ -785,10 +786,10 @@ class ToonLoop(render.Game):
             dest = "%s/clip_%s.mov" % (path, file_name)
             shutil.move(src, dest)
             if self.config.verbose:
-                print 'renamed %s to %s' % (src, dest) 
-                print 'DONE SAVING CLIP', clip_id
+                print('renamed %s to %s' % (src, dest) )
+                print('DONE SAVING CLIP %s' % (clip_id))
         except IOError, e:
-            print "%s Error moving file %s to %s" % (e.message, src, dest)
+            print("%s Error moving file %s to %s" % (e.message, src, dest))
 
     def frame_remove(self):
         """
@@ -811,12 +812,12 @@ class ToonLoop(render.Game):
             self.config.chromakey_on = val is True # set
         else:
             self.config.chromakey_on = not self.config.chromakey_on # toggle
-        print 'config.chromakey_on =', self.config.chromakey_on
+        print('config.chromakey_on = %s' % (self.config.chromakey_on))
         # check chroma key and disables it if so
         if self.config.chromakey_on:
             if self.config.onionskin_on:
                 self.config.onionskin_on = False
-                print 'config.onionskin_on =', self.config.onionskin_on
+                print('config.onionskin_on =' % (self.config.onionskin_on))
     
     def effect_select(self, index=0):
         """
@@ -829,17 +830,17 @@ class ToonLoop(render.Game):
         """
         if index == 1:
             if self.config.verbose:
-                print 'EFFECT: chromakey'
+                print('EFFECT: chromakey')
             self.config.chromakey_on = True
             self.config.onionskin_on = False
         elif index == 2:
             if self.config.verbose:
-                print 'EFFECT: onionskin'
+                print('EFFECT: onionskin')
             self.config.chromakey_on = False
             self.config.onionskin_on = True
         else:
             if self.config.verbose:
-                print 'EFFECT: None'
+                print('EFFECT: None')
             self.config.chromakey_on = False
             self.config.onionskin_on = False
 
@@ -853,12 +854,12 @@ class ToonLoop(render.Game):
             self.config.onionskin_on = val is True # set to val
         else:
             self.config.onionskin_on = not self.config.onionskin_on # toggle
-        print 'config.onionskin_on =', self.config.onionskin_on
+        print('config.onionskin_on = %s' % (self.config.onionskin_on))
         # check onionskin and disables it if so
         if self.config.onionskin_on:
             if self.config.chromakey_on:
                 self.config.chromakey_on = False
-                print 'config.chromakey_on =', self.config.chromakey_on
+                print('config.chromakey_on =' % (self.config.chromakey_on))
             
     def framerate_increase(self, dir=1):
         """
@@ -877,7 +878,7 @@ class ToonLoop(render.Game):
         if will_be > self.config.framerate_min and will_be <= self.config.framerate_max:
             self.clip.playhead_iterate_every = will_be
             if self.config.verbose:
-                print "Playhead frequency ratio: 30 / %d" % (will_be)
+                print("Playhead frequency ratio: 30 / %d" % (will_be))
     
     def process_events(self, events):
         """
@@ -889,7 +890,7 @@ class ToonLoop(render.Game):
                 self.running = False
             # TODO : catch window new size when resized.
             elif e.type == pygame.VIDEORESIZE:
-                print "VIDEORESIZE", e
+                print("VIDEORESIZE %s" % (e))
             elif e.type == KEYDOWN: 
                 if e.key == K_k: # K
                     self.intervalometer_rate_increase(1)
@@ -916,7 +917,7 @@ class ToonLoop(render.Game):
                 elif e.key == K_o: # O Onion
                     self.onionskin_toggle()
                 elif e.key == K_a: # A Auto
-                    print "toggle intervalometer"
+                    print("toggle intervalometer")
                     self.intervalometer_toggle()
                 elif e.key == K_0: # [0, 9] Clip selection
                     self.clip_select(0)
@@ -970,13 +971,13 @@ class ToonLoop(render.Game):
             if self.config.autosave_on:
                 self._autosave_delayed_id = reactor.callLater(0, self._autosave)
                 if self.config.verbose:
-                    print "autosave ON"
+                    print("autosave ON")
             else:
                 if self._autosave_delayed_id is not None:
                     if self._autosave_delayed_id.active():
                         self._autosave_delayed_id.cancel()
                         if self.config.verbose:
-                            print "autosave OFF"
+                            print("autosave OFF")
                 
     def intervalometer_toggle(self, val=None):
         """
@@ -990,13 +991,13 @@ class ToonLoop(render.Game):
             if self.intervalometer_on:
                 self._intervalometer_delayed_id = reactor.callLater(0, self._intervalometer_frame_add)
                 if self.config.verbose:
-                    print "intervalometer ON"
+                    print("intervalometer ON")
             else:
                 if self._intervalometer_delayed_id is not None:
                     if self._intervalometer_delayed_id.active():
                         self._intervalometer_delayed_id.cancel()
                         if self.config.verbose:
-                            print "intervalometer OFF"
+                            print("intervalometer OFF")
     
     def intervalometer_rate_increase(self, dir=1):
         """
@@ -1007,7 +1008,7 @@ class ToonLoop(render.Game):
             will_be = self.config.intervalometer_rate_seconds + dir
             if will_be > 0 and will_be <= 60:
                 self.config.intervalometer_rate_seconds = will_be
-                print "auto rate:", will_be
+                print("auto rate: %s" %  (will_be))
 
     def _intervalometer_frame_add(self):
         """
@@ -1017,7 +1018,7 @@ class ToonLoop(render.Game):
         """
         self.frame_add()
         if self.config.verbose:
-            print "intervalometer auto grab", len(self.clip.images) 
+            print("intervalometer auto grab" % (len(self.clip.images)))
             sys.stdout.flush()
         if self.intervalometer_on:
             self._intervalometer_delayed_id = reactor.callLater(self.config.intervalometer_rate_seconds, self._intervalometer_frame_add)
@@ -1028,7 +1029,7 @@ class ToonLoop(render.Game):
         """
         # self.frame_add()
         if self.config.verbose:
-            print "autosave"
+            print("autosave")
         self.clip_save()
         if self.config.autosave_on:
             self._autosave_delayed_id = reactor.callLater(self.config.autosave_rate_seconds, self._autosave)
@@ -1158,7 +1159,7 @@ class Configuration(object): #Serializable):
     def print_values(self):
         for k in sorted(self.__dict__):
             v = self.__dict__[k]
-            print "    -o %s %s" % (k, v)
+            print("    -o %s %s" % (k, v))
 
     def set(self, name, value):
         """
@@ -1180,7 +1181,7 @@ class Configuration(object): #Serializable):
         else:
             casted_value = kind(value)
         self.__dict__[name] = casted_value
-        print 'config.%s = %s(%s)' % (name, kind.__name__, self.__dict__[name])
+        print('config.%s = %s(%s)' % (name, kind.__name__, self.__dict__[name]))
         return kind
         # except Exception, e:
         #    print e.message
