@@ -42,6 +42,10 @@ class ToonOsc(object):
     /toon/sequence <i>
     /toon/framerate <i>
     /toon/writehead <i>
+    /sampler/play/start <i>
+    /sampler/play/stop <i>
+    /sampler/record/start <i>
+    /sampler/record/stop <i>
     """
     #TODO: 
     #Receives:
@@ -65,6 +69,7 @@ class ToonOsc(object):
         self.send_port = send_port
         self.send_host = send_host
         self.osc_server = None
+        self.osc_sender = None
         # register callbacks
         self._setup()
 
@@ -80,6 +85,29 @@ class ToonOsc(object):
         print("Will now start listening OSC server...")
         self.osc_server.start() # this hangs on Ubuntu 8.10. Update liblo-dev to latest tarball.
         print("OSC Server started. ")
+        # the sender
+        client_addr = "osc.udp://%s:%d" % (self.send_host, self.send_port)
+        self.osc_sender = osc.OscClient(client_addr)
+        #c.send_message("/ping", ('i', 123), ('f', 3.13159), ('s', "hello"))
+
+    # UDP broadcasting
+    # could be to 255.255.255.255 or 192.168.0.255 or so.
+
+    def send_record_start(self, index):
+        self._s("/sampler/record/start", index)
+
+    def send_record_stop(self, index):
+        self._s("/sampler/record/stop", index)
+
+    def send_play_start(self, index):
+        self._s("/sampler/play/start", index)
+
+    def send_play_stop(self, index):
+        self._s("/sampler/play/stop", index)
+    
+    def _s(self, path, index):
+        self.osc_sender.send_message(path, ('i', index))
+        
 
     def cb_frame_add(self, path, args):
         self.toonloop.frame_add()

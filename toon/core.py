@@ -215,7 +215,7 @@ class ToonLoop(render.Game):
             self.osc = opensoundcontrol.ToonOsc(self, 
                 listen_port=self.config.osc_listen_port, 
                 send_port=self.config.osc_send_port, 
-                send_host=self.config.osc_send_port, 
+                send_host=self.config.osc_send_host, 
                 )
         #index_file_path = os.path.join(os.curdir, 'toon', 'index.rst') 
         # WEB
@@ -255,6 +255,26 @@ class ToonLoop(render.Game):
         if event.status == MIDI_NOTE: # MIDI note
             if self.config.midi_verbose:
                 print("MIDI note: Pitch: %s Velocity: %s" % (event.data1, event.data2))
+                note = event.data1
+                on = event.data2 >= 1 # bool
+                if self.osc is not None:
+                    if note == self.config.midi_note_record:
+                        if on:
+                            print("start recording sample")
+                            self.osc.send_record_start(1) #FIXME
+                        else:
+                            print("stop recording sample")
+                            self.osc.send_record_stop(1) #FIXME
+                    elif note == self.config.midi_note_play:
+                        if on:
+                            print("start playing sample")
+                            self.osc.send_play_start(1) #FIXME
+                        else:
+                            print("stop playing sample")
+                            self.osc.send_play_stop(1) #FIXME
+
+                        
+
         elif event.status == MIDI_CTRL: # MIDI control
             if self.config.midi_verbose:
                 print("MIDI control: ID: %s Value: %s" % (event.data1, event.data2))
@@ -1125,8 +1145,10 @@ class Configuration(object): #Serializable):
         # midi
         self.midi_enabled = False
         self.midi_verbose = False
-        self.midi_input_id = -1 # FIXME
+        self.midi_input_id = -1 # means default
         self.midi_pedal_control_id = 64
+        self.midi_note_record = 60 # FIXME
+        self.midi_note_play = 62 # FIXME
 
         # overrides some attributes whose defaults and names are below.
         self.__dict__.update(**argd) 
