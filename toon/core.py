@@ -493,7 +493,7 @@ class ToonLoop(render.Game):
         except MemoryError, e:
             print("CRITICAL ERROR : No more RAM Memory !!!", e.message)
         if self.config.verbose:
-            print('num frames', len(self.clip.images))
+            print('num frames: %s' %(len(self.clip.images)))
     
     def draw(self):
         """
