@@ -1,9 +1,16 @@
 =======================================================
- ToonLoop Installation Notes for Ubuntu GNU/Linux 8.10
+ Toonloop Installation Notes for Ubuntu GNU/Linux 8.10
 =======================================================
 
 Install Dependencies
 --------------------
+Toonloop relies on python packages such as Pygame, Twisted, PyOpenGL, Nevow, 
+and pyliblo. Those packages in turn rely on C libraries such as SDL, liblo, 
+libpng, libjpeg, libportmidi, and others. Toonloop also uses the mencoder 
+software. Some of those packages, libraries and software can be installed using
+the apt-get command line utility on Ubuntu or Debian GNU/Linux. Some other 
+tools must be installed using subversion or from a compressed archive 
+downloaded from the Internet, since we need some of their latest features. 
 
 Subversion::
 
@@ -31,16 +38,22 @@ Checkout and Build Pygame
 The camera module for pygame is available from pygame's svn revision 
 1744 or greater::
 
-  mkdir ~/src
-  cd ~/src
+  mkdir -p ~/src
+  pushd ~/src
   svn checkout svn://seul.org/svn/pygame/trunk pygame
-  cd pygame 
+  pushd pygame 
   python setup.py build
   sudo python setup.py install --prefix=/usr/local
+  popd
+  popd
 
-Install pyliblo
----------------
-Install liblo from source (not from Ubuntu 8.10's package) and pyliblo.::
+Install liblo 
+-------------
+Install liblo from source. The version that comes with in the GNU/Linux 
+Ubuntu 8.10 package hangs when starting the server. Liblo is a library 
+that implements the OSC protocol.
+See http://liblo.sourceforge.net/ for more information on liblo. 
+Here is how to install liblo ::
 
   mkdir -p ~/src
   pushd ~/src
@@ -50,6 +63,14 @@ Install liblo from source (not from Ubuntu 8.10's package) and pyliblo.::
   make
   sudo make install
   popd
+  popd
+
+Install pyliblo
+---------------
+See http://das.nasophon.de/pyliblo/ for more infos. ::
+
+  mkdir -p ~/src
+  pushd ~/src
   wget http://das.nasophon.de/download/pyliblo-0.8.0.tar.gz
   tar -zxvf pyliblo-0.8.0.tar.gz
   pushd pyliblo-0.8.0/
