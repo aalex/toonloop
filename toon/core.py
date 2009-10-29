@@ -346,19 +346,18 @@ class ToonLoop(render.Game):
         """
         print(">>>>>>> ToonLoop Statistics >>>>>>>>")
         try:
+            self.config.print_values()
+            print('pygame.display.Info(): %s' % (pygame.display.Info()))
+            total_imgs = 0
+            for clip_num in range(len(self.clips)):
+                num_images = len(self.clips[clip_num].images)
+                print(' * Clip #%d has %d images.' % (clip_num, num_images))
+                total_imgs += num_images
+            print('TOTAL: %d images.' % (total_imgs))
             print("Current playhead: " + str(self.clip.playhead))
             print("Num images: " + str(len(self.clip.images)))
             print("FPS: %d" % (self.fps))
             print("Playhead frequency ratio: 30 / %d" % (self.clip.playhead_iterate_every))
-            self.config.print_values()
-
-            print('pygame.display.Info(): ' % (pygame.display.Info()))
-            total_imgs = 0
-            for clip_num in range(len(self.clips)):
-                num_images = len(self.clips[clip_num].images)
-                print('Clip #%d has %d images.' % (clip_num, num_images))
-                total_imgs += num_images
-            print('TOTAL: %d' % (total_imgs))
             print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
         except AttributeError, e:
             print sys.exc_info()
@@ -1084,8 +1083,8 @@ class Configuration(object): #Serializable):
         #self.max_num_frames = 1000
         
         # window
-        self.display_width = 1024
-        self.display_height = 768
+        self.display_width = self.image_width * 2 # 640 , was 1024
+        self.display_height = self.image_height * 2 # 480 , was 768
         
         # web services
         self.web_server_port = 8000
