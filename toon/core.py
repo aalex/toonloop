@@ -62,6 +62,8 @@ import glob
 import pprint
 
 from twisted.internet import reactor
+from twisted.internet import defer
+#from twisted.python import failure
 
 from rats import render
 from rats.observer import Subject
@@ -116,6 +118,150 @@ class ToonClip(object): #Serializable):
         # self.framerate = 12
         self.__dict__.update(argd)
         self.images = []
+    
+class ClipSaver(object):
+    """
+    Saves a clip to images and a movie file if possible.
+    """
+    def __init__(self, core, dir_path, file_prefix, clip_id):
+        self.clip_id = clip_id
+        self.core = core # toonloop app
+        self.file_prefix = file_prefix
+        self.dir_path = dir_path
+        self.current_index = 0 # saving which image next
+        self.IMAGES_DIR = "data"
+        self._deferred = None
+        self.is_busy = False
+
+    def save(self):
+        """
+        Does save the clip.
+        Return a deferred.
+        """
+        self.is_busy = True
+        if self._deferred is not None:
+            raise ToonLoopError("Do not call save twice on the same ClipSaver.")
+        self._deferred = defer.Deferred()
+        try:
+            if not os.path.exists(self.dir_path):
+                os.makedirs(self.dir_path)
+                print('mkdir %s' % (self.dir_path))
+        except OSError, e:
+            msg = 'Error creating directories' % (self.dir_path, e.message)
+            self._fail(msg)
+            print(msg)
+        else:
+            try:
+                data_subdir = os.path.join(self.dir_path, self.IMAGES_DIR)
+                if not os.path.exists(data_subdir):
+                    os.makedirs(data_subdir)
+                    print('mkdir %s' % (data_subdir))
+            except OSError, e:
+                msg = 'Error creating directories' % (data_subdir, e.message)
+                print(msg)
+                self._fail(msg)
+            else:
+                reactor.callLater(0.0, self._write_01_next_image)
+        return self._deferred
+
+    def _fail(self, msg):
+        self.is_busy = False
+        self._deferred.errback(msg)
+
+    def _succeed(self, msg):
+        self.is_busy = False
+        self._deferred.callback(msg)
+
+    def _write_01_next_image(self):
+        """
+        Saves each image using twisted in order not to freeze the app.
+        Uses the JPG extension.
+        """
+        # TODO : use clip_id
+        if self.current_index < len(self.core.clips[self.clip_id].images):
+            name = ("%s/%s_%5d.jpg" % (self.dir_path, self.file_prefix, self.current_index)).replace(' ', '0')
+            if self.core.config.verbose:
+                print("writing %s" % (name))
+            pygame.image.save(self.core.clips[self.clip_id].images[self.current_index], name) # filename extension makes it a JPEG
+            self.current_index += 1
+            reactor.callLater(0.0, self._write_01_next_image)
+        else:
+            reactor.callLater(0.0, self._write_02_images_done)
+    
+    def _write_02_images_done(self):
+        """
+        Converts the list of images in a motion-JPEG .mov video file.
+        """
+        if self.current_index > 0:
+            if self.core.config.verbose:
+                print("\nConverting to motion JPEG in Quicktime container.")
+            fps = 6 # TODO
+            #self.clip.increment_every # self.clip.framerate
+            #fps = self.renderer.desired_fps 
+
+            deferred = mencoder.jpeg_to_movie(self.file_prefix, self.dir_path, fps, self.core.config.verbose, self.core.config.image_width, self.core.config.image_height)
+            deferred.addCallback(self._write_03_movie_done)
+            deferred.addErrback(self._eb_mencoder)
+            # to do : serialize clips with file names
+            # self.project_file = 'project.txt'
+
+    def _eb_mencoder(self, reason):
+        msg = reason.getErrorMessage()
+        print(msg)
+        self._fail(msg)
+
+    def _write_03_movie_done(self, results): # deferred callback
+        """
+        Called when mencoder conversion is done.
+        MOV file.
+        """
+        if self.core.config.verbose:
+            print("Done converting %s/%s.mov" % (self.dir_path, self.file_prefix))
+        reactor.callLater(1.0, self._write_04_delete_images)
+
+    def _write_04_delete_images(self):
+        """
+        deletes JPG images or moves them to the 'data' folder in the project folder.
+        renames MOV file.
+        """
+        files = glob.glob("%s/%s_*.jpg" % (self.dir_path, self.file_prefix))
+        for f in files:
+            if self.core.config.delete_jpeg:
+                try:
+                    os.remove(f)
+                    if self.core.config.verbose:
+                        print('removed %s' % (f))
+                except OSError, e:
+                    msg = "%s Error removing file %s" % (e.message, f)
+                    print(msg)
+                    # TODO: maybe not fail fot that?
+                    #self._fail(msg)
+            else:
+                try:
+                    dest = os.path.join(self.dir_path, self.IMAGES_DIR, os.path.basename(f))
+                    shutil.move(f, dest)
+                    if self.core.config.verbose:
+                        print('moved %s %s' % (f, dest))
+                except IOError, e:
+                    msg = "%s Error moving file %s to %s" % (e.message, f, dest)
+                    print(msg)
+                    # TODO: maybe not fail fot that?
+                    #self._fail(msg)
+        # rename final movie file
+        try:
+            src = "%s/%s.mov" % (self.dir_path, self.file_prefix)
+            dest = "%s/clip_%s.mov" % (self.dir_path, self.file_prefix)
+            shutil.move(src, dest)
+            if self.core.config.verbose:
+                print('renamed %s to %s' % (src, dest) )
+                print('DONE SAVING CLIP %s' % (self.clip_id))
+        except IOError, e:
+            msg = "%s Error moving file %s to %s" % (e.message, src, dest)
+            print(msg)
+            self._fail(msg)
+        else:
+            self._succeed("Successfully saved images, converted movie and moved files for clip %s" % (self.clip_id))
+            
 
 class ToonLoop(render.Game):
     """
@@ -197,6 +343,7 @@ class ToonLoop(render.Game):
         if self.config.verbose:
             pprint.pprint(self.config.__dict__)
         self._has_just_added_frame = False
+        self.clip_saver = None
         reactor.callLater(0, self._start_services)
 
     def _start_services(self):
@@ -692,103 +839,24 @@ class ToonLoop(render.Game):
         
         See _write_next_image
         """
+        if self.config.verbose:
+            print("clip_save")
         # TODO : in a thread
         if len(self.clip.images) > 1:
-            path = os.path.join(self.config.toonloop_home, self.config.project_name)
-            file_name = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
-            file_name += '_%s' % (self.clip_id)
-            if self.config.verbose:
-                print("Will save images %s %s" % (path, file_name))
-            try:
-                if not os.path.exists(path):
-                    os.makedirs(path)
-                    print('mkdir %s' % (path))
-            except OSError, e:
-                print('Error creating directories' % (path, e.message))
-            else:
-                try:
-                    data_subdir = os.path.join(path, 'data')
-                    if not os.path.exists(data_subdir):
-                        os.makedirs(data_subdir)
-                        print('mkdir %s' % (data_subdir))
-                except OSError, e:
-                    print('Error creating directories' % (data_subdir, e.message))
+            if self.clip_saver is not None:
+                if self.clip_saver.is_busy:
+                    print("There is already one clip being saved. Try again later.")
+                    return # TODO: return failed deferred
                 else:
-                    reactor.callLater(0, self._write_01_next_image, path, file_name, 0, self.clip_id)
-
-    def _write_01_next_image(self, path, file_name, index, clip_id):
-        """
-        Saves each image using twisted in order not to freeze the app.
-        Uses the JPG extension.
-        """
-        # TODO : use clip_id
-        if index < len(self.clips[clip_id].images):
-            name = ("%s/%s_%5d.jpg" % (path, file_name, index)).replace(' ', '0')
+                    self.clip_saver = None
+            dir_path = os.path.join(self.config.toonloop_home, self.config.project_name)
+            file_prefix = strftime("%Y-%m-%d_%Hh%Mm%S") # without an extension.
+            file_prefix += '_%s' % (self.clip_id)
             if self.config.verbose:
-                print("writing %s" % (name))
-            pygame.image.save(self.clips[clip_id].images[index], name) # filename extension makes it a JPEG
-            reactor.callLater(0, self._write_01_next_image, path, file_name, index + 1, clip_id)
-        else:
-            reactor.callLater(0, self._write_02_images_done, path, file_name, index, clip_id)
-    
-    def _write_02_images_done(self, path, file_name, index, clip_id):
-        """
-        Converts the list of images in a motion-JPEG .mov video file.
-        """
-        if index > 0:
-            if self.config.verbose:
-                print("\nConverting to motion JPEG in Quicktime container.")
-            fps = 6 # TODO
-            #self.clip.increment_every # self.clip.framerate
-            #fps = self.renderer.desired_fps 
-
-            deferred = mencoder.jpeg_to_movie(file_name, path, fps, self.config.verbose, self.config.image_width, self.config.image_height)
-            deferred.addCallback(self._write_03_movie_done, file_name, path, index, clip_id)
-            # to do : serialize clips with file names
-            # self.project_file = 'project.txt'
-
-    def _write_03_movie_done(self, results, file_name, path, index, clip_id):
-        """
-        Called when mencoder conversion is done.
-        MOV file.
-        """
-        if self.config.verbose:
-            print("Done converting %s/%s.mov" % (path, file_name))
-        reactor.callLater(1.0, self._write_04_delete_images, path, file_name, index, clip_id)
-
-    def _write_04_delete_images(self, path, file_name, index, clip_id):
-        """
-        deletes JPG images or moves them to the 'data' folder in the project folder.
-        renames MOV file.
-        """
-        files = glob.glob("%s/%s_*.jpg" % (path, file_name))
-        for f in files:
-            if self.config.delete_jpeg:
-                try:
-                    os.remove(f)
-                    if self.config.verbose:
-                        print('removed %s' % (f))
-                except OSError, e:
-                    print("%s Error removing file %s" % (e.message, f))
-            else:
-                try:
-                    dest = os.path.join(path, 'data', os.path.basename(f))
-                    shutil.move(f, dest)
-                    if self.config.verbose:
-                        print('moved %s %s' % (f, dest))
-                except IOError, e:
-                    print("%s Error moving file %s to %s" % (e.message, f, dest))
-                
-        # rename final movie file
-        try:
-            src = "%s/%s.mov" % (path, file_name)
-            dest = "%s/clip_%s.mov" % (path, file_name)
-            shutil.move(src, dest)
-            if self.config.verbose:
-                print('renamed %s to %s' % (src, dest) )
-                print('DONE SAVING CLIP %s' % (clip_id))
-        except IOError, e:
-            print("%s Error moving file %s to %s" % (e.message, src, dest))
+                print("Will save images %s %s" % (dir_path, file_prefix))
+            core = self
+            self.clip_saver = ClipSaver(core, dir_path, file_prefix, self.clip_id)
+            return self.clip_saver.save() # returns a deferred
 
     def frame_remove(self):
         """
@@ -890,7 +958,9 @@ class ToonLoop(render.Game):
             # TODO : catch window new size when resized.
             elif e.type == pygame.VIDEORESIZE:
                 print("VIDEORESIZE %s" % (e))
-            elif e.type == KEYDOWN: 
+            elif e.type == KEYDOWN:
+                if self.config.verbose:
+                    print("key down: %s" % (e.key))
                 if e.key == K_k: # K
                     self.intervalometer_rate_increase(1)
                 elif e.key == K_c: # C : chromakey toggle
