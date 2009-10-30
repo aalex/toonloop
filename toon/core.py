@@ -129,7 +129,7 @@ class ClipSaver(object):
         self.file_prefix = file_prefix
         self.dir_path = dir_path
         self.current_index = 0 # saving which image next
-        self.IMAGES_DIR = "data"
+        self.IMAGES_DIR = "images"
         self._deferred = None
         self.is_busy = False
 
@@ -181,7 +181,7 @@ class ClipSaver(object):
         if self.current_index < len(self.core.clips[self.clip_id].images):
             name = ("%s/%s_%5d.jpg" % (self.dir_path, self.file_prefix, self.current_index)).replace(' ', '0')
             if self.core.config.verbose:
-                print("writing %s" % (name))
+                print("writing image %s" % (self.current_index))
             pygame.image.save(self.core.clips[self.clip_id].images[self.current_index], name) # filename extension makes it a JPEG
             self.current_index += 1
             reactor.callLater(0.0, self._write_01_next_image)
@@ -226,7 +226,7 @@ class ClipSaver(object):
         """
         files = glob.glob("%s/%s_*.jpg" % (self.dir_path, self.file_prefix))
         for f in files:
-            if self.core.config.delete_jpeg:
+            if self.core.config.delete_jpeg: # delete images
                 try:
                     os.remove(f)
                     if self.core.config.verbose:
@@ -234,18 +234,16 @@ class ClipSaver(object):
                 except OSError, e:
                     msg = "%s Error removing file %s" % (e.message, f)
                     print(msg)
-                    # TODO: maybe not fail fot that?
                     #self._fail(msg)
-            else:
+            else: # move images
                 try:
                     dest = os.path.join(self.dir_path, self.IMAGES_DIR, os.path.basename(f))
                     shutil.move(f, dest)
-                    if self.core.config.verbose:
-                        print('moved %s %s' % (f, dest))
+                    #if self.core.config.verbose:
+                    #    print('moved %s to %s' % (f, dest))
                 except IOError, e:
                     msg = "%s Error moving file %s to %s" % (e.message, f, dest)
                     print(msg)
-                    # TODO: maybe not fail fot that?
                     #self._fail(msg)
         # rename final movie file
         try:
