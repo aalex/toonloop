@@ -99,9 +99,148 @@ from OpenGL.GL import *
 
 class ToonLoopError(Exception):
     """
-    Any error ToonLoop might encouter
+    Any error ToonLoop might encounter
     """
     pass
+
+class Configuration(object): #Serializable):
+    """
+    Configuration options.
+    
+    Default values are defined here. 
+    Overriden as **argd arguments to ToonLoop(**argd)
+    
+    Python allows commas at the end of lists and tuples
+    """
+    def __init__(self, **argd): 
+        # constants
+        self.PACKAGE_PATH = os.path.dirname(toon.__file__)
+        
+        # basics
+        self.verbose = True
+        self.video_device = 0 
+        
+        # project
+        self.toonloop_home = os.path.expanduser("~/Documents/toonloop")
+        self.project_name = "new_project" # name of the folder
+        #self.project_file = 'project.txt'
+        self.max_num_clips = 10
+        self.delete_jpeg = False
+        
+        # framerate
+        self.framerate_min = 1
+        self.framerate_max = 30
+        # TODO: framerate value
+
+        # image size
+        self.image_width = 320 # 640
+        self.image_height = 240 # 480
+        self.image_flip_horizontal = False
+        #self.playback_opacity = 0.3
+        #self.max_num_frames = 1000
+        
+        # window
+        self.display_width = self.image_width * 2 # 640 , was 1024
+        self.display_height = self.image_height * 2 # 480 , was 768
+        
+        # web services
+        self.web_server_port = 8000
+        self.web_enabled = False
+        
+        # fudi puredata interface
+        self.fudi_enabled = False
+        self.fudi_receive_port = 15555
+        self.fudi_send_port = 17777
+        self.fudi_send_host = 'localhost'
+        
+        # osc
+        self.osc_enabled = False
+        self.osc_send_port = 12345
+        self.osc_send_host = 'localhost'
+        self.osc_listen_port = 12346
+        #self.osc_receive_hosts = ''
+        
+        # onionskin
+        self.onionskin_enabled = True
+        self.onionskin_on = False
+        self.onionskin_opacity = 0.3
+        
+        # background
+        self.bgimage_enabled = False
+        self.bgimage = os.path.join(self.PACKAGE_PATH, 'data/bgimage_05.jpg')
+        self.bgcolor_b = 0.2 #TODO: not used so much.
+        self.bgcolor_g = 0.8
+        self.bgcolor_r = 1.0
+        self.bgimage_glob_enabled = False # list of glob JPG files that can be browsed using +/- iteration
+        self.bgimage_glob = '' # os.path.join(self.toonloop_home, self.project_name, 'data') # defaults to the images from the current project !
+        
+        # white flash
+        self.fx_white_flash = True
+        self.fx_white_flash_alpha = 0.5
+        # todo:duration
+        
+        # chromakey
+        self.chromakey_enabled = True
+        self.chromakey_on = False
+        self.chromakey_r = 0.2
+        self.chromakey_g = 0.9
+        self.chromakey_b = 0.0
+        self.chromakey_thresh = 0.5
+        self.chromakey_slope = 0.2
+        
+        # intervalometer
+        self.intervalometer_on = False 
+        self.intervalometer_enabled = False
+        self.intervalometer_rate_seconds = 30.0 # in seconds
+        # TODO: clean intervalometer on/enabled stuff
+        
+        # autosave
+        self.autosave_on = False 
+        self.autosave_enabled = True
+        self.autosave_rate_seconds = 600.0 # in seconds
+
+        # midi
+        self.midi_enabled = False
+        self.midi_verbose = False
+        self.midi_input_id = -1 # means default
+        self.midi_pedal_control_id = 64
+        self.midi_note_record = 60 # FIXME
+        self.midi_note_play = 62 # FIXME
+
+        # overrides some attributes whose defaults and names are below.
+        self.__dict__.update(**argd) 
+
+        # this one is special : it needs other values to set itself. Let's find a way to prevent this
+
+    def print_values(self):
+        for k in sorted(self.__dict__):
+            v = self.__dict__[k]
+            print("    -o %s %s" % (k, v))
+
+    def set(self, name, value):
+        """
+        Casts to its type and sets the value.
+
+        Intended to be used even from ASCII string values. (FUDI, etc.)
+
+        A bool value can be set using 'True' or 1 and 'False' or 0
+        """
+        # try:
+        kind = type(self.__dict__[name])
+        if kind is bool:
+            if value == 'True':
+                casted_value = True
+            elif value == 'False':
+                casted_value = False
+            else:
+                casted_value = bool(int(value))
+        else:
+            casted_value = kind(value)
+        self.__dict__[name] = casted_value
+        print('config.%s = %s(%s)' % (name, kind.__name__, self.__dict__[name]))
+        return kind
+        # except Exception, e:
+        #    print e.message
 
 class ToonClip(object): #Serializable):
     """
@@ -127,9 +266,11 @@ class ToonLoop(render.Game):
     For 1 GB of RAM, one can expect to stock about 3000 images at 640x480, if having much swap memory.
 
     Private methods starts with _.
-    The draw method is a special one inherited from Game.
+    The draw method is a special one inherited from rats.render.Game. The process_events one as well.
 
     Onion skin effect and chroma key shader are mutually exclusives.
+
+    There are a lot of services/features that are disabled by default. (web, fudi, osc, midi, etc.)
     """
     # OpenGL textures indices in the list
     TEXTURE_MOST_RECENT = 0
@@ -973,142 +1114,4 @@ class ToonLoop(render.Game):
         """
         self.config.set(name, value)
 
-class Configuration(object): #Serializable):
-    """
-    Configuration options.
-    
-    Default values are defined here. 
-    Overriden as **argd arguments to ToonLoop(**argd)
-    
-    Python allows commas at the end of lists and tuples
-    """
-    def __init__(self, **argd): 
-        # constants
-        self.PACKAGE_PATH = os.path.dirname(toon.__file__)
-        
-        # basics
-        self.verbose = True
-        self.video_device = 0 
-        
-        # project
-        self.toonloop_home = os.path.expanduser("~/Documents/toonloop")
-        self.project_name = "new_project" # name of the folder
-        #self.project_file = 'project.txt'
-        self.max_num_clips = 10
-        self.delete_jpeg = False
-        
-        # framerate
-        self.framerate_min = 1
-        self.framerate_max = 30
-        # TODO: framerate value
-
-        # image size
-        self.image_width = 320 # 640
-        self.image_height = 240 # 480
-        self.image_flip_horizontal = False
-        #self.playback_opacity = 0.3
-        #self.max_num_frames = 1000
-        
-        # window
-        self.display_width = self.image_width * 2 # 640 , was 1024
-        self.display_height = self.image_height * 2 # 480 , was 768
-        
-        # web services
-        self.web_server_port = 8000
-        self.web_enabled = False
-        
-        # fudi puredata interface
-        self.fudi_enabled = False
-        self.fudi_receive_port = 15555
-        self.fudi_send_port = 17777
-        self.fudi_send_host = 'localhost'
-        
-        # osc
-        self.osc_enabled = False
-        self.osc_send_port = 12345
-        self.osc_send_host = 'localhost'
-        self.osc_listen_port = 12346
-        #self.osc_receive_hosts = ''
-        
-        # onionskin
-        self.onionskin_enabled = True
-        self.onionskin_on = False
-        self.onionskin_opacity = 0.3
-        
-        # background
-        self.bgimage_enabled = False
-        self.bgimage = os.path.join(self.PACKAGE_PATH, 'data/bgimage_05.jpg')
-        self.bgcolor_b = 0.2 #TODO: not used so much.
-        self.bgcolor_g = 0.8
-        self.bgcolor_r = 1.0
-        self.bgimage_glob_enabled = False # list of glob JPG files that can be browsed using +/- iteration
-        self.bgimage_glob = '' # os.path.join(self.toonloop_home, self.project_name, 'data') # defaults to the images from the current project !
-        
-        # white flash
-        self.fx_white_flash = True
-        self.fx_white_flash_alpha = 0.5
-        # todo:duration
-        
-        # chromakey
-        self.chromakey_enabled = True
-        self.chromakey_on = False
-        self.chromakey_r = 0.2
-        self.chromakey_g = 0.9
-        self.chromakey_b = 0.0
-        self.chromakey_thresh = 0.5
-        self.chromakey_slope = 0.2
-        
-        # intervalometer
-        self.intervalometer_on = False 
-        self.intervalometer_enabled = False
-        self.intervalometer_rate_seconds = 30.0 # in seconds
-        # TODO: clean intervalometer on/enabled stuff
-        
-        # autosave
-        self.autosave_on = False 
-        self.autosave_enabled = True
-        self.autosave_rate_seconds = 600.0 # in seconds
-
-        # midi
-        self.midi_enabled = False
-        self.midi_verbose = False
-        self.midi_input_id = -1 # means default
-        self.midi_pedal_control_id = 64
-        self.midi_note_record = 60 # FIXME
-        self.midi_note_play = 62 # FIXME
-
-        # overrides some attributes whose defaults and names are below.
-        self.__dict__.update(**argd) 
-
-        # this one is special : it needs other values to set itself. Let's find a way to prevent this
-
-    def print_values(self):
-        for k in sorted(self.__dict__):
-            v = self.__dict__[k]
-            print("    -o %s %s" % (k, v))
-
-    def set(self, name, value):
-        """
-        Casts to its type and sets the value.
-
-        Intended to be used even from ASCII string values. (FUDI, etc.)
-
-        A bool value can be set using 'True' or 1 and 'False' or 0
-        """
-        # try:
-        kind = type(self.__dict__[name])
-        if kind is bool:
-            if value == 'True':
-                casted_value = True
-            elif value == 'False':
-                casted_value = False
-            else:
-                casted_value = bool(int(value))
-        else:
-            casted_value = kind(value)
-        self.__dict__[name] = casted_value
-        print('config.%s = %s(%s)' % (name, kind.__name__, self.__dict__[name]))
-        return kind
-        # except Exception, e:
-        #    print e.message
 
