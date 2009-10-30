@@ -68,7 +68,6 @@ from twisted.internet import defer
 from rats import render
 from rats.observer import Subject
 #from rats.serialize import Serializable
-import toon
 try:
     from toon import opensoundcontrol
     OSC_LOADED = True
@@ -81,6 +80,7 @@ from toon import puredata
 from toon import chromakey
 from toon import midi
 from toon import save
+from toon import data
 try:
     from toon import web
     WEB_LOADED = True
@@ -95,6 +95,7 @@ from pygame.locals import *
 from pygame import time
 from OpenGL.GL import *
 
+PACKAGE_DATA_PATH = os.path.dirname(data.__file__)
 #__version__ = "1.0 beta" let's use the version from the mainscript.
 
 class ToonLoopError(Exception):
@@ -114,7 +115,6 @@ class Configuration(object): #Serializable):
     """
     def __init__(self, **argd): 
         # constants
-        self.PACKAGE_PATH = os.path.dirname(toon.__file__)
         
         # basics
         self.verbose = True
@@ -167,7 +167,7 @@ class Configuration(object): #Serializable):
         
         # background
         self.bgimage_enabled = False
-        self.bgimage = os.path.join(self.PACKAGE_PATH, 'data/bgimage_05.jpg')
+        self.bgimage = os.path.join(PACKAGE_DATA_PATH, 'bgimage_05.jpg')
         self.bgcolor_b = 0.2 #TODO: not used so much.
         self.bgcolor_g = 0.8
         self.bgcolor_r = 1.0
@@ -306,7 +306,7 @@ class ToonLoop(render.Game):
         self._init_clips()
         self.renderer = None # Renderer instance that owns it.
         # the icon
-        icon = pygame.image.load(os.path.join(self.config.PACKAGE_PATH, 'data', "icon.png"))
+        icon = pygame.image.load(os.path.join(PACKAGE_DATA_PATH, "icon.png"))
         pygame.display.set_icon(icon) # a 32 x 32 surface
         # the pygame window
         self.display = pygame.display.set_mode(self._display_size, OPENGL | DOUBLEBUF | HWSURFACE)
