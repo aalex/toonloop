@@ -50,7 +50,16 @@ class ClipSaver(object):
     """
     Saves a clip to images and a movie file if possible.
     """
+    # TODO: save using threads.
+    # TODO: use rats.statesaving to save state
+    # TODO: load state and files as well
     def __init__(self, core, dir_path, file_prefix, clip_id):
+        """
+        :param core: The ToonLoop application object.
+        :param dir_path: Path to the directory where to save the clip.
+        :param file_prefix: The beginning of the name of the files to save.
+        :param clip_id: The id of the clip to save.
+        """
         self.clip_id = clip_id
         self.core = core # toonloop app
         self.file_prefix = file_prefix
