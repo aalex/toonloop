@@ -22,11 +22,11 @@ class Test_Config_File(unittest.TestCase):
         f = file(self.file_name, "w")
         f.write("""
         # this is a comment
-        "ham" = spam
-        egg = "bacon and toast"
-        egg = "cheese"
-        number = 2
-        number = 3
+        "ham"=spam
+        egg="bacon and toast"
+        egg="cheese"
+        number =2
+        number= 3
         bool_val = yes
         """)
         f.close()
