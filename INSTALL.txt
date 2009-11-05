@@ -12,13 +12,9 @@ the apt-get command line utility on Ubuntu or Debian GNU/Linux. Some other
 tools must be installed using subversion or from a compressed archive 
 downloaded from the Internet, since we need some of their latest features. 
 
-Essential tools ::
+Development tools ::
 
-  sudo apt-get install build-essential
-
-Subversion::
-
-  sudo apt-get install subversion
+  sudo apt-get install automake libtool git-core subversion
 
 Python Packages::
 
@@ -61,7 +57,7 @@ Here is how to install liblo ::
 
   mkdir -p ~/src
   pushd ~/src
-  svn co https://liblo.svn.sourceforge.net/svnroot/liblo/trunk liblo 
+  git clone git://gitorious.org/liblo/mainline liblo
   pushd liblo
   ./autogen.sh
   make
