@@ -65,8 +65,8 @@ class SimpleMidiInput(object):
         if self.convert_to_pygame_event:
             pygame.fastevent.init()
         pygame.midi.init()
-        if self.verbose:
-            self.print_devices_info()
+        #if self.verbose:
+        self.print_devices_info()
         self._verb("MIDIIN event : %s" % (str(pygame.midi.MIDIIN)))
         if self.input_id is None:
             self.input_id = pygame.midi.get_default_input_id()
