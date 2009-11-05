@@ -32,6 +32,10 @@ Mencoder ::
 
   sudo apt-get install mencoder
 
+Portmidi ::
+
+  sudo apt-get install libportmidi-dev
+
 Checkout and Build Pygame
 -------------------------
 
