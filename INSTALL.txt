@@ -12,6 +12,10 @@ the apt-get command line utility on Ubuntu or Debian GNU/Linux. Some other
 tools must be installed using subversion or from a compressed archive 
 downloaded from the Internet, since we need some of their latest features. 
 
+Essential tools ::
+
+  sudo apt-get install build-essential
+
 Subversion::
 
   sudo apt-get install subversion
