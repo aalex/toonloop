@@ -80,7 +80,7 @@ class ToonOsc(object):
         self.osc_server = osc.OscServer(self.listen_port)
         self.osc_server.add_callback("/frame/add", None, self.cb_frame_add)
         self.osc_server.add_callback("/ping", None, self.cb_ping)
-        self.osc_server.add_callback("/pong", None, self.cb_ping)
+        self.osc_server.add_callback("/pong", None, self.cb_pong)
         self.osc_server.add_callback(None, None, self.cb_fallback)
         print("Will now start listening OSC server...")
         self.osc_server.start() # this hangs on Ubuntu 8.10. Update liblo-dev to latest tarball.

@@ -201,7 +201,7 @@ class Configuration(object): #Serializable):
 
         # midi
         self.midi_enabled = False
-        self.midi_verbose = False
+        self.midi_verbose = True
         self.midi_input_id = -1 # means default
         self.midi_pedal_control_id = 64
         self.midi_note_record = 60 # FIXME
@@ -387,7 +387,7 @@ class ToonLoop(render.Game):
                 raise
         # MIDI
         if self.config.midi_enabled:
-            self.midi_manager = midi.SimpleMidiInput(self.config.midi_input_id)
+            self.midi_manager = midi.SimpleMidiInput(self.config.midi_input_id, self.config.midi_verbose)
             self.midi_manager.register_callback(self._cb_midi_event)
             try:
                 self.midi_manager.start()

@@ -22,13 +22,13 @@ class SimpleMidiInput(object):
     """
     MIDI input using pygame.midi.
     """
-    def __init__(self, input_id=None):
+    def __init__(self, input_id=None, verbose=True):
         if input_id == -1:
             input_id = None # -1 is an alias for None
         self.input_id = input_id
         self.midi_input = None
         self.is_connected = False
-        self.verbose = False
+        self.verbose = verbose
         self._use_dummy_display = False # for tests.
         self.convert_to_pygame_event = False
         self.callbacks = []
@@ -65,7 +65,8 @@ class SimpleMidiInput(object):
         if self.convert_to_pygame_event:
             pygame.fastevent.init()
         pygame.midi.init()
-        self.print_devices_info()
+        if self.verbose:
+            self.print_devices_info()
         self._verb("MIDIIN event : %s" % (str(pygame.midi.MIDIIN)))
         if self.input_id is None:
             self.input_id = pygame.midi.get_default_input_id()
