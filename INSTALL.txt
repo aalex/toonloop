@@ -14,7 +14,7 @@ downloaded from the Internet, since we need some of their latest features.
 
 Development tools ::
 
-  sudo apt-get install automake libtool git-core subversion
+  sudo apt-get install automake libtool git-core subversion wget
 
 Python Packages::
 
