@@ -53,4 +53,3 @@ class ShaderEffect(Serializable):
             self.program.disable()
         except Exception, e: 
             print e.message
-

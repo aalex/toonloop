@@ -460,7 +460,7 @@ class ToonLoop(render.Game):
             files = glob.glob(pattern)
             if self.config.verbose:
                 #print '----------------'
-                print("bgimage_glob_next pattern :" % ( pattern))
+                print("bgimage_glob_next pattern :" % (pattern))
                 print("bgimage_glob_next len(files) :" % (len(files)))
                 # print 'bgimage_glob_next files :', so % (ted(files))
                 # now = strftime("%Y-%m-%d_%Hh%Mm%S") # wit % (out an extension.)
@@ -545,7 +545,7 @@ class ToonLoop(render.Game):
         self.clip_id = index
         self.clip = self.clips[index]
         if self.config.verbose:
-            print("Clip #%s"  % (self.clip_id))
+            print("Clip #%s" % (self.clip_id))
         self._clear_playback_view()
         
     def _setup_window(self):
@@ -637,7 +637,7 @@ class ToonLoop(render.Game):
         except MemoryError, e:
             print("CRITICAL ERROR : No more RAM Memory !!!", e.message)
         if self.config.verbose:
-            print('num frames: %s' %(len(self.clip.images)))
+            print('num frames: %s' % (len(self.clip.images)))
     
     def draw(self):
         """

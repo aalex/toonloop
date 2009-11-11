@@ -221,6 +221,7 @@ if __name__ == '__main__':
     # ----------------------------  classes  ----------------------------
     class VideoCapturePlayer(object):
         size = (640, 480)
+
         def __init__(self, **argd):
             self.__dict__.update(**argd)
             super(VideoCapturePlayer, self).__init__(**argd)
@@ -276,7 +277,7 @@ if __name__ == '__main__':
 
             glBindTexture(GL_TEXTURE_RECTANGLE_ARB, textures[0]) # GL_TEXTURE_2D
             glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, self.snapshot.get_width(), self.snapshot.get_height(), 0,
-                      GL_RGBA, GL_UNSIGNED_BYTE, textureData )
+                      GL_RGBA, GL_UNSIGNED_BYTE, textureData)
             glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST) # GL_TEXTURE_RECTANGLE_ARB
             glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
             draw()

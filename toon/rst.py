@@ -33,14 +33,14 @@ class ReStructured(Resource):
         self.rst = open(filename).read()
 
     def render(self, request):
-        return publish_string( self.rst, writer_name = 'html')
+        return publish_string(self.rst, writer_name = 'html')
 
 if __name__ == '__main__':
     PORT = 8080
     PATH = '.'
     EXTENSION = '.rst'
     resource = static.File(PATH)
-    resource.processors = {EXTENSION : ReStructured}
+    resource.processors = {EXTENSION: ReStructured}
     resource.indexNames = ['index' + EXTENSION]
     reactor.listenTCP(PORT, server.Site(resource))
     reactor.run()
