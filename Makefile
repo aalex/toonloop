@@ -23,3 +23,4 @@ clean:
 
 check:
 	trial rats/test
+
