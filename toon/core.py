@@ -96,7 +96,7 @@ from pygame import time
 from OpenGL.GL import *
 
 PACKAGE_DATA_PATH = os.path.dirname(data.__file__)
-#__version__ = "1.0 beta" let's use the version from the mainscript.
+# the version number is in both toon/runner.py and setup.py
 
 class ToonLoopError(Exception):
     """

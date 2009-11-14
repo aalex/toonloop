@@ -27,7 +27,7 @@
 Main runner of the ToonLoop application.
 """
  
-__version__ = "1.0.2"
+__version__ = "1.0.3" # MUST ALSO CHANGE IT IN setup.py
 
 import sys
 import pygame 

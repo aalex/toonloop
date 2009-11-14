@@ -42,7 +42,7 @@ from setuptools import setup
 
 setup(
     name = "toonloop",
-    version = "1.0.2",
+    version = "1.0.3", # MUST ALSO BE CHANGED IN toon/runner.py
     author = "Alexandre Quessy and Tristan Matthews",
     author_email = "alexandre@quessy.net",
     url = "http://www.toonloop.com/",
@@ -51,7 +51,7 @@ setup(
     Requires: twisted, pygame 1.9, PyOpenGL, nevow and numpy.""",
     install_requires = [], # "twisted", "PyOpenGL", "nevow"], # , "numpy"], 
     # requires pygame from SVN for now.
-    scripts = ["toonloop"], #, "scripts/theitem", "scripts/purity-example.py"], # pd-purepy, purepy.py #, "osc_send.py", "osc_receive.py"],
+    scripts = ["toonloop"], 
     license = "GPL",
     platforms = ["any"],
     zip_safe = False,
@@ -60,12 +60,3 @@ setup(
         "":["*.ttf", "*.rst", "*.cfg", "*.png", "*.jpg", "*.pd"]
     }
     )
-
-#test_suite='nose.collector',
-#      data_files = [
-#         ('share/man/man1', [
-#             'scripts/send_osc.1',
-#             'scripts/dump_osc.1',
-#         ]),
-#     ],
- 
