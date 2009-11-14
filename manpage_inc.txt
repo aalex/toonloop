@@ -1,5 +1,11 @@
 [DESCRIPTION]
-The ToonLoop Live Stop Motion Tool. 
+The Toonloop Live Stop Motion Tool. 
+
+Toonloop is a live stop motion animation software. It aims at showing the creation process the the audience as well as the result of the creation. The frame by frame animation is made by adding frames one by one to a clip made of many frames. Clips are displayed in a never ending loop. 
+
+Toonloop supports MIDI input, the Open Sound Control protocol, the FUDI protocol (to communicate with Pure Data) and provides a media RSS web server. Currently implemented video effects are : chroma keying using a GLSL shader, onion peal and background image. Toonloop offers state saving in the JSON format. Default config file is ~/.toonloop.json, where tilde (~) is your home directory. Toonloop also allows users to save their clips to the photo-JPEG video codec, and as well to JPEG images. Finally, Toonloop offers an automatic time lapse functionnality, to allow one to easily create accelerated clips. 
+
+Toonloop is an original idea of Alexandre Quessy, and is his research project for his master at UQAM. It is much similar in scope to the live animation work of Pierre Hebert. Toonloop is released under the GNU GPL. 
 
 [SYNOPSIS]
 toonloop [options]
@@ -18,7 +24,8 @@ Here is the list of options with their default values:
     -o bgcolor_b 0.2
     -o bgcolor_g 0.8
     -o bgcolor_r 1.0
-    -o bgimage_enabled True
+    -o bgimage /home/aalex/src/toonloop/trunk/py/toon/data/bgimage_05.jpg
+    -o bgimage_enabled False
     -o bgimage_glob 
     -o bgimage_glob_enabled False
     -o chromakey_b 0.0
@@ -28,9 +35,10 @@ Here is the list of options with their default values:
     -o chromakey_r 0.2
     -o chromakey_slope 0.2
     -o chromakey_thresh 0.5
+    -o config_file /home/aalex/.toonloop.json
     -o delete_jpeg False
-    -o display_height 768
-    -o display_width 1024
+    -o display_height 480
+    -o display_width 640
     -o framerate_max 30
     -o framerate_min 1
     -o fudi_enabled False
@@ -38,7 +46,7 @@ Here is the list of options with their default values:
     -o fudi_send_host localhost
     -o fudi_send_port 17777
     -o fx_white_flash True
-    -o fx_white_flash_alpha 1.0
+    -o fx_white_flash_alpha 0.5
     -o image_flip_horizontal False
     -o image_height 240
     -o image_width 320
@@ -46,15 +54,26 @@ Here is the list of options with their default values:
     -o intervalometer_on False
     -o intervalometer_rate_seconds 30.0
     -o max_num_clips 10
+    -o midi_enabled False
+    -o midi_input_id -1
+    -o midi_note_play 62
+    -o midi_note_record 60
+    -o midi_pedal_control_id 64
+    -o midi_verbose True
     -o onionskin_enabled True
     -o onionskin_on False
     -o onionskin_opacity 0.3
+    -o osc_enabled False
+    -o osc_listen_port 7772
+    -o osc_send_host localhost
+    -o osc_send_port 7770
     -o project_name new_project
-    -o toonloop_home ~/Documents/toonloop
+    -o toonloop_home /home/aalex/Documents/toonloop
     -o verbose False
     -o video_device 0
     -o web_enabled False
     -o web_server_port 8000
+
 
 [AUTHOR]
 Alexandre Quessy and Tristan Matthews

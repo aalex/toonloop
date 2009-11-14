@@ -6,7 +6,7 @@ install:
 	python setup.py install --prefix=/usr/local
 	install Toonloop.desktop /usr/local/share/applications/Toonloop.desktop
 	install Toonloop.svg /usr/local/share/icons/Toonloop.svg
-	help2man -N -i manpage_inc.txt -n "The ToonLoop Live Stop Motion Tool" ./toonloop > toonloop.1 
+	help2man -N -i manpage_inc.txt -n "The Toonloop Live Stop Motion Tool" ./toonloop > toonloop.1 
 	install -D toonloop.1 /usr/local/share/man/man1/toonloop.1
 
 dist:

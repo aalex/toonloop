@@ -80,12 +80,6 @@ def run():
     parser.add_option("-w", "--image-width", type="int", \
         help="Width of the images grabbed from the camera. Using this flag also sets the height, with a 4:3 ratio.")
     (options, args) = parser.parse_args()
-    print("ToonLoop - Version " + str(__version__))
-    print("Copyright 2008 Alexandre Quessy & Tristan Matthews")
-    print("Released under the GNU General Public License")
-    print("Using video device %d" % options.device)
-    print("Press h for usage and instructions.")
-    print("Press i for informations and statistics.")
     pygame.init()
     config = core.Configuration() # all the config is in this object.
     config_dict = config.__dict__
@@ -104,14 +98,30 @@ def run():
     config_dict['intervalometer_enabled'] = options.intervalometer_enabled
     config_dict['verbose'] = options.verbose == True
 
+    if options.list_options:
+        print("""Use ToonLoop options with -o flag :
+        toonloop -o [name] [value]""")
+        print("ToonLoop options and their current values :")
+        config.print_values()
+        sys.exit(0)
+    else:
+        print("ToonLoop - Version " + str(__version__))
+        print("Copyright 2008 Alexandre Quessy & Tristan Matthews")
+        print("Released under the GNU General Public License")
+        print("Using video device %d" % options.device)
+        print("Press h for usage and instructions.")
+        print("Press i for informations and statistics.")
+    
     if config_dict['verbose']:
         print("Started in verbose mode.")
     if options.option:
-        print('options: %s' % (options.option))
+        if config.verbose:
+            print('options: %s' % (options.option))
         for k, v in options.option:
             try:
                 kind = config.set(k, v)
-                print("OPTION \"%s\" : %s       %s" % (k, v, kind))
+                if config.verbose:
+                    print("OPTION \"%s\" : %s       %s" % (k, v, kind))
             except KeyError, e:
                 print("Error. No such ToonLoop option : %s" % (e.message))
                 sys.exit(1)
@@ -119,13 +129,6 @@ def run():
             except Exception, e:
                 print(sys.exc_info())
                 raise core.ToonLoopError('Error with ToonLoop option :', e.message)
-    if options.list_options:
-        print("""Use ToonLoop options with -o flag :
-        toonloop -o [name] [value]""")
-        print("ToonLoop options and their current values :")
-        config.print_values()
-        print("\nExiting.")
-        sys.exit(0)
     try:
         toonloop = core.ToonLoop(config)
         if options.verbose:

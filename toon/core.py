@@ -221,8 +221,14 @@ class Configuration(object): #Serializable):
         # this one is special : it needs other values to set itself. Let's find a way to prevent this
 
     def save(self):
+        """
+        Save to JSON config file.
+        """
         if STATESAVING_LOADED:
-            data = self.__dict__
+            data = {}
+            for k in sorted(self.__dict__): # FIXME: does not work!
+                v = self.__dict__[k]
+                data[k] = v
             if self.verbose:
                 print("Saving config to %s" % (self.config_file))
             try:
@@ -235,6 +241,9 @@ class Configuration(object): #Serializable):
                 print("Could not save config. Json is not loaded.")
     
     def load(self):
+        """
+        Load from JSON config file.
+        """
         if STATESAVING_LOADED:
             if self.verbose:
                 print("Load config from %s" % (self.config_file))
