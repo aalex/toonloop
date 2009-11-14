@@ -88,6 +88,13 @@ except ImportError, e:
     print("For web support, please install the python-nevow package.")
     print(e.message)
     WEB_LOADED = False
+try:
+    from rats import statesaving
+    STATESAVING_LOADED = True
+except ImportError, e:
+    print("For state saving support, please install the python-simplejson package.")
+    print(e.message)
+    STATESAVING_LOADED = False
 
 import pygame
 import pygame.camera
@@ -122,6 +129,7 @@ class Configuration(object): #Serializable):
         
         # project
         self.toonloop_home = os.path.expanduser("~/Documents/toonloop")
+        self.config_file = os.path.expanduser("~/.toonloop.json")
         self.project_name = "new_project" # name of the folder
         #self.project_file = 'project.txt'
         self.max_num_clips = 10
@@ -211,6 +219,36 @@ class Configuration(object): #Serializable):
         self.__dict__.update(**argd) 
 
         # this one is special : it needs other values to set itself. Let's find a way to prevent this
+
+    def save(self):
+        if STATESAVING_LOADED:
+            data = self.__dict__
+            if self.verbose:
+                print("Saving config to %s" % (self.config_file))
+            try:
+                statesaving.save(self.config_file, data)
+            except statesaving.StateSavingError, e:
+                if self.verbose:
+                    print(e.message)
+        else:
+            if self.verbose:
+                print("Could not save config. Json is not loaded.")
+    
+    def load(self):
+        if STATESAVING_LOADED:
+            if self.verbose:
+                print("Load config from %s" % (self.config_file))
+            try:
+                data = statesaving.load(self.config_file)
+            except statesaving.StateSavingError, e:
+                if self.verbose:
+                    print(e.message)
+            else:
+                self.__dict__.update(data)
+        else:
+            if self.verbose:
+                print("Could not load config. Json is not loaded.")
+        
 
     def print_values(self):
         for k in sorted(self.__dict__):
@@ -979,6 +1017,8 @@ class ToonLoop(render.Game):
                         self.print_help()
                     elif e.key == K_s: # S Save
                         self.clip_save()
+                    elif e.key == K_x: # X : config save
+                        self.config_save()
                     elif e.key == K_o: # O Onion
                         self.onionskin_toggle()
                     elif e.key == K_a: # A Auto
@@ -1124,3 +1164,11 @@ class ToonLoop(render.Game):
         Changes a configuration option.
         """
         self.config.set(name, value)
+
+    def config_save(self):
+        """
+        Saves the current config to a file.
+        """
+        if self.config.verbose:
+            print("Save config to %s" % (self.config.config_file))
+        self.config.save()

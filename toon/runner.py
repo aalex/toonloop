@@ -30,6 +30,7 @@ Main runner of the ToonLoop application.
 __version__ = "1.0.3" # MUST ALSO CHANGE IT IN setup.py
 
 import sys
+import os
 import pygame 
 import optparse
 
@@ -66,6 +67,8 @@ def run():
         help="Sets the rendering frame rate. Default is 30 FPS.", default=30)
     parser.add_option("-t", "--intervalometer-rate-seconds", type="float",  \
         help="Sets intervalometer interval in seconds.", default=30.0)
+    parser.add_option("-c", "--config-file", type="string",  \
+        help="Path to config file.", default=os.path.expanduser("~/.toonloop.json"))
     parser.add_option("-H", "--toonloop-home", type="string",  \
         help="Path to saved files.")
     parser.add_option("-i", "--intervalometer-on", \
@@ -86,6 +89,9 @@ def run():
     pygame.init()
     config = core.Configuration() # all the config is in this object.
     config_dict = config.__dict__
+    if options.config_file:
+        config_dict["config_file"] = options.config_file
+    config.load() # updates the config dict with values serialized before.
     if options.toonloop_home:
         config_dict['toonloop_home'] = options.toonloop_home
     if options.image_width:
