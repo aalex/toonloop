@@ -155,9 +155,9 @@ class Configuration(object): #Serializable):
         
         # osc
         self.osc_enabled = False
-        self.osc_send_port = 12345
+        self.osc_send_port = 7770
         self.osc_send_host = 'localhost'
-        self.osc_listen_port = 12346
+        self.osc_listen_port = 7772
         #self.osc_receive_hosts = ''
         
         # onionskin
@@ -292,14 +292,12 @@ class ToonLoop(render.Game):
         # size of the rendering window
         self._display_size = (self.config.display_width, self.config.display_height)
         self.running = True
-        self.pd = None
+        self.pd = None # fudi send and receive
         self.midi_manager = None
         self.paused = False
         self.image_size = (self.config.image_width, self.config.image_height)
         self.clock = pygame.time.Clock()
         self.fps = 0 # for statistics
-        #self.images_list = [] # only editing one clip for now
-        #self.clip.playhead = 0 
         self.clip_id = 0 # Currently selected clip
         self.clip = None # current ToonClip instance
         self.clips = [] # ToonClip instances
@@ -315,10 +313,9 @@ class ToonLoop(render.Game):
         # the images
         self.most_recent_image = pygame.surface.Surface(self.image_size) # , 0, self.display)
         
-        self.osc = None
-        # self.fudi = None
-        self.camera = None
-        self.is_mac = False
+        self.osc = None # sender and receiver.
+        self.camera = None # pygame camera
+        self.is_mac = False # is on Mac OS X or not. (linux) For the camera.
         self.textures = [0, 0, 0, 0] # list of OpenGL texture objects id
         self._setup_camera()
         self._setup_window()
@@ -546,7 +543,8 @@ class ToonLoop(render.Game):
         self.clip = self.clips[index]
         if self.config.verbose:
             print("Clip #%s" % (self.clip_id))
-        self._clear_playback_view()
+        if len(self.clip.images) == 0:
+            self._clear_playback_view()
         
     def _setup_window(self):
         """
@@ -957,65 +955,70 @@ class ToonLoop(render.Game):
             elif e.type == pygame.VIDEORESIZE:
                 print("VIDEORESIZE %s" % (e))
             elif e.type == KEYDOWN:
-                if self.config.verbose:
-                    print("key down: %s" % (e.key))
-                if e.key == K_k: # K
-                    self.intervalometer_rate_increase(1)
-                elif e.key == K_c: # C : chromakey toggle
-                    # self.config.chromakey_on
-                    self.chromakey_toggle()
-                elif e.key == K_j: # J
-                    self.intervalometer_rate_increase(-1)
-                elif e.key == K_f: # F Fullscreen
-                    pygame.display.toggle_fullscreen()
-                elif e.key == K_i: # I Info
-                    try:
+                try:
+                    if self.config.verbose:
+                        if e.key < 255 and not e.key == K_ESCAPE:
+                            c = chr(e.key)
+                            print("key down: %s (\"%s\")" % (e.key, c))
+                    if e.key == K_k: # K
+                        self.intervalometer_rate_increase(1)
+                    elif e.key == K_c: # C : chromakey toggle
+                        # self.config.chromakey_on
+                        self.chromakey_toggle()
+                    elif e.key == K_j: # J
+                        self.intervalometer_rate_increase(-1)
+                    elif e.key == K_f: # F Fullscreen
+                        pygame.display.toggle_fullscreen()
+                    elif e.key == K_i: # I Info
                         self.print_stats()
-                    except Exception, e:
-                        print e.message
-                elif e.key == K_p: # P Pause
-                    self.pause()
-                elif e.key == K_r: # R Reset
-                    self.clip_reset()
-                elif e.key == K_h: # H Help
-                    self.print_help()
-                elif e.key == K_s: # S Save
-                    self.clip_save()
-                elif e.key == K_o: # O Onion
-                    self.onionskin_toggle()
-                elif e.key == K_a: # A Auto
-                    print("toggle intervalometer")
-                    self.intervalometer_toggle()
-                elif e.key == K_0: # [0, 9] Clip selection
-                    self.clip_select(0)
-                elif e.key == K_1:
-                    self.clip_select(1)
-                elif e.key == K_2:
-                    self.clip_select(2)
-                elif e.key == K_3:
-                    self.clip_select(3)
-                elif e.key == K_4:
-                    self.clip_select(4)
-                elif e.key == K_5:
-                    self.clip_select(5)
-                elif e.key == K_6:
-                    self.clip_select(6)
-                elif e.key == K_7:
-                    self.clip_select(7)
-                elif e.key == K_8:
-                    self.clip_select(8)
-                elif e.key == K_9:
-                    self.clip_select(9)
-                elif e.key == K_UP: # UP Speed Increase
-                    self.framerate_increase(1)
-                elif e.key == K_DOWN: # DOWN Speed Decrease
-                    self.framerate_increase(-1)
-                elif e.key == K_SPACE: # SPACE Add frame
-                    self.frame_add()
-                elif e.key == K_BACKSPACE: # BACKSPACE Remove frame
-                    self.frame_remove()
-                elif e.key == K_ESCAPE: #  or e.key == K_q: # ESCAPE or Q
-                    self.quit()
+                    elif e.key == K_p: # P Pause
+                        self.pause()
+                    elif e.key == K_r: # R Reset
+                        self.clip_reset()
+                    elif e.key == K_h: # H Help
+                        self.print_help()
+                    elif e.key == K_s: # S Save
+                        self.clip_save()
+                    elif e.key == K_o: # O Onion
+                        self.onionskin_toggle()
+                    elif e.key == K_a: # A Auto
+                        print("toggle intervalometer")
+                        self.intervalometer_toggle()
+                    elif e.key == K_0: # [0, 9] Clip selection
+                        self.clip_select(0)
+                    elif e.key == K_1:
+                        self.clip_select(1)
+                    elif e.key == K_2:
+                        self.clip_select(2)
+                    elif e.key == K_3:
+                        self.clip_select(3)
+                    elif e.key == K_4:
+                        self.clip_select(4)
+                    elif e.key == K_5:
+                        self.clip_select(5)
+                    elif e.key == K_6:
+                        self.clip_select(6)
+                    elif e.key == K_7:
+                        self.clip_select(7)
+                    elif e.key == K_8:
+                        self.clip_select(8)
+                    elif e.key == K_9:
+                        self.clip_select(9)
+                    elif e.key == K_UP: # UP Speed Increase
+                        self.framerate_increase(1)
+                    elif e.key == K_DOWN: # DOWN Speed Decrease
+                        self.framerate_increase(-1)
+                    elif e.key == K_SPACE: # SPACE Add frame
+                        self.frame_add()
+                    elif e.key == K_BACKSPACE: # BACKSPACE Remove frame
+                        self.frame_remove()
+                    elif e.key == K_ESCAPE: #  or e.key == K_q: # ESCAPE or Q
+                        if self.config.verbose:
+                            print("ESC pressed.")
+                        self.quit()
+                except ValueError, e :
+                    if self.config.verbose:
+                        print("Key event error : %s" % (e.message))
 
     def quit(self):
         """
@@ -1025,6 +1028,7 @@ class ToonLoop(render.Game):
 
     def _quit(self):
         self.running = False
+        # self.cleanup will be called.
 
     def autosave_toggle(self, val=None):
         """
@@ -1076,6 +1080,8 @@ class ToonLoop(render.Game):
             if will_be > 0 and will_be <= 60:
                 self.config.intervalometer_rate_seconds = will_be
                 print("auto rate: %s" %  (will_be))
+        if self.config.verbose:
+            print("Cleaning up before exiting.")
 
     def _intervalometer_frame_add(self):
         """
@@ -1085,7 +1091,7 @@ class ToonLoop(render.Game):
         """
         self.frame_add()
         if self.config.verbose:
-            print("intervalometer auto grab" % (len(self.clip.images)))
+            print("intervalometer auto grab %d" % (len(self.clip.images)))
             sys.stdout.flush()
         if self.intervalometer_on:
             self._intervalometer_delayed_id = reactor.callLater(self.config.intervalometer_rate_seconds, self._intervalometer_frame_add)
@@ -1103,9 +1109,14 @@ class ToonLoop(render.Game):
 
     def cleanup(self):
         """
-        Called before quitting the application.
+        Called by the rats.render.Renderer before quitting the application.
         """
-        pass
+        if self.config.verbose:
+            print("Cleaning up.")
+        if self.config.osc_enabled:
+            if self.config.verbose:
+                print("Deleting OSC sender/receiver.")
+            del self.osc
         # glDeleteTextures(3, self.textures)
 
     def config_set(name, value):
@@ -1113,5 +1124,3 @@ class ToonLoop(render.Game):
         Changes a configuration option.
         """
         self.config.set(name, value)
-
-

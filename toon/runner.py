@@ -34,6 +34,7 @@ import pygame
 import optparse
 
 from twisted.internet import reactor
+from twisted.internet import error
 
 # the core: 
 from rats import render
@@ -83,21 +84,21 @@ def run():
     print("Press h for usage and instructions.")
     print("Press i for informations and statistics.")
     pygame.init()
-    config = core.Configuration()
-    kwargs = config.__dict__
+    config = core.Configuration() # all the config is in this object.
+    config_dict = config.__dict__
     if options.toonloop_home:
-        kwargs['toonloop_home'] = options.toonloop_home
+        config_dict['toonloop_home'] = options.toonloop_home
     if options.image_width:
-        kwargs['image_width'] = options.image_width
-        kwargs['image_height'] = options.image_width * 3 / 4
+        config_dict['image_width'] = options.image_width
+        config_dict['image_height'] = options.image_width * 3 / 4 # fixed aspect ratio
     # options that have default values:
-    kwargs['video_device'] = options.device
-    kwargs['intervalometer_rate_seconds'] = options.intervalometer_rate_seconds
-    kwargs['intervalometer_on'] = options.intervalometer_on == True
-    kwargs['intervalometer_enabled'] = options.intervalometer_enabled
-    kwargs['verbose'] = options.verbose == True
+    config_dict['video_device'] = options.device
+    config_dict['intervalometer_rate_seconds'] = options.intervalometer_rate_seconds
+    config_dict['intervalometer_on'] = options.intervalometer_on == True
+    config_dict['intervalometer_enabled'] = options.intervalometer_enabled
+    config_dict['verbose'] = options.verbose == True
 
-    if kwargs['verbose']:
+    if config_dict['verbose']:
         print("Started in verbose mode.")
     if options.option:
         print('options: %s' % (options.option))
@@ -134,7 +135,11 @@ def run():
     try:
         reactor.run()
     except KeyboardInterrupt:
-        pass
+        pass # will exit on ctrl-c
     print("Exiting toonloop")
+    try:
+        reactor.stop() # just in case.
+    except error.ReactorNotRunning, e:
+        pass
     sys.exit(0)
 
