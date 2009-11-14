@@ -116,7 +116,7 @@ class OscServer(object):
     
     The programmer must register callbacks in order to do something with the incoming data.
     """
-    def __init__(self, port=1234, interval=0.001):
+    def __init__(self, port=1234, interval=0.01):
         """
         :param interval: duration in seconds to wait between each poll
         """
@@ -125,6 +125,7 @@ class OscServer(object):
         self.interval = interval
         self._server = None
         self._delayed_id = None
+        #TODO: self._looping_call = None
         self.started = False
     
     def start(self):
