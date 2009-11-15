@@ -38,7 +38,6 @@ Toonloop is an interactive software. While it runs, or can control it using keyb
 
 Toonloop sends the following OSC messages :
 
-  /toon/sequence <i>
   /toon/framerate <i>
   /toon/writehead <i>
   /toon/playhead <i>
@@ -50,8 +49,9 @@ Toonloop sends the following OSC messages :
 
 Toonloop listens for the following OSC messages :
 
-  /toon/frame/remove
   /toon/frame/add
+  /toon/frame/remove
+  /toon/playhead <i>
   /toon/osc/subscribe <s> <i>
   /toon/clip/select <i>
   /toon/clip/save
