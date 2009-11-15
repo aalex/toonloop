@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# ToonLoop for Python
+# Toonloop for Python
 #
 # Copyright 2008 Alexandre Quessy & Tristan Matthews
 # <alexandre@quessy.net> & <le.businessman@gmail.com>
@@ -9,22 +9,22 @@
 # Original idea by Alexandre Quessy
 # http://alexandre.quessy.net
 #
-# ToonLoop is free software: you can redistribute it and/or modify
+# Toonloop is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# ToonLoop is distributed in the hope that it will be useful,
+# Toonloop is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the gnu general public license
-# along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
+# along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 #
 
 """
-Main runner of the ToonLoop application.
+Main runner of the Toonloop application.
 """
  
 __version__ = "1.0.3" # MUST ALSO CHANGE IT IN setup.py
@@ -39,7 +39,7 @@ from twisted.internet import error
 
 # the core: 
 from rats import render
-from toon import core # Configuration, ToonLoop, ToonLoopError
+from toon import core # Configuration, Toonloop, ToonloopError
 
 def run():
     """
@@ -48,8 +48,8 @@ def run():
         # self.intervalometer_on = False
         # self.intervalometer_enabled = False
         # self.intervalometer_rate_seconds = 30.0 # in seconds
-    EPILOG="ToonLoop is a live stop motion performance tool. The objective is to spread its use for teaching new medias to children and to give a professional tool for movie creators. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop."
-    parser = optparse.OptionParser(usage="%prog", version='ToonLoop ' + str(__version__), \
+    EPILOG="Toonloop is a live stop motion performance tool. The objective is to spread its use for teaching new medias to children and to give a professional tool for movie creators. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop."
+    parser = optparse.OptionParser(usage="%prog", version='Toonloop ' + str(__version__), \
         epilog=EPILOG)
     # + " \n\n"  __doc__
     parser.add_option("-d", "--device", dest="device", type="int", \
@@ -99,13 +99,13 @@ def run():
     config_dict['verbose'] = options.verbose == True
 
     if options.list_options:
-        print("""Use ToonLoop options with -o flag :
+        print("""Use Toonloop options with -o flag :
         toonloop -o [name] [value]""")
-        print("ToonLoop options and their current values :")
+        print("Toonloop options and their current values :")
         config.print_values()
         sys.exit(0)
     else:
-        print("ToonLoop - Version " + str(__version__))
+        print("Toonloop - Version " + str(__version__))
         print("Copyright 2008 Alexandre Quessy & Tristan Matthews")
         print("Released under the GNU General Public License")
         print("Using video device %d" % options.device)
@@ -123,22 +123,22 @@ def run():
                 if config.verbose:
                     print("OPTION \"%s\" : %s       %s" % (k, v, kind))
             except KeyError, e:
-                print("Error. No such ToonLoop option : %s" % (e.message))
+                print("Error. No such Toonloop option : %s" % (e.message))
                 sys.exit(1)
-                #raise core.ToonLoopError('No such ToonLoop option :', e.message)
+                #raise core.ToonloopError('No such Toonloop option :', e.message)
             except Exception, e:
                 print(sys.exc_info())
-                raise core.ToonLoopError('Error with ToonLoop option :', e.message)
+                raise core.ToonloopError('Error with Toonloop option :', e.message)
     try:
-        toonloop = core.ToonLoop(config)
+        toonloop = core.Toonloop(config)
         if options.verbose:
             toonloop.print_help()
-    except core.ToonLoopError, e:
+    except core.ToonloopError, e:
         print(str(e.message))
         print("Exiting toonloop with error")
         sys.exit(1)
     else:
-        print("Congratulations ! ToonLoop started gracefully.")
+        print("Congratulations ! Toonloop started gracefully.")
     pygame_timer = render.Renderer(toonloop, False) # not verbose !  options.verbose
     pygame_timer.desired_fps = options.fps
     try:

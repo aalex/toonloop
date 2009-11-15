@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# ToonLoop for Python
+# Toonloop for Python
 #
 # Copyright 2008 Alexandre Quessy & Tristan Matthews
 # http://toonloop.com
@@ -8,25 +8,25 @@
 # Original idea by Alexandre Quessy
 # http://alexandre.quessy.net
 #
-# ToonLoop is free software: you can redistribute it and/or modify
+# Toonloop is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# ToonLoop is distributed in the hope that it will be useful,
+# Toonloop is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the gnu general public license
-# along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
+# along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
 Converts a series a JPEG images to a MJPEG-4 video file using mencoder.
 
 The output will be in the same dirctory than the inputs. 
 It is possible to append the path to the mencoder executable like this :
-os.environ['PATH'] += ":/Applications/ToonLoop.app/Contents/Resources/bin"
+os.environ['PATH'] += ":/Applications/Toonloop.app/Contents/Resources/bin"
 
 An other useful beautiful line of code : mencoder -oac copy -ovc copy *.mov -o final_movie.mov
 """

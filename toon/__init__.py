@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# ToonLoop for Python
+# Toonloop for Python
 #
 # Copyright 2008 Alexandre Quessy & Tristan Matthews
 # <alexandre@quessy.net> & <le.businessman@gmail.com>
@@ -15,15 +15,15 @@
 # the Free Software Foundation, either version 2 of the License, or
 # (at your option) any later version.
 #
-# ToonLoop is distributed in the hope that it will be useful,
+# Toonloop is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
+# along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 """
-Libraries used by ToonLoop, the live stop motion tool.
+Libraries used by Toonloop, the live stop motion tool.
 """
 
 __version__ = '1.0 alpha'

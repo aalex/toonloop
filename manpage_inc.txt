@@ -5,7 +5,6 @@ Toonloop is a live stop motion animation software. It aims at showing the creati
 
 Toonloop supports MIDI input, the Open Sound Control protocol, the FUDI protocol (to communicate with Pure Data) and provides a media RSS web server. Currently implemented video effects are : chroma keying using a GLSL shader, onion peal and background image. Toonloop offers state saving in the JSON format. Default config file is ~/.toonloop.json, where tilde (~) is your home directory. Toonloop also allows users to save their clips to the photo-JPEG video codec, and as well to JPEG images. Finally, Toonloop offers an automatic time lapse functionnality, to allow one to easily create accelerated clips. 
 
-Toonloop is an original idea of Alexandre Quessy, and is his research project for his master at UQAM. It is much similar in scope to the live animation work of Pierre Hebert. Toonloop is released under the GNU GPL. 
 
 [SYNOPSIS]
 toonloop [options]
@@ -16,7 +15,52 @@ using the -o flag :
 
 toonloop -o toonloop_home ~/Public/toonloop -o project_name hello -o intervalometer_enabled False -o bgimage_glob_enabled True -o image_flip_horizontal True -o chromakey_on True -o chromakey_on True -o chromakey_r 0.2 -o chromakey_g 0.9 -o chromakey_b 0.0 -o chromakey_thresh 0.5 -o chromakey_slope 0.2 -o fudi_enabled True -w 320 -v
 
-[other]
+[INTERACTIVE USAGE]
+
+Toonloop is an interactive software. While it runs, or can control it using keyboard keys. Here is a list of keystrokes to control Toonloop.
+
+    <Space bar> = Adds an image to the current clip.
+    <Backspace> = Removes an image from the current clip.
+    r = Resets the current clip. This erases all the images in it !
+    p = Pauses the looping.
+    o = Toggles onion skin on / off.
+    i = Prints informations and statistics.
+    h = Prints an help message.
+    s = Saves the current clip as JPEG and movie file.
+    a = Enable the intervalometer auto grab.
+    k = Increase the intervalometer interval.
+    j = Decrease the intervalometer interval.
+    x = Saves the current configuration options to ~/.toonloop.json
+    [0, 9]  = Selects a clip from the current project identified by a number.
+    <Esc> = Quits the program.
+
+[OSC INTERFACE]
+
+Toonloop sends the following OSC messages :
+
+    /toon/sequence <i>
+    /toon/framerate <i>
+    /toon/writehead <i>
+    /toon/playhead <i>
+    /toon/clip <i>
+    /sampler/play/start <i>
+    /sampler/play/stop <i>
+    /sampler/record/start <i>
+    /sampler/record/stop <i>
+
+Toonloop listens for the following OSC messages :
+    /toon/frame/remove
+    /toon/frame/add
+    /toon/osc/subscribe <s> <i>
+    /toon/clip/select <i>
+    /toon/clip/save
+
+[KEYWORD OPTIONS] 
+
+The --option option allows one to specify specific keyword identified by a keyword. Their type can be integer, float, string of boolean. Boolean options can be given using integer of python-style boolean string. A true value can be specified as True, or 1. A false value is set as 0 or False.
+
+Once Toonloop has been started by some keyword config options, those options can be saved to the ~/.toonloop.json configuration file. Next time Toonloop is launched, those configuration options will be read from that file. If Toonloop behaves strangely, you should try deleting that file. 
+
 Here is the list of options with their default values:
     -o autosave_enabled True
     -o autosave_on False
@@ -24,7 +68,7 @@ Here is the list of options with their default values:
     -o bgcolor_b 0.2
     -o bgcolor_g 0.8
     -o bgcolor_r 1.0
-    -o bgimage /home/aalex/src/toonloop/trunk/py/toon/data/bgimage_05.jpg
+    -o bgimage [toonloop package data path]/bgimage_05.jpg
     -o bgimage_enabled False
     -o bgimage_glob 
     -o bgimage_glob_enabled False
@@ -35,7 +79,7 @@ Here is the list of options with their default values:
     -o chromakey_r 0.2
     -o chromakey_slope 0.2
     -o chromakey_thresh 0.5
-    -o config_file /home/aalex/.toonloop.json
+    -o config_file ~/.toonloop.json
     -o delete_jpeg False
     -o display_height 480
     -o display_width 640
@@ -68,15 +112,16 @@ Here is the list of options with their default values:
     -o osc_send_host localhost
     -o osc_send_port 7770
     -o project_name new_project
-    -o toonloop_home /home/aalex/Documents/toonloop
+    -o toonloop_home ~/Documents/toonloop
     -o verbose False
     -o video_device 0
     -o web_enabled False
     -o web_server_port 8000
 
-
 [AUTHOR]
-Alexandre Quessy and Tristan Matthews
+Alexandre Quessy. Thanks to Tristan Matthews and Society for Arts and Technology for their help.
+
+Toonloop is an original idea of Alexandre Quessy, and is his research project for his master at UQAM. It is much similar in scope to the live animation work of Pierre Hebert. Toonloop is released under the GNU GPL. 
 
 [REPORTING BUGS]
 http://www.toonloop.com

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# ToonLoop for Python
+# Toonloop for Python
 #
 # Copyright 2008 Alexandre Quessy & Tristan Matthews
 # http://toonloop.com
@@ -8,18 +8,18 @@
 # Original idea by Alexandre Quessy
 # http://alexandre.quessy.net
 #
-# ToonLoop is free software: you can redistribute it and/or modify
+# Toonloop is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# ToonLoop is distributed in the hope that it will be useful,
+# Toonloop is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the gnu general public license
-# along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
+# along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
 RSS Feed Generation
@@ -98,12 +98,12 @@ class Item(object):
 
 class Channel(object):
     def __init__(self, **kwargs):
-        self.title = 'ToonLoop'
+        self.title = 'Toonloop'
         self.link = 'http://localhost/'
         self.description = 'Stop Motion Animation Software'
         self.last_build_date = datetime.datetime.now()
         # print "pub_date", self.last_build_date
-        self.generator = 'ToonLoop'
+        self.generator = 'Toonloop'
         self.docs = 'http://toonloop.com'
         self.items = []
         self.__dict__.update(kwargs)

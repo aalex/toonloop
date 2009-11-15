@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# ToonLoop for Python
+# Toonloop for Python
 #
 # Copyright 2008 Alexandre Quessy & Tristan Matthews
 # <alexandre@quessy.net> & <le.businessman@gmail.com>
@@ -9,18 +9,18 @@
 # Original idea by Alexandre Quessy
 # http://alexandre.quessy.net
 #
-# ToonLoop is free software: you can redistribute it and/or modify
+# Toonloop is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# ToonLoop is distributed in the hope that it will be useful,
+# Toonloop is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the gnu general public license
-# along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
+# along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
 Saves the images and movie file from a clip.
@@ -55,7 +55,7 @@ class ClipSaver(object):
     # TODO: load state and files as well
     def __init__(self, core, dir_path, file_prefix, clip_id):
         """
-        :param core: The ToonLoop application object.
+        :param core: The Toonloop application object.
         :param dir_path: Path to the directory where to save the clip.
         :param file_prefix: The beginning of the name of the files to save.
         :param clip_id: The id of the clip to save.

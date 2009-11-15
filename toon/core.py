@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# ToonLoop for Python
+# Toonloop for Python
 #
 # Copyright 2008 Alexandre Quessy & Tristan Matthews
 # <alexandre@quessy.net> & <le.businessman@gmail.com>
@@ -9,18 +9,18 @@
 # Original idea by Alexandre Quessy
 # http://alexandre.quessy.net
 #
-# ToonLoop is free software: you can redistribute it and/or modify
+# Toonloop is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# ToonLoop is distributed in the hope that it will be useful,
+# Toonloop is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the gnu general public license
-# along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
+# along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
 Toonloop is a live stop motion performance tool. 
@@ -105,9 +105,9 @@ from OpenGL.GL import *
 PACKAGE_DATA_PATH = os.path.dirname(data.__file__)
 # the version number is in both toon/runner.py and setup.py
 
-class ToonLoopError(Exception):
+class ToonloopError(Exception):
     """
-    Any error ToonLoop might encounter
+    Any error Toonloop might encounter
     """
     pass
 
@@ -116,7 +116,7 @@ class Configuration(object): #Serializable):
     Configuration options.
     
     Default values are defined here. 
-    Overriden as **argd arguments to ToonLoop(**argd)
+    Overriden as **argd arguments to Toonloop(**argd)
     
     Python allows commas at the end of lists and tuples
     """
@@ -291,7 +291,7 @@ class Configuration(object): #Serializable):
 
 class ToonClip(object): #Serializable):
     """
-    ToonLoop clip.
+    Toonloop clip.
     A clip is a serie of frames. 
     """
     def __init__(self, id, **argd):
@@ -306,9 +306,9 @@ class ToonClip(object): #Serializable):
         self.__dict__.update(argd)
         self.images = []
     
-class ToonLoop(render.Game):
+class Toonloop(render.Game):
     """
-    ToonLoop is a realtime stop motion tool.
+    Toonloop is a realtime stop motion tool.
 
     For 1 GB of RAM, one can expect to stock about 3000 images at 640x480, if having much swap memory.
 
@@ -355,7 +355,7 @@ class ToonLoop(render.Game):
         pygame.display.set_icon(icon) # a 32 x 32 surface
         # the pygame window
         self.display = pygame.display.set_mode(self._display_size, OPENGL | DOUBLEBUF | HWSURFACE)
-        pygame.display.set_caption("ToonLoop")
+        pygame.display.set_caption("Toonloop")
         pygame.mouse.set_visible(False)
         # the images
         self.most_recent_image = pygame.surface.Surface(self.image_size) # , 0, self.display)
@@ -533,7 +533,7 @@ class ToonLoop(render.Game):
         """
         Print statistics
         """
-        print(">>>>>>> ToonLoop Statistics >>>>>>>>")
+        print(">>>>>>> Toonloop Statistics >>>>>>>>")
         try:
             self.config.print_values()
             print('pygame.display.Info(): %s' % (pygame.display.Info()))
@@ -555,7 +555,7 @@ class ToonLoop(render.Game):
         """
         Prints help for live keyboard controls.
         """
-        print("ToonLoop keyboard controls : ")
+        print("Toonloop keyboard controls : ")
         print("<Space bar> = add image to loop ")
         print("<Backspace> = remove image from loop ")
         print("r = reset loop")
@@ -650,7 +650,7 @@ class ToonLoop(render.Game):
         except Exception, e:
             print("error calling pygame.camera.init()", e.message)
             print(sys.exc_info())
-            raise ToonLoopError("Error initializing the video camera. %s" % (e.message))
+            raise ToonloopError("Error initializing the video camera. %s" % (e.message))
         try:
             print("cameras :", pygame.camera.list_cameras())
             if self.is_mac:
@@ -662,10 +662,10 @@ class ToonLoop(render.Game):
             self.camera.start()
         except SystemError, e:
             print(sys.exc_info())
-            raise ToonLoopError("Invalid camera. %s" % (str(e.message)))
+            raise ToonloopError("Invalid camera. %s" % (str(e.message)))
         except Exception, e:
             print(sys.exc_info())
-            raise ToonLoopError("Invalid camera. %s" % (str(e.message)))
+            raise ToonloopError("Invalid camera. %s" % (str(e.message)))
 
     def frame_add(self):
         """

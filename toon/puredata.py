@@ -14,7 +14,7 @@ from rats import observer
 
 class PureData(observer.Observer):
     """
-    ToonLoop API for Pure Data FUDI network messages.
+    Toonloop API for Pure Data FUDI network messages.
 
     /frame/add
     /frame/remove
@@ -213,7 +213,7 @@ class PureData(observer.Observer):
 def start(**kwargs): 
     #receive_port=15555, send_port=17777, send_host='localhost'):
     """
-    Factory for the ToonLoop FUDI service.
+    Factory for the Toonloop FUDI service.
 
     **kwargs
     """
