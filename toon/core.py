@@ -53,7 +53,7 @@ svn co svn://seul.org/svn/pygame/trunk
 
 The startup file to execute is toonloop
 """
- 
+import gc 
 import sys
 from time import strftime
 import os
@@ -734,6 +734,8 @@ class Toonloop(render.Game):
         self.fps = self.clock.get_fps()
         pygame.display.flip()
         # old : pygame.display.update()
+        gc.collect() # force garbage collection on every frame
+        # otherwise, python slows down when it is time to collect garbage.
 
     def _draw_white_flash(self):
         # TODO: use time.time() to create tween.
