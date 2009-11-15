@@ -22,8 +22,7 @@
 # along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
-RSS Feed Generation
-
+Media RSS Feed Generation
 """
 import os
 import glob

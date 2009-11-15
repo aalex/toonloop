@@ -28,5 +28,5 @@ clean:
 	@echo DONE
 
 check:
-	trial rats/test
+	trial rats/test toon/test
 
