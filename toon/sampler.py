@@ -82,7 +82,10 @@ class Mapper(object):
             self.clips[clip_id] = {}
         if self.clips[clip_id].has_key(frame_id):
             buffer_id = self.clips[clip_id][frame_id]
-            self.signal_clear(buffer_id)
+            # self.signal_clear(buffer_id)
+            # TODO: the actual sampler is responsible for clearer its buffer
+            # if it has a sound in it when recording. 
+            # (since UDP packet order's is not guaranteed)
             self.signal_record(buffer_id)
         else:
             buffer_id = self.allocator.allocate()
