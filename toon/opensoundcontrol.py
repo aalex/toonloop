@@ -164,16 +164,19 @@ class ToonOsc(object):
         #TODO: send_record_start
         #TODO: send_record_stop
 
-    def send_record_start(self, index):
+    def send_sampler_record_start(self, index):
         self._s("/sampler/record/start", index)
 
-    def send_record_stop(self, index):
+    def send_sampler_record_stop(self, index):
         self._s("/sampler/record/stop", index)
 
-    def send_play_start(self, index):
+    def send_sampler_clear(self, index):
+        self._s("/sampler/clear", index)
+    
+    def send_sampler_play_start(self, index):
         self._s("/sampler/play/start", index)
 
-    def send_play_stop(self, index):
+    def send_sampler_play_stop(self, index):
         self._s("/sampler/play/stop", index)
     
     def _s(self, path, index):

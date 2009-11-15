@@ -86,11 +86,17 @@ class Mapper(object):
             # TODO: the actual sampler is responsible for clearer its buffer
             # if it has a sound in it when recording. 
             # (since UDP packet order's is not guaranteed)
-            self.signal_record(buffer_id)
         else:
             buffer_id = self.allocator.allocate()
             self.clips[clip_id][frame_id] = buffer_id
-            self.signal_record(buffer_id)
+        self.signal_record(buffer_id)
+        return buffer_id
+
+    def get(self, clip_id, frame_id):
+        try:
+            return self.clips[clip_id][frame_id]
+        except KeyError:
+            return None
     
     def get_data(self):
         # for serialize
@@ -103,12 +109,14 @@ class Mapper(object):
     def remove(self, clip_id, frame_id):
         """
         Clears a sound from a given clip, frame slot.
+        :return: buffer id
         """
         if self.clips.has_key(clip_id):
             if self.clips[clip_id].has_key(frame_id):
                 buffer_id = self.clips[clip_id].pop(frame_id)
                 self.allocator.free(buffer_id)
                 self.signal_clear(buffer_id)
+                return buffer_id
             else:
                 raise AllocationError("Clip %d has no frame %s." % (clip_id, frame_id))
         else:
@@ -124,60 +132,57 @@ class Sampler(object):
     """
     def __init__(self, toonloop, osc_manager):
         self.toonloop = toonloop
+        NUM_SOUNDS = toonloop.config.osc_sampler_num_sounds
+        self.mapper = Mapper(num_sounds=NUM_SOUNDS)
         self.osc = osc_manager
         self.verbose = self.toonloop.config.osc_verbose
         self._setup()
 
     def _setup(self):
-        self.toonloop.signal_playhead.connect(self._slot_playhead)# int index
-        self.toonloop.signal_writehead.connect(self._slot_writehead)# int index
-        self.toonloop.signal_framerate.connect(self._slot_framerate) # int fps
-        self.toonloop.signal_clip.connect(self._slot_clip) # int clip id
         self.toonloop.signal_sampler_record.connect(self._slot_sampler_record)# bool start/stop
+        self.toonloop.signal_sampler_clear.connect(self._slot_sampler_clear)
+        self.toonloop.signal_playhead.connect(self._slot_playhead)
 
-    # slots for toonloop's signals:
-    def _slot_playhead(self, index):
-        """
-        Slot which listens or a Toonloop's signal
-        :param index: int frame index
-        """
-        #if self.verbose:
-        #    print("playhead %s" % (index))
-        self._s("/toon/playhead", index)
-
-    def _slot_writehead(self, index): 
-        """
-        Slot which listens for a Toonloop's signal
-        :param index: int frame index
-        """
-        if self.verbose:
-            print("writehead %s" % (index))
-        self._s("/toon/writehead", index)
-
-    def _slot_framerate(self, fps):
-        """
-        Slot which listens for a Toonloop's signal
-        :param fps: int fps
-        """
-        if self.verbose:
-            print("fps %s" % (fps))
-        self._s("/toon/framerate", fps)
-
-    def _slot_clip(self, index):
-        """
-        Slot which listens for a Toonloop's signal
-        :param index: int clip number
-        """
-        if self.verbose:
-            print("clip %s" % (index))
-        self._s("/toon/clip/index", index)
-
+    def _slot_playhead(self, frame_id):
+        clip_id = self.toonloop.clip.id
+        buffer_id = self.mapper.get(clip_id, frame_id)
+        if buffer_id is not None:
+            if self.verbose:
+                print("send /sampler/play/start %d" % (buffer_id))
+            self.osc.send_sampler_play_start(buffer_id)
+        
     def _slot_sampler_record(self, starting): 
         """
         Slot which listens for a Toonloop's signal
         :param starting: bool start/stop
         """
-        if self.verbose:
-            print("sampler record %s" % (starting))
-        #TODO: send_record_start
-        #TODO: send_record_stop
+        if starting:
+            #TODO: send_record_start
+            #TODO: send_record_stop
+            clip_id = self.toonloop.clip.id
+            frame_id = self.toonloop.clip.playhead
+            try:
+                buffer_id = self.mapper.add(clip_id, frame_id)
+            except AllocationError, e:
+                print(e.message)
+            else:
+                self.osc.send_sampler_record_start(buffer_id)
+                if self.verbose:
+                    print("send /sampler/record/start %d" % (buffer_id))
+    
+    def _slot_sampler_clear(self):
+        """
+        Slot which listens for a Toonloop's signal
+        """
+        # TODO
+        clip_id = self.toonloop.clip.id
+        frame_id = self.toonloop.clip.playhead
+        try:
+            buffer_id = self.mapper.remove(clip_id, frame_id)
+        except AllocationError, e:
+            print(e.message)
+        else:
+            self.osc.send_sampler_clear(buffer_id)
+            if self.verbose:
+                print("send /sampler/clear %d" % (buffer_id))
+        

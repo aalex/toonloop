@@ -81,6 +81,7 @@ from toon import puredata
 from toon import chromakey
 from toon import midi
 from toon import save
+from toon import sampler
 from toon import data
 try:
     from toon import web
@@ -168,6 +169,8 @@ class Configuration(object): #Serializable):
         self.osc_send_host = 'localhost'
         self.osc_listen_port = 7772
         self.osc_verbose = False
+        self.osc_sampler_enabled = False
+        self.osc_sampler_num_sounds = 50
         #self.osc_receive_hosts = ''
         
         # onionskin
@@ -387,6 +390,7 @@ class Toonloop(render.Game):
             pprint.pprint(self.config.__dict__)
         self._has_just_added_frame = False
         self.clip_saver = None
+        self.sampler = None # toon.sampler.Sampler
         # signal / slots. Each is documented with its arg, or no arg.
         self.signal_playhead = sig.Signal() # int index
         self.signal_writehead = sig.Signal() # int index
@@ -395,6 +399,7 @@ class Toonloop(render.Game):
         self.signal_frame_add = sig.Signal() # no arg
         self.signal_frame_remove = sig.Signal() # no arg
         self.signal_sampler_record = sig.Signal() # bool start/stop
+        self.signal_sampler_clear = sig.Signal() # bool start/stop
         
         # start services
         reactor.callLater(0, self._start_services)
@@ -417,6 +422,9 @@ class Toonloop(render.Game):
                 send_port=self.config.osc_send_port, 
                 send_host=self.config.osc_send_host, 
                 )
+            if self.config.osc_sampler_enabled:
+                self.sampler = sampler.Sampler(self, self.osc)
+
         #index_file_path = os.path.join(os.curdir, 'toon', 'index.rst') 
         # WEB
         if WEB_LOADED and self.config.web_enabled:
@@ -457,6 +465,13 @@ class Toonloop(render.Game):
         The sounds sampler handles this.
         """
         self.signal_sampler_record(start)
+    
+    def sampler_clear(self, start=True):
+        """
+        Clear the sound in current frame
+        The sounds sampler handles this.
+        """
+        self.signal_sampler_clear()
         
     def _cb_midi_event(self, event):
         """
@@ -1059,8 +1074,8 @@ class Toonloop(render.Game):
                         self.intervalometer_toggle()
                     elif e.key == K_q: # q Start recording sample
                         self.sampler_record(True)
-                    elif e.key == K_w: # w Stop recording sample
-                        self.sampler_record(False)
+                    elif e.key == K_w: # Clear the sound in current frame 
+                        self.sampler_clear()
                     elif e.key == K_0: # [0, 9] Clip selection
                         self.clip_select(0)
                     elif e.key == K_1:
