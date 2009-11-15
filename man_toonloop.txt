@@ -41,7 +41,7 @@ Toonloop sends the following OSC messages :
   /toon/framerate <i>
   /toon/writehead <i>
   /toon/playhead <i>
-  /toon/clip <i>
+  /toon/clip/index <i>
   /sampler/play/start <i>
   /sampler/play/stop <i>
   /sampler/record/start <i>

@@ -66,7 +66,8 @@ from twisted.internet import defer
 #from twisted.python import failure
 
 from rats import render
-from rats.observer import Subject
+#from rats.observer import Subject
+from rats import sig
 #from rats.serialize import Serializable
 try:
     from toon import opensoundcontrol
@@ -166,6 +167,7 @@ class Configuration(object): #Serializable):
         self.osc_send_port = 7770
         self.osc_send_host = 'localhost'
         self.osc_listen_port = 7772
+        self.osc_verbose = False
         #self.osc_receive_hosts = ''
         
         # onionskin
@@ -217,7 +219,6 @@ class Configuration(object): #Serializable):
 
         # overrides some attributes whose defaults and names are below.
         self.__dict__.update(**argd) 
-
         # this one is special : it needs other values to set itself. Let's find a way to prevent this
 
     def save(self):
@@ -386,6 +387,16 @@ class Toonloop(render.Game):
             pprint.pprint(self.config.__dict__)
         self._has_just_added_frame = False
         self.clip_saver = None
+        # signal / slots. Each is documented with its arg, or no arg.
+        self.signal_playhead = sig.Signal() # int index
+        self.signal_writehead = sig.Signal() # int index
+        self.signal_framerate = sig.Signal() # int fps
+        self.signal_clip = sig.Signal() # int clip id
+        self.signal_frame_add = sig.Signal() # no arg
+        self.signal_frame_remove = sig.Signal() # no arg
+        self.signal_sampler_record = sig.Signal() # bool start/stop
+        
+        # start services
         reactor.callLater(0, self._start_services)
 
     def _start_services(self):
@@ -437,37 +448,41 @@ class Toonloop(render.Game):
                 self.midi_manager.start()
             except midi.NotConnectedError, e:
                 print("Could not setup MIDI device %d" % (self.config.midi_input_id))
+        self.signal_clip(0) # default clip id
+        self.signal_writehead(0)
 
+    def sampler_record(self, start=True):
+        """
+        Starts of stops recording a sampler.
+        The sounds sampler handles this.
+        """
+        self.signal_sampler_record(start)
+        
     def _cb_midi_event(self, event):
+        """
+        Called when a MIDI event happens.
+        If MIDI is enabled, of course.
+        """
         MIDI_NOTE = 144
         MIDI_CTRL = 176
         if event.status == MIDI_NOTE: # MIDI note
+            note = event.data1
+            velocity = event.data2
+            on = event.data2 >= 1 # bool
             if self.config.midi_verbose:
-                print("MIDI note: Pitch: %s Velocity: %s" % (event.data1, event.data2))
-                note = event.data1
-                on = event.data2 >= 1 # bool
-                if self.osc is not None:
-                    #TODO: this needs to be put in an other file/class
-                    if note == self.config.midi_note_record:
-                        if on:
-                            print("start recording sample")
-                            self.osc.send_record_start(1) #FIXME
-                        else:
-                            print("stop recording sample")
-                            self.osc.send_record_stop(1) #FIXME
-                    elif note == self.config.midi_note_play:
-                        if on:
-                            print("start playing sample")
-                            self.osc.send_play_start(1) #FIXME
-                        else:
-                            print("stop playing sample")
-                            self.osc.send_play_stop(1) #FIXME
-
+                print("MIDI note: Pitch: %s Velocity: %s" % (note, velocity))
+            if note == self.config.midi_note_record:
+                if on:
+                    print("start recording sample")
+                    self.sampler_record(True)
+                else:
+                    print("stop recording sample")
+                    self.sampler_record(False)
         elif event.status == MIDI_CTRL: # MIDI control
-            if self.config.midi_verbose:
-                print("MIDI control: ID: %s Value: %s" % (event.data1, event.data2))
             ctrl_id = event.data1
             val = event.data2
+            if self.config.midi_verbose:
+                print("MIDI control: ID: %s Value: %s" % (ctrl_id, val))
             if ctrl_id == self.config.midi_pedal_control_id and val >= 1:
                 self.frame_add()
 
@@ -592,6 +607,7 @@ class Toonloop(render.Game):
             print("Clip #%s" % (self.clip_id))
         if len(self.clip.images) == 0:
             self._clear_playback_view()
+        self.signal_clip(self.clip_id)
         
     def _setup_window(self):
         """
@@ -683,6 +699,8 @@ class Toonloop(render.Game):
             print("CRITICAL ERROR : No more RAM Memory !!!", e.message)
         if self.config.verbose:
             print('num frames: %s' % (len(self.clip.images)))
+        self.signal_writehead(len(self.clip.images))
+        self.signal_frame_add()
     
     def draw(self):
         """
@@ -844,6 +862,7 @@ class Toonloop(render.Game):
             # old: self.display.blit(self.clip.images[self.clip.playhead], (self.config.image_width, 0))
         else:
             self.clip.playhead = 0
+        self.signal_playhead(self.clip.playhead)
 
     def _clear_playback_view(self):
         """
@@ -915,6 +934,8 @@ class Toonloop(render.Game):
             else:
                 pass 
                 #texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
+            self.signal_writehead(len(self.clip.images))
+            self.signal_frame_remove()
     
     def chromakey_toggle(self, val=None):
         """
@@ -991,6 +1012,7 @@ class Toonloop(render.Game):
             self.clip.playhead_iterate_every = will_be
             if self.config.verbose:
                 print("Playhead frequency ratio: 30 / %d" % (will_be))
+        self.signal_framerate(will_be)
     
     def process_events(self, events):
         """
@@ -1035,6 +1057,10 @@ class Toonloop(render.Game):
                     elif e.key == K_a: # A Auto
                         print("toggle intervalometer")
                         self.intervalometer_toggle()
+                    elif e.key == K_q: # q Start recording sample
+                        self.sampler_record(True)
+                    elif e.key == K_w: # w Stop recording sample
+                        self.sampler_record(False)
                     elif e.key == K_0: # [0, 9] Clip selection
                         self.clip_select(0)
                     elif e.key == K_1:

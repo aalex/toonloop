@@ -74,6 +74,7 @@ class ToonOsc(object):
         self.send_host = send_host
         self.osc_server = None
         self.osc_sender = None
+        self.verbose = self.toonloop.config.osc_verbose
         # register callbacks
         self._setup()
 
@@ -109,6 +110,59 @@ class ToonOsc(object):
         self.osc_sender = osc.OscClient(client_addr)
         # would be nice to have a push/subscribe mechanism, with many senders.
         #c.send_message("/ping", ('i', 123), ('f', 3.13159), ('s', "hello"))
+
+        self.toonloop.signal_playhead.connect(self._slot_playhead)# int index
+        self.toonloop.signal_writehead.connect(self._slot_writehead)# int index
+        self.toonloop.signal_framerate.connect(self._slot_framerate) # int fps
+        self.toonloop.signal_clip.connect(self._slot_clip) # int clip id
+        self.toonloop.signal_sampler_record.connect(self._slot_sampler_record)# bool start/stop
+
+    # slots for toonloop's signals:
+    def _slot_playhead(self, index):
+        """
+        Slot which listens or a Toonloop's signal
+        :param index: int frame index
+        """
+        #if self.verbose:
+        #    print("playhead %s" % (index))
+        self._s("/toon/playhead", index)
+
+    def _slot_writehead(self, index): 
+        """
+        Slot which listens for a Toonloop's signal
+        :param index: int frame index
+        """
+        if self.verbose:
+            print("writehead %s" % (index))
+        self._s("/toon/writehead", index)
+
+    def _slot_framerate(self, fps):
+        """
+        Slot which listens for a Toonloop's signal
+        :param fps: int fps
+        """
+        if self.verbose:
+            print("fps %s" % (fps))
+        self._s("/toon/framerate", fps)
+
+    def _slot_clip(self, index):
+        """
+        Slot which listens for a Toonloop's signal
+        :param index: int clip number
+        """
+        if self.verbose:
+            print("clip %s" % (index))
+        self._s("/toon/clip/index", index)
+
+    def _slot_sampler_record(self, starting): 
+        """
+        Slot which listens for a Toonloop's signal
+        :param starting: bool start/stop
+        """
+        if self.verbose:
+            print("sampler record %s" % (starting))
+        #TODO: send_record_start
+        #TODO: send_record_stop
 
     def send_record_start(self, index):
         self._s("/sampler/record/start", index)
