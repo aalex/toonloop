@@ -2,7 +2,7 @@ all:
 	python setup.py build
 	@echo And now:
 	@echo sudo make install
-	help2man --no-info --include=manpage_inc.txt --name="The Toonloop Live Stop Motion Tool" ./toonloop > toonloop.1 
+	help2man --no-info --include=man_toonloop.txt --name="The Toonloop Live Stop Motion Tool" ./toonloop > toonloop.1 
 toonloop.1: all
 	@echo DONE BUILDING
 install: toonloop.1
