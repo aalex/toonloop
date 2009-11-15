@@ -25,10 +25,12 @@
 """
 Controls the Toonloop audio sampler
 """
+from rats import sig
+
 # uses toon/opensoundcontrol, rats/sig and toon/core
 class AllocationError(Exception):
     """
-    Any error thrown by the Allocator class.
+    Any error thrown by the Allocator or Mapper class.
     """
     pass
 
@@ -47,7 +49,7 @@ class Allocator(object):
                 ok = True
                 break
         if not ok:
-            raise AllocationError("No more numbers available.")
+            raise AllocationError("No more numbers available. Pool: %s" % (self.pool))
         self.pool.add(value)
         return value
 
@@ -56,6 +58,58 @@ class Allocator(object):
             self.pool.remove(value)
         except KeyError, e:
             raise AllocationError("Value %d not in pool." % (value))
+
+class Mapper(object):
+    """
+    Maps clip numbers, frame numbers to sound index.
+    """
+    def __init__(self, num_clips=10, max_num_frames=4000, num_sounds=64):
+        self.num_sounds = num_sounds
+        self.max_num_frames = max_num_frames
+        self.num_clips = num_clips
+        self.allocator = Allocator(self.num_sounds)
+        self.clips = {} # dict of dicts. Indices are clip_id, frame_id
+        self.signal_clear = sig.Signal() # int buffer_id
+        self.signal_record = sig.Signal() # int bufer_id
+        
+    def add(self, clip_id, frame_id):
+        """
+        Adds a sounds in the given clip, frame slot.
+        """
+        if not self.clips.has_key(clip_id):
+            if clip_id >= self.num_clips:
+                raise AllocationError("Clip number too big: %s." % (clip_id))
+            self.clips[clip_id] = {}
+        if self.clips[clip_id].has_key(frame_id):
+            buffer_id = self.clips[clip_id][frame_id]
+            self.signal_clear(buffer_id)
+            self.signal_record(buffer_id)
+        else:
+            buffer_id = self.allocator.allocate()
+            self.clips[clip_id][frame_id] = buffer_id
+            self.signal_record(buffer_id)
+    
+    def get_data(self):
+        # for serialize
+        return self.clips
+    
+    def set_data(self, data):
+        # for unserialize
+        self.clips = data
+    
+    def remove(self, clip_id, frame_id):
+        """
+        Clears a sound from a given clip, frame slot.
+        """
+        if self.clips.has_key(clip_id):
+            if self.clips[clip_id].has_key(frame_id):
+                buffer_id = self.clips[clip_id].pop(frame_id)
+                self.allocator.free(buffer_id)
+                self.signal_clear(buffer_id)
+            else:
+                raise AllocationError("Clip %d has no frame %s." % (clip_id, frame_id))
+        else:
+            raise AllocationError("No clip %d." % (clip_id))
 
 class Sampler(object):
     """
