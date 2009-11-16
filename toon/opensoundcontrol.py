@@ -115,7 +115,7 @@ class ToonOsc(object):
         self.toonloop.signal_writehead.connect(self._slot_writehead)# int index
         self.toonloop.signal_framerate.connect(self._slot_framerate) # int fps
         self.toonloop.signal_clip.connect(self._slot_clip) # int clip id
-        self.toonloop.signal_sampler_record.connect(self._slot_sampler_record)# bool start/stop
+        #self.toonloop.signal_sampler_record.connect(self._slot_sampler_record)# bool start/stop
 
     # slots for toonloop's signals:
     def _slot_playhead(self, index):
@@ -154,18 +154,18 @@ class ToonOsc(object):
             print("clip %s" % (index))
         self._s("/toon/clip/index", index)
 
-    def _slot_sampler_record(self, starting): 
-        """
-        Slot which listens for a Toonloop's signal
-        :param starting: bool start/stop
-        """
-        if self.verbose:
-            print("sampler record %s" % (starting))
-        #TODO: send_record_start
-        #TODO: send_record_stop
+    #def _slot_sampler_record(self, starting): 
+    #    """
+    #    Slot which listens for a Toonloop's signal
+    #    :param starting: bool start/stop
+    #    """
+    #    if self.verbose:
+    #        print("sampler record %s" % (starting))
+    #    #TODO: send_record_start
+    #    #TODO: send_record_stop
 
-    def send_sampler_record_start(self, index):
-        self._s("/sampler/record/start", index)
+    def send_sampler_record_start(self, buffer_index):
+        self._s("/sampler/record/start", buffer_index)
 
     def send_sampler_record_stop(self, index):
         self._s("/sampler/record/stop", index)
@@ -173,8 +173,8 @@ class ToonOsc(object):
     def send_sampler_clear(self, index):
         self._s("/sampler/clear", index)
     
-    def send_sampler_play_start(self, index):
-        self._s("/sampler/play/start", index)
+    def send_sampler_play_start(self, player_id, buffer_id):
+        self.osc_sender.send_message("/sampler/play/start", ('i', player_id), ('i', buffer_id))
 
     def send_sampler_play_stop(self, index):
         self._s("/sampler/play/stop", index)

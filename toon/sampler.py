@@ -136,6 +136,8 @@ class Sampler(object):
         self.mapper = Mapper(num_sounds=NUM_SOUNDS)
         self.osc = osc_manager
         self.verbose = self.toonloop.config.osc_verbose
+        self.player_id = 0
+        self.NUM_PLAYERS = 8 # FIXME
         self._setup()
 
     def _setup(self):
@@ -147,9 +149,10 @@ class Sampler(object):
         clip_id = self.toonloop.clip.id
         buffer_id = self.mapper.get(clip_id, frame_id)
         if buffer_id is not None:
+            player_id = (self.player_id + 1) % self.NUM_PLAYERS
             if self.verbose:
-                print("send /sampler/play/start %d" % (buffer_id))
-            self.osc.send_sampler_play_start(buffer_id)
+                print("send /sampler/play/start %d %s" % (player_id, buffer_id))
+            self.osc.send_sampler_play_start(player_id, buffer_id)
         
     def _slot_sampler_record(self, starting): 
         """
