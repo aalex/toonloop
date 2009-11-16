@@ -38,7 +38,7 @@ class Allocator(object):
     """
     Allocates sound indices.
     """
-    def __init__(self, max_index=64):
+    def __init__(self, max_index=500):
         self.max_index = max_index
         self.pool = set()
     
@@ -63,7 +63,7 @@ class Mapper(object):
     """
     Maps clip numbers, frame numbers to sound index.
     """
-    def __init__(self, num_clips=10, max_num_frames=4000, num_sounds=64):
+    def __init__(self, num_clips=10, max_num_frames=4000, num_sounds=500):
         self.num_sounds = num_sounds
         self.max_num_frames = max_num_frames
         self.num_clips = num_clips
@@ -132,12 +132,12 @@ class Sampler(object):
     """
     def __init__(self, toonloop, osc_manager):
         self.toonloop = toonloop
-        NUM_SOUNDS = toonloop.config.osc_sampler_num_sounds
+        NUM_SOUNDS = toonloop.config.osc_sampler_num_sounds # 500 ? 
         self.mapper = Mapper(num_sounds=NUM_SOUNDS)
         self.osc = osc_manager
         self.verbose = self.toonloop.config.osc_verbose
         self.player_id = 0
-        self.NUM_PLAYERS = 8 # FIXME
+        self.NUM_PLAYERS = 24 # FIXME
         self._setup()
 
     def _setup(self):

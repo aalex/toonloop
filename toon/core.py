@@ -170,7 +170,7 @@ class Configuration(object): #Serializable):
         self.osc_listen_port = 7772
         self.osc_verbose = False
         self.osc_sampler_enabled = False
-        self.osc_sampler_num_sounds = 50
+        self.osc_sampler_num_sounds = 500
         #self.osc_receive_hosts = ''
         
         # onionskin
