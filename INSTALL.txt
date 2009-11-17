@@ -51,6 +51,17 @@ The camera module for pygame is available from pygame's svn revision
   popd
   popd
 
+If you prefer, you can get a Pygame release version 1.9 or more recent::
+
+  mkdir -p ~/src
+  pushd ~/src
+  wget http://pygame.org/ftp/pygame-1.9.1release.tar.gz
+  tar -zxf pygame-1.9.1release.tar.gz
+  cd pygame-1.9.1release 
+  python setup.py build
+  sudo python setup.py install --prefix=/usr/local
+  popd
+
 Install liblo 
 -------------
 Install liblo from source. The version that comes with in the GNU/Linux 
