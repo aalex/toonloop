@@ -727,6 +727,9 @@ class Toonloop(render.Game):
             self._playhead_iterator = (self._playhead_iterator + 1) % self.clip.playhead_iterate_every
             if self._playhead_iterator ==  0:
                 self._playhead_iterate()
+                if len(self.clip.images) > 0:
+                    # send osc message /toon/playhead
+                    self.signal_playhead(self.clip.playhead)
                 # 30/3 = 10 FPS
         self._camera_grab_frame() # grab a frame
         CHROMA_ON = self.config.chromakey_enabled and self.config.chromakey_on
@@ -768,6 +771,7 @@ class Toonloop(render.Game):
         pygame.display.flip()
         # old : pygame.display.update()
         gc.collect() # force garbage collection on every frame
+        # TODO: on every frame is a bit much. Maybe every second ?
         # otherwise, python slows down when it is time to collect garbage.
 
     def _draw_white_flash(self):
@@ -877,7 +881,6 @@ class Toonloop(render.Game):
             # old: self.display.blit(self.clip.images[self.clip.playhead], (self.config.image_width, 0))
         else:
             self.clip.playhead = 0
-        self.signal_playhead(self.clip.playhead)
 
     def _clear_playback_view(self):
         """
