@@ -217,8 +217,8 @@ class Configuration(object): #Serializable):
         self.midi_verbose = True
         self.midi_input_id = -1 # means default
         self.midi_pedal_control_id = 64
-        self.midi_note_record = 60 # FIXME
-        self.midi_note_play = 62 # FIXME
+        self.midi_note_record = 41 
+        self.midi_note_clear = 43
 
         # overrides some attributes whose defaults and names are below.
         self.__dict__.update(**argd) 
@@ -466,7 +466,7 @@ class Toonloop(render.Game):
         """
         self.signal_sampler_record(start)
     
-    def sampler_clear(self, start=True):
+    def sampler_clear(self):
         """
         Clear the sound in current frame
         The sounds sampler handles this.
@@ -493,6 +493,10 @@ class Toonloop(render.Game):
                 else:
                     print("stop recording sample")
                     self.sampler_record(False)
+            if note == self.config.midi_note_clear:
+                if on:
+                    print("clear a sample")
+                    self.sampler_clear()
         elif event.status == MIDI_CTRL: # MIDI control
             ctrl_id = event.data1
             val = event.data2

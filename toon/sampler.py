@@ -69,8 +69,8 @@ class Mapper(object):
         self.num_clips = num_clips
         self.allocator = Allocator(self.num_sounds)
         self.clips = {} # dict of dicts. Indices are clip_id, frame_id
-        self.signal_clear = sig.Signal() # int buffer_id
-        self.signal_record = sig.Signal() # int bufer_id
+        #self.signal_clear = sig.Signal() # int buffer_id
+        #self.signal_record = sig.Signal() # int bufer_id
         
     def add(self, clip_id, frame_id):
         """
@@ -89,7 +89,7 @@ class Mapper(object):
         else:
             buffer_id = self.allocator.allocate()
             self.clips[clip_id][frame_id] = buffer_id
-        self.signal_record(buffer_id)
+        #self.signal_record(buffer_id)
         return buffer_id
 
     def get(self, clip_id, frame_id):
@@ -115,7 +115,7 @@ class Mapper(object):
             if self.clips[clip_id].has_key(frame_id):
                 buffer_id = self.clips[clip_id].pop(frame_id)
                 self.allocator.free(buffer_id)
-                self.signal_clear(buffer_id)
+                #self.signal_clear(buffer_id)
                 return buffer_id
             else:
                 raise AllocationError("Clip %d has no frame %s." % (clip_id, frame_id))
@@ -172,6 +172,9 @@ class Sampler(object):
                 self.osc.send_sampler_record_start(buffer_id)
                 if self.verbose:
                     print("send /sampler/record/start %d" % (buffer_id))
+        else:
+            if self.verbose:
+                print("warning: record/stop not implemented.")
     
     def _slot_sampler_clear(self):
         """

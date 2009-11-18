@@ -35,14 +35,12 @@ class Test_Mapper(unittest.TestCase):
         self._called_record = False
         self._called_clear = False
         mapper = sampler.Mapper(num_clips=2, num_sounds=10)
-        mapper.signal_record.connect(self._on_record)
-        mapper.signal_clear.connect(self._on_clear)
-        mapper.add(0, 0)
-        if not self._called_record:
-            self.fail("Should have triggered record listener.")
-        mapper.remove(0, 0)
-        if not self._called_record:
-            self.fail("Should have triggered clear listener.")
+        ret = mapper.add(0, 0)
+        if not type(ret) is int:
+            self.fail("Add should have returned a number.")
+        ret = mapper.remove(0, 0)
+        if not type(ret) is int:
+            self.fail("Clear should have returned a number.")
         for frame_id in range(10):
             mapper.add(0, frame_id)
         try:
