@@ -3,7 +3,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Version=1.0.1
-Exec=/usr/local/bin/toonloop 
+Exec=toonloop 
 Type=Application
 Terminal=true
 Name=Toonloop
@@ -11,4 +11,4 @@ Name[en_CA]=Toonloop
 Comment=The Toonloop Live Stop Motion Tool
 Comment[en_CA]=The Toonloop Live Stop Motion Tool
 Categories=Application;AudioVideo;Multimedia;
-Icon=/usr/local/share/icons/Toonloop.svg
+Icon=toonloop.svg
