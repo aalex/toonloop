@@ -1,3 +1,9 @@
+toonloop (1.0.4-2) unstable; urgency=low
+  
+  * fixed error with .desktop file.
+ 
+ -- Alexandre Quessy <alexandre@quessy.net> Fri, 27 Nov 2009 15:20:23 -0500
+
 toonloop (1.0.4) unstable; urgency=low
 
   * Completed the writehead feature. 
