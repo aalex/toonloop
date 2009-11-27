@@ -1,0 +1,20 @@
+toonloop (1.0.4) unstable; urgency=low
+
+  * Completed the writehead feature. 
+  * Cleaned up globals
+  * Renamed desktop file and icon to lowercase.
+
+ -- Alexandre Quessy <alexandre@quessy.net> Wed, 25 Nov 2009 14:52:21 -0500
+
+toonloop (1.0.3-2) unstable; urgency=low
+
+  * Fix for Ubuntu 8.10; depend on older version of python-central.
+
+ -- Arjan Scherpenisse <arjan@mediamatic.nl>  Sat, 21 Nov 2009 18:18:22 +0100
+
+toonloop (1.0.3) unstable; urgency=low
+
+  * Initial packaging.
+
+ -- Arjan Scherpenisse <arjan@mediamatic.nl>  Sat, 21 Nov 2009 17:44:42 +0100
+

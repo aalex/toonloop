@@ -9,8 +9,8 @@ toonloop.1: all
 
 install: toonloop.1
 	python setup.py install --prefix=/usr/local
-	install Toonloop.desktop /usr/local/share/applications/Toonloop.desktop
-	install Toonloop.svg /usr/local/share/icons/Toonloop.svg
+	install toonloop.desktop /usr/local/share/applications/
+	install toonloop.svg /usr/local/share/icons/
 	install -D toonloop.1 /usr/local/share/man/man1/toonloop.1
 	@echo DONE INSTALLING
 
@@ -30,3 +30,5 @@ clean:
 check:
 	trial rats/test toon/test
 
+deb:
+	dpkg-buildpackage -r

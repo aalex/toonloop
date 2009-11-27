@@ -68,7 +68,10 @@ class ShaderProgram(object):
         """
         err = glGetError()
         if err != GL_NO_ERROR:
-            raise ShaderError('GLERROR: %s' % (gluErrorString(err)))
+            err_text = gluErrorString(err)
+            print(err)
+            print(err_text)
+            raise ShaderError('GLERROR: %s' % (err_text))
 
     def reset(self):
         """

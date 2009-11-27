@@ -3,14 +3,15 @@ The Toonloop Live Stop Motion Tool.
 
 Toonloop is a live stop motion animation software. It aims at showing the creation process the the audience as well as the result of the creation. The frame by frame animation is made by adding frames one by one to a clip made of many frames. Clips are displayed in a never ending loop. 
 
-Toonloop supports MIDI input, the Open Sound Control protocol, the FUDI protocol (to communicate with Pure Data) and provides a media RSS web server. Currently implemented video effects are : chroma keying using a GLSL shader, onion peal and background image. Toonloop offers state saving in the JSON format. Default config file is ~/.toonloop.json, where tilde (~) is your home directory. Toonloop also allows users to save their clips to the photo-JPEG video codec, and as well to JPEG images. Finally, Toonloop offers an automatic time lapse functionnality, to allow one to easily create accelerated clips. 
+Toonloop is a great tool to for teaching new medias to children. It can also be used as a professionnal software for movie creators, though it is mainly intended to be used in a live kiosk of show. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop.
 
+Toonloop supports MIDI input, the Open Sound Control protocol, the FUDI protocol (to communicate with Pure Data) and provides a media RSS web server. Currently implemented video effects are : chroma keying using a GLSL shader, onion peal and background image. Toonloop offers state saving in the JSON format. Default config file is ~/.toonloop.json, where tilde (~) is your home directory. Toonloop also allows users to save their clips to the photo-JPEG video codec, and as well to JPEG images. Finally, Toonloop offers an automatic time lapse functionnality, to allow one to easily create accelerated clips. 
 
 [SYNOPSIS]
 toonloop [options]
 
 [EXAMPLES]
-You can launch ToonLoop with a whole bunch of options. Options are set
+You can launch Toonloop with a whole bunch of options. Options are set
 using the -o flag :
 
 toonloop -o toonloop_home ~/Public/toonloop -o project_name hello -o intervalometer_enabled False -o bgimage_glob_enabled True -o image_flip_horizontal True -o chromakey_on True -o chromakey_on True -o chromakey_r 0.2 -o chromakey_g 0.9 -o chromakey_b 0.0 -o chromakey_thresh 0.5 -o chromakey_slope 0.2 -o fudi_enabled True -w 320 -v
@@ -33,6 +34,11 @@ Toonloop is an interactive software. While it runs, or can control it using keyb
     x = Saves the current configuration options to ~/.toonloop.json
     [0, 9]  = Selects a clip from the current project identified by a number.
     <Esc> = Quits the program.
+    <Up arrow> = Increases the frame rate. (faster)
+    <Down arrow> = Decreases the frame rate. (slower)
+    <Left arrow> = Moves the write head to the left. (towards the beginning)
+    <Right arrow> = Moves the write head to the right. (towards the end)
+    <Return> = Moves the write head to the last frame. (at the end)
 
 [OSC INTERFACE]
 
@@ -124,7 +130,7 @@ Here is the list of options with their default values:
   -o web_server_port 8000
 
 [AUTHOR]
-Alexandre Quessy. Thanks to Tristan Matthews and Society for Arts and Technology for their help.
+Alexandre Quessy. Thanks to Tristan Matthews and Society for Arts and Technology for their help. 
 
 Toonloop is an original idea of Alexandre Quessy, and is his research project for his master at UQAM. It is much similar in scope to the live animation work of Pierre Hebert. Toonloop is released under the GNU GPL. 
 
@@ -135,8 +141,15 @@ http://www.toonloop.com
 Copyright 2008 Alexandre Quessy & Tristan Matthews
 <alexandre@quessy.net> & <le.businessman@gmail.com>
 
-ToonLoop is free software: you can redistribute it and/or modify
+Toonloop is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
+Toonloop is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the gnu general public license
+along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.

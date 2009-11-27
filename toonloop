@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# ToonLoop for Python
+# Toonloop for Python
 #
 # Copyright 2008 Alexandre Quessy & Tristan Matthews
 # <alexandre@quessy.net> & <le.businessman@gmail.com>
@@ -9,22 +9,22 @@
 # Original idea by Alexandre Quessy
 # http://alexandre.quessy.net
 #
-# ToonLoop is free software: you can redistribute it and/or modify
+# Toonloop is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# ToonLoop is distributed in the hope that it will be useful,
+# Toonloop is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the gnu general public license
-# along with ToonLoop.  If not, see <http://www.gnu.org/licenses/>.
+# along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 #
 
 """
-ToonLoop is a realtime stop motion performance tool. 
+Toonloop is a live stop motion performance tool. 
 
 The idea is to spread its use for teaching new medias to children and to 
 give a professional tool for movie creators.
@@ -47,46 +47,6 @@ Interactive Keyboard Usage :
    Best used to create timelapse sequences automatically.
  - Press 'k' or 'j' to increase or decrease the auto rate.
 
-List of Command-line TOonLoOp Options:
-    -o autosave_enabled True
-    -o autosave_on False
-    -o autosave_rate_seconds 600.0
-    -o bgcolor_b 0.2
-    -o bgcolor_g 0.8
-    -o bgcolor_r 1.0
-    -o bgimage /home/aalex/src/toonloop/trunk/py/toon/data/bgimage_01.jpg
-    -o bgimage_enabled True
-    -o chromakey_b 0.0
-    -o chromakey_enabled True
-    -o chromakey_g 0.9
-    -o chromakey_on False
-    -o chromakey_r 0.2
-    -o chromakey_slope 0.2
-    -o chromakey_thresh 0.5
-    -o delete_jpeg False
-    -o display_height 768
-    -o display_width 1024
-    -o framerate_max 30
-    -o framerate_min 1
-    -o fudi_enabled False
-    -o fudi_receive_port 15555
-    -o fudi_send_host localhost
-    -o fudi_send_port 17777
-    -o image_height 240
-    -o image_width 320
-    -o intervalometer_enabled True
-    -o intervalometer_on False
-    -o intervalometer_rate_seconds 30.0
-    -o max_num_clips 10
-    -o onionskin_enabled True
-    -o onionskin_on False
-    -o onionskin_opacity 0.3
-    -o project_name new_project
-    -o toonloop_home /home/aalex/Documents/toonloop
-    -o verbose False
-    -o video_device 0
-    -o web_enabled False
-    -o web_server_port 8000
 
 INSTALLATION NOTES : 
 The camera module for pygame is available from pygame's svn revision 
@@ -97,4 +57,3 @@ from toon import runner
 
 if __name__ == "__main__":
     runner.run()
-

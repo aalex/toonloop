@@ -23,7 +23,6 @@
 # along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 #
 from rats.serialize import Serializable
-from rats.observer import Subject
 
 class ToonSequence(Serializable):
     """

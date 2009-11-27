@@ -10,9 +10,8 @@ from twisted.internet import reactor
 from twisted.internet.error import CannotListenError
 
 from rats import fudi 
-from rats import observer
 
-class PureData(observer.Observer):
+class PureData(object):
     """
     Toonloop API for Pure Data FUDI network messages.
 
@@ -45,7 +44,7 @@ class PureData(observer.Observer):
 
     def _init_receiver(self): 
         if self.verbose:
-            print "starting FUDI server on port", self.receive_port
+            print("starting FUDI server on port" +  str(self.receive_port))
         self.receiver = fudi.FUDIServerFactory()
         self.receiver.register_message("/ping", self.ping)
         self.receiver.register_message("/pong", self.pong)
@@ -62,7 +61,7 @@ class PureData(observer.Observer):
             print e.message
             raise
             self.receiver = None
-        return receiver
+        return self.receiver
 
     def _init_sender(self):
         deferred = fudi.create_FUDI_client(self.send_host, self.send_port)
@@ -225,7 +224,7 @@ def start(**kwargs):
 #         } # TODO: send to many subscribers.
 #     # kwargs.update(options)
     fudi.VERBOSE = True
-    print "Starting PureData service."
+    print("Starting PureData service.")
     pprint.pprint(kwargs)
     
     pd = PureData(**kwargs)

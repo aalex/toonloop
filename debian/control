@@ -1,0 +1,31 @@
+Source: toonloop
+Section: python
+Priority: optional
+Maintainer: Arjan Scherpenisse <arjan@scherpenisse.net>
+Build-Depends: cdbs, debhelper (>= 5.0.38), python-central (>= 0.6.0)
+XS-Python-Version: >= 2.4
+Standards-Version: 3.8.0
+Homepage: http://www.toonloop.com/
+
+Package: toonloop
+Architecture: all
+XB-Python-Version: ${python:Versions}
+Depends: ${misc:Depends}, python (>= 2.4), python-central (>= 0.6.7), python-twisted, python-numpy, python-opengl, python-pyglew, python-dev, python-pygame (>=1.9.0), mencoder
+Description: The Toonloop Live Stop Motion Tool. 
+ .
+ Toonloop is a live stop motion animation software. It aims at showing
+ the creation process the the audience as well as the result of the
+ creation. The frame by frame animation is made by adding frames one
+ by one to a clip made of many frames. Clips are displayed in a never
+ ending loop.
+ .
+ Toonloop supports MIDI input, the Open Sound Control protocol and the
+ FUDI protocol (to communicate with Pure Data). Currently implemented
+ video effects are: chroma keying using a GLSL shader, onion skinning
+ and background image. Toonloop offers state saving in the JSON
+ format. Default config file is ~/.toonloop.json, where tilde (~) is
+ your home directory. Toonloop also allows users to save their clips
+ to the photo-JPEG video codec (using mencoder), and as well to JPEG
+ images. Finally, Toonloop offers an automatic time lapse
+ functionnality, to allow one to easily create accelerated clips.
+

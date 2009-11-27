@@ -33,29 +33,27 @@ from nevow import static
 from nevow import appserver
 from nevow import rend
 
-from rats.observer import Observer
 from toon import rss
 from toon import rst
 
-class Index(rst.ReStructured, rend.Page, Observer):
+class Index(rst.ReStructured, rend.Page):
     """
     Class representing the root (/) of the web server. 
     """
     addSlash = True
 
-    def __init__(self, subject, **kwargs):
+    def __init__(self, toonloop, **kwargs):
         self.static_files_path = os.curdir
         self.index_file_path = os.path.join(os.path.dirname(__file__), 'data', 'index.rst')
         self.port = 8000
         self.__dict__.update(**kwargs)
         
-        Observer.__init__(self, subject)
         print "Static files root:", self.static_files_path
         try:
-            self.api = subject
+            self.toonloop = toonloop
         except AttributeError, e:
             print 'web_server: Index', e.message
-            self.api = None
+            self.toonloop = None
         try:
             rst.ReStructured.__init__(self, self.index_file_path)
         except IOError, e:
@@ -72,18 +70,12 @@ class Index(rst.ReStructured, rend.Page, Observer):
         """
         return rst.ReStructured.render(self, request)
 
-    def update(self, origin, key, data):
-        """
-        Observer update method.
-        """
-        pass
-
-def start(subject, port=8000, **kwargs): 
+def start(toonloop, port=8000, **kwargs): 
     """
     Called from the main application to start the web UI.
     Config argmuments ARE overriden from the application.
 
-    :param subject: The application
+    :param toonloop: The application
     :param port: web server port
     """
     # These are default values and are overriden in the main toonloop script.
@@ -95,8 +87,8 @@ def start(subject, port=8000, **kwargs):
     web_config.update(kwargs)
     #Index.static_files_path = web_config['static_files_path']
     #Index.index_file_path = web_config['index_file_path']
-    site = appserver.NevowSite(Index(subject, **web_config))
-    if subject.config.verbose:
+    site = appserver.NevowSite(Index(toonloop, **web_config))
+    if toonloop.config.verbose:
         print 'Starting web server on port', port
         print 'Static Documentation Files Path : ', web_config['index_file_path']
     reactor.listenTCP(port, site)

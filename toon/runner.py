@@ -22,12 +22,10 @@
 # You should have received a copy of the gnu general public license
 # along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 #
-
 """
 Main runner of the Toonloop application.
 """
- 
-__version__ = "1.0.3" # MUST ALSO CHANGE IT IN setup.py
+__version__ = "1.0.4" # MUST ALSO CHANGE IT IN setup.py
 
 import sys
 import os
@@ -49,9 +47,7 @@ def run():
         # self.intervalometer_enabled = False
         # self.intervalometer_rate_seconds = 30.0 # in seconds
     EPILOG="Toonloop is a live stop motion performance tool. The objective is to spread its use for teaching new medias to children and to give a professional tool for movie creators. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop."
-    parser = optparse.OptionParser(usage="%prog", version='Toonloop ' + str(__version__), \
-        epilog=EPILOG)
-    # + " \n\n"  __doc__
+    parser = optparse.OptionParser(usage="%prog", version='Toonloop ' + str(__version__)) #, epilog=EPILOG)
     parser.add_option("-d", "--device", dest="device", type="int", \
         help="Specifies V4L2 device to grab image from. Expects an integer such as 0, 1 or 2.", default=0)
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true", \
@@ -85,7 +81,8 @@ def run():
     config_dict = config.__dict__
     if options.config_file:
         config_dict["config_file"] = options.config_file
-    config.load() # updates the config dict with values serialized before.
+    # FIXME: not using the json config file, since it adds some bugs. 
+    #config.load() # updates the config dict with values serialized before.
     if options.toonloop_home:
         config_dict['toonloop_home'] = options.toonloop_home
     if options.image_width:
@@ -151,4 +148,3 @@ def run():
     except error.ReactorNotRunning, e:
         pass
     sys.exit(0)
-

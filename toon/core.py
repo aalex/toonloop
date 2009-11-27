@@ -57,7 +57,6 @@ import gc
 import sys
 from time import strftime
 import os
-#import shutil
 import glob
 import pprint
 
@@ -66,7 +65,6 @@ from twisted.internet import defer
 #from twisted.python import failure
 
 from rats import render
-#from rats.observer import Subject
 from rats import sig
 #from rats.serialize import Serializable
 try:
@@ -100,9 +98,11 @@ except ImportError, e:
 
 import pygame
 import pygame.camera
-from pygame.locals import *
+#from pygame.locals import *
+import pygame.locals as PYGM # want to get rid of namespace contamination
 from pygame import time
-from OpenGL.GL import *
+#from OpenGL.GL import *
+from OpenGL import GL # want to get rid of namespace contamination
 
 PACKAGE_DATA_PATH = os.path.dirname(data.__file__)
 # the version number is in both toon/runner.py and setup.py
@@ -123,8 +123,6 @@ class Configuration(object): #Serializable):
     Python allows commas at the end of lists and tuples
     """
     def __init__(self, **argd): 
-        # constants
-        
         # basics
         self.verbose = True
         self.video_device = 0 
@@ -203,8 +201,8 @@ class Configuration(object): #Serializable):
         
         # intervalometer
         self.intervalometer_on = False 
-        self.intervalometer_enabled = False
-        self.intervalometer_rate_seconds = 30.0 # in seconds
+        self.intervalometer_enabled = True
+        self.intervalometer_rate_seconds = 10.0 # in seconds
         # TODO: clean intervalometer on/enabled stuff
         
         # autosave
@@ -248,21 +246,22 @@ class Configuration(object): #Serializable):
         """
         Load from JSON config file.
         """
-        if STATESAVING_LOADED:
-            if self.verbose:
-                print("Load config from %s" % (self.config_file))
+        # TODO: fix the bugs it can create. (by saving/loading only vars that are safe)
+        # FIXME: not used now.
+        if STATESAVING_LOADED: # if found json module
             try:
                 data = statesaving.load(self.config_file)
             except statesaving.StateSavingError, e:
                 if self.verbose:
-                    print(e.message)
+                    print("Could not load configuration file \"%s\". %s" % (self.config_file, e.message))
             else:
+                if self.verbose:
+                    print("Loading configuration values from \"%s\"." % (self.config_file))
                 self.__dict__.update(data)
         else:
             if self.verbose:
                 print("Could not load config. Json is not loaded.")
         
-
     def print_values(self):
         for k in sorted(self.__dict__):
             v = self.__dict__[k]
@@ -288,7 +287,8 @@ class Configuration(object): #Serializable):
         else:
             casted_value = kind(value)
         self.__dict__[name] = casted_value
-        print('config.%s = %s(%s)' % (name, kind.__name__, self.__dict__[name]))
+        if self.verbose:
+            print('Setting config option \"%s\" to \"%s\" (%s)' % (name, self.__dict__[name], kind.__name__))
         return kind
         # except Exception, e:
         #    print e.message
@@ -303,12 +303,13 @@ class ToonClip(object): #Serializable):
         :param id: int 
         """
         self.id = id
-        self.playhead = 0
+        self.playhead = 0 # between 0 and n - 1
         self.playhead_iterate_every = 1
         # Ratio that decides of the framerate
         # self.framerate = 12
         self.__dict__.update(argd)
         self.images = []
+        self.writehead = len(self.images) # index of the next image to be filled up. Between 0 and n.
     
 class Toonloop(render.Game):
     """
@@ -358,7 +359,7 @@ class Toonloop(render.Game):
         icon = pygame.image.load(os.path.join(PACKAGE_DATA_PATH, "icon.png"))
         pygame.display.set_icon(icon) # a 32 x 32 surface
         # the pygame window
-        self.display = pygame.display.set_mode(self._display_size, OPENGL | DOUBLEBUF | HWSURFACE)
+        self.display = pygame.display.set_mode(self._display_size, PYGM.OPENGL | PYGM.DOUBLEBUF | PYGM.HWSURFACE)
         pygame.display.set_caption("Toonloop")
         pygame.mouse.set_visible(False)
         # the images
@@ -369,6 +370,7 @@ class Toonloop(render.Game):
         self.is_mac = False # is on Mac OS X or not. (linux) For the camera.
         self.textures = [0, 0, 0, 0] # list of OpenGL texture objects id
         self._setup_camera()
+        self.fx_chromakey = chromakey.get_effect()
         self._setup_window()
         self.background_image = None
         self._setup_background()
@@ -417,7 +419,8 @@ class Toonloop(render.Game):
         """
         # OSC
         if self.config.osc_enabled and OSC_LOADED:
-            self.osc = opensoundcontrol.ToonOsc(self, 
+            self.osc = opensoundcontrol.ToonOsc(
+                self, 
                 listen_port=self.config.osc_listen_port, 
                 send_port=self.config.osc_send_port, 
                 send_host=self.config.osc_send_host, 
@@ -429,7 +432,9 @@ class Toonloop(render.Game):
         # WEB
         if WEB_LOADED and self.config.web_enabled:
             try:
-                self.web = web.start(self, self.config.web_server_port,
+                self.web = web.start(
+                    self, 
+                    self.config.web_server_port,
                     static_files_path=self.config.toonloop_home)
                     #index_file_path=index_file_path)
             except:
@@ -447,7 +452,7 @@ class Toonloop(render.Game):
                 self.pd = puredata.start(app=app, receive_port=fudi_recv, send_port=fudi_send, send_host=fudi_send_host)
             except:
                 print("Error loading puredata: %s" % (sys.exc_info()))
-                raise
+                #raise
         # MIDI
         if self.config.midi_enabled:
             self.midi_manager = midi.SimpleMidiInput(self.config.midi_input_id, self.config.midi_verbose)
@@ -509,7 +514,8 @@ class Toonloop(render.Game):
         """
         Loads initial background image.
         """
-        self.bgimage_load(self.config.bgimage)
+        if self.config.bgimage_enabled:
+            self.bgimage_load(self.config.bgimage)
 
     def bgimage_load(self, path):
         """
@@ -519,9 +525,14 @@ class Toonloop(render.Game):
             self.config.bgimage = path
             if self.config.verbose:
                 print('setup background %s' % (path))
-        self.background_image = pygame.image.load(path)
-        # Create an OpenGL texture
-        draw.texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self.background_image)
+        try:
+            self.background_image = pygame.image.load(path)
+        except Exception, e: # FIXME: more specific
+            self.config.bgimage_enabled = False
+            print("Error with background image \"%s\": %s" % (path, e.message))
+        else:
+            # Create an OpenGL texture
+            draw.texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self.background_image)
     
     def bgimage_glob_next(self, increment=1):
         """
@@ -613,7 +624,10 @@ class Toonloop(render.Game):
         try:
             self.clip = self.clips[self.clip_id]
         except IndexError:
-            self.clip_id = 0
+            if self.config.max_num_clips > 1:
+                self.clip_id = 1 # default clip is 1, for a better usability
+            else:
+                self.clip_id = 0
             self.clip = self.clips[self.clip_id]
 
     def clip_select(self, index=0):
@@ -635,17 +649,17 @@ class Toonloop(render.Game):
         # create OpenGL texture objects 
         # window is 1280 x 960
         self._resize_window(self._display_size)
-        glEnable(GL_TEXTURE_RECTANGLE_ARB) # 2D)
-        glEnable(GL_BLEND)
-        glShadeModel(GL_SMOOTH)
-        glClearColor(0.0, 0.0, 0.0, 0.0) # black background
-        glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity) # for now we use it for all
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        GL.glEnable(GL.GL_TEXTURE_RECTANGLE_ARB) # 2D)
+        GL.glEnable(GL.GL_BLEND)
+        GL.glShadeModel(GL.GL_SMOOTH)
+        GL.glClearColor(0.0, 0.0, 0.0, 0.0) # black background
+        GL.glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity) # for now we use it for all
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
         for i in range(len(self.textures)):
-            self.textures[i] = glGenTextures(1)
+            self.textures[i] = GL.glGenTextures(1)
         if self.config.chromakey_enabled: 
-            chromakey.program_init()
-            chromakey.config = self.config.__dict__
+            self.fx_chromakey.setup()
+            self.fx_chromakey.update_config(self.config.__dict__)
         # print "texture names : ", self.textures
 
     def _resize_window(self, (width, height)):
@@ -660,11 +674,11 @@ class Toonloop(render.Game):
         print("resize", width, height)
         if height == 0:
             height = 1
-        glMatrixMode(GL_PROJECTION)
-        glLoadIdentity()
-        glOrtho(-4.0, 4.0, -3.0, 3.0, -1.0, 1.0)
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
+        GL.glMatrixMode(GL.GL_PROJECTION)
+        GL.glLoadIdentity()
+        GL.glOrtho(-4.0, 4.0, -3.0, 3.0, -1.0, 1.0)
+        GL.glMatrixMode(GL.GL_MODELVIEW)
+        GL.glLoadIdentity()
 
     def _setup_camera(self):
         """
@@ -706,27 +720,69 @@ class Toonloop(render.Game):
         """
         Copies the last grabbed frame to the list of images.
         """
+        index = self.clip.writehead
         try:
             if self.is_mac:
-                self.clip.images.append(self.most_recent_image.copy())
+                #self.clip.images.append(self.most_recent_image.copy())
+                self.clip.images.insert(index, self.most_recent_image.copy())
             else:
-                self.clip.images.append(self.most_recent_image)
+                #self.clip.images.append(self.most_recent_image)
+                self.clip.images.insert(index, self.most_recent_image)
+        except MemoryError, e:
+            print("CRITICAL ERROR : No more memory !!! %s" % (e.message))
+        else:
+            self.clip.writehead += 1
             # Creates an OpenGL texture
             draw.texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
             self._has_just_added_frame = True
-        except MemoryError, e:
-            print("CRITICAL ERROR : No more RAM Memory !!!", e.message)
+            if self.config.verbose:
+                print("Added frame at index %d" % (index))
+                print('num frames: %s' % (len(self.clip.images)))
+            self.signal_writehead(len(self.clip.images))
+            self.signal_frame_add()
+    
+    def writehead_move(self, steps):
+        """
+        Moves the writehead of the current clip.
+        :param steps: How many frames in which direction. 
+        To move to the left, give a steps value of 1. 
+        To move to the right, give a steps value of -1. 
+        """
+        index = self.clip.writehead + steps
+        if index == -1:
+            if self.config.verbose:
+                print("Already at the first frame. Type RETURN to go to last.")
+        else:
+            self.writehead_goto(index)
+    
+    def writehead_goto(self, index):
+        """
+        Moves the writehead of the current clip to the given index.
+        :param index: int
+        -1 for the end.
+        0 for the beginning
+        """
+        last = len(self.clip.images)
+        if index == -1:
+            index = last
+        elif index < 0: # if negative
+            index = last - index
+            if index < -last: # if more negative than it can be...
+                index = 0
+        elif index > last:
+            print("writehead_goto: Frame index %d is too big. Using %d instead." % (index, last))
+            index = last
         if self.config.verbose:
-            print('num frames: %s' % (len(self.clip.images)))
-        self.signal_writehead(len(self.clip.images))
-        self.signal_frame_add()
+            print("writehead_goto %d" % (index))
+        self.clip.writehead = index
+        self.signal_writehead(index) # FIXME : is this ok to call it ?
     
     def draw(self):
         """
         Renders one frame.
         Called from the event loop. (twisted)
         """
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
         if not self.paused:
             self._playhead_iterator = (self._playhead_iterator + 1) % self.clip.playhead_iterate_every
             if self._playhead_iterator ==  0:
@@ -737,38 +793,29 @@ class Toonloop(render.Game):
                 # 30/3 = 10 FPS
         self._camera_grab_frame() # grab a frame
         CHROMA_ON = self.config.chromakey_enabled and self.config.chromakey_on
+        self.fx_chromakey.update_config(self.config.__dict__) # FIXME too often
+        self.fx_chromakey.is_on = CHROMA_ON # FIXME Should be simpler
         # TODO: replace by effect number
 
         # now, let's draw something
         self._draw_background() # only if enabled
         # --------- edit view
-        if CHROMA_ON: 
-            chromakey.program_enable()
-            chromakey.set_program_uniforms()
-        else:
-            chromakey.program_disable()
+        self.fx_chromakey.pre_draw()
         self._draw_edit_view()
-        if CHROMA_ON:
-            chromakey.program_disable()
+        self.fx_chromakey.post_draw()
         # ---------- onion skin (rendered after the edit view, over it)
-        if CHROMA_ON:
-            chromakey.program_enable()
-            chromakey.set_program_uniforms()
+        self.fx_chromakey.pre_draw()
         if self.config.onionskin_enabled and self.config.onionskin_on:
             self._draw_onion_skin()
-        if CHROMA_ON:
-            chromakey.program_disable()
+        self.fx_chromakey.post_draw()
         if self._has_just_added_frame:
             self._has_just_added_frame = False
             if self.config.fx_white_flash:
                 self._draw_white_flash()
         # ---------- playback view
-        if CHROMA_ON:
-            chromakey.program_enable()
-            chromakey.set_program_uniforms()
+        self.fx_chromakey.pre_draw()
         self._draw_playback_view()
-        if CHROMA_ON:
-            chromakey.program_disable()
+        self.fx_chromakey.post_draw()
         # ----------- done drawing.
         self.clock.tick()
         self.fps = self.clock.get_fps()
@@ -784,12 +831,12 @@ class Toonloop(render.Game):
             pass #print 'white flash'
         # left view
         a = self.config.fx_white_flash_alpha
-        glColor4f(1.0, 1.0, 1.0, a)
-        glPushMatrix()
-        glTranslatef(-2.0, 0.0, 0.0)
-        glScalef(2.0, 1.5, 1.0)
+        GL.glColor4f(1.0, 1.0, 1.0, a)
+        GL.glPushMatrix()
+        GL.glTranslatef(-2.0, 0.0, 0.0)
+        GL.glScalef(2.0, 1.5, 1.0)
         draw.draw_square()
-        glPopMatrix()
+        GL.glPopMatrix()
 
     def _draw_background(self):
         """
@@ -808,20 +855,20 @@ class Toonloop(render.Game):
 
         if self.config.bgimage_enabled:
             # left view
-            glColor4f(1.0, 1.0, 1.0, 1.0)
-            glPushMatrix()
-            glTranslatef(-2.0, 0.0, 0.0)
-            glScalef(2.0, 1.5, 1.0)
-            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
+            GL.glColor4f(1.0, 1.0, 1.0, 1.0)
+            GL.glPushMatrix()
+            GL.glTranslatef(-2.0, 0.0, 0.0)
+            GL.glScalef(2.0, 1.5, 1.0)
+            GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
             draw.draw_textured_square(self.config.image_width, self.config.image_height)
-            glPopMatrix()
+            GL.glPopMatrix()
             # right view
-            glPushMatrix()
-            glTranslatef(2.0, 0.0, 0.0)
-            glScalef(2.0, 1.5, 1.0)
-            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
+            GL.glPushMatrix()
+            GL.glTranslatef(2.0, 0.0, 0.0)
+            GL.glScalef(2.0, 1.5, 1.0)
+            GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
             draw.draw_textured_square(self.config.image_width, self.config.image_height)
-            glPopMatrix()
+            GL.glPopMatrix()
 
     def _camera_grab_frame(self):
         """
@@ -838,53 +885,54 @@ class Toonloop(render.Game):
         """
         Renders edit view (the live camera + onion peal)
         """
-        glColor4f(1.0, 1.0, 1.0, 1.0)
-        glPushMatrix()
-        glTranslatef(-2.0, 0.0, 0.0)
-        glScalef(2.0, 1.5, 1.0)
+        GL.glColor4f(1.0, 1.0, 1.0, 1.0)
+        GL.glPushMatrix()
+        GL.glTranslatef(-2.0, 0.0, 0.0)
+        GL.glScalef(2.0, 1.5, 1.0)
         # most recent grabbed :
-        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_MOST_RECENT])
+        GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_MOST_RECENT])
         if self.config.image_flip_horizontal:
-            glRotatef(180., 0., 1., 0.)
+            GL.glRotatef(180., 0., 1., 0.)
         draw.draw_textured_square(self.config.image_width, self.config.image_height)
         # self.display_width = 1024
-        glPopMatrix()
+        GL.glPopMatrix()
         # old: self.display.blit(self.most_recent_image, (0, 0))
 
     def _draw_onion_skin(self):
         # Onion skin :
-        glPushMatrix()
-        glTranslatef(-2.0, 0.0, 0.0)
-        glScalef(2.0, 1.5, 1.0)
-        glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
-        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
+        GL.glPushMatrix()
+        GL.glTranslatef(-2.0, 0.0, 0.0)
+        GL.glScalef(2.0, 1.5, 1.0)
+        GL.glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
+        GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
         draw.draw_textured_square(self.config.image_width, self.config.image_height)
-        glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
-        glPopMatrix()
+        GL.glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
+        GL.glPopMatrix()
 
     def _draw_playback_view(self):
         """
         Renders the playback view. 
         """
-        glColor4f(1.0, 1.0, 1.0, 1.0)
-        glPushMatrix()
-        glTranslatef(2.0, 0.0, 0.0)
-        glScalef(2.0, 1.5, 1.0)
-        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_PLAYBACK])
+        GL.glColor4f(1.0, 1.0, 1.0, 1.0)
+        GL.glPushMatrix()
+        GL.glTranslatef(2.0, 0.0, 0.0)
+        GL.glScalef(2.0, 1.5, 1.0)
+        GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_PLAYBACK])
         draw.draw_textured_square(self.config.image_width, self.config.image_height)
-        glPopMatrix()
+        GL.glPopMatrix()
     
     def _playhead_iterate(self):
         """ 
         Increments the playhead position of one frame
         """
-        if self.clip.playhead < len(self.clip.images):
-            image = self.clip.images[self.clip.playhead]
-            draw.texture_from_image(self.textures[self.TEXTURE_PLAYBACK], image)
+        if self.clip.playhead < len(self.clip.images) - 1:
             self.clip.playhead += 1
-            # old: self.display.blit(self.clip.images[self.clip.playhead], (self.config.image_width, 0))
         else:
             self.clip.playhead = 0
+        # now, let's copy it to VRAM
+        if len(self.clip.images) > 0:
+            image = self.clip.images[self.clip.playhead]
+            draw.texture_from_image(self.textures[self.TEXTURE_PLAYBACK], image)
 
     def _clear_playback_view(self):
         """
@@ -892,9 +940,6 @@ class Toonloop(render.Game):
         """
         blank_surface = pygame.Surface((self.config.image_width, self.config.image_height))
         draw.texture_from_image(self.textures[self.TEXTURE_PLAYBACK], blank_surface)
-        # old:
-        # playback_pos = (self.config.image_width, 0)
-        # self.display.blit(blank_surface, playback_pos)
         
     def _clear_onion_peal(self):
         """
@@ -949,7 +994,8 @@ class Toonloop(render.Game):
         Deletes the last frame from the current list of images.
         """
         if self.clip.images != []:
-            self.clip.images.pop()
+            self.clip.images.pop(self.clip.writehead)
+            self.clip.writehead -= 1 # FIXME Is this ok?
             # would it be better to also delete it ? calling del
             if self.clip.images == []:
                 self._clear_playback_view()
@@ -1042,76 +1088,87 @@ class Toonloop(render.Game):
         :param events: got them using pygame.event.get()
         """
         for e in events:
-            if e.type == QUIT:
+            if e.type == PYGM.QUIT:
                 self.running = False
             # TODO : catch window new size when resized.
+            elif e.type == pygame.MOUSEBUTTONDOWN:
+                if e.button == 1:
+                    self.frame_add() # left mouse button
+                elif e.button == 3: 
+                    self.frame_remove() # right mouse button
             elif e.type == pygame.VIDEORESIZE:
                 print("VIDEORESIZE %s" % (e))
-            elif e.type == KEYDOWN:
+            elif e.type == PYGM.KEYDOWN:
                 try:
                     if self.config.verbose:
-                        if e.key < 255 and not e.key == K_ESCAPE:
+                        if e.key < 255 and not e.key == PYGM.K_ESCAPE:
                             c = chr(e.key)
                             print("key down: %s (\"%s\")" % (e.key, c))
-                    if e.key == K_k: # K
+                    if e.key == PYGM.K_k: # K
                         self.intervalometer_rate_increase(1)
-                    elif e.key == K_c: # C : chromakey toggle
+                    elif e.key == PYGM.K_c: # C : chromakey toggle
                         # self.config.chromakey_on
                         self.chromakey_toggle()
-                    elif e.key == K_j: # J
+                    elif e.key == PYGM.K_j: # J
                         self.intervalometer_rate_increase(-1)
-                    elif e.key == K_f: # F Fullscreen
+                    elif e.key == PYGM.K_f: # F Fullscreen
                         pygame.display.toggle_fullscreen()
-                    elif e.key == K_i: # I Info
+                    elif e.key == PYGM.K_i: # I Info
                         self.print_stats()
-                    elif e.key == K_p: # P Pause
+                    elif e.key == PYGM.K_p: # P Pause
                         self.pause()
-                    elif e.key == K_r: # R Reset
+                    elif e.key == PYGM.K_r: # R Reset
                         self.clip_reset()
-                    elif e.key == K_h: # H Help
+                    elif e.key == PYGM.K_h: # H Help
                         self.print_help()
-                    elif e.key == K_s: # S Save
+                    elif e.key == PYGM.K_s: # S Save
                         self.clip_save()
-                    elif e.key == K_x: # X : config save
+                    elif e.key == PYGM.K_x: # X : config save
                         self.config_save()
-                    elif e.key == K_o: # O Onion
+                    elif e.key == PYGM.K_o: # O Onion
                         self.onionskin_toggle()
-                    elif e.key == K_a: # A Auto
+                    elif e.key == PYGM.K_a: # A Auto
                         print("toggle intervalometer")
                         self.intervalometer_toggle()
-                    elif e.key == K_q: # q Start recording sample
+                    elif e.key == PYGM.K_q: # q Start recording sample
                         self.sampler_record(True)
-                    elif e.key == K_w: # Clear the sound in current frame 
+                    elif e.key == PYGM.K_w: # Clear the sound in current frame 
                         self.sampler_clear()
-                    elif e.key == K_0: # [0, 9] Clip selection
+                    elif e.key == PYGM.K_0: # [0, 9] Clip selection
                         self.clip_select(0)
-                    elif e.key == K_1:
+                    elif e.key == PYGM.K_1:
                         self.clip_select(1)
-                    elif e.key == K_2:
+                    elif e.key == PYGM.K_2:
                         self.clip_select(2)
-                    elif e.key == K_3:
+                    elif e.key == PYGM.K_3:
                         self.clip_select(3)
-                    elif e.key == K_4:
+                    elif e.key == PYGM.K_4:
                         self.clip_select(4)
-                    elif e.key == K_5:
+                    elif e.key == PYGM.K_5:
                         self.clip_select(5)
-                    elif e.key == K_6:
+                    elif e.key == PYGM.K_6:
                         self.clip_select(6)
-                    elif e.key == K_7:
+                    elif e.key == PYGM.K_7:
                         self.clip_select(7)
-                    elif e.key == K_8:
+                    elif e.key == PYGM.K_8:
                         self.clip_select(8)
-                    elif e.key == K_9:
+                    elif e.key == PYGM.K_9:
                         self.clip_select(9)
-                    elif e.key == K_UP: # UP Speed Increase
+                    elif e.key == PYGM.K_UP: # UP Speed Increase
                         self.framerate_increase(1)
-                    elif e.key == K_DOWN: # DOWN Speed Decrease
+                    elif e.key == PYGM.K_DOWN: # DOWN Speed Decrease
                         self.framerate_increase(-1)
-                    elif e.key == K_SPACE: # SPACE Add frame
+                    elif e.key == PYGM.K_RIGHT: # previous frame
+                        self.writehead_move(1)
+                    elif e.key == PYGM.K_LEFT: # next frame
+                        self.writehead_move(-1)
+                    elif e.key == PYGM.K_RETURN: # RETURN: goes to last frame
+                        self.writehead_goto(-1)
+                    elif e.key == PYGM.K_SPACE: # SPACE Add frame
                         self.frame_add()
-                    elif e.key == K_BACKSPACE: # BACKSPACE Remove frame
+                    elif e.key == PYGM.K_BACKSPACE: # BACKSPACE Remove frame
                         self.frame_remove()
-                    elif e.key == K_ESCAPE: #  or e.key == K_q: # ESCAPE or Q
+                    elif e.key == PYGM.K_ESCAPE: #  or e.key == K_q: # ESCAPE or Q
                         if self.config.verbose:
                             print("ESC pressed.")
                         self.quit()
