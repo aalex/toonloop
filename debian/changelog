@@ -1,3 +1,16 @@
+toonloop (1.0.5) unstable; urgency=low
+  
+  * General clean up done. This deserves a version number increment :
+  * Improved error handling
+  * Debian packaging seems ok.
+  * Signals in the GTK way work.
+  * Man page improved a lot.
+  * Added mouse support.
+  * Forcing garbage collection on every frame...
+  * .desktop file corrected.
+ 
+ -- Alexandre Quessy <alexandre@quessy.net> Sat, 28 Nov 2009 10:52:10 -0500
+
 toonloop (1.0.4-3) unstable; urgency=low
   
   * fixed more error with .desktop file.
