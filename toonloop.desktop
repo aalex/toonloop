@@ -2,10 +2,10 @@
 
 [Desktop Entry]
 Encoding=UTF-8
-Version=1.0.1
+Version=1.0.4
 Exec=toonloop 
 Type=Application
-Terminal=true
+Terminal=false
 Name=Toonloop
 Name[en_CA]=Toonloop
 Comment=The Toonloop Live Stop Motion Tool

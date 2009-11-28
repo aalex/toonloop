@@ -17,3 +17,10 @@ _trial_temp/*
 # toonloop custom files
 *.1
 *.egg*
+# debian stuff
+debian/toonloop*
+debian/compat
+debian/files
+debian/pycompat
+python-build-stamp-*
+
