@@ -144,7 +144,10 @@ def run():
         pass # will exit on ctrl-c
     print("Exiting toonloop")
     try:
-        reactor.stop() # just in case.
-    except error.ReactorNotRunning, e:
+        try:
+            reactor.stop() # just in case.
+        except error.ReactorNotRunning, e:
+            pass
+    except AttributeError, e: # error.ReactorNotRunning is deprecated in later twisted version.
         pass
     sys.exit(0)
