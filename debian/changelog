@@ -1,3 +1,9 @@
+toonloop (1.0.6) unstable; urgency=low
+  
+  * Fixed crash when deleting a frame. Dangerous in fullscreen mode.  
+ 
+ -- Alexandre Quessy <alexandre@quessy.net> Mon, 07 Dec 2009 23:24:37 -0500
+
 toonloop (1.0.5) unstable; urgency=low
   
   * General clean up done. This deserves a version number increment :
