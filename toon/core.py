@@ -997,7 +997,7 @@ class Toonloop(render.Game):
         Deletes the last frame from the current list of images.
         """
         if self.clip.images != []:
-            self.clip.images.pop(self.clip.writehead)
+            self.clip.images.pop(self.clip.writehead - 1)
             self.clip.writehead -= 1 # FIXME Is this ok?
             # would it be better to also delete it ? calling del
             if self.clip.images == []:
