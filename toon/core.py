@@ -1099,6 +1099,10 @@ class Toonloop(render.Game):
             elif e.type == pygame.VIDEORESIZE:
                 print("VIDEORESIZE %s" % (e))
             elif e.type == PYGM.KEYDOWN:
+                modifiers = pygame.key.get_mods()
+                if modifiers & PYGM.KMOD_LSHIFT != 0:
+                    if self.config.verbose:
+                        print("Left shit is being pressed.")
                 try:
                     if self.config.verbose:
                         if e.key < 255 and not e.key == PYGM.K_ESCAPE:
