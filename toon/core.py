@@ -356,8 +356,11 @@ class Toonloop(render.Game):
         self._init_clips()
         self.renderer = None # Renderer instance that owns it.
         # the icon
-        icon = pygame.image.load(os.path.join(PACKAGE_DATA_PATH, "icon.png"))
-        pygame.display.set_icon(icon) # a 32 x 32 surface
+        try:
+            icon = pygame.image.load(os.path.join(PACKAGE_DATA_PATH, "icon.png"))
+            pygame.display.set_icon(icon) # a 32 x 32 surface
+        except pygame.error, e:
+            print("ERROR : Could not load icon : %s" % (e.message))
         # the pygame window
         self.display = pygame.display.set_mode(self._display_size, PYGM.OPENGL | PYGM.DOUBLEBUF | PYGM.HWSURFACE)
         pygame.display.set_caption("Toonloop")
@@ -695,16 +698,16 @@ class Toonloop(render.Game):
         #     print "Sometimes the camera module need it's init()",
         #     print " to be called and sometimes not."
         except AttributeError, e:
-            print('ERROR: pygame.camera has no method init() !', e.message)
+            print('ERROR: pygame.camera has no method init() ! %s' % (e.message))
         except Exception, e:
-            print("error calling pygame.camera.init()", e.message)
+            print("error calling pygame.camera.init(): %s" % (e.message))
             print(sys.exc_info())
             raise ToonloopError("Error initializing the video camera. %s" % (e.message))
         try:
-            print("cameras :", pygame.camera.list_cameras())
+            print("cameras : %s" % (pygame.camera.list_cameras()))
             if self.is_mac:
                 print("Using camera %s" % (self.config.video_device))
-                self.camera = pygame.camera.Camera(self.config.video_device, size)
+                self.camera = pygame.camera.Camera(str(self.config.video_device), size)
             else:
                 print("Using camera /dev/video%d" % (self.config.video_device))
                 self.camera = pygame.camera.Camera("/dev/video%d" % (self.config.video_device), size)
@@ -994,7 +997,7 @@ class Toonloop(render.Game):
         Deletes the last frame from the current list of images.
         """
         if self.clip.images != []:
-            self.clip.images.pop(self.clip.writehead)
+            self.clip.images.pop(self.clip.writehead - 1)
             self.clip.writehead -= 1 # FIXME Is this ok?
             # would it be better to also delete it ? calling del
             if self.clip.images == []:
