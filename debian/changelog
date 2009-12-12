@@ -1,3 +1,9 @@
+toonloop (1.0.7) unstable; urgency=low
+  
+  * Creating a PNG icon at install time.
+ 
+ -- Alexandre Quessy <alexandre@quessy.net> Sat, 12 Dec 2009 12:35:21 -0500
+
 toonloop (1.0.6-2) unstable; urgency=low
   
   * SVG icon now goes to the right place, and not into a directory with its
