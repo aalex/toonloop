@@ -153,6 +153,7 @@ class Configuration(object): #Serializable):
         # window
         self.display_width = self.image_width * 2 # 640 , was 1024
         self.display_height = self.image_height * 2 # 480 , was 768
+        self.display_fullscreen = False
         
         # web services
         self.web_server_port = 8000
@@ -366,7 +367,10 @@ class Toonloop(render.Game):
         except pygame.error, e:
             print("ERROR : Could not load icon : %s" % (e.message))
         # the pygame window
-        self.display = pygame.display.set_mode(self._display_size, PYGM.OPENGL | PYGM.DOUBLEBUF | PYGM.HWSURFACE)
+        window_flags = PYGM.OPENGL | PYGM.DOUBLEBUF | PYGM.HWSURFACE
+        if self.config.display_fullscreen:
+            window_flags |= PYGM.FULLSCREEN
+        self.display = pygame.display.set_mode(self._display_size, window_flags)
         pygame.display.set_caption("Toonloop")
         pygame.mouse.set_visible(False)
         # the images
@@ -1097,6 +1101,13 @@ class Toonloop(render.Game):
             if self.config.verbose:
                 print("Playhead frequency ratio: 30 / %d" % (will_be))
         self.signal_framerate(will_be)
+
+    def toggle_fullscreen(self):
+        """
+        Toggles from window to fullscreen view.
+        """
+        self.config.display_fullscreen != self.config.display_fullscreen
+        pygame.display.toggle_fullscreen()
     
     def process_events(self, events):
         """
@@ -1132,7 +1143,7 @@ class Toonloop(render.Game):
                     elif e.key == PYGM.K_j: # J
                         self.intervalometer_rate_increase(-1)
                     elif e.key == PYGM.K_f: # F Fullscreen
-                        pygame.display.toggle_fullscreen()
+                        self.toggle_fullscreen()
                     elif e.key == PYGM.K_i: # I Info
                         self.print_stats()
                     elif e.key == PYGM.K_p: # P Pause

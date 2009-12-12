@@ -61,6 +61,8 @@ def run():
     # other args:
     parser.add_option("-f", "--fps", type="int", \
         help="Sets the rendering frame rate. Default is 30 FPS.", default=30)
+    parser.add_option("-F", "--fullscreen", action="store_true", \
+        help="Displays in fullscreen mode at startup.") # default=False
     parser.add_option("-t", "--intervalometer-rate-seconds", type="float",  \
         help="Sets intervalometer interval in seconds.", default=30.0)
     parser.add_option("-c", "--config-file", type="string",  \
@@ -85,6 +87,8 @@ def run():
     #config.load() # updates the config dict with values serialized before.
     if options.toonloop_home:
         config_dict['toonloop_home'] = options.toonloop_home
+    if options.fullscreen:
+        config_dict["display_fullscreen"] = options.fullscreen
     if options.image_width:
         config_dict['image_width'] = options.image_width
         config_dict['image_height'] = options.image_width * 3 / 4 # fixed aspect ratio
