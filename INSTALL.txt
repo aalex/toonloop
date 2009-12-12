@@ -12,34 +12,15 @@ the apt-get command line utility on Ubuntu or Debian GNU/Linux. Some other
 tools must be installed using subversion or from a compressed archive 
 downloaded from the Internet, since we need some of their latest features. 
 
-Development tools ::
+Dependencies ::
 
-  sudo apt-get install automake libtool git-core subversion wget
+  sudo apt-get install automake libtool git-core subversion wget mercurial imagemagick python-twisted python-numpy python-opengl python-pyglew python-dev python-nevow python-docutils python-setuptools libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl-gfx1.2-dev  libsdl-sound1.2-dev libsmpeg-dev libpng12-dev libjpeg-dev libportmidi-dev libtiff4-dev mencoder libportmidi-dev
 
-Python Packages::
+Install Pygame 1.9
+------------------
+Actually, the easiest way to install pygame version 1.9 or later is to use the debian package. One can be found on the http://bitbucket.org/aalex/toonloop1/downloads/ page. Simply download it and gdebi should install it for you.
 
-  sudo apt-get install python-twisted python-numpy python-opengl python-pyglew python-dev python-nevow python-docutils python-setuptools
-
-The SDL Library::
-  
-  sudo apt-get install libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl-gfx1.2-dev  libsdl-sound1.2-dev libsmpeg-dev 
-
-libpng, libjpeg and portmidi::
-
-  sudo apt-get install libpng12-dev libjpeg-dev libportmidi-dev libtiff4-dev
-
-Mencoder ::
-
-  sudo apt-get install mencoder
-
-Portmidi ::
-
-  sudo apt-get install libportmidi-dev
-
-Checkout and Build Pygame
--------------------------
-
-The camera module for pygame is available from pygame's svn revision 
+If you want to do it the hard way, you can build Pygame from the source. Here is how. The camera module for pygame is available from pygame's svn revision 
 1744 or greater::
 
   mkdir -p ~/src
@@ -62,13 +43,15 @@ If you prefer, you can get a Pygame release version 1.9 or more recent::
   sudo python setup.py install --prefix=/usr/local
   popd
 
-Install liblo 
--------------
-Install liblo from source. The version that comes with in the GNU/Linux 
-Ubuntu 8.10 package hangs when starting the server. Liblo is a library 
-that implements the OSC protocol.
-See http://liblo.sourceforge.net/ for more information on liblo. 
-Here is how to install liblo ::
+Install pyliblo (not mandatory) 
+-------------------------------
+If you are using Ubuntu version 9.04 or more recent, you can simply install the liblo-dev and the python-liblo package::
+
+  sudo apt-get install liblo-dev python-liblo
+
+If using an old version of Ubuntu, install liblo from source. The version that comes with in the GNU/Linux Ubuntu 8.10 package hangs when starting the server. Liblo is a library that implements the OSC protocol. See http://liblo.sourceforge.net/ for more information on liblo. 
+
+Here is how to install liblo from sources ::
 
   mkdir -p ~/src
   pushd ~/src
@@ -80,9 +63,7 @@ Here is how to install liblo ::
   popd
   popd
 
-Install pyliblo
----------------
-See http://das.nasophon.de/pyliblo/ for more infos. ::
+Here is how to install pyliblo from sources. See http://das.nasophon.de/pyliblo/ for more infos. ::
 
   mkdir -p ~/src
   pushd ~/src
@@ -94,14 +75,17 @@ See http://das.nasophon.de/pyliblo/ for more infos. ::
   popd
   popd
 
-
 Checkout and Run ToonLoop
 -------------------------
+The easiest way to install Toonloop is to use the debian package. You can find it on the http://bitbucket.org/aalex/toonloop1/downloads/ page. Simply download it with your web browser, and the package manager should ask you if you want to install it. 
+
+If you want to do it the hard way, here is how to build and install Toonloop from the sources. 
+
 Check it out using Subversion::
 
   mkdir ~/src
   cd ~/src
-  svn checkout http://toonloop.googlecode.com/svn/trunk/py toonloop
+  hg clone https://bitbucket.org/aalex/toonloop1 toonloop
   cd toonloop
 
 ToonLoop should now run::
@@ -109,8 +93,6 @@ ToonLoop should now run::
   cd ~/src/toonloop
   ./toonloop
 
-Installation
-------------
 You can install it to your computer if you want.::
 
   python setup.py build
@@ -129,7 +111,6 @@ Actually, there is also a Makefile, which not only installs ToonLoop to
  
   sudo apt-get install help2man
   sudo make install
-
 
 Additional Configuration Notes
 ------------------------------
