@@ -1,3 +1,10 @@
+toonloop (1.0.6-2) unstable; urgency=low
+  
+  * SVG icon now goes to the right place, and not into a directory with its
+    name.
+ 
+ -- Alexandre Quessy <alexandre@quessy.net> Sat, 12 Dec 2009 09:57:15 -0500 
+
 toonloop (1.0.6) unstable; urgency=low
   
   * Fixed crash when deleting a frame. Dangerous in fullscreen mode.  

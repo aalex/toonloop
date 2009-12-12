@@ -9,6 +9,6 @@ include /usr/share/cdbs/1/class/python-distutils.mk
 binary-install/toonloop::
 	dh_pycentral -ptoonloop
 	dh_install toonloop.desktop usr/share/applications
-	dh_install toonloop.svg usr/share/icons/hicolor/scalable/toonloop.svg
+	dh_install toonloop.svg usr/share/icons/hicolor/scalable
 	help2man --no-info --include=man_toonloop.txt --name="The Toonloop Live Stop Motion Tool" ./toonloop > toonloop.1 
 	dh_installman toonloop.1
