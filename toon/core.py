@@ -106,6 +106,9 @@ from OpenGL import GL # want to get rid of namespace contamination
 
 PACKAGE_DATA_PATH = os.path.dirname(data.__file__)
 # the version number is in both toon/runner.py and setup.py
+DIRECTION_FORWARD = "forward"
+DIRECTION_BACKWARD = "backward"
+DIRECTION_YOYO = "yoyo" # back and forth
 
 class ToonloopError(Exception):
     """
@@ -305,6 +308,7 @@ class ToonClip(object): #Serializable):
         self.id = id
         self.playhead = 0 # between 0 and n - 1
         self.playhead_iterate_every = 1
+        self.direction = DIRECTION_FORWARD
         # Ratio that decides of the framerate
         # self.framerate = 12
         self.__dict__.update(argd)
@@ -603,20 +607,21 @@ class Toonloop(render.Game):
         """
         Prints help for live keyboard controls.
         """
-        print("Toonloop keyboard controls : ")
-        print("<Space bar> = add image to loop ")
-        print("<Backspace> = remove image from loop ")
-        print("r = reset loop")
-        print("p = pause")
-        print("o = toggle onion skin on/off")
-        print("i = prints informations")
-        print("h = prints this help message")
-        print("s = saves current clip as jpeg and movie")
-        print("a = enable the intervalometer auto grab")
-        print("k = increase the intervalometer interval")
-        print("j = decrease the intervalometer interval")
+        print("Toonloop keyboard controls :")
+        print("<Space bar> = add image to clip.")
+        print("<Backspace> = remove image from clip.")
+        print("r       = reset clip.")
+        print("p       = pause.")
+        print("o       = toggle onion skin on/off.")
+        print("i       = prints informations.")
+        print("h       = prints this help message.")
+        print("s       = saves current clip as jpeg and movie.")
+        print("a       = enable the intervalometer auto grab.")
+        print("k       = increase the intervalometer interval.")
+        print("j       = decrease the intervalometer interval.")
+        print("tab     = Changes the playback direction for the current clip.")
         print("[0, 9]  = select a clip from the current project")
-        print("<Esc> = quit program\n")
+        print("<Esc>   = quit program\n")
 
     def _init_clips(self):
         """
@@ -928,10 +933,18 @@ class Toonloop(render.Game):
         """ 
         Increments the playhead position of one frame
         """
-        if self.clip.playhead < len(self.clip.images) - 1:
-            self.clip.playhead += 1
-        else:
-            self.clip.playhead = 0
+        if self.clip.direction == DIRECTION_FORWARD:
+            if self.clip.playhead < len(self.clip.images) - 1:
+                self.clip.playhead += 1
+            else:
+                self.clip.playhead = 0
+        elif self.clip.direction == DIRECTION_BACKWARD:
+            if self.clip.playhead > 0:
+                self.clip.playhead -= 1
+            else:
+                self.clip.playhead = len(self.clip.images) - 1
+        #TODO: implement DIRECTION_YOYO
+            
         # now, let's copy it to VRAM
         if len(self.clip.images) > 0:
             image = self.clip.images[self.clip.playhead]
@@ -1175,6 +1188,8 @@ class Toonloop(render.Game):
                         self.frame_add()
                     elif e.key == PYGM.K_BACKSPACE: # BACKSPACE Remove frame
                         self.frame_remove()
+                    elif e.key == PYGM.K_TAB: # TAB changes direction
+                        self.direction_change()
                     elif e.key == PYGM.K_ESCAPE: #  or e.key == K_q: # ESCAPE or Q
                         if self.config.verbose:
                             print("ESC pressed.")
@@ -1192,6 +1207,25 @@ class Toonloop(render.Game):
     def _quit(self):
         self.running = False
         # self.cleanup will be called.
+
+    def direction_change(self, direction=None):
+        """
+        Changes the direction of the current clip's playback.
+
+        If direction param is None, will cycle through the available directions.
+        :param direction: int with the value of the constant DIRECTION_FORWARD or DIRECTION_BACKWARD
+        """
+        if direction is None:
+            if self.clip.direction == DIRECTION_BACKWARD:
+                direction = DIRECTION_FORWARD
+            else:
+                direction = DIRECTION_BACKWARD
+        if direction == DIRECTION_YOYO:
+            print("Playhead direction YOYO is not yet implemented.") # TODO
+        else:
+            if self.config.verbose:
+                print("Changing playback direction to %s" % (direction))
+            self.clip.direction = direction
 
     def autosave_toggle(self, val=None):
         """
