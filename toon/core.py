@@ -1190,6 +1190,10 @@ class Toonloop(render.Game):
                         self.frame_remove()
                     elif e.key == PYGM.K_TAB: # TAB changes direction
                         self.direction_change()
+                    elif e.key == PYGM.K_MINUS:
+                        pass # TODO
+                    elif e.key == PYGM.K_PLUS:
+                        pass # TODO
                     elif e.key == PYGM.K_ESCAPE: #  or e.key == K_q: # ESCAPE or Q
                         if self.config.verbose:
                             print("ESC pressed.")

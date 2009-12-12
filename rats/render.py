@@ -29,6 +29,7 @@ Renderer for Pygame using Twisted
 import pygame
 from pygame import time
 from twisted.internet import reactor
+from twisted.internet import task
 
 class Game(object):
     """
@@ -68,8 +69,27 @@ class Renderer(object):
         self.desired_fps = 12.0
         # start
         self.check_for_events() # starts a metronome
+        self._looping_events_check = None
+        self._setup_events_looping_call()
         self.update() # starts a metronome
 
+    def _on_events_error(self, reason):
+        """
+        ErrBack for the self._looping_events_check LoopingCall.
+        """
+        reason.printTraceback()
+        #print(reason.getErrorMessage())
+        self._setup_events_looping_call()
+
+    def _setup_events_looping_call(self):
+        """
+        Sets up the self._looping_events_check LoopingCall.
+        """
+        self._looping_events_check = task.LoopingCall(self.check_for_events)
+        deferred = self._looping_events_check.start(0.01, True) # now=True
+        # FIXME: events are check at 100 fps ! Make configurable.
+        deferred.addErrback(self._on_events_error)
+    
     def check_for_events(self):
         """
         Check for pygame events and warn the game.
@@ -77,7 +97,7 @@ class Renderer(object):
         """
         events = pygame.event.get()
         self.game.process_events(events)
-        reactor.callLater(0, self.check_for_events)
+        #reactor.callLater(0, self.check_for_events)
 
     def update(self):
         """
@@ -85,23 +105,26 @@ class Renderer(object):
         """
         self.clock.tick()
         self.ms = self.clock.get_rawtime()
-        
         framespeed = (1.0 / self.desired_fps) * 1000
         lastspeed = self.ms
         next = framespeed - lastspeed
-        
         if self.is_verbose:
             print "FPS: %5f" % (self.clock.get_fps())
-        
         # calls its draw method, which draw and refresh the whole screen.
         self.game.draw()
-        
+# FIXME: if an exception is raised here, no more drawing occurs !!
         if not self.game.running:
-            self.game.cleanup()
-            reactor.stop()
+            self._stop()
         else:
             when = next / 1000.0 * 2.0
             if when < 0:
                 when = 0
             reactor.callLater(when, self.update)
 
+    def _stop(self):
+        """
+        Stops the game and quits
+        """
+        self.game.cleanup()
+        self._looping_events_check.stop()
+        reactor.stop()
