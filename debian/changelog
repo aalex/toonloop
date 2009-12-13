@@ -1,3 +1,14 @@
+toonloop (1.0.8) unstable; urgency=low
+  
+  * Onion skinning texture is now updated when deleting frames or moving writehead.
+  * Added styles. The picture_in_picture style looks OK.
+  * Added yoyo and backwards playback directions.
+  * rats.render now handles errors gracefully. No longer stuck in fullscreen with an exception making controls inactive.
+  * Added --fullscreen flag.
+  * Changed default selected clip to #1.
+ 
+ -- Alexandre Quessy <alexandre@quessy.net> Sun, 13 Dec 2009 16:28:59 -0500
+
 toonloop (1.0.7) unstable; urgency=low
   
   * Creating a PNG icon at install time.
