@@ -87,7 +87,7 @@ class ChromaKeyEffect(fx.Effect):
             #'chromakey_enabled':False,
             '_texture_id':0,
             }
-        print("init %s" % (self.name))
+        #print("init %s" % (self.name))
         fx.Effect.__init__(self)
     
     def update_config(self, config):
@@ -111,8 +111,8 @@ class ChromaKeyEffect(fx.Effect):
         self.program.linkShaders()
         # will throw an error if there is a problem
         self.is_enabled = True
-        print("Set up effect %s" % (self.name))
-        print(self.config)
+        #print("Set up effect %s" % (self.name))
+        #print(self.config)
     
     def pre_draw(self):
         if self.is_enabled and self.is_on:
@@ -120,7 +120,7 @@ class ChromaKeyEffect(fx.Effect):
                 self.program.enable()
             except Exception, e: 
                 self.loaded = False
-                print e.message
+                print(e.message)
             else:
                 self.program.glUniform1i("image", self.config["_texture_id"])
                 # program.glUniform1f("alpha_result", 0.2)
@@ -134,7 +134,7 @@ class ChromaKeyEffect(fx.Effect):
                 self.program.disable()
             except Exception, e: 
                 self.loaded = False
-                print e.message
+                print(e.message)
 
 def get_effect():
     """
