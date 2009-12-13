@@ -356,7 +356,7 @@ class Toonloop(render.Game):
         self.image_size = (self.config.image_width, self.config.image_height)
         self.clock = pygame.time.Clock()
         self.fps = 0 # for statistics
-        self.clip_id = 0 # Currently selected clip
+        self.clip_id = 1 # Currently selected clip
         self.clip = None # current ToonClip instance
         self.clips = [] # ToonClip instances
         self._init_clips()
