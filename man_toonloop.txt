@@ -32,6 +32,7 @@ Toonloop is an interactive software. While it runs, or can control it using keyb
     k = Increase the intervalometer interval.
     j = Decrease the intervalometer interval.
     x = Saves the current configuration options to ~/.toonloop.json
+    . = Changes the graphicals style.
     [tab] = Changes the playback direction of the current clip.
     [0, 9]  = Selects a clip from the current project identified by a number.
     <Esc> = Quits the program.

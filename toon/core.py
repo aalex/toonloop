@@ -394,7 +394,11 @@ class Toonloop(render.Game):
             STYLE_SPLIT_SCREEN: SplitScreenStyle(),
             STYLE_PICTURE_IN_PICTURE: PictureInPictureStyle(),
             }
-        self.style = self.styles[STYLE_SPLIT_SCREEN]
+        if self.config.display_style not in self.styles.keys():
+            print("Error: not such style: %s. using default")
+            self.config.display_style = STYLE_SPLIT_SCREEN
+        self.style = self.styles[self.config.display_style]
+            
         # the icon
         try:
             icon = pygame.image.load(os.path.join(PACKAGE_DATA_PATH, "icon.png"))
@@ -519,6 +523,7 @@ class Toonloop(render.Game):
             self.style = self.styles[STYLE_SPLIT_SCREEN]
         else:
             self.style = self.styles[STYLE_PICTURE_IN_PICTURE]
+        self.config.display_style = self.style.name
 
     def sampler_record(self, start=True):
         """
@@ -668,9 +673,17 @@ class Toonloop(render.Game):
         print("a       = enable the intervalometer auto grab.")
         print("k       = increase the intervalometer interval.")
         print("j       = decrease the intervalometer interval.")
+        print(".       = Changes the graphical style.")
         print("tab     = Changes the playback direction for the current clip.")
         print("[0, 9]  = select a clip from the current project")
         print("<Esc>   = quit program\n")
+
+    def _draw_hud(self):
+        """
+        Draws the head-up-display. Numbers, text, etc. overlayed on top of images. 
+        """
+        #TODO
+        pass
 
     def _init_clips(self):
         """
