@@ -308,6 +308,7 @@ class ToonClip(object): #Serializable):
         """
         self.id = id
         self.playhead = 0 # between 0 and n - 1
+        self.playhead_previous = 0 # previous position of the playhead
         self.playhead_iterate_every = 1
         self.direction = DIRECTION_FORWARD
         # Ratio that decides of the framerate
@@ -942,20 +943,42 @@ class Toonloop(render.Game):
         """ 
         Increments the playhead position of one frame
         """
-        if self.clip.direction == DIRECTION_FORWARD:
-            if self.clip.playhead < len(self.clip.images) - 1:
-                self.clip.playhead += 1
-            else:
-                self.clip.playhead = 0
-        elif self.clip.direction == DIRECTION_BACKWARD:
-            if self.clip.playhead > 0:
-                self.clip.playhead -= 1
-            else:
-                self.clip.playhead = len(self.clip.images) - 1
-        #TODO: implement DIRECTION_YOYO
-            
-        # now, let's copy it to VRAM
-        if len(self.clip.images) > 0:
+        if len(self.clip.images) == 0:
+            self.clip.playhead_previous = 0
+            # nothing to copy to VRAM
+        else:
+            # check things up
+            if self.clip.direction == DIRECTION_FORWARD:
+                direction = DIRECTION_FORWARD
+            elif self.clip.direction == DIRECTION_BACKWARD:
+                direction = DIRECTION_BACKWARD
+            elif self.clip.direction == DIRECTION_YOYO:
+                # FIXME: this should be simpler. Maybe use a table lookup?
+                if self.clip.playhead > self.clip.playhead_previous:
+                    # if was going forward
+                    if self.clip.playhead >= len(self.clip.images) - 1:
+                        direction = DIRECTION_BACKWARD
+                    else:
+                        direction = DIRECTION_FORWARD
+                else:
+                    # if was going backwards
+                    if self.clip.playhead == 0:
+                        direction = DIRECTION_FORWARD
+                    else:
+                        direction = DIRECTION_BACKWARD
+            self.clip.playhead_previous = self.clip.playhead
+            # actually do the incrementation
+            if direction == DIRECTION_FORWARD:
+                if self.clip.playhead < len(self.clip.images) - 1:
+                    self.clip.playhead += 1
+                else:
+                    self.clip.playhead = 0
+            elif direction == DIRECTION_BACKWARD:
+                if self.clip.playhead > 0:
+                    self.clip.playhead -= 1
+                else:
+                    self.clip.playhead = len(self.clip.images) - 1
+            # now, let's copy it to VRAM
             image = self.clip.images[self.clip.playhead]
             draw.texture_from_image(self.textures[self.TEXTURE_PLAYBACK], image)
 
@@ -1238,14 +1261,16 @@ class Toonloop(render.Game):
         if direction is None:
             if self.clip.direction == DIRECTION_BACKWARD:
                 direction = DIRECTION_FORWARD
+            elif self.clip.direction == DIRECTION_FORWARD:
+                direction = DIRECTION_YOYO
             else:
                 direction = DIRECTION_BACKWARD
-        if direction == DIRECTION_YOYO:
-            print("Playhead direction YOYO is not yet implemented.") # TODO
-        else:
-            if self.config.verbose:
-                print("Changing playback direction to %s" % (direction))
-            self.clip.direction = direction
+        #if direction == DIRECTION_YOYO:
+        #    print("Playhead direction YOYO is not yet implemented.") # TODO
+        #else:
+        if self.config.verbose:
+            print("Changing playback direction to %s" % (direction))
+        self.clip.direction = direction
 
     def autosave_toggle(self, val=None):
         """
