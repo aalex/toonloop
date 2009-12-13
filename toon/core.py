@@ -109,6 +109,8 @@ PACKAGE_DATA_PATH = os.path.dirname(data.__file__)
 DIRECTION_FORWARD = "forward"
 DIRECTION_BACKWARD = "backward"
 DIRECTION_YOYO = "yoyo" # back and forth
+STYLE_SPLIT_SCREEN = "split_screen"
+STYLE_PICTURE_IN_PICTURE = "picture_in_picture"
 
 class ToonloopError(Exception):
     """
@@ -154,6 +156,7 @@ class Configuration(object): #Serializable):
         self.display_width = self.image_width * 2 # 640 , was 1024
         self.display_height = self.image_height * 2 # 480 , was 768
         self.display_fullscreen = False
+        self.display_style = STYLE_SPLIT_SCREEN
         
         # web services
         self.web_server_port = 8000
@@ -316,6 +319,32 @@ class ToonClip(object): #Serializable):
         self.__dict__.update(argd)
         self.images = []
         self.writehead = len(self.images) # index of the next image to be filled up. Between 0 and n.
+
+class SplitScreenStyle(object):
+    """
+    Styles allow to customize the graphical attributes of the rendering.
+    This is the base style with a split screen.
+    """
+    def __init__(self):
+        self.name = STYLE_SPLIT_SCREEN
+        self.play_pos = (2.0, 0.0, 0.0)
+        self.play_scale = (2.0, 1.5, 1.0)
+        self.edit_pos = (-2.0, 0.0, 0.0)
+        self.edit_scale = (2.0, 1.5, 1.0)
+        #self.flash_color = (1.0, 1.0, 1.0, 1.0)
+        #TODO: add a style not displaying the edit "viewport".
+
+class PictureInPictureStyle(SplitScreenStyle):
+    """
+    This style is a picture in picture style.
+    """
+    def __init__(self):
+        SplitScreenStyle.__init__(self) # inherit some attributes from the base style.
+        self.name = STYLE_PICTURE_IN_PICTURE
+        self.play_pos = (0.0, 0.0, 0.0)
+        self.play_scale = (4.0, 3.0, 1.0)
+        self.edit_pos = (2.0, 1.5, 0.0)
+        self.edit_scale = (1.0, 0.75, 1.0)
     
 class Toonloop(render.Game):
     """
@@ -361,6 +390,11 @@ class Toonloop(render.Game):
         self.clips = [] # ToonClip instances
         self._init_clips()
         self.renderer = None # Renderer instance that owns it.
+        self.styles = {
+            STYLE_SPLIT_SCREEN: SplitScreenStyle(),
+            STYLE_PICTURE_IN_PICTURE: PictureInPictureStyle(),
+            }
+        self.style = self.styles[STYLE_SPLIT_SCREEN]
         # the icon
         try:
             icon = pygame.image.load(os.path.join(PACKAGE_DATA_PATH, "icon.png"))
@@ -479,6 +513,12 @@ class Toonloop(render.Game):
                 print("Could not setup MIDI device %d" % (self.config.midi_input_id))
         self.signal_clip(0) # default clip id
         self.signal_writehead(0)
+
+    def style_change(self):
+        if self.style.name == STYLE_PICTURE_IN_PICTURE:
+            self.style = self.styles[STYLE_SPLIT_SCREEN]
+        else:
+            self.style = self.styles[STYLE_PICTURE_IN_PICTURE]
 
     def sampler_record(self, start=True):
         """
@@ -792,6 +832,15 @@ class Toonloop(render.Game):
             index = last
         if self.config.verbose:
             print("writehead_goto %d" % (index))
+        if len(self.clip.images) == 0:
+            index = 0
+        else:
+            # copying the onion skinning texture
+            try:
+                draw.texture_from_image(self.textures[self.TEXTURE_ONION], self.clip.images[index])
+            except IndexError, e:
+                index = len(self.clip.images) - 1
+                draw.texture_from_image(self.textures[self.TEXTURE_ONION], self.clip.images[index])
         self.clip.writehead = index
         self.signal_writehead(index) # FIXME : is this ok to call it ?
     
@@ -817,6 +866,10 @@ class Toonloop(render.Game):
 
         # now, let's draw something
         self._draw_background() # only if enabled
+        # ---------- playback view
+        self.fx_chromakey.pre_draw()
+        self._draw_playback_view()
+        self.fx_chromakey.post_draw()
         # --------- edit view
         self.fx_chromakey.pre_draw()
         self._draw_edit_view()
@@ -830,10 +883,6 @@ class Toonloop(render.Game):
             self._has_just_added_frame = False
             if self.config.fx_white_flash:
                 self._draw_white_flash()
-        # ---------- playback view
-        self.fx_chromakey.pre_draw()
-        self._draw_playback_view()
-        self.fx_chromakey.post_draw()
         # ----------- done drawing.
         self.clock.tick()
         self.fps = self.clock.get_fps()
@@ -851,11 +900,12 @@ class Toonloop(render.Game):
         a = self.config.fx_white_flash_alpha
         GL.glColor4f(1.0, 1.0, 1.0, a)
         GL.glPushMatrix()
-        GL.glTranslatef(-2.0, 0.0, 0.0)
-        GL.glScalef(2.0, 1.5, 1.0)
+        GL.glTranslatef(*self.style.edit_pos)#-2.0, 0.0, 0.0)
+        GL.glScalef(*self.style.edit_scale)#2.0, 1.5, 1.0)
         draw.draw_square()
         GL.glPopMatrix()
 
+    
     def _draw_background(self):
         """
         Renders the background 
@@ -872,21 +922,22 @@ class Toonloop(render.Game):
         # glColor(1.0, 1.0, 1.0, 1.0)
 
         if self.config.bgimage_enabled:
-            # left view
             GL.glColor4f(1.0, 1.0, 1.0, 1.0)
+            # playback view
             GL.glPushMatrix()
-            GL.glTranslatef(-2.0, 0.0, 0.0)
-            GL.glScalef(2.0, 1.5, 1.0)
+            GL.glTranslatef(*self.style.play_pos) #2.0, 0.0, 0.0)
+            GL.glScalef(*self.style.play_scale)#2.0, 1.5, 1.0)
             GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
             draw.draw_textured_square(self.config.image_width, self.config.image_height)
             GL.glPopMatrix()
-            # right view
+            # edit view
             GL.glPushMatrix()
-            GL.glTranslatef(2.0, 0.0, 0.0)
-            GL.glScalef(2.0, 1.5, 1.0)
+            GL.glTranslatef(*self.style.edit_pos) #-2.0, 0.0, 0.0)
+            GL.glScalef(*self.style.edit_scale)#2.0, 1.5, 1.0)
             GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
             draw.draw_textured_square(self.config.image_width, self.config.image_height)
             GL.glPopMatrix()
+
 
     def _camera_grab_frame(self):
         """
@@ -905,11 +956,11 @@ class Toonloop(render.Game):
         """
         GL.glColor4f(1.0, 1.0, 1.0, 1.0)
         GL.glPushMatrix()
-        GL.glTranslatef(-2.0, 0.0, 0.0)
-        GL.glScalef(2.0, 1.5, 1.0)
+        GL.glTranslatef(*self.style.edit_pos) #-2.0, 0.0, 0.0)
+        GL.glScalef(*self.style.edit_scale) #2.0, 1.5, 1.0)
         # most recent grabbed :
         GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_MOST_RECENT])
-        if self.config.image_flip_horizontal:
+        if self.config.image_flip_horizontal: # FIXME?
             GL.glRotatef(180., 0., 1., 0.)
         draw.draw_textured_square(self.config.image_width, self.config.image_height)
         # self.display_width = 1024
@@ -917,10 +968,10 @@ class Toonloop(render.Game):
         # old: self.display.blit(self.most_recent_image, (0, 0))
 
     def _draw_onion_skin(self):
-        # Onion skin :
+        # Onion skin over dit view:
         GL.glPushMatrix()
-        GL.glTranslatef(-2.0, 0.0, 0.0)
-        GL.glScalef(2.0, 1.5, 1.0)
+        GL.glTranslatef(*self.style.edit_pos)#-2.0, 0.0, 0.0)
+        GL.glScalef(*self.style.edit_scale)#2.0, 1.5, 1.0)
         GL.glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
         GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
         draw.draw_textured_square(self.config.image_width, self.config.image_height)
@@ -933,8 +984,8 @@ class Toonloop(render.Game):
         """
         GL.glColor4f(1.0, 1.0, 1.0, 1.0)
         GL.glPushMatrix()
-        GL.glTranslatef(2.0, 0.0, 0.0)
-        GL.glScalef(2.0, 1.5, 1.0)
+        GL.glTranslatef(*self.style.play_pos)#2.0, 0.0, 0.0)
+        GL.glScalef(*self.style.play_scale)#2.0, 1.5, 1.0)
         GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_PLAYBACK])
         draw.draw_textured_square(self.config.image_width, self.config.image_height)
         GL.glPopMatrix()
@@ -979,7 +1030,12 @@ class Toonloop(render.Game):
                 else:
                     self.clip.playhead = len(self.clip.images) - 1
             # now, let's copy it to VRAM
-            image = self.clip.images[self.clip.playhead]
+            try:
+                image = self.clip.images[self.clip.playhead]
+            except IndexError, e:
+                print("ERROR: No frame %s in clip %s." % (self.clip.playhead, self.clip))
+                image = self.clip.images[0]
+                self.clip.playhead = 0
             draw.texture_from_image(self.textures[self.TEXTURE_PLAYBACK], image)
 
     def _clear_playback_view(self):
@@ -1042,15 +1098,27 @@ class Toonloop(render.Game):
         Deletes the last frame from the current list of images.
         """
         if self.clip.images != []:
-            self.clip.images.pop(self.clip.writehead - 1)
-            self.clip.writehead -= 1 # FIXME Is this ok?
+            index = self.clip.writehead - 1
+            try:
+                self.clip.images.pop(index)
+            except IndexError, e:
+                print("ERROR: Could not remove frame '%s' at writehead - 1 in clip %s." % (index, self.clip))
+                index = len(self.clip.images) - 1
+                self.clip.images.pop(index)
+                self.clip.writehead = max(0, index - 1)
+            if self.clip.writehead != 0:
+                self.clip.writehead -= 1 # FIXME Is this ok?
             # would it be better to also delete it ? calling del
             if self.clip.images == []:
                 self._clear_playback_view()
             else:
                 pass 
-                #texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
-            self.signal_writehead(len(self.clip.images))
+            if self.clip.writehead > 0:
+                try:
+                    draw.texture_from_image(self.textures[self.TEXTURE_ONION], self.clip.images[self.clip.writehead - 1])
+                except IndexError, e:
+                    print("frame_remove:onion skin texture : %s" % (e.message))
+            self.signal_writehead(self.clip.writehead)
             self.signal_frame_remove()
     
     def chromakey_toggle(self, val=None):
@@ -1229,6 +1297,8 @@ class Toonloop(render.Game):
                         self.frame_remove()
                     elif e.key == PYGM.K_TAB: # TAB changes direction
                         self.direction_change()
+                    elif e.key == PYGM.K_PERIOD: # PERIOD changes style
+                        self.style_change()
                     elif e.key == PYGM.K_MINUS:
                         pass # TODO
                     elif e.key == PYGM.K_PLUS:
