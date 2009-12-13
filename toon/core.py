@@ -370,7 +370,11 @@ class Toonloop(render.Game):
         window_flags = PYGM.OPENGL | PYGM.DOUBLEBUF | PYGM.HWSURFACE
         if self.config.display_fullscreen:
             window_flags |= PYGM.FULLSCREEN
-        self.display = pygame.display.set_mode(self._display_size, window_flags)
+            self._display_size = (0, 0) # Automatically detected !
+            self.display = pygame.display.set_mode(self._display_size, window_flags)
+        else:
+            window_flags |= PYGM.RESIZABLE
+            self.display = pygame.display.set_mode(self._display_size, window_flags)
         pygame.display.set_caption("Toonloop")
         pygame.mouse.set_visible(False)
         # the images
@@ -660,7 +664,7 @@ class Toonloop(render.Game):
         """
         # create OpenGL texture objects 
         # window is 1280 x 960
-        self._resize_window(self._display_size)
+        self._resize_window()#self._display_size) # arg totally useless
         GL.glEnable(GL.GL_TEXTURE_RECTANGLE_ARB) # 2D)
         GL.glEnable(GL.GL_BLEND)
         GL.glShadeModel(GL.GL_SMOOTH)
@@ -674,7 +678,8 @@ class Toonloop(render.Game):
             self.fx_chromakey.update_config(self.config.__dict__)
         # print "texture names : ", self.textures
 
-    def _resize_window(self, (width, height)):
+    def _resize_window(self): 
+        #, (width, height)):
         """
         Called when we resize the window.
         (fullscreen on/off)
@@ -683,9 +688,9 @@ class Toonloop(render.Game):
         and -3 to 3 vertically.
         (ratio is 4:3)
         """
-        print("resize", width, height)
-        if height == 0:
-            height = 1
+        #print("resize", width, height)
+        #if height == 0:
+        #    height = 1
         GL.glMatrixMode(GL.GL_PROJECTION)
         GL.glLoadIdentity()
         GL.glOrtho(-4.0, 4.0, -3.0, 3.0, -1.0, 1.0)
