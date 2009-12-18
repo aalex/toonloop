@@ -48,6 +48,9 @@ class ShaderProgram(object):
                 "GL_ARB_vertex_shader",
                 "GL_ARB_fragment_shader"]
         self.checkExtensions(self._requiredExtensions)
+        # TODO: 
+        if not bool(glCreateProgramObjectARB):
+            raise ShaderError("Impossible to create a shader program object.")
         self._shaderProgramID = glCreateProgramObjectARB()
         self._checkOpenGLError()
         self._programReady = False

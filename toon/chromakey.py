@@ -4,6 +4,7 @@ GLSL shaders with SDL, OpenGL texture and Python
 """
 from pygame.locals import *
 from OpenGL.GL import *
+from OpenGL.error import NullFunctionError #TODO: port to all other shader.
 from OpenGL.GLU import *
 from rats.glsl import ShaderProgram
 from rats.glsl import ShaderError
@@ -105,14 +106,22 @@ class ChromaKeyEffect(fx.Effect):
         """
         global vert
         global frag
-        self.program = ShaderProgram()
-        self.program.add_shader_text(GL_VERTEX_SHADER_ARB, vert)
-        self.program.add_shader_text(GL_FRAGMENT_SHADER_ARB, frag)
-        self.program.linkShaders()
-        # will throw an error if there is a problem
-        self.is_enabled = True
-        #print("Set up effect %s" % (self.name))
-        #print(self.config)
+        self.is_enabled = False
+        try:
+            self.program = ShaderProgram()
+            self.program.add_shader_text(GL_VERTEX_SHADER_ARB, vert)
+            self.program.add_shader_text(GL_FRAGMENT_SHADER_ARB, frag)
+            self.program.linkShaders()
+            # will throw an error if there is a problem
+            self.is_enabled = True
+            #print("Set up effect %s" % (self.name))
+            #print(self.config)
+        except NullFunctionException, e:
+            print("Error: %s" % (e.message))
+            print("Disabling the chromakey effect")
+        except ShaderError, e:
+            print("Error: %s" % (e.message))
+            print("Disabling the chromakey effect")
     
     def pre_draw(self):
         if self.is_enabled and self.is_on:
