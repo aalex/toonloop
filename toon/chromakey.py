@@ -116,7 +116,7 @@ class ChromaKeyEffect(fx.Effect):
             self.is_enabled = True
             #print("Set up effect %s" % (self.name))
             #print(self.config)
-        except NullFunctionException, e:
+        except NullFunctionError, e:
             print("Error: %s" % (e.message))
             print("Disabling the chromakey effect")
         except ShaderError, e:
