@@ -1,0 +1,133 @@
+<h1>How to use Toonloop</h1>
+This document explains how to use Toonloop 1.x for GNU/Linux. 
+
+Toonloop 1.x is supported by either Ubuntu GNU/Linux or Debian GNU/Linux operating system. You should get one up and running prior to do the next steps. 
+
+<h2>Step 1 : Download</h2>
+There are two packages you need to install. First install Pygame 1.9, next install Toonloop.
+
+<h2>Step 2 : Install</h2>
+
+<h2>Step 3 : Launch Toonloop</h2>
+
+In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop.
+
+<h2>Step 4 : Make sure you are using the right camera</h2>
+
+<h2>Add frames to a clip</h2>
+
+Press the space bar to add a frame. You can also press on the left button of the mouse. 
+
+<h2>Delete frames</h2>
+
+Press on the Backspace key. You can also use the right mouse button.
+
+<h2>Save to a movie file</h2>
+
+Press on the S key to save the current clip to you hard drive. It is saved in the Documents/toonloop/new_project folder in your home directory.
+
+<h2>Keyboard Controls Summary</h2>
+
+Toonloop is an interactive software. While it runs, or can control it using keyboard keys. Here is a list of keystrokes to control Toonloop.
+
+<pre>
+    [Space bar] = Adds an image to the current clip.
+    [Backspace] = Removes an image from the current clip.
+    r = Resets the current clip. This erases all the images in it !
+    p = Pauses the looping.
+    o = Toggles onion skin on / off.
+    i = Prints informations and statistics.
+    h = Prints an help message.
+    s = Saves the current clip as JPEG and movie file.
+    a = Enable the intervalometer auto grab.
+    k = Increase the intervalometer interval.
+    j = Decrease the intervalometer interval.
+    x = Saves the current configuration options to ~/.toonloop.json
+    . = Changes the graphicals style.
+    [tab] = Changes the playback direction of the current clip.
+    [0, 9]  = Selects a clip from the current project identified by a number.
+    [Esc] = Quits the program.
+    [Up arrow] = Increases the frame rate. (faster)
+    [Down arrow] = Decreases the frame rate. (slower)
+    [Left arrow] = Moves the write head to the left. (towards the beginning)
+    [Right arrow] = Moves the write head to the right. (towards the end)
+    [Return] = Moves the write head to the last frame. (at the end)
+</pre>
+
+<h2>Starting Toonloop from the command line<h2>
+
+On Ubuntu, the Terminal is an application located in the Application - Accessories menu. You can launch Toonloop from there, and specify arguments and options to customize how the software behaves. Try entering the following command, and press "enter".
+
+<pre>
+toonloop -v
+</pre>
+
+You can launch Toonloop with a whole bunch of options. Options are set
+using the -o flag :
+
+toonloop -o toonloop_home ~/Public/toonloop -o project_name hello -o intervalometer_enabled False -o bgimage_glob_enabled True -o image_flip_horizontal True -o chromakey_on True -o chromakey_on True -o chromakey_r 0.2 -o chromakey_g 0.9 -o chromakey_b 0.0 -o chromakey_thresh 0.5 -o chromakey_slope 0.2 -o fudi_enabled True -w 320 -v
+
+<h2>Custom Options</h2>
+
+The --option command line option allows one to specify specific keyword identified by a keyword. Their type can be integer, float, string of boolean. Boolean options can be given using integer of python-style boolean string. A true value can be specified as True, or 1. A false value is set as 0 or False.
+
+Once Toonloop has been started by some keyword config options, those options can be saved to the ~/.toonloop.json configuration file. Next time Toonloop is launched, those configuration options will be read from that file. If Toonloop behaves strangely, you should try deleting that file. 
+
+Here is the list of options with their default values:
+<pre>
+  -o autosave_enabled True
+  -o autosave_on False
+  -o autosave_rate_seconds 600.0
+  -o bgcolor_b 0.2
+  -o bgcolor_g 0.8
+  -o bgcolor_r 1.0
+  -o bgimage [toonloop package data path]/bgimage_05.jpg
+  -o bgimage_enabled False
+  -o bgimage_glob 
+  -o bgimage_glob_enabled False
+  -o chromakey_b 0.0
+  -o chromakey_enabled True
+  -o chromakey_g 0.9
+  -o chromakey_on False
+  -o chromakey_r 0.2
+  -o chromakey_slope 0.2
+  -o chromakey_thresh 0.5
+  -o config_file ~/.toonloop.json
+  -o delete_jpeg False
+  -o display_height 480
+  -o display_width 640
+  -o framerate_max 30
+  -o framerate_min 1
+  -o fudi_enabled False
+  -o fudi_receive_port 15555
+  -o fudi_send_host localhost
+  -o fudi_send_port 17777
+  -o fx_white_flash True
+  -o fx_white_flash_alpha 0.5
+  -o image_flip_horizontal False
+  -o image_height 240
+  -o image_width 320
+  -o intervalometer_enabled True
+  -o intervalometer_on False
+  -o intervalometer_rate_seconds 30.0
+  -o max_num_clips 10
+  -o midi_enabled False
+  -o midi_input_id -1
+  -o midi_note_play 62
+  -o midi_note_record 60
+  -o midi_pedal_control_id 64
+  -o midi_verbose True
+  -o onionskin_enabled True
+  -o onionskin_on False
+  -o onionskin_opacity 0.3
+  -o osc_enabled False
+  -o osc_listen_port 7772
+  -o osc_send_host localhost
+  -o osc_send_port 7770
+  -o project_name new_project
+  -o toonloop_home ~/Documents/toonloop
+  -o verbose False
+  -o video_device 0
+  -o web_enabled False
+  -o web_server_port 8000
+</pre>
