@@ -1,163 +1,31 @@
 #!/usr/bin/env python
 """
-GLSL shaders with SDL, OpenGL texture and Python
+Tool to try GLSL shaders with SDL, OpenGL texture and Python.
 """
+
+__version__ = "0.1"
+
+import sys
+import os
+import pygame
+import pygame.image
+import pygame.camera
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.error import GLError
 from OpenGL.GLU import *
-from rats.glsl import ShaderProgram
-from rats.glsl import ShaderError
+try:
+    from rats.glsl import ShaderProgram
+    from rats.glsl import ShaderError
+except ImportError, e:
+    print(e.message)
+    print("path: %s" % (sys.path))
+    raise
 
-# # ---------------------------- module variables ----------------------------
-# 
-# # ---------------------------- glsl vertex shader ----------------------------
-# vert = """
-# /**
-#  * Vertex shader that does nothing
-#  */
-# // variables passed to the fragment shader
-# varying vec2 texcoord0;
-# varying vec2 texdim0;
-# 
-# void main()
-# {
-#     gl_Position = ftransform();
-#     texcoord0 = vec2(gl_TextureMatrix[0] * gl_MultiTexCoord0);
-#     texdim0 = vec2(abs(gl_TextureMatrix[0][0][0]), abs(gl_TextureMatrix[0][1][1]));
-# }
-# """
-# 
-# # ---------------------------- glsl fragment shader ----------------------------
-# frag = """
-# /**
-#  * Fragment shader for chroma-keying. 
-#  * 
-#  * (using a green or blue screen, or any background color)
-#  * 
-#  * Main thing is, make sure the texcoord's arent 
-#  * normalized (so they are in the range of [0..w, 0..h] )
-#  * 
-#  * All params are vec3 in the range [0.0, 1.0]
-#  * 
-#  * :param keying_color: The RGB keying color that will be made transparent.
-#  * :param thresh: The distance from the color for a pixel to disappear.
-#  * 
-#  * :author: Alexandre Quessy <alexandre@quessy.net> 2009
-#  * :license: GNU Public License version 3
-#  * 
-#  *  smoothstep with distance from target color
-#  *  genType smoothStep(genType edge0, genType edge1, genType x);
-#  *  The result will be zero if x <= edge0, 1 
-#  *  if x >= edge1 and performs smooth Hermite interpolation 
-#  *  between 0 and 1 when edge0 < x < edge1. 
-#  */
-# 
-# // user-configurable variables (read-only)
-# uniform vec3 keying_color;
-# uniform float thresh; // [0, 1.732]
-# uniform float slope; // [0, 1]
-# 
-# // the texture
-# uniform sampler2DRect image;
-# 
-# // data passed from vertex shader:
-# varying vec2 texcoord0;
-# varying vec2 texdim0;
-# 
-# void main(void)
-# {
-#     // sample from the texture 
-#     vec3 input_color = texture2DRect(image, texcoord0).rgb;
-# 
-#     float d = abs(length(abs(keying_color.rgb - input_color.rgb)));
-#     float edge0 = thresh * (1.0 - slope); 
-#     float alpha = smoothstep(edge0, thresh, d);
-#     gl_FragColor = vec4(input_color, alpha); 
-# }
-# """
-# #//float d = distance(input_color.rgb, keying_color.rgb);
-# #// float input_alpha = gl_Color.a; // used to be 1.0;
-# #// max(thresh - slope, 0.0); // if slope==0 edge0=thresh
-# # // float output_alpha = alpha; //  * input_alpha;
-# # 
-# # uniform float alpha_result;
-# #     // measure distance from keying_color
-# #     vec3 delta = abs(input_color - keying_color);
-# # 	
-# # 	// for now, not visible if under threshold of proximity
-# # 	// TODO: mix() according the 3 factors of proximity.
-# # 	if (delta.r <= thresh.r && delta.g <= thresh.g && delta.b <= thresh.b)
-# # 	{
-# # 	   output_alpha = alpha_result; // 0.0
-# # 	}
-# #     gl_FragColor = vec4(input_color, output_alpha); 
-# # }
-# # """
-# # ----------------------------  functions ----------------------------
-# class TestEffect(object):
-#     def __init__(self):
-#         self.program = None
-#         self.loaded = False
-#         self.enabled = False
-#         self.config = {
-#             'chromakey_r':0.2,
-#             'chromakey_g':0.8,
-#             'chromakey_b':0.0,
-#             'chromakey_thresh':0.8,
-#             'chromakey_slope':0.2,
-#             'texture_id':0,
-#             }
-#         
-#     def setup(self):
-#         global vert
-#         global frag
-#         try:
-#             self.program = ShaderProgram()
-#             self.program.add_shader_text(GL_VERTEX_SHADER_ARB, vert)
-#             self.program.add_shader_text(GL_FRAGMENT_SHADER_ARB, frag)
-#             self.program.linkShaders()
-#             self.loaded = True
-#         except GLError, e:
-#             print(str(e))
-#         except Exception, e: 
-#             print e.message
-#     
-#     def pre_draw(self):
-#         if self.enabled and self.loaded:
-#             try:
-#                 self.program.enable()
-#             except Exception, e: 
-#                 print e.message
-#             self.program.glUniform1i("image", self.config.texture_id) # XXX: need to pass the texture ID !!
-#             # program.glUniform1f("alpha_result", 0.2)
-#             self.program.glUniform3f(
-#                 "keying_color", 
-#                 self.config['chromakey_r'], 
-#                 self.config['chromakey_g'], 
-#                 self.config['chromakey_b'])
-#             self.program.glUniform1f("thresh", self.config['chromakey_thresh'])
-#             self.program.glUniform1f("slope", self.config['chromakey_slope'])
-#         #     print 'color:%s %s %s, thresh:%s, slope:%s' % (config['chromakey_r'], config['chromakey_g'], config['chromakey_b'], thresh, slope)
-# 
-#     def post_draw(self):
-#         if self.enabled and self.loaded:
-#             try:
-#                 self.program.disable()
-#             except Exception, e: 
-#                 print e.message
-# 
-# ----------------------------  main  ----------------------------
-import os
-import sys
-import pygame
-import pygame.image
-import pygame.camera
 
-# ----------------------------  classes  ----------------------------
 class VideoCapturePlayer(object):
     size = (640, 480)
-    def __init__(self, effect):
+    def __init__(self, effect, camera_number=0):
         self.effect = effect
         self.textures = [0] # list of texture ID 
 
@@ -173,11 +41,11 @@ class VideoCapturePlayer(object):
         if os.uname()[0] == 'Darwin':
             self.isMac = True
             # creates the camera of the specified size and in RGB colorspace
-            self.camera = pygame.camera.Camera(0, self.size, 'RGBA')
+            self.camera = pygame.camera.Camera(camera_number, self.size, 'RGBA')
         else:
             self.isMac = False
             # creates the camera of the specified size and in RGB colorspace
-            self.camera = pygame.camera.Camera('/dev/video0', self.size, "RGBA")
+            self.camera = pygame.camera.Camera('/dev/video%d' % (camera_number), self.size, "RGBA")
         # starts the camera
         self.camera.start()
         self.clock = pygame.time.Clock()
@@ -298,36 +166,42 @@ class VideoCapturePlayer(object):
             self.clock.tick(30)
             #print "FPS:", self.clock.get_fps()
     
-__version__ = "0.1"
 
 if __name__ == '__main__':
     import optparse
-    import sys
 
     parser = optparse.OptionParser(usage="%prog", version='shadertester ' + str(__version__))
     parser.add_option("-f", "--effect", type="string", default="simplechroma", 
         help="Name of the shader effect to test.")
+    parser.add_option("-d", "--device", dest="device", type="int", \
+        help="Specifies V4L2 device to grab image from. Expects an integer such as 0, 1 or 2.", default=0)
     parser.add_option("-l", "--list-effects", \
         action="store_true", \
         help="Prints the list of effects and exits.") 
     (options, args) = parser.parse_args()
+    camera_number = options.device
     if options.list_effects:
         print("Effects :")
         for f in ["simplechroma", "brcosa"]:
             print(" - %s" % (f))
         sys.exit(0)
-    if options.effect == "simplechroma":
-        from toon.effects import simplechroma
-        effect = simplechroma.create_effect()
-    elif options.effect == "brcosa":
-        from toon.effects import brcosa
-        effect = brcosa.create_effect()
-    else:
-        print("Effect %s is not valid." % (options.effect))
-        sys.exit(1)
+    try:
+        if options.effect == "simplechroma":
+            from toon.effects import simplechroma
+            effect = simplechroma.create_effect()
+        elif options.effect == "brcosa":
+            from toon.effects import brcosa
+            effect = brcosa.create_effect()
+        else:
+            print("Effect %s is not valid." % (options.effect))
+            sys.exit(1)
+    except ImportError, e:
+        print(e.message)
+        print("path: %s" % (sys.path))
+        raise
     effect.enabled = True # choose it
     pygame.init()
     pygame.camera.init()
-    VideoCapturePlayer(effect).main()
+    VideoCapturePlayer(effect, camera_number).main()
     pygame.quit()
 
