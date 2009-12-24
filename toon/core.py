@@ -388,6 +388,7 @@ class Toonloop(render.Game):
         self.clip_id = 1 # Currently selected clip
         self.clip = None # current ToonClip instance
         self.clips = [] # ToonClip instances
+        self._saver_progress = None # ClipSaver progress bar ratio. float from 0 to 1
         self._init_clips()
         self.renderer = None # Renderer instance that owns it.
         self.styles = {
@@ -878,6 +879,7 @@ class Toonloop(render.Game):
         # TODO: replace by effect number
 
         # now, let's draw something
+        GL.glEnable(GL.GL_TEXTURE_RECTANGLE_ARB)
         self._draw_background() # only if enabled
         # ---------- playback view
         self.fx_chromakey.pre_draw()
@@ -896,6 +898,9 @@ class Toonloop(render.Game):
             self._has_just_added_frame = False
             if self.config.fx_white_flash:
                 self._draw_white_flash()
+        # ----------- saving progress bar
+        GL.glDisable(GL.GL_TEXTURE_RECTANGLE_ARB) # important not to draw a big pixel !
+        self._draw_saving_progress_bar()
         # ----------- done drawing.
         self.clock.tick()
         self.fps = self.clock.get_fps()
@@ -904,6 +909,25 @@ class Toonloop(render.Game):
         gc.collect() # force garbage collection on every frame
         # TODO: on every frame is a bit much. Maybe every second ?
         # otherwise, python slows down when it is time to collect garbage.
+
+    def _draw_saving_progress_bar(self):
+        """
+        Draws the progress bar of saving of the clip, if in progress.
+        """
+        if self._saver_progress is not None:
+            progress = self._saver_progress
+            foreground_color = (1.0, 1.0, 1.0, 0.5) # TODO: put in style
+            background_color = (0.5, 0.5, 0.5, 0.5) # TODO: put in style
+            progress_pos = (0.0, -2.0, 0.0) # TODO: put in style
+            progress_scale = (2.0, 0.1, 1.0) # TODO: put in style
+            GL.glPushMatrix()
+            GL.glTranslatef(*progress_pos)
+            GL.glScalef(*progress_scale)
+            draw.draw_horizontal_progress_bar(
+                background_color=background_color, 
+                foreground_color=foreground_color, 
+                progress=progress)
+            GL.glPopMatrix()
 
     def _draw_white_flash(self):
         # TODO: use time.time() to create tween.
@@ -1104,8 +1128,22 @@ class Toonloop(render.Game):
                 print("Will save images %s %s" % (dir_path, file_prefix))
             core = self
             self.clip_saver = save.ClipSaver(core, dir_path, file_prefix, self.clip_id)
+            self.clip_saver.signal_progress.connect(self._slot_saver_progress)
+            self.clip_saver.signal_done.connect(self._slot_saver_done)
             return self.clip_saver.save() # returns a deferred
 
+    def _slot_saver_progress(self, progress_ratio):
+        """
+        :param progress_ratio: float from 0 to 1
+        """
+        self._saver_progress = progress_ratio
+
+    def _slot_saver_done(self, success):
+        """
+        :param success: boolean
+        """
+        self._saver_progress = None
+        
     def frame_remove(self):
         """
         Deletes the last frame from the current list of images.

@@ -60,6 +60,11 @@ def texture_from_image(texture, image, square_texture=False):
 def draw_textured_square(w=None, h=None):
     """
     Draws a texture square of 2 x 2 size centered at 0, 0
+    
+    Make sure to call glEnable(GL_TEXTURE_RECTANGLE_ARB) first.
+
+    :param w: width of the image in pixels
+    :param h: height of the image in pixels
     """
     if w is None or h is None:
         glBegin(GL_QUADS)
@@ -84,11 +89,40 @@ def draw_textured_square(w=None, h=None):
         glVertex2f(-1.0, 1.0) # Top Left
         glEnd()
 
-
 def draw_square():
     """
     Draws a square of 2 x 2 size centered at 0, 0
+    
+    Make sure to call glDisable(GL_TEXTURE_RECTANGLE_ARB) first.
     """
+    glBegin(GL_QUADS)
+    glVertex2f(-1.0, -1.0) # Bottom Left of Quad
+    glVertex2f(1.0, -1.0) # Bottom Right of Quad
+    glVertex2f(1.0, 1.0) # Top Right Of Quad
+    glVertex2f(-1.0, 1.0) # Top Left Of Quad
+    glEnd()
+
+def draw_horizontal_progress_bar(background_color=(0.0, 0.0, 0.0, 1.0), foreground_color=(1.0, 1.0, 1.0, 1.0), progress=0.0):
+    """
+    Draws an horizontal progress bar.
+
+    The programmer should scale this shape, since its position is between 
+    -1 and 1 on both axis.
+    
+    Make sure to call glDisable(GL_TEXTURE_RECTANGLE_ARB) first.
+    
+    :param background_color: tuple of 4 floats from 0 to 1
+    :param foreground_color: tuple of 4 floats from 0 to 1
+    :param progress: float from 0 to 1
+    """
+    glColor4f(*foreground_color) 
+    glBegin(GL_QUADS)
+    glVertex2f(-1.0, -1.0) # Bottom Left of Quad
+    glVertex2f(progress, -1.0) # Bottom Right of Quad
+    glVertex2f(progress, 1.0) # Top Right Of Quad
+    glVertex2f(-1.0, 1.0) # Top Left Of Quad
+    glEnd()
+    glColor4f(*background_color) 
     glBegin(GL_QUADS)
     glVertex2f(-1.0, -1.0) # Bottom Left of Quad
     glVertex2f(1.0, -1.0) # Bottom Right of Quad

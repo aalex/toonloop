@@ -37,8 +37,14 @@ from twisted.internet import defer
 #from twisted.python import failure
 
 from toon import mencoder
+from rats import sig
 import pygame
 from pygame.locals import *
+
+PROGRESS_MKDIR = 0.05
+PROGRESS_IMAGES = 0.85
+PROGRESS_MENCODER = 0.05
+PROGRESS_CLEANUP = 0.05
 
 class ClipSaverError(Exception):
     """
@@ -68,6 +74,8 @@ class ClipSaver(object):
         self.IMAGES_DIR = "images"
         self._deferred = None
         self.is_busy = False
+        self.signal_progress = sig.Signal() # arg: float from 0 to 1
+        self.signal_done = sig.Signal() # arg: boolean success
 
     def save(self):
         """
@@ -97,15 +105,18 @@ class ClipSaver(object):
                 print(msg)
                 self._fail(msg)
             else:
+                self.signal_progress(PROGRESS_MKDIR)
                 reactor.callLater(0.0, self._write_01_next_image)
         return self._deferred
 
     def _fail(self, msg):
         self.is_busy = False
+        self.signal_done(False)
         self._deferred.errback(msg)
 
     def _succeed(self, msg):
         self.is_busy = False
+        self.signal_done(True)
         self._deferred.callback(msg)
 
     def _write_01_next_image(self):
@@ -114,12 +125,14 @@ class ClipSaver(object):
         Uses the JPG extension.
         """
         # TODO : use clip_id
-        if self.current_index < len(self.core.clips[self.clip_id].images):
+        num_images_in_clip = len(self.core.clips[self.clip_id].images)
+        if self.current_index < num_images_in_clip:
             name = ("%s/%s_%5d.jpg" % (self.dir_path, self.file_prefix, self.current_index)).replace(' ', '0')
             if self.core.config.verbose:
                 print("writing image %s" % (self.current_index))
             pygame.image.save(self.core.clips[self.clip_id].images[self.current_index], name) # filename extension makes it a JPEG
             self.current_index += 1
+            self.signal_progress(PROGRESS_MKDIR + PROGRESS_IMAGES * (self.current_index / num_images_in_clip))
             reactor.callLater(0.0, self._write_01_next_image)
         else:
             reactor.callLater(0.0, self._write_02_images_done)
@@ -131,10 +144,9 @@ class ClipSaver(object):
         if self.current_index > 0:
             if self.core.config.verbose:
                 print("\nConverting to motion JPEG in Quicktime container.")
-            fps = 6 # TODO
+            fps = 12 # TODO FIXME
             #self.clip.increment_every # self.clip.framerate
             #fps = self.renderer.desired_fps 
-
             deferred = mencoder.jpeg_to_movie(self.file_prefix, self.dir_path, fps, self.core.config.verbose, self.core.config.image_width, self.core.config.image_height)
             deferred.addCallback(self._write_03_movie_done)
             deferred.addErrback(self._eb_mencoder)
@@ -153,6 +165,7 @@ class ClipSaver(object):
         """
         if self.core.config.verbose:
             print("Done converting %s/%s.mov" % (self.dir_path, self.file_prefix))
+        self.signal_progress(PROGRESS_MKDIR + PROGRESS_IMAGES + PROGRESS_MENCODER)
         reactor.callLater(1.0, self._write_04_delete_images)
 
     def _write_04_delete_images(self):
@@ -194,5 +207,6 @@ class ClipSaver(object):
             print(msg)
             self._fail(msg)
         else:
+            self.signal_progress(1.0) # done
             self._succeed("Successfully saved images, converted movie and moved files for clip %s" % (self.clip_id))
 
