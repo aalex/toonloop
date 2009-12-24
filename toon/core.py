@@ -1307,7 +1307,10 @@ class Toonloop(render.Game):
                         print("toggle intervalometer")
                         self.intervalometer_toggle()
                     elif e.key == PYGM.K_q: # q Start recording sample
-                        self.sampler_record(True)
+                        if modifiers & PYGM.KMOD_LSHIFT != 0: # if left key is being pressed
+                            self.quit()
+                        else:
+                            self.sampler_record(True)
                     elif e.key == PYGM.K_w: # Clear the sound in current frame 
                         self.sampler_clear()
                     elif e.key == PYGM.K_0: # [0, 9] Clip selection
@@ -1352,10 +1355,8 @@ class Toonloop(render.Game):
                         pass # TODO
                     elif e.key == PYGM.K_PLUS:
                         pass # TODO
-                    elif e.key == PYGM.K_ESCAPE: #  or e.key == K_q: # ESCAPE or Q
-                        if self.config.verbose:
-                            print("ESC pressed.")
-                        self.quit()
+                    elif e.key == PYGM.K_ESCAPE:
+                        self.toggle_fullscreen()
                 except ValueError, e :
                     if self.config.verbose:
                         print("Key event error : %s" % (e.message))
