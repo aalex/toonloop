@@ -917,9 +917,9 @@ class Toonloop(render.Game):
         if self._saver_progress is not None:
             progress = self._saver_progress
             foreground_color = (1.0, 1.0, 1.0, 0.5) # TODO: put in style
-            background_color = (0.5, 0.5, 0.5, 0.5) # TODO: put in style
+            background_color = (0.7, 0.7, 0.7, 0.5) # TODO: put in style
             progress_pos = (0.0, -2.0, 0.0) # TODO: put in style
-            progress_scale = (2.0, 0.1, 1.0) # TODO: put in style
+            progress_scale = (3.0, 0.05, 1.0) # TODO: put in style
             GL.glPushMatrix()
             GL.glTranslatef(*progress_pos)
             GL.glScalef(*progress_scale)
