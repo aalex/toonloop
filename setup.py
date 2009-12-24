@@ -42,7 +42,7 @@ from setuptools import setup
 
 setup(
     name = "toonloop",
-    version = "1.0.7", # MUST ALSO BE CHANGED IN toon/runner.py and .desktop
+    version = "1.0.9", # MUST ALSO BE CHANGED IN toon/runner.py and .desktop
     author = "Alexandre Quessy and Tristan Matthews",
     author_email = "alexandre@quessy.net",
     url = "http://www.toonloop.com/",

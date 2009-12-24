@@ -25,7 +25,5 @@
 """
 Libraries used by Toonloop, the live stop motion tool.
 """
-
-__version__ = '1.0 alpha'
 __all__ = []
 
