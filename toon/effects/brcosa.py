@@ -8,6 +8,7 @@ from OpenGL.error import GLError
 from OpenGL.GLU import *
 from rats.glsl import ShaderProgram
 from rats.glsl import ShaderError
+from toon import fx
 
 # Vertex shader that does nothing
 #
@@ -50,19 +51,19 @@ void main (void)
 }
 """
 # ----------------------------  functions ----------------------------
-class BrCoSaEffect(object):
+class BrCoSaEffect(fx.Effect):
     def __init__(self):
         self.program = None
         self.loaded = False
         self.enabled = False
         self.config = {
-            'avgluma_r':0.5,
-            'avgluma_g':0.5,
-            'avgluma_b':0.5,
-            'saturation':0.5,
-            'contrast':0.5,
-            'brightness':0.5,
-            'alpha':0.5,
+            'avgluma_r':1.0, #0.5,
+            'avgluma_g':1.0, #0.5,
+            'avgluma_b':1.0, #0.5,
+            'saturation':0.1,
+            'contrast':1.0, #0.5,
+            'brightness':1.0, #0.5,
+            'alpha':1.0, #0.5,
             'texture_id':0,
             }
         self.name = "brcosa"
