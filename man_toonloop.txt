@@ -35,12 +35,13 @@ Toonloop is an interactive software. While it runs, or can control it using keyb
     . = Changes the graphicals style.
     [tab] = Changes the playback direction of the current clip.
     [0, 9]  = Selects a clip from the current project identified by a number.
-    <Esc> = Quits the program.
+    <Esc> or f = Toggles the fullscreen mode
     <Up arrow> = Increases the frame rate. (faster)
     <Down arrow> = Decreases the frame rate. (slower)
     <Left arrow> = Moves the write head to the left. (towards the beginning)
     <Right arrow> = Moves the write head to the right. (towards the end)
     <Return> = Moves the write head to the last frame. (at the end)
+    <shift>-q = Quits.
 
 [OSC INTERFACE]
 

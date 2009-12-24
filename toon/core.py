@@ -45,6 +45,8 @@ Usage :
    (it records one frame on every frame) It is an intervalometer.
    Best used to create timelapse sequences automatically.
  - Press 'k' or 'j' to increase or decrease the auto rate.
+ - Press 'f' or ESCAPE to toggle fullscreen mode.
+ - Press SHIFT-'q' to quit.
 
 INSTALLATION NOTES : 
 The camera module for pygame is available from pygame's svn revision 
@@ -683,7 +685,8 @@ class Toonloop(render.Game):
         print(".       = Changes the graphical style.")
         print("tab     = Changes the playback direction for the current clip.")
         print("[0, 9]  = select a clip from the current project")
-        print("<Esc>   = quit program\n")
+        print("<Esc> of f   = toggles the fullscreen mode")
+        print("SHIFT-q = quit.")
 
     def _draw_hud(self):
         """
