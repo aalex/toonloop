@@ -51,7 +51,7 @@ setup(
     Requires: twisted, pygame 1.9, PyOpenGL, nevow and numpy.""",
     install_requires = [], # "twisted", "PyOpenGL", "nevow"], # , "numpy"], 
     # requires pygame from SVN for now.
-    scripts = ["toonloop"], 
+    scripts = ["toonloop", "scripts/glslang-run"], 
     license = "GPL",
     platforms = ["any"],
     zip_safe = False,
