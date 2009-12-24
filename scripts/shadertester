@@ -298,10 +298,34 @@ class VideoCapturePlayer(object):
             self.clock.tick(30)
             #print "FPS:", self.clock.get_fps()
     
+__version__ = "0.1"
+
 if __name__ == '__main__':
-    from toon.effects import simplechroma
-    effect = simplechroma.create_effect()
-    effect.enabled = True # choose it !
+    import optparse
+    import sys
+
+    parser = optparse.OptionParser(usage="%prog", version='shadertester ' + str(__version__))
+    parser.add_option("-f", "--effect", type="string", default="simplechroma", 
+        help="Name of the shader effect to test.")
+    parser.add_option("-l", "--list-effects", \
+        action="store_true", \
+        help="Prints the list of effects and exits.") 
+    (options, args) = parser.parse_args()
+    if options.list_effects:
+        print("Effects :")
+        for f in ["simplechroma", "brcosa"]:
+            print(" - %s" % (f))
+        sys.exit(0)
+    if options.effect == "simplechroma":
+        from toon.effects import simplechroma
+        effect = simplechroma.create_effect()
+    elif options.effect == "brcosa":
+        from toon.effects import brcosa
+        effect = brcosa.create_effect()
+    else:
+        print("Effect %s is not valid." % (options.effect))
+        sys.exit(1)
+    effect.enabled = True # choose it
     pygame.init()
     pygame.camera.init()
     VideoCapturePlayer(effect).main()
