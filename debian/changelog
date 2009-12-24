@@ -1,3 +1,15 @@
+toonloop (1.0.9) unstable; urgency=low
+  
+  * Added progress bar when saving a clip.
+  * Improved the glslang-run script.
+  * ESC now toggles fullscreen instead of quitting. Use shift-Q to quit. 
+  * fixed typo in man page 
+  * Trying to catch error when GLSL is not available on the system at launch
+    time.
+
+ -- Alexandre Quessy <alexandre@quessy.net> Thu, 24 Dec 2009 11:53:43 -0500
+
+
 toonloop (1.0.8) unstable; urgency=low
   
   * Onion skinning texture is now updated when deleting frames or moving writehead.
