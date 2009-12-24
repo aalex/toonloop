@@ -331,6 +331,11 @@ class SplitScreenStyle(object):
         self.play_scale = (2.0, 1.5, 1.0)
         self.edit_pos = (-2.0, 0.0, 0.0)
         self.edit_scale = (2.0, 1.5, 1.0)
+        # saving progress bar
+        self.progress_foreground_color = (1.0, 1.0, 1.0, 0.5) 
+        self.progress_background_color = (0.7, 0.7, 0.7, 0.5) 
+        self.progress_pos = (0.0, -2.0, 0.0) 
+        self.progress_scale = (3.0, 0.05, 1.0) 
         #self.flash_color = (1.0, 1.0, 1.0, 1.0)
         #TODO: add a style not displaying the edit "viewport".
 
@@ -916,16 +921,12 @@ class Toonloop(render.Game):
         """
         if self._saver_progress is not None:
             progress = self._saver_progress
-            foreground_color = (1.0, 1.0, 1.0, 0.5) # TODO: put in style
-            background_color = (0.7, 0.7, 0.7, 0.5) # TODO: put in style
-            progress_pos = (0.0, -2.0, 0.0) # TODO: put in style
-            progress_scale = (3.0, 0.05, 1.0) # TODO: put in style
             GL.glPushMatrix()
-            GL.glTranslatef(*progress_pos)
-            GL.glScalef(*progress_scale)
+            GL.glTranslatef(*self.style.progress_pos)
+            GL.glScalef(*self.style.progress_scale)
             draw.draw_horizontal_progress_bar(
-                background_color=background_color, 
-                foreground_color=foreground_color, 
+                background_color=self.style.progress_background_color, 
+                foreground_color=self.style.progress_foreground_color, 
                 progress=progress)
             GL.glPopMatrix()
 
