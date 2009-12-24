@@ -1,3 +1,9 @@
+toonloop (1.0.9-2) unstable; urgency=low
+
+  * Fixing version number in python files.
+
+ -- Alexandre Quessy <alexandre@quessy.net> Thu, 24 Dec 2009 12:22:45 -0500
+
 toonloop (1.0.9) unstable; urgency=low
   
   * Added progress bar when saving a clip.
