@@ -132,7 +132,7 @@ class ClipSaver(object):
                 print("writing image %s" % (self.current_index))
             pygame.image.save(self.core.clips[self.clip_id].images[self.current_index], name) # filename extension makes it a JPEG
             self.current_index += 1
-            self.signal_progress(PROGRESS_MKDIR + PROGRESS_IMAGES * (float(self.current_index) / float(num_images_in_clip)))
+            self.signal_progress(PROGRESS_MKDIR + PROGRESS_IMAGES * self.current_index / float(num_images_in_clip))
             reactor.callLater(0.0, self._write_01_next_image)
         else:
             reactor.callLater(0.0, self._write_02_images_done)

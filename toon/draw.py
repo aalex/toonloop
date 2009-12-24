@@ -102,7 +102,7 @@ def draw_square():
     glVertex2f(-1.0, 1.0) # Top Left Of Quad
     glEnd()
 
-def draw_horizontal_progress_bar(background_color=(0.0, 0.0, 0.0, 1.0), foreground_color=(1.0, 1.0, 1.0, 1.0), progress=0.0):
+def draw_horizontal_progress_bar(background_color=(0.0, 0.0, 0.0, 1.0), foreground_color=(1.0, 1.0, 1.0, 1.0), progress=0.0, line_color=(0.0, 0.0, 0.0, 1.0)):
     """
     Draws an horizontal progress bar.
 
@@ -118,12 +118,20 @@ def draw_horizontal_progress_bar(background_color=(0.0, 0.0, 0.0, 1.0), foregrou
     glColor4f(*foreground_color) 
     glBegin(GL_QUADS)
     glVertex2f(-1.0, -1.0) # Bottom Left of Quad
-    glVertex2f(progress, -1.0) # Bottom Right of Quad
-    glVertex2f(progress, 1.0) # Top Right Of Quad
+    glVertex2f(progress * 2.0 - 1.0, -1.0) # Bottom Right of Quad
+    glVertex2f(progress * 2.0 - 1.0, 1.0) # Top Right Of Quad
     glVertex2f(-1.0, 1.0) # Top Left Of Quad
     glEnd()
     glColor4f(*background_color) 
     glBegin(GL_QUADS)
+    glVertex2f(-1.0, -1.0) # Bottom Left of Quad
+    glVertex2f(1.0, -1.0) # Bottom Right of Quad
+    glVertex2f(1.0, 1.0) # Top Right Of Quad
+    glVertex2f(-1.0, 1.0) # Top Left Of Quad
+    glEnd()
+    #glLineWidth(1.0)
+    glColor4f(*line_color) 
+    glBegin(GL_LINE_LOOP)
     glVertex2f(-1.0, -1.0) # Bottom Left of Quad
     glVertex2f(1.0, -1.0) # Bottom Right of Quad
     glVertex2f(1.0, 1.0) # Top Right Of Quad

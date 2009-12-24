@@ -334,6 +334,7 @@ class SplitScreenStyle(object):
         # saving progress bar
         self.progress_foreground_color = (1.0, 1.0, 1.0, 0.5) 
         self.progress_background_color = (0.7, 0.7, 0.7, 0.5) 
+        self.progress_line_color = (1.0, 1.0, 1.0, 0.6)
         self.progress_pos = (0.0, -2.0, 0.0) 
         self.progress_scale = (3.0, 0.05, 1.0) 
         #self.flash_color = (1.0, 1.0, 1.0, 1.0)
@@ -920,14 +921,14 @@ class Toonloop(render.Game):
         Draws the progress bar of saving of the clip, if in progress.
         """
         if self._saver_progress is not None:
-            progress = self._saver_progress
             GL.glPushMatrix()
             GL.glTranslatef(*self.style.progress_pos)
             GL.glScalef(*self.style.progress_scale)
             draw.draw_horizontal_progress_bar(
                 background_color=self.style.progress_background_color, 
                 foreground_color=self.style.progress_foreground_color, 
-                progress=progress)
+                line_color=self.style.progress_line_color, 
+                progress=self._saver_progress)
             GL.glPopMatrix()
 
     def _draw_white_flash(self):
@@ -942,7 +943,6 @@ class Toonloop(render.Game):
         GL.glScalef(*self.style.edit_scale)#2.0, 1.5, 1.0)
         draw.draw_square()
         GL.glPopMatrix()
-
     
     def _draw_background(self):
         """
@@ -951,14 +951,12 @@ class Toonloop(render.Game):
         # r = self.config.bgcolor_r
         # g = self.config.bgcolor_g
         # b = self.config.bgcolor_b
-
         # glColor(r, g, b, 1.0)
         # glPushMatrix()
         # glScalef(4.0, 3, 1.0)
         # draw_square()
         # glPopMatrix()
         # glColor(1.0, 1.0, 1.0, 1.0)
-
         if self.config.bgimage_enabled:
             GL.glColor4f(1.0, 1.0, 1.0, 1.0)
             # playback view
@@ -975,7 +973,6 @@ class Toonloop(render.Game):
             GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
             draw.draw_textured_square(self.config.image_width, self.config.image_height)
             GL.glPopMatrix()
-
 
     def _camera_grab_frame(self):
         """
