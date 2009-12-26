@@ -37,6 +37,7 @@ class Game(object):
     """
     def __init__(self):
         self.renderer = None
+        self.running = True
 
     def draw(self):
         """

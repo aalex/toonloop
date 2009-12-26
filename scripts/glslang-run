@@ -9,6 +9,8 @@ __version__ = "0.1"
 
 import sys
 import os
+from twisted.internet import reactor
+#TODO: from twisted.internet import protocol
 import pygame
 import pygame.image
 import pygame.camera
@@ -17,6 +19,7 @@ from OpenGL.GL import *
 from OpenGL.error import GLError
 from OpenGL.GLU import *
 try:
+    from rats import render
     from rats.glsl import ShaderProgram
     from rats.glsl import ShaderError
 except ImportError, e:
@@ -24,9 +27,10 @@ except ImportError, e:
     print("path: %s" % (sys.path))
     raise
 
-class VideoCapturePlayer(object):
+class VideoCapturePlayer(render.Game):
     size = (640, 480)
     def __init__(self, effect, camera_number=0):
+        render.Game.__init__(self)
         self.effect = effect
         self.textures = [0] # list of texture ID 
 
@@ -36,9 +40,11 @@ class VideoCapturePlayer(object):
         self.resize(self.size)
         self.gl_init()
         # gets a list of available cameras.
-        self.clist = pygame.camera.list_cameras()
-        if not self.clist:
+        cameras_list = pygame.camera.list_cameras()
+        if not cameras_list:
             raise ValueError("Sorry, no cameras detected.")
+        else:
+            print("Found cameras: %s" % (cameras_list))
         if os.uname()[0] == 'Darwin':
             self.isMac = True
             # creates the camera of the specified size and in RGB colorspace
@@ -49,7 +55,7 @@ class VideoCapturePlayer(object):
             self.camera = pygame.camera.Camera('/dev/video%d' % (camera_number), self.size, "RGBA")
         # starts the camera
         self.camera.start()
-        self.clock = pygame.time.Clock()
+        #self.clock = pygame.time.Clock()
 
         # create a surface to capture to.  for performance purposes, you want the
         # bit depth to be the same as that of the display surface.
@@ -86,7 +92,7 @@ class VideoCapturePlayer(object):
         glOrtho(-4.0, 4.0, -3.0, 3.0, -1.0, 1.0)
         glMatrixMode(GL_MODELVIEW)
     
-    def draw(self):
+    def _draw_images(self):
         """
         Called on every frame rendering
         """
@@ -126,7 +132,7 @@ class VideoCapturePlayer(object):
         glEnd()
         glPopMatrix()
     
-    def get_and_flip(self):
+    def draw(self):
         """
         Grabs a frame from the camera (to a texture) and renders the screen.
 
@@ -144,29 +150,21 @@ class VideoCapturePlayer(object):
         glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, self.snapshot.get_width(), self.snapshot.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)
         glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        self.draw()
+        self._draw_images()
         pygame.display.flip()
     
-    def main(self):
-        going = True
-        while going:
-            events = pygame.event.get()
-            for e in events:
-                if e.type == QUIT:
-                    going = False
-                if e.type == KEYDOWN:
-                    if e.key == K_ESCAPE:
-                        going = False
-                    elif e.key == K_RETURN:
-                        effect.enabled != effect.enabled
-                elif e.type == KEYDOWN:
-                    if e.key == K_f:
-                        pygame.display.toggle_fullscreen()
-
-            self.get_and_flip()
-            self.clock.tick(30)
-            #print "FPS:", self.clock.get_fps()
-    
+    def process_events(self, events):
+        for e in events:
+            if e.type == QUIT:
+                self.running = False
+            if e.type == KEYDOWN:
+                if e.key == K_ESCAPE:
+                    self.running = False
+                elif e.key == K_RETURN:
+                    self.effect.enabled != self.effect.enabled # FIXME: does this crash?
+            elif e.type == KEYDOWN:
+                if e.key == K_f:
+                    pygame.display.toggle_fullscreen()
 
 if __name__ == '__main__':
     import optparse
@@ -203,6 +201,13 @@ if __name__ == '__main__':
     effect.enabled = True # choose it
     pygame.init()
     pygame.camera.init()
-    VideoCapturePlayer(effect, camera_number).main()
+    game = VideoCapturePlayer(effect, camera_number)
+    pygame_timer = render.Renderer(game, False) # not verbose !  options.verbose
+    pygame_timer.desired_fps = 30
+    try:
+        reactor.run()
+    except KeyboardInterrupt:
+        pass # will exit on ctrl-c
+    print("Exiting toonloop")
     pygame.quit()
 
