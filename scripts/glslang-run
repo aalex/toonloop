@@ -30,6 +30,7 @@ __version__ = "0.1"
 import sys
 import os
 import shlex
+import pprint
 from twisted.internet import reactor
 from twisted.internet import protocol
 import pygame
@@ -43,6 +44,7 @@ from OpenGL.GLU import *
 from rats import render
 from rats.glsl import ShaderProgram
 from rats.glsl import ShaderError
+from toon import optgroup
 #except ImportError, e:
 #    print(e.message)
 #    print("path: %s" % (sys.path))
@@ -55,9 +57,10 @@ class TelnetController(protocol.Protocol):
     def connectionMade(self):
         print("Telnet connection made.")
         self.game = self.factory.game
-        self.transport.write("Welcome to the GLSLang telnet server.\n")
-        self.transport.write("Type some text and press enter.\n")
-        self.transport.write("Type \"quit\" to quit.\n")
+        self.transport.write("Type h for help\n")
+        #self.transport.write("Welcome to the GLSLang telnet server.\n")
+        #self.transport.write("Type some text and press enter.\n")
+        #self.transport.write("Type \"quit\" to quit.\n")
 
     def dataReceived(self, data):
         #TODO: do some validation here to secure things up.
@@ -68,17 +71,38 @@ class TelnetController(protocol.Protocol):
     def _on_line_received(self, line):
         if line == "quit":
             self.transport.loseConnection()
+        elif line == "l":
+            txt = "Current effect name : %s\n" % (self.game.effect.name)
+            if hasattr(self.game.effect, "options"):
+                txt += "Options:\n%s\n" % (pprint.pformat(self.game.effect.options.__dict__))
+            self.transport.write(txt)
+            #print(txt)
+        elif line.find("h") == 0:
+            txt = "Help:\n"
+            txt += "l : list options/n"
+            txt += "h : print help"
+            txt += "x : set option value"
         else:
             print("Got %s" % (line))
             tokens = shlex.split(line)
             if tokens[0] in ["x", "set-opt"]:
                 if len(tokens) < 4:
-                    self.transport.write("x takes at least 3 args: group, opt, value")
+                    self.transport.write("x takes at least 3 args: group, opt, value\n")
                     return
                 group_name = tokens[1]
                 opt = tokens[2]
                 value = tokens[3]
-
+                if group_name == self.game.effect.name:
+                    #print("Group name matches effect name : %s" % (group_name))
+                    if hasattr(self.game.effect, "options"):
+                        try:
+                            self.game.effect.options.set_value(opt, value)
+                        except optgroup.OptionsError, e:
+                            print(e.message)
+                            self.transport.write("Error: %s\n" % (e.message))
+                        else:
+                            self.transport.write("ok\n")
+                        
     def conectionLost(self):
         print("Telnet connection lost.")
         self.process_proto.tranport.loseConnection()
@@ -278,6 +302,6 @@ if __name__ == '__main__':
         reactor.run()
     except KeyboardInterrupt:
         pass # will exit on ctrl-c
-    print("Exiting toonloop")
+    print("Exiting glslang-run")
     pygame.quit()
 

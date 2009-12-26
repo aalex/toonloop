@@ -9,6 +9,7 @@ from OpenGL.GLU import *
 from rats.glsl import ShaderProgram
 from rats.glsl import ShaderError
 from toon import fx
+from toon import optgroup
 
 # Vertex shader that does nothing
 #
@@ -50,12 +51,22 @@ void main (void)
 	gl_FragColor = vec4(color, color.g*alpha);
 }
 """
-# ----------------------------  functions ----------------------------
+class BrCoSaOptions(optgroup.OptionsGroup):
+    def __init__(self):
+        self.avgluma = [1.0, 1.0, 1.0]
+        self.saturation = 0.1
+        self.contrast = 1.0
+        self.brightness = 1.0
+        self.alpha = 1.0
+        self.texture_id = 0
+    
 class BrCoSaEffect(fx.Effect):
     def __init__(self):
+        fx.Effect.__init__(self)
         self.program = None
         self.loaded = False
         self.enabled = False
+        self.options = BrCoSaOptions()
         self.config = {
             'avgluma_r':1.0, #0.5,
             'avgluma_g':1.0, #0.5,
@@ -91,17 +102,23 @@ class BrCoSaEffect(fx.Effect):
                 self.program.enable()
             except Exception, e: 
                 print(e.message)
-            self.program.glUniform1i("image", self.config["texture_id"])
-            self.program.glUniform1f("saturation", self.config["saturation"])
-            self.program.glUniform1f("contrast", self.config["contrast"])
-            self.program.glUniform1f("brightness", self.config["brightness"])
-            self.program.glUniform1f("alpha", self.config["alpha"])
-            self.program.glUniform3f(
-                "avgluma", 
-                self.config['avgluma_r'], 
-                self.config['avgluma_g'], 
-                self.config['avgluma_b']
-                )
+            self.program.glUniform1i("image", self.options.texture_id)
+            self.program.glUniform1f("saturation", self.options.saturation)
+            self.program.glUniform1f("contrast", self.options.contrast)
+            self.program.glUniform1f("brightness", self.options.brightness)
+            self.program.glUniform1f("alpha", self.options.alpha)
+            self.program.glUniform3f("avgluma", *self.options.avgluma)
+            #self.program.glUniform1i("image", self.config["texture_id"])
+            #self.program.glUniform1f("saturation", self.config["saturation"])
+            #self.program.glUniform1f("contrast", self.config["contrast"])
+            #self.program.glUniform1f("brightness", self.config["brightness"])
+            #self.program.glUniform1f("alpha", self.config["alpha"])
+            #self.program.glUniform3f(
+            #    "avgluma", 
+            #    self.config['avgluma_r'], 
+            #    self.config['avgluma_g'], 
+            #    self.config['avgluma_b']
+            #    )
 
     def post_draw(self):
         if self.enabled and self.loaded:
