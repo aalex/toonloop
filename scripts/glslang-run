@@ -10,7 +10,7 @@ __version__ = "0.1"
 import sys
 import os
 from twisted.internet import reactor
-#TODO: from twisted.internet import protocol
+from twisted.internet import protocol
 import pygame
 import pygame.image
 import pygame.camera
@@ -26,6 +26,29 @@ except ImportError, e:
     print(e.message)
     print("path: %s" % (sys.path))
     raise
+
+class TelnetController(protocol.Protocol):
+    """
+    Telnet server to change GLSL uniform variables.
+    """
+    def connectionMade(self):
+        print("Telnet connection made.")
+        print("Game = %s" % (self.factory.game))
+        self.transport.write("Welcome to the GLSLang telnet server.\n")
+        self.transport.write("Type some text and press enter.\n")
+        self.transport.write("Type \"quit\" to quit.\n")
+
+    def dataReceived(self, data):
+        #TODO: do some validation here to secure things up.
+        if data.strip() == "quit":
+            self.transport.loseConnection()
+        else:
+            txt = data.strip()
+            print("Got %s" % (txt))
+
+    def conectionLost(self):
+        print("Telnet connection lost.")
+        self.process_proto.tranport.loseConnection()
 
 class VideoCapturePlayer(render.Game):
     size = (640, 480)
@@ -60,6 +83,15 @@ class VideoCapturePlayer(render.Game):
         # create a surface to capture to.  for performance purposes, you want the
         # bit depth to be the same as that of the display surface.
         self.snapshot = pygame.surface.Surface(self.size, 0, self.screen)
+        self._start_telnet_server()
+
+    def _start_telnet_server(self):
+        factory = protocol.Factory()
+        factory.protocol = TelnetController
+        factory.game = self
+        port = 15555
+        reactor.listenTCP(port, factory)
+        print("Started telnet server on port %s" % (port))
 
     def gl_init(self):
         """
@@ -118,6 +150,7 @@ class VideoCapturePlayer(render.Game):
         
         self.effect.post_draw()
 
+        # The picture in picture : 
         glPushMatrix()
         glTranslate(2, 1.5, 0)
         glBegin(GL_QUADS)
