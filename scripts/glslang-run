@@ -9,6 +9,7 @@ __version__ = "0.1"
 
 import sys
 import os
+import shlex
 from twisted.internet import reactor
 from twisted.internet import protocol
 import pygame
@@ -33,18 +34,31 @@ class TelnetController(protocol.Protocol):
     """
     def connectionMade(self):
         print("Telnet connection made.")
-        print("Game = %s" % (self.factory.game))
+        self.game = self.factory.game
         self.transport.write("Welcome to the GLSLang telnet server.\n")
         self.transport.write("Type some text and press enter.\n")
         self.transport.write("Type \"quit\" to quit.\n")
 
     def dataReceived(self, data):
         #TODO: do some validation here to secure things up.
-        if data.strip() == "quit":
+        for line in data.splitlines():
+            if line.strip() != "":
+                self._on_line_received(line.strip())
+
+    def _on_line_received(self, line):
+        if line == "quit":
             self.transport.loseConnection()
         else:
-            txt = data.strip()
-            print("Got %s" % (txt))
+            print("Got %s" % (line))
+            tokens = shlex.split(line)
+            if tokens[0] in ["x", "set-opt"]:
+                if len(tokens) < 4:
+                    self.transport.write("x takes at least 3 args: group, opt, value")
+                    return
+                group_name = tokens[1]
+                opt = tokens[2]
+                value = tokens[3]
+
 
     def conectionLost(self):
         print("Telnet connection lost.")
@@ -198,6 +212,10 @@ class VideoCapturePlayer(render.Game):
             elif e.type == KEYDOWN:
                 if e.key == K_f:
                     pygame.display.toggle_fullscreen()
+
+    def set_option(self, group_name, option_name, value):
+        print("set_option %s %s %s" % (group_name, option_name, value))
+        #if hasattr(self.effect.options, 
 
 if __name__ == '__main__':
     import optparse
