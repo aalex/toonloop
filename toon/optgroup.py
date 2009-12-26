@@ -26,7 +26,8 @@ class OptionsGroup(object):
         :param option_name: Name of the attribute
         :param value: Either a string, or any Python type. 
         """
-        if not hasattr(self, key):
+        key = option_name
+        if not hasattr(self, option_name):
             raise OptionsError("No no option named %s in options group" % (key))
         else:
             attr = getattr(self, key)

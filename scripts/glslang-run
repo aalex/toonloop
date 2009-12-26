@@ -1,4 +1,24 @@
 #!/usr/bin/env python
+#
+# GLSLang Tools
+#
+# Copyright 2009 Alexandre Quessy
+# <alexandre@quessy.net> 
+# http://www.toonloop.com
+#
+# GLSLang Tools is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# GLSLang Tools is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the gnu general public license
+# along with GLSLang Tools.  If not, see <http://www.gnu.org/licenses/>.
+#
 """
 Tool to try GLSL shaders with SDL, OpenGL texture and Python.
 
@@ -19,14 +39,14 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.error import GLError
 from OpenGL.GLU import *
-try:
-    from rats import render
-    from rats.glsl import ShaderProgram
-    from rats.glsl import ShaderError
-except ImportError, e:
-    print(e.message)
-    print("path: %s" % (sys.path))
-    raise
+#try:
+from rats import render
+from rats.glsl import ShaderProgram
+from rats.glsl import ShaderError
+#except ImportError, e:
+#    print(e.message)
+#    print("path: %s" % (sys.path))
+#    raise
 
 class TelnetController(protocol.Protocol):
     """
@@ -58,7 +78,6 @@ class TelnetController(protocol.Protocol):
                 group_name = tokens[1]
                 opt = tokens[2]
                 value = tokens[3]
-
 
     def conectionLost(self):
         print("Telnet connection lost.")
