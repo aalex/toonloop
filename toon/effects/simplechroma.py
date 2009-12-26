@@ -8,6 +8,8 @@ from OpenGL.error import GLError
 from OpenGL.GLU import *
 from rats.glsl import ShaderProgram
 from rats.glsl import ShaderError
+from toon import fx
+from toon import optgroup
 
 # Vertex shader that does nothing
 #
@@ -58,21 +60,29 @@ void main(void)
 }
 """
 # ----------------------------  functions ----------------------------
-class SimpleChromaEffect(object):
+class SimpleChromaOptions(optgroup.OptionsGroup):
+    def __init__(self):
+        self.color = [0.2, 0.8, 0.0]
+        self.thresh = [0.8, 0.8, 0.8]
+        self.texture_id = 0
+        self.alpha_under_thresh = 0.1
+
+class SimpleChromaEffect(fx.Effect):
     def __init__(self):
         self.program = None
         self.loaded = False
         self.enabled = False
-        self.config = {
-            'chromakey_r':0.2,
-            'chromakey_g':0.8,
-            'chromakey_b':0.0,
-            'chromakey_thresh_r':0.8,
-            'chromakey_thresh_g':0.8,
-            'chromakey_thresh_b':0.8,
-            'texture_id':0,
-            'alpha_under_thresh':0.1,
-            }
+        self.options = SimpleChromaOptions()
+        #self.config = {
+        #    'chromakey_r':0.2,
+        #    'chromakey_g':0.8,
+        #    'chromakey_b':0.0,
+        #    'chromakey_thresh_r':0.8,
+        #    'chromakey_thresh_g':0.8,
+        #    'chromakey_thresh_b':0.8,
+        #    'texture_id':0,
+        #    'alpha_under_thresh':0.1,
+        #    }
         self.name = "simplechroma"
         print("init %s" % (self.name))
         
@@ -90,7 +100,7 @@ class SimpleChromaEffect(object):
         #else:
             self.loaded = True
             print("Set up effect %s" % (self.name))
-            print(self.config)
+            #print(self.config)
     
     def pre_draw(self):
         if self.enabled and self.loaded:
@@ -98,20 +108,22 @@ class SimpleChromaEffect(object):
                 self.program.enable()
             except Exception, e: 
                 print(e.message)
-            self.program.glUniform1i("image", self.config["texture_id"])
+            #self.program.glUniform1i("image", self.config["texture_id"])
+            self.program.glUniform1i("image", self.options.texture_id)
             self.program.glUniform3f(
-                "keying_color", 
-                self.config['chromakey_r'], 
-                self.config['chromakey_g'], 
-                self.config['chromakey_b']
-                )
+                "keying_color", *self.options.color)
+            #    self.config['chromakey_r'], 
+            #    self.config['chromakey_g'], 
+            #    self.config['chromakey_b']
+            #    )
             self.program.glUniform3f(
-                "thresh", 
-                self.config['chromakey_thresh_r'], 
-                self.config['chromakey_thresh_g'], 
-                self.config['chromakey_thresh_b']
-                )
-            self.program.glUniform1f("alpha_under_thresh", self.config['alpha_under_thresh'])
+                "thresh", *self.options.thresh)
+            #    self.config['chromakey_thresh_r'], 
+            #    self.config['chromakey_thresh_g'], 
+            #    self.config['chromakey_thresh_b']
+            #    )
+            self.program.glUniform1f("alpha_under_thresh", self.options.alpha_under_thresh)
+#self.config['alpha_under_thresh'])
 
     def post_draw(self):
         if self.enabled and self.loaded:

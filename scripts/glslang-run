@@ -86,22 +86,22 @@ class TelnetController(protocol.Protocol):
             print("Got %s" % (line))
             tokens = shlex.split(line)
             if tokens[0] in ["x", "set-opt"]:
-                if len(tokens) < 4:
-                    self.transport.write("x takes at least 3 args: group, opt, value\n")
+                if len(tokens) < 3:
+                    self.transport.write("x takes at least 2 args: opt, value\n")
                     return
-                group_name = tokens[1]
-                opt = tokens[2]
-                value = tokens[3]
-                if group_name == self.game.effect.name:
+                #group_name = tokens[1]
+                opt = tokens[1]
+                value = tokens[2]
+                #if group_name == self.game.effect.name:
                     #print("Group name matches effect name : %s" % (group_name))
-                    if hasattr(self.game.effect, "options"):
-                        try:
-                            self.game.effect.options.set_value(opt, value)
-                        except optgroup.OptionsError, e:
-                            print(e.message)
-                            self.transport.write("Error: %s\n" % (e.message))
-                        else:
-                            self.transport.write("ok\n")
+                if hasattr(self.game.effect, "options"):
+                    try:
+                        self.game.effect.options.set_value(opt, value)
+                    except optgroup.OptionsError, e:
+                        print(e.message)
+                        self.transport.write("Error: %s\n" % (e.message))
+                    else:
+                        self.transport.write("ok\n")
                         
     def conectionLost(self):
         print("Telnet connection lost.")
