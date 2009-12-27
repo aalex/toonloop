@@ -81,6 +81,7 @@ from toon import midi
 from toon import save
 from toon import sampler
 from toon import data
+from toon.effects import noeffect
 try:
     from toon import web
     WEB_LOADED = True
@@ -471,7 +472,7 @@ class Toonloop(render.Game):
         """
         Set all effects up.
         """
-        for module in [chromakey]:
+        for module in [chromakey, noeffect]:
             effect = module.get_effect()
             effect.setup()
             if not effect.loaded:
@@ -479,9 +480,6 @@ class Toonloop(render.Game):
             else:
                 self.effects[effect.name] = effect
                 self.optgroups[effect.name] = effect.options
-        #if self.config.chromakey_enabled: 
-        #    self.effects["chromakey"].setup()
-        #    self.effects["chromakey"].update_config(self.config.__dict__)
     
     def effect_next(self):
         """
@@ -489,19 +487,20 @@ class Toonloop(render.Game):
         """
         previous = self.config.effect_name 
         all = self.effects.keys()
+        print(all)
         if len(all) == 0:
             print("No effect loaded.")
         else:
-            if previous == "None":
+            index_of_previous = all.index(previous)
+            if index_of_previous >= len(all) - 1:
                 new = all[0]
             else:
-                index_of_previous = all.index(previous)
-                if index_of_previous == len(all) - 1:
-                    new = "None"
-                else:
-                    new = index_of_previous + 1
+                new = all[index_of_previous + 1]
             print("Using effect %s" % (new))
             self.config.effect_name = new
+
+    def _get_current_effect(self):
+        return self.effects[self.config.effect_name]
 
     def _start_services(self):
         """
@@ -699,6 +698,16 @@ class Toonloop(render.Game):
             print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
         except AttributeError, e:
             print sys.exc_info()
+    
+    def set_option_in_group(self, group, key, value):
+        """
+        Might raise ToonloopError of OptionGroupError
+        """
+        if group not in self.optgroups.keys():
+            raise ToonloopError("No option group named %s." % (group))
+        else:
+            obj = self.optgroups[group]
+            obj.set_value(key, value)
 
     def print_help(self):
         """
@@ -914,11 +923,7 @@ class Toonloop(render.Game):
                     self.signal_playhead(self.clip.playhead)
                 # 30/3 = 10 FPS
         self._camera_grab_frame() # grab a frame
-        CHROMA_ON = self.config.chromakey_enabled and self.config.chromakey_on
-        self.effects["chromakey"].update_config(self.config.__dict__) # FIXME too often
-        self.effects["chromakey"].enabled = CHROMA_ON # FIXME Should be simpler
-        current_effect = self.effects["chromakey"]
-        # TODO: replace by effect number
+        current_effect = self._get_current_effect()
 
         # now, let's draw something
         GL.glEnable(GL.GL_TEXTURE_RECTANGLE_ARB)

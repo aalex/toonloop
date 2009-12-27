@@ -86,24 +86,6 @@ class ChromaKeyEffect(fx.Effect):
         self.name = "chromakey"
         self.program = None
         self.options = ChromaKeyOptions()
-        self.config = {
-            'chromakey_r':0.2,
-            'chromakey_g':0.8,
-            'chromakey_b':0.0,
-            'chromakey_thresh':0.8,
-            'chromakey_slope':0.2,
-            '_texture_id':0,
-            }
-        #print("init %s" % (self.name))
-    
-    def update_config(self, config):
-        for k in self.config.iterkeys():
-            if config.has_key(k):
-                self.config[k] = config[k]
-        if config.has_key("chromakey_on"):
-            self.enabled = config["chromakey_on"]
-        #if config.has_key("chromakey_enabled"):
-        #    self.enabled = config["chromakey_enabled"]
 
     def setup(self):
         """
@@ -116,10 +98,7 @@ class ChromaKeyEffect(fx.Effect):
             self.program.add_shader_text(GL_VERTEX_SHADER_ARB, vert)
             self.program.add_shader_text(GL_FRAGMENT_SHADER_ARB, frag)
             self.program.linkShaders()
-            # will throw an error if there is a problem
             self.loaded = True
-            #print("Set up effect %s" % (self.name))
-            #print(self.config)
         except NullFunctionError, e:
             print("Error: %s" % (e.message))
             print("Disabling the chromakey effect")
@@ -135,11 +114,10 @@ class ChromaKeyEffect(fx.Effect):
                 self.loaded = False
                 print(e.message)
             else:
-                self.program.glUniform1i("image", self.config["_texture_id"])
-                # program.glUniform1f("alpha_result", 0.2)
-                self.program.glUniform3f("keying_color", self.config['chromakey_r'], self.config['chromakey_g'], self.config['chromakey_b'])
-                self.program.glUniform1f("thresh", self.config['chromakey_thresh'])
-                self.program.glUniform1f("slope", self.config['chromakey_slope'])
+                self.program.glUniform1i("image", self.options.texture_id)
+                self.program.glUniform3f("keying_color", *self.options.target_color)
+                self.program.glUniform1f("thresh", self.options.thresh)
+                self.program.glUniform1f("slope", self.options.slope)
 
     def post_draw(self):
         if self.loaded and self.enabled:

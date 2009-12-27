@@ -147,18 +147,16 @@ def run():
         for name, group in toonloop.optgroups.iteritems():
             print("Options in group %s:" % (name))
             for key, value in group.__dict__.iteritems():
-                print(" -x %s %s %s" % (name, key, value))
+                print("    -x %s %s %s" % (name, key, value))
         sys.exit(0)
-    try:
-        if options.option_group is not None:
-            for group, key, value in options.options_group:
-                if group not in toonloop.optgroups.keys():
-                    print("No option group named %s." % (group))
-                else:
-                    obj = toonloop.optgroups[group]
-                    obj.set_value(key, value)
-    except optgroup.OptionsError, e:
-        print(e.message)
+    if options.option_group is not None:
+        for group, key, value in options.options_group:
+            try:
+                toonloop.set_option_in_group(group, key, value)
+            except ToonloopError, e:
+                print(e.message)
+            except optgroup.OptionsError, e:
+                print(e.message)
     try:
         reactor.run()
     except KeyboardInterrupt:
