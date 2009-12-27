@@ -296,6 +296,9 @@ if __name__ == '__main__':
         elif options.effect == "brcosa":
             from toon.effects import brcosa
             effect = brcosa.create_effect()
+        elif options.effect == "leavecolor":
+            from toon.effects import leavecolor
+            effect = leavecolor.create_effect()
         else:
             print("Effect %s is not valid." % (options.effect))
             sys.exit(1)

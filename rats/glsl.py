@@ -111,6 +111,7 @@ class ShaderProgram(object):
         glCompileShaderARB(shaderHandle)
         success = glGetObjectParameterivARB(shaderHandle, 
             GL_OBJECT_COMPILE_STATUS_ARB)
+        self._checkOpenGLError()
         if not success:
             raise ShaderError(glGetInfoLogARB(shaderHandle))
         glAttachObjectARB(self._shaderProgramID, shaderHandle)
