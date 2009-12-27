@@ -144,10 +144,7 @@ def run():
     # optgroups must be set once toonloop has been initialized.
 
     if options.list_options:
-        for name, group in toonloop.optgroups.iteritems():
-            print("Options in group %s:" % (name))
-            for key, value in group.__dict__.iteritems():
-                print("    -x %s %s %s" % (name, key, value))
+        toonloop.print_optgroups()
         sys.exit(0)
     if options.option_group is not None:
         for group, key, value in options.options_group:

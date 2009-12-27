@@ -11,7 +11,7 @@ from twisted.internet.error import CannotListenError
 
 from rats import fudi 
 
-class PureData(object):
+class PureDataController(object):
     """
     Toonloop API for Pure Data FUDI network messages.
 
@@ -51,6 +51,7 @@ class PureData(object):
         self.receiver.register_message("/frame/add", self.frame_add)
         self.receiver.register_message("/frame/remove", self.frame_remove)
         self.receiver.register_message("/clip/select", self.frame_remove)
+        self.receiver.register_message("/option/group", self.set_option_in_group)
         if self.manhole_enable:
             self.receiver.register_message("/call", self.call)
             self.receiver.register_message("/config/set", self.config_set)
@@ -143,6 +144,22 @@ class PureData(object):
                 self.app.frame_add()
             except Exception, e:
                 print e.message
+
+    def set_option_in_group(self, receiver, *args):
+        if self.verbose:
+            print "pd: /option/group", args
+        if self.app is not None:
+            try:
+                group = args[0]
+                key = args[1]
+                value = args[2]
+                if len(args) == 5:
+                    value = "%s,%s,%s" % (args[2], args[3], args[4])
+                self.app.set_option_in_group(group, key, value)
+            except IndexError, e:
+                print("IndexError: %s" % (e.message))
+            except Exception, e:
+                print("Error setting option from group %s" % (e.message))
     
     def frame_remove(self, receiver, *args):
         """
@@ -179,6 +196,8 @@ class PureData(object):
         Warning : protect this port !
         Do not use this FUDI protocol when network is not secure.
 
+        The pound sign (#) is replaced by commas
+
         call <method> <args...>
         """
         if self.app is None:
@@ -186,8 +205,11 @@ class PureData(object):
         else:
             try:
                 method = getattr(self.app, args[0])
+                actual_args = list(args[1:])
+                #for i in range(len(actual_args)):
+                #    actual_args[i] = str(actual_args[i]).replace("#", ",")
                 if self.verbose:
-                    print '      puredata.%s(%s)' % (args[0], str(args[1:])), method
+                    print '      puredata.%s(%s)' % (args[0], str(actual_args)), method
                 method(*args[1:])
             except Exception, e:
                 print "ERROR @ puredata.call:", e.message
@@ -210,29 +232,19 @@ class PureData(object):
             reactor.stop()
         
 def start(**kwargs): 
-    #receive_port=15555, send_port=17777, send_host='localhost'):
     """
     Factory for the Toonloop FUDI service.
 
     **kwargs
     """
-#     kwargs = {
-#         'app':app,
-#         'receive_port':receive_port,
-#         'send_port':send_port,
-#         'send_host':send_host
-#         } # TODO: send to many subscribers.
-#     # kwargs.update(options)
     fudi.VERBOSE = True
     print("Starting PureData service.")
     pprint.pprint(kwargs)
-    
-    pd = PureData(**kwargs)
+    pd = PureDataController(**kwargs)
     return pd
 
 if __name__ == '__main__':
     fudi.VERBOSE = True
-    pd = PureData()
+    pd = PureDataController()
     reactor.callLater(15, pd._init_sender) 
     reactor.run()
-

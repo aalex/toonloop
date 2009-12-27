@@ -76,12 +76,12 @@ except ImportError, e:
 from toon import mencoder
 from toon import draw
 from toon import puredata
-from toon import chromakey
 from toon import midi
 from toon import save
 from toon import sampler
 from toon import data
 from toon.effects import noeffect
+from toon.effects import chromakey
 try:
     from toon import web
     WEB_LOADED = True
@@ -717,6 +717,14 @@ class Toonloop(render.Game):
         else:
             obj = self.optgroups[group]
             obj.set_value(key, value)
+            if self.config.verbose:
+                print("Set %s in group %s to %s" % (key, group, value))
+
+    def print_optgroups(self):
+        for name, group in self.optgroups.iteritems():
+            print("Options in group %s:" % (name))
+            for key, value in group.__dict__.iteritems():
+                print("    -x %s %s %s" % (name, key, value))
 
     def print_help(self):
         """

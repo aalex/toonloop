@@ -105,6 +105,7 @@ class ChromaKeyEffect(fx.Effect):
         except ShaderError, e:
             print("Error: %s" % (e.message))
             print("Disabling the chromakey effect")
+        self.enabled = True
     
     def pre_draw(self):
         if self.loaded and self.enabled:
