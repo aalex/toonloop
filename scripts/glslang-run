@@ -107,10 +107,11 @@ class TelnetController(protocol.Protocol):
         print("Telnet connection lost.")
         self.process_proto.tranport.loseConnection()
 
-class VideoCapturePlayer(render.Game):
+class GlSlangGame(render.Game):
     size = (640, 480)
     def __init__(self, effect, camera_number=0):
         render.Game.__init__(self)
+        self.background_color = [0.3, 0.0, 0.3]
         self.effect = effect
         self.textures = [0] # list of texture ID 
 
@@ -188,10 +189,22 @@ class VideoCapturePlayer(render.Game):
         w = 640.0
         h = 480.0
         aspectRatio = w / float(h)
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        # background color
+        glDisable(GL_TEXTURE_RECTANGLE_ARB) 
+        glColor3f(*self.background_color)
+        glPushMatrix()
+        glBegin(GL_QUADS)
+        glVertex2f(-4.0, -3.0) # Bottom Left
+        glVertex2f(4.0, -3.0) # Bottom Right
+        glVertex2f(4.0, 3.0) # Top Right
+        glVertex2f(-4.0, 3.0) # Top Left
+        glEnd()
+        glPopMatrix()
+        # Image with effect in big
+        glEnable(GL_TEXTURE_RECTANGLE_ARB) 
         self.effect.pre_draw()
-        
+        glColor3f(1., 1., 1.)
         glPushMatrix()
         glBegin(GL_QUADS)
         glTexCoord2f(0.0, 0.0)
@@ -204,9 +217,7 @@ class VideoCapturePlayer(render.Game):
         glVertex2f(-4.0, 3.0) # Top Left
         glEnd()
         glPopMatrix()
-        
         self.effect.post_draw()
-
         # The picture in picture : 
         glPushMatrix()
         glTranslate(2, 1.5, 0)
@@ -295,7 +306,7 @@ if __name__ == '__main__':
     effect.enabled = True # choose it
     pygame.init()
     pygame.camera.init()
-    game = VideoCapturePlayer(effect, camera_number)
+    game = GlSlangGame(effect, camera_number)
     pygame_timer = render.Renderer(game, False) # not verbose !  options.verbose
     pygame_timer.desired_fps = 30
     try:
