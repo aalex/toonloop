@@ -107,8 +107,8 @@ PACKAGE_DATA_PATH = os.path.dirname(data.__file__)
 DIRECTION_FORWARD = "forward"
 DIRECTION_BACKWARD = "backward"
 DIRECTION_YOYO = "yoyo" # back and forth
-STYLE_SPLIT_SCREEN = "split_screen"
-STYLE_PICTURE_IN_PICTURE = "picture_in_picture"
+THEME_SPLIT_SCREEN = "split_screen"
+THEME_PICTURE_IN_PICTURE = "picture_in_picture"
 
 class ToonloopError(Exception):
     """
@@ -154,7 +154,7 @@ class Configuration(object): #Serializable):
         self.display_width = self.image_width * 2 # 640 , was 1024
         self.display_height = self.image_height * 2 # 480 , was 768
         self.display_fullscreen = False
-        self.display_style = STYLE_SPLIT_SCREEN
+        self.display_theme = THEME_SPLIT_SCREEN
         
         # web services
         self.web_server_port = 8000
@@ -319,13 +319,13 @@ class ToonClip(object): #Serializable):
         self.images = []
         self.writehead = len(self.images) # index of the next image to be filled up. Between 0 and n.
 
-class SplitScreenStyle(object):
+class SplitScreenTheme(object):
     """
-    Styles allow to customize the graphical attributes of the rendering.
-    This is the base style with a split screen.
+    Theme allow to customize the graphical attributes of the rendering.
+    This is the base theme with a split screen.
     """
     def __init__(self):
-        self.name = STYLE_SPLIT_SCREEN
+        self.name = THEME_SPLIT_SCREEN
         self.play_pos = (2.0, 0.0, 0.0)
         self.play_scale = (2.0, 1.5, 1.0)
         self.edit_pos = (-2.0, 0.0, 0.0)
@@ -337,15 +337,15 @@ class SplitScreenStyle(object):
         self.progress_pos = (0.0, -2.0, 0.0) 
         self.progress_scale = (3.0, 0.05, 1.0) 
         #self.flash_color = (1.0, 1.0, 1.0, 1.0)
-        #TODO: add a style not displaying the edit "viewport".
+        #TODO: add a theme not displaying the edit "viewport".
 
-class PictureInPictureStyle(SplitScreenStyle):
+class PictureInPictureTheme(SplitScreenTheme):
     """
-    This style is a picture in picture style.
+    This theme is a picture in picture theme.
     """
     def __init__(self):
-        SplitScreenStyle.__init__(self) # inherit some attributes from the base style.
-        self.name = STYLE_PICTURE_IN_PICTURE
+        SplitScreenTheme.__init__(self) # inherit some attributes from the base theme.
+        self.name = THEME_PICTURE_IN_PICTURE
         self.play_pos = (0.0, 0.0, 0.0)
         self.play_scale = (4.0, 3.0, 1.0)
         self.edit_pos = (2.0, 1.5, 0.0)
@@ -396,14 +396,14 @@ class Toonloop(render.Game):
         self._saver_progress = None # ClipSaver progress bar ratio. float from 0 to 1
         self._init_clips()
         self.renderer = None # Renderer instance that owns it.
-        self.styles = {
-            STYLE_SPLIT_SCREEN: SplitScreenStyle(),
-            STYLE_PICTURE_IN_PICTURE: PictureInPictureStyle(),
+        self.themes = {
+            THEME_SPLIT_SCREEN: SplitScreenTheme(),
+            THEME_PICTURE_IN_PICTURE: PictureInPictureTheme(),
             }
-        if self.config.display_style not in self.styles.keys():
-            print("Error: not such style: %s. using default")
-            self.config.display_style = STYLE_SPLIT_SCREEN
-        self.style = self.styles[self.config.display_style]
+        if self.config.display_theme not in self.themes.keys():
+            print("Error: not such theme: %s. using default")
+            self.config.display_theme = THEME_SPLIT_SCREEN
+        self.theme = self.themes[self.config.display_theme]
             
         # the icon
         try:
@@ -560,12 +560,15 @@ class Toonloop(render.Game):
         self.signal_clip(0) # default clip id
         self.signal_writehead(0)
 
-    def style_change(self):
-        if self.style.name == STYLE_PICTURE_IN_PICTURE:
-            self.style = self.styles[STYLE_SPLIT_SCREEN]
+    def theme_change(self):
+        """
+        Pick next theme
+        """
+        if self.theme.name == THEME_PICTURE_IN_PICTURE:
+            self.theme = self.themes[THEME_SPLIT_SCREEN]
         else:
-            self.style = self.styles[STYLE_PICTURE_IN_PICTURE]
-        self.config.display_style = self.style.name
+            self.theme = self.themes[THEME_PICTURE_IN_PICTURE]
+        self.config.display_theme = self.theme.name
 
     def sampler_record(self, start=True):
         """
@@ -701,7 +704,13 @@ class Toonloop(render.Game):
     
     def set_option_in_group(self, group, key, value):
         """
+        Set an option that is in a OptionsGroup.
+        See toon.optgroup.OptionsGroup.
+
         Might raise ToonloopError of OptionGroupError
+        :param group: Name of the group.
+        :param key: Name of the option.
+        :param value: str with the value.
         """
         if group not in self.optgroups.keys():
             raise ToonloopError("No option group named %s." % (group))
@@ -725,7 +734,7 @@ class Toonloop(render.Game):
         print("a       = enable the intervalometer auto grab.")
         print("k       = increase the intervalometer interval.")
         print("j       = decrease the intervalometer interval.")
-        print(".       = Changes the graphical style.")
+        print(".       = Changes the graphical theme.")
         print("tab     = Changes the playback direction for the current clip.")
         print("[0, 9]  = select a clip from the current project")
         print("<Esc> of f   = toggles the fullscreen mode")
@@ -963,12 +972,12 @@ class Toonloop(render.Game):
         """
         if self._saver_progress is not None:
             GL.glPushMatrix()
-            GL.glTranslatef(*self.style.progress_pos)
-            GL.glScalef(*self.style.progress_scale)
+            GL.glTranslatef(*self.theme.progress_pos)
+            GL.glScalef(*self.theme.progress_scale)
             draw.draw_horizontal_progress_bar(
-                background_color=self.style.progress_background_color, 
-                foreground_color=self.style.progress_foreground_color, 
-                line_color=self.style.progress_line_color, 
+                background_color=self.theme.progress_background_color, 
+                foreground_color=self.theme.progress_foreground_color, 
+                line_color=self.theme.progress_line_color, 
                 progress=self._saver_progress)
             GL.glPopMatrix()
 
@@ -980,8 +989,8 @@ class Toonloop(render.Game):
         a = self.config.fx_white_flash_alpha
         GL.glColor4f(1.0, 1.0, 1.0, a)
         GL.glPushMatrix()
-        GL.glTranslatef(*self.style.edit_pos)#-2.0, 0.0, 0.0)
-        GL.glScalef(*self.style.edit_scale)#2.0, 1.5, 1.0)
+        GL.glTranslatef(*self.theme.edit_pos)#-2.0, 0.0, 0.0)
+        GL.glScalef(*self.theme.edit_scale)#2.0, 1.5, 1.0)
         draw.draw_square()
         GL.glPopMatrix()
     
@@ -1002,15 +1011,15 @@ class Toonloop(render.Game):
             GL.glColor4f(1.0, 1.0, 1.0, 1.0)
             # playback view
             GL.glPushMatrix()
-            GL.glTranslatef(*self.style.play_pos) #2.0, 0.0, 0.0)
-            GL.glScalef(*self.style.play_scale)#2.0, 1.5, 1.0)
+            GL.glTranslatef(*self.theme.play_pos) #2.0, 0.0, 0.0)
+            GL.glScalef(*self.theme.play_scale)#2.0, 1.5, 1.0)
             GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
             draw.draw_textured_square(self.config.image_width, self.config.image_height)
             GL.glPopMatrix()
             # edit view
             GL.glPushMatrix()
-            GL.glTranslatef(*self.style.edit_pos) #-2.0, 0.0, 0.0)
-            GL.glScalef(*self.style.edit_scale)#2.0, 1.5, 1.0)
+            GL.glTranslatef(*self.theme.edit_pos) #-2.0, 0.0, 0.0)
+            GL.glScalef(*self.theme.edit_scale)#2.0, 1.5, 1.0)
             GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
             draw.draw_textured_square(self.config.image_width, self.config.image_height)
             GL.glPopMatrix()
@@ -1032,8 +1041,8 @@ class Toonloop(render.Game):
         """
         GL.glColor4f(1.0, 1.0, 1.0, 1.0)
         GL.glPushMatrix()
-        GL.glTranslatef(*self.style.edit_pos) #-2.0, 0.0, 0.0)
-        GL.glScalef(*self.style.edit_scale) #2.0, 1.5, 1.0)
+        GL.glTranslatef(*self.theme.edit_pos) #-2.0, 0.0, 0.0)
+        GL.glScalef(*self.theme.edit_scale) #2.0, 1.5, 1.0)
         # most recent grabbed :
         GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_MOST_RECENT])
         if self.config.image_flip_horizontal: # FIXME?
@@ -1046,8 +1055,8 @@ class Toonloop(render.Game):
     def _draw_onion_skin(self):
         # Onion skin over dit view:
         GL.glPushMatrix()
-        GL.glTranslatef(*self.style.edit_pos)#-2.0, 0.0, 0.0)
-        GL.glScalef(*self.style.edit_scale)#2.0, 1.5, 1.0)
+        GL.glTranslatef(*self.theme.edit_pos)#-2.0, 0.0, 0.0)
+        GL.glScalef(*self.theme.edit_scale)#2.0, 1.5, 1.0)
         GL.glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
         GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
         draw.draw_textured_square(self.config.image_width, self.config.image_height)
@@ -1060,8 +1069,8 @@ class Toonloop(render.Game):
         """
         GL.glColor4f(1.0, 1.0, 1.0, 1.0)
         GL.glPushMatrix()
-        GL.glTranslatef(*self.style.play_pos)#2.0, 0.0, 0.0)
-        GL.glScalef(*self.style.play_scale)#2.0, 1.5, 1.0)
+        GL.glTranslatef(*self.theme.play_pos)#2.0, 0.0, 0.0)
+        GL.glScalef(*self.theme.play_scale)#2.0, 1.5, 1.0)
         GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_PLAYBACK])
         draw.draw_textured_square(self.config.image_width, self.config.image_height)
         GL.glPopMatrix()
@@ -1392,8 +1401,8 @@ class Toonloop(render.Game):
                         self.frame_remove()
                     elif e.key == PYGM.K_TAB: # TAB changes direction
                         self.direction_change()
-                    elif e.key == PYGM.K_PERIOD: # PERIOD changes style
-                        self.style_change()
+                    elif e.key == PYGM.K_PERIOD: # PERIOD changes theme
+                        self.theme_change()
                     elif e.key == PYGM.K_MINUS:
                         pass # TODO
                     elif e.key == PYGM.K_PLUS:
