@@ -49,6 +49,9 @@ from toon import optgroup
 #    print(e.message)
 #    print("path: %s" % (sys.path))
 #    raise
+class GlslRunOptions(optgroup.OptionsGroup):
+    def __init__(self):
+        self.bgcolor = [1.0, 0.0, 1.0]
 
 class TelnetController(protocol.Protocol):
     """
@@ -102,6 +105,20 @@ class TelnetController(protocol.Protocol):
                         self.transport.write("Error: %s\n" % (e.message))
                     else:
                         self.transport.write("ok\n")
+            if tokens[0] == "b": # set bgcolor
+                if len(tokens) < 2:
+                    self.transport.write("b takes at least 1 args: bgcolor value\n")
+                    return
+                else:
+                    opt = "bgcolor"
+                    value = tokens[1]
+                    try:
+                        self.game.options.set_value(opt, value)
+                    except optgroup.OptionsError, e:
+                        print(e.message)
+                        self.transport.write("Error: %s\n" % (e.message))
+                    else:
+                        self.transport.write("ok\n")
                         
     def conectionLost(self):
         print("Telnet connection lost.")
@@ -111,7 +128,7 @@ class GlSlangGame(render.Game):
     size = (640, 480)
     def __init__(self, effect, camera_number=0):
         render.Game.__init__(self)
-        self.background_color = [0.3, 0.0, 0.3]
+        self.options = GlslRunOptions()
         self.effect = effect
         self.textures = [0] # list of texture ID 
 
@@ -192,7 +209,7 @@ class GlSlangGame(render.Game):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         # background color
         glDisable(GL_TEXTURE_RECTANGLE_ARB) 
-        glColor3f(*self.background_color)
+        glColor3f(*self.options.bgcolor)
         glPushMatrix()
         glBegin(GL_QUADS)
         glVertex2f(-4.0, -3.0) # Bottom Left
@@ -299,6 +316,9 @@ if __name__ == '__main__':
         elif options.effect == "leavecolor":
             from toon.effects import leavecolor
             effect = leavecolor.create_effect()
+        elif options.effect == "lumakey":
+            from toon.effects import lumakey
+            effect = lumakey.create_effect()
         else:
             print("Effect %s is not valid." % (options.effect))
             sys.exit(1)
