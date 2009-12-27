@@ -38,16 +38,13 @@ from twisted.internet import error
 # the core: 
 from rats import render
 from toon import core # Configuration, Toonloop, ToonloopError
+from toon import optgroup
 
 def run():
     """
     Starts the application, reading the command-line arguments.
     """
-        # self.intervalometer_on = False
-        # self.intervalometer_enabled = False
-        # self.intervalometer_rate_seconds = 30.0 # in seconds
-    EPILOG="Toonloop is a live stop motion performance tool. The objective is to spread its use for teaching new medias to children and to give a professional tool for movie creators. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop."
-    parser = optparse.OptionParser(usage="%prog", version='Toonloop ' + str(__version__)) #, epilog=EPILOG)
+    parser = optparse.OptionParser(usage="%prog", version='Toonloop ' + str(__version__)) 
     parser.add_option("-d", "--device", dest="device", type="int", \
         help="Specifies V4L2 device to grab image from. Expects an integer such as 0, 1 or 2.", default=0)
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true", \
@@ -72,6 +69,9 @@ def run():
     parser.add_option("-i", "--intervalometer-on", \
         dest="intervalometer_on", action="store_true", \
         help="Starts the intervalometer at startup.") # default=False
+    parser.add_option("-x", "--option-group", 
+        action="append", nargs=3, 
+        help="Sets option from an option group.")
     parser.add_option("-e", "--intervalometer-enabled", \
         dest="intervalometer_enabled", action="store_true", \
         help="Enables/disables the use of the intervalometer.", default=True)
@@ -104,7 +104,6 @@ def run():
         toonloop -o [name] [value]""")
         print("Toonloop options and their current values :")
         config.print_values()
-        sys.exit(0)
     else:
         print("Toonloop - Version " + str(__version__))
         print("Copyright 2008 Alexandre Quessy & Tristan Matthews")
@@ -142,6 +141,24 @@ def run():
         print("Congratulations ! Toonloop started gracefully.")
     pygame_timer = render.Renderer(toonloop, False) # not verbose !  options.verbose
     pygame_timer.desired_fps = options.fps
+    # optgroups must be set once toonloop has been initialized.
+
+    if options.list_options:
+        for name, group in toonloop.optgroups.iteritems():
+            print("Options in group %s:" % (name))
+            for key, value in group.__dict__.iteritems():
+                print(" -x %s %s %s" % (name, key, value))
+        sys.exit(0)
+    try:
+        if options.option_group is not None:
+            for group, key, value in options.options_group:
+                if group not in toonloop.optgroups.keys():
+                    print("No option group named %s." % (group))
+                else:
+                    obj = toonloop.optgroups[group]
+                    obj.set_value(key, value)
+    except optgroup.OptionsError, e:
+        print(e.message)
     try:
         reactor.run()
     except KeyboardInterrupt:

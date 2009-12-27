@@ -9,6 +9,7 @@ from OpenGL.GLU import *
 from rats.glsl import ShaderProgram
 from rats.glsl import ShaderError
 from toon import fx
+from toon import optgroup
 
 # globals
 vert = """
@@ -69,36 +70,40 @@ void main(void)
 }
 """
 
+class ChromaKeyOptions(optgroup.OptionsGroup):
+    def __init__(self):
+        self.target_color = [0.2, 0.0, 0.8]
+        self.thresh = 0.8
+        self.slope = 0.2
+        self.texture_id = 0
+
 class ChromaKeyEffect(fx.Effect):
     """
     Chroma keying filter using GLSL.
     """
     def __init__(self):
+        fx.Effect.__init__(self)
         self.name = "chromakey"
-        self.is_on = False
-        self.is_enabled = False
         self.program = None
+        self.options = ChromaKeyOptions()
         self.config = {
             'chromakey_r':0.2,
             'chromakey_g':0.8,
             'chromakey_b':0.0,
             'chromakey_thresh':0.8,
             'chromakey_slope':0.2,
-            #'chromakey_on':False,
-            #'chromakey_enabled':False,
             '_texture_id':0,
             }
         #print("init %s" % (self.name))
-        fx.Effect.__init__(self)
     
     def update_config(self, config):
         for k in self.config.iterkeys():
             if config.has_key(k):
                 self.config[k] = config[k]
         if config.has_key("chromakey_on"):
-            self.is_on = config["chromakey_on"]
+            self.enabled = config["chromakey_on"]
         #if config.has_key("chromakey_enabled"):
-        #    self.is_on = config["chromakey_enabled"]
+        #    self.enabled = config["chromakey_enabled"]
 
     def setup(self):
         """
@@ -106,14 +111,13 @@ class ChromaKeyEffect(fx.Effect):
         """
         global vert
         global frag
-        self.is_enabled = False
         try:
             self.program = ShaderProgram()
             self.program.add_shader_text(GL_VERTEX_SHADER_ARB, vert)
             self.program.add_shader_text(GL_FRAGMENT_SHADER_ARB, frag)
             self.program.linkShaders()
             # will throw an error if there is a problem
-            self.is_enabled = True
+            self.loaded = True
             #print("Set up effect %s" % (self.name))
             #print(self.config)
         except NullFunctionError, e:
@@ -124,7 +128,7 @@ class ChromaKeyEffect(fx.Effect):
             print("Disabling the chromakey effect")
     
     def pre_draw(self):
-        if self.is_enabled and self.is_on:
+        if self.loaded and self.enabled:
             try:
                 self.program.enable()
             except Exception, e: 
@@ -138,7 +142,7 @@ class ChromaKeyEffect(fx.Effect):
                 self.program.glUniform1f("slope", self.config['chromakey_slope'])
 
     def post_draw(self):
-        if self.is_enabled and self.is_on:
+        if self.loaded and self.enabled:
             try:
                 self.program.disable()
             except Exception, e: 

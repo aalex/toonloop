@@ -64,11 +64,9 @@ import pprint
 
 from twisted.internet import reactor
 from twisted.internet import defer
-#from twisted.python import failure
 
 from rats import render
 from rats import sig
-#from rats.serialize import Serializable
 try:
     from toon import opensoundcontrol
     OSC_LOADED = True
@@ -100,14 +98,11 @@ except ImportError, e:
 
 import pygame
 import pygame.camera
-#from pygame.locals import *
-import pygame.locals as PYGM # want to get rid of namespace contamination
+import pygame.locals as PYGM # no namespace contamination
 from pygame import time
-#from OpenGL.GL import *
-from OpenGL import GL # want to get rid of namespace contamination
+from OpenGL import GL # no namespace contamination
 
 PACKAGE_DATA_PATH = os.path.dirname(data.__file__)
-# the version number is in both toon/runner.py and setup.py
 DIRECTION_FORWARD = "forward"
 DIRECTION_BACKWARD = "backward"
 DIRECTION_YOYO = "yoyo" # back and forth
@@ -198,7 +193,8 @@ class Configuration(object): #Serializable):
         self.fx_white_flash = True
         self.fx_white_flash_alpha = 0.5
         # todo:duration
-        
+        # effects
+        self.effect_name = "None"
         # chromakey
         self.chromakey_enabled = True
         self.chromakey_on = False
@@ -433,8 +429,10 @@ class Toonloop(render.Game):
         self.is_mac = False # is on Mac OS X or not. (linux) For the camera.
         self.textures = [0, 0, 0, 0] # list of OpenGL texture objects id
         self._setup_camera()
-        self.fx_chromakey = chromakey.get_effect()
         self._setup_window()
+        self.effects = {}
+        self.optgroups = {}
+        self._setup_effects()
         self.background_image = None
         self._setup_background()
         self._clear_playback_view()
@@ -468,6 +466,42 @@ class Toonloop(render.Game):
         
         # start services
         reactor.callLater(0, self._start_services)
+
+    def _setup_effects(self):
+        """
+        Set all effects up.
+        """
+        for module in [chromakey]:
+            effect = module.get_effect()
+            effect.setup()
+            if not effect.loaded:
+                print("Could not load effect %s." % (effect.name))
+            else:
+                self.effects[effect.name] = effect
+                self.optgroups[effect.name] = effect.options
+        #if self.config.chromakey_enabled: 
+        #    self.effects["chromakey"].setup()
+        #    self.effects["chromakey"].update_config(self.config.__dict__)
+    
+    def effect_next(self):
+        """
+        Selects the next effect.
+        """
+        previous = self.config.effect_name 
+        all = self.effects.keys()
+        if len(all) == 0:
+            print("No effect loaded.")
+        else:
+            if previous == "None":
+                new = all[0]
+            else:
+                index_of_previous = all.index(previous)
+                if index_of_previous == len(all) - 1:
+                    new = "None"
+                else:
+                    new = index_of_previous + 1
+            print("Using effect %s" % (new))
+            self.config.effect_name = new
 
     def _start_services(self):
         """
@@ -737,10 +771,8 @@ class Toonloop(render.Game):
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
         for i in range(len(self.textures)):
             self.textures[i] = GL.glGenTextures(1)
-        if self.config.chromakey_enabled: 
-            self.fx_chromakey.setup()
-            self.fx_chromakey.update_config(self.config.__dict__)
         # print "texture names : ", self.textures
+
 
     def _resize_window(self): 
         #, (width, height)):
@@ -883,26 +915,27 @@ class Toonloop(render.Game):
                 # 30/3 = 10 FPS
         self._camera_grab_frame() # grab a frame
         CHROMA_ON = self.config.chromakey_enabled and self.config.chromakey_on
-        self.fx_chromakey.update_config(self.config.__dict__) # FIXME too often
-        self.fx_chromakey.is_on = CHROMA_ON # FIXME Should be simpler
+        self.effects["chromakey"].update_config(self.config.__dict__) # FIXME too often
+        self.effects["chromakey"].enabled = CHROMA_ON # FIXME Should be simpler
+        current_effect = self.effects["chromakey"]
         # TODO: replace by effect number
 
         # now, let's draw something
         GL.glEnable(GL.GL_TEXTURE_RECTANGLE_ARB)
         self._draw_background() # only if enabled
         # ---------- playback view
-        self.fx_chromakey.pre_draw()
+        current_effect.pre_draw()
         self._draw_playback_view()
-        self.fx_chromakey.post_draw()
+        current_effect.post_draw()
         # --------- edit view
-        self.fx_chromakey.pre_draw()
+        current_effect.pre_draw()
         self._draw_edit_view()
-        self.fx_chromakey.post_draw()
+        current_effect.post_draw()
         # ---------- onion skin (rendered after the edit view, over it)
-        self.fx_chromakey.pre_draw()
+        current_effect.pre_draw()
         if self.config.onionskin_enabled and self.config.onionskin_on:
             self._draw_onion_skin()
-        self.fx_chromakey.post_draw()
+        current_effect.post_draw()
         if self._has_just_added_frame:
             self._has_just_added_frame = False
             if self.config.fx_white_flash:
@@ -1304,6 +1337,8 @@ class Toonloop(render.Game):
                         self.clip_save()
                     elif e.key == PYGM.K_x: # X : config save
                         self.config_save()
+                    elif e.key == PYGM.K_n: # N : next effect
+                        self.effect_next()
                     elif e.key == PYGM.K_o: # O Onion
                         self.onionskin_toggle()
                     elif e.key == PYGM.K_a: # A Auto
