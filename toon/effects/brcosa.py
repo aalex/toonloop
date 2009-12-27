@@ -48,7 +48,8 @@ void main (void)
 	vec3 color = mix(intensity, texColor, saturation);
 	color = mix(avgluma, color, contrast);
 	color *= brightness;
-	gl_FragColor = vec4(color, color.g*alpha);
+	//gl_FragColor = vec4(color, color.g*alpha);
+	gl_FragColor = vec4(color, alpha);
 }
 """
 class BrCoSaOptions(optgroup.OptionsGroup):
@@ -108,17 +109,6 @@ class BrCoSaEffect(fx.Effect):
             self.program.glUniform1f("brightness", self.options.brightness)
             self.program.glUniform1f("alpha", self.options.alpha)
             self.program.glUniform3f("avgluma", *self.options.avgluma)
-            #self.program.glUniform1i("image", self.config["texture_id"])
-            #self.program.glUniform1f("saturation", self.config["saturation"])
-            #self.program.glUniform1f("contrast", self.config["contrast"])
-            #self.program.glUniform1f("brightness", self.config["brightness"])
-            #self.program.glUniform1f("alpha", self.config["alpha"])
-            #self.program.glUniform3f(
-            #    "avgluma", 
-            #    self.config['avgluma_r'], 
-            #    self.config['avgluma_g'], 
-            #    self.config['avgluma_b']
-            #    )
 
     def post_draw(self):
         if self.enabled and self.loaded:

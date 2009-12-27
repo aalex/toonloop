@@ -73,16 +73,6 @@ class SimpleChromaEffect(fx.Effect):
         self.loaded = False
         self.enabled = False
         self.options = SimpleChromaOptions()
-        #self.config = {
-        #    'chromakey_r':0.2,
-        #    'chromakey_g':0.8,
-        #    'chromakey_b':0.0,
-        #    'chromakey_thresh_r':0.8,
-        #    'chromakey_thresh_g':0.8,
-        #    'chromakey_thresh_b':0.8,
-        #    'texture_id':0,
-        #    'alpha_under_thresh':0.1,
-        #    }
         self.name = "simplechroma"
         print("init %s" % (self.name))
         
@@ -108,20 +98,11 @@ class SimpleChromaEffect(fx.Effect):
                 self.program.enable()
             except Exception, e: 
                 print(e.message)
-            #self.program.glUniform1i("image", self.config["texture_id"])
             self.program.glUniform1i("image", self.options.texture_id)
             self.program.glUniform3f(
                 "keying_color", *self.options.color)
-            #    self.config['chromakey_r'], 
-            #    self.config['chromakey_g'], 
-            #    self.config['chromakey_b']
-            #    )
             self.program.glUniform3f(
                 "thresh", *self.options.thresh)
-            #    self.config['chromakey_thresh_r'], 
-            #    self.config['chromakey_thresh_g'], 
-            #    self.config['chromakey_thresh_b']
-            #    )
             self.program.glUniform1f("alpha_under_thresh", self.options.alpha_under_thresh)
 #self.config['alpha_under_thresh'])
 

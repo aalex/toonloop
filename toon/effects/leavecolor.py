@@ -88,7 +88,6 @@ void main(void)
     // finish applying brcosa
 	color = mix(avgluma, color, contrast);
 	color *= brightness;
-	//gl_FragColor = vec4(color, color.g * alpha * input_alpha);
 	gl_FragColor = vec4(color, alpha * input_alpha);
 }
 """
