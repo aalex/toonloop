@@ -116,6 +116,7 @@ DIRECTION_BACKWARD = "backward"
 DIRECTION_YOYO = "yoyo" # back and forth
 THEME_SPLIT_SCREEN = "split_screen"
 THEME_PICTURE_IN_PICTURE = "picture_in_picture"
+THEME_PLAYBACK_PICTURE_IN_PICTURE = "playback_picture_in_picture"
 
 class ToonloopError(Exception):
     """
@@ -361,6 +362,19 @@ class PictureInPictureTheme(SplitScreenTheme):
         self.play_scale = (4.0, 3.0, 1.0)
         self.edit_pos = (2.0, 1.5, 0.0)
         self.edit_scale = (1.0, 0.75, 1.0)
+
+class PlaybackPictureInPictureTheme(SplitScreenTheme):
+    """
+    This theme is a picture in picture theme as well, but the edit is big.
+    """
+    def __init__(self):
+        SplitScreenTheme.__init__(self) # inherit some attributes from the base theme.
+        self.render_play_first = True
+        self.name = THEME_PLAYBACK_PICTURE_IN_PICTURE
+        self.edit_pos = (0.0, 0.0, 0.0)
+        self.edit_scale = (4.0, 3.0, 1.0)
+        self.play_pos = (2.0, 1.5, 0.0)
+        self.play_scale = (1.0, 0.75, 1.0)
     
 class Toonloop(render.Game):
     """
@@ -410,6 +424,7 @@ class Toonloop(render.Game):
         self.themes = {
             THEME_SPLIT_SCREEN: SplitScreenTheme(),
             THEME_PICTURE_IN_PICTURE: PictureInPictureTheme(),
+            THEME_PLAYBACK_PICTURE_IN_PICTURE: PlaybackPictureInPictureTheme(),
             }
         if self.config.display_theme not in self.themes.keys():
             print("Error: not such theme: %s. using default")
@@ -571,10 +586,12 @@ class Toonloop(render.Game):
         """
         Pick next theme
         """
-        if self.theme.name == THEME_PICTURE_IN_PICTURE:
-            self.theme = self.themes[THEME_SPLIT_SCREEN]
-        else:
-            self.theme = self.themes[THEME_PICTURE_IN_PICTURE]
+        all = self.themes.keys()
+        current_index = all.index(self.theme.name)
+        current_index = (current_index + 1) % len(all)
+        self.theme = self.themes[all[current_index]]
+        if self.config.verbose:
+            print("Switching to the %s theme." % (self.theme.name))
         self.config.display_theme = self.theme.name
 
     def sampler_record(self, start=True):
