@@ -38,7 +38,7 @@ svn co svn://seul.org/svn/pygame/trunk
 
 The startup file to execute is toonloop
 """
-
+# keep this in sync with man_toonloop.txt
 INTERACTIVE_HELP = """Toonloop interactive keyboard controls :
  - Press the SPACE bar to grab a frame.
  - Press DELETE or BACKSPACE to delete the last frame.
@@ -61,6 +61,7 @@ INTERACTIVE_HELP = """Toonloop interactive keyboard controls :
  - Press a number from 0 to 9 to switch to a different clip number.
  - Press 'p' to pause playback.
  - Press 'o' to toggle the onion skinning on/off.
+ - Press 'b' to take a snapshot as the new background image.
  - Press 'n' to select the next effect available."""
 import gc 
 import sys

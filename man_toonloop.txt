@@ -26,28 +26,30 @@ Next, you can find an example Pure Data patch in toon/data/toonloop.fx.pd where 
 
 Toonloop is an interactive software. While it runs, or can control it using keyboard keys. Here is a list of keystrokes to control Toonloop.
 
-    <Space bar> = Adds an image to the current clip.
-    <Backspace> = Removes an image from the current clip.
-    r = Resets the current clip. This erases all the images in it !
-    p = Pauses the looping.
-    o = Toggles onion skin on / off.
-    i = Prints informations and statistics.
-    h = Prints an help message.
-    s = Saves the current clip as JPEG and movie file.
-    a = Enable the intervalometer auto grab.
-    k = Increase the intervalometer interval.
-    j = Decrease the intervalometer interval.
-    x = Saves the current configuration options to ~/.toonloop.json
-    . = Changes the graphicals style.
-    [tab] = Changes the playback direction of the current clip.
-    [0, 9]  = Selects a clip from the current project identified by a number.
-    <Esc> or f = Toggles the fullscreen mode
-    <Up arrow> = Increases the frame rate. (faster)
-    <Down arrow> = Decreases the frame rate. (slower)
-    <Left arrow> = Moves the write head to the left. (towards the beginning)
-    <Right arrow> = Moves the write head to the right. (towards the end)
-    <Return> = Moves the write head to the last frame. (at the end)
-    <shift>-q = Quits.
+Toonloop interactive keyboard controls :
+ - Press the SPACE bar to grab a frame.
+ - Press DELETE or BACKSPACE to delete the last frame.
+ - Press 'r' to reset and start the current sequence. 
+   (and remove all its frames)
+ - Press 's' to save the current sequence as a Motion-JPEG movie.
+ - Press 'i' to print current loop frame number, number of frames in loop 
+   and global framerate.
+ - Press 'h' to print a help message.
+ - Press UP to increase frame rate.
+ - Press DOWN to decrease frame rate.
+ - Press 'a' to toggle on/off the auto recording.
+   (it records one frame on every frame) It is an intervalometer.
+   Best used to create timelapse clips automatically.
+ - Press 'k' or 'j' to increase or decrease the auto recording rate.
+ - Press 'f' or ESCAPE to toggle fullscreen mode.
+ - Press SHIFT-'q' to quit.
+ - Press '.' to change the graphical theme.
+ - Press TAB to change the playback direction.
+ - Press a number from 0 to 9 to switch to a different clip number.
+ - Press 'p' to pause playback.
+ - Press 'o' to toggle the onion skinning on/off.
+ - Press 'b' to take a snapshot as the new background image.
+ - Press 'n' to select the next effect available."""
 
 [OSC INTERFACE]
 
