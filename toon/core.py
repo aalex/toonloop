@@ -189,7 +189,7 @@ class Configuration(object): #Serializable):
         
         # background
         self.bgimage_enabled = False
-        self.bgimage = os.path.join(PACKAGE_DATA_PATH, 'bgimage_05.jpg')
+        self.bgimage = os.path.join(PACKAGE_DATA_PATH, 'bgimage_02.jpg')
         self.bgcolor_b = 0.2 #TODO: not used so much.
         self.bgcolor_g = 0.8
         self.bgcolor_r = 1.0
@@ -633,6 +633,23 @@ class Toonloop(render.Game):
         else:
             # Create an OpenGL texture
             draw.texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self.background_image)
+
+    def bgimage_snap(self):
+        """
+        Makes the current image from the camera to be the background image.
+        """
+        try:
+            if self.is_mac:
+                self.background_image = self.most_recent_image.copy()
+            else:
+                self.background_image = self.most_recent_image
+        except MemoryError, e:
+            print("CRITICAL ERROR : No more memory !!! %s" % (e.message))
+        else:
+            self.config.bgimage_enabled = True
+            # Create an OpenGL texture
+            draw.texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self.background_image)
+
     
     def bgimage_glob_next(self, increment=1):
         """
@@ -648,17 +665,12 @@ class Toonloop(render.Game):
             pattern = '%s/*%s' % (dir, ext)
             files = glob.glob(pattern)
             if self.config.verbose:
-                #print '----------------'
                 print("bgimage_glob_next pattern :" % (pattern))
                 print("bgimage_glob_next len(files) :" % (len(files)))
-                # print 'bgimage_glob_next files :', so % (ted(files))
-                # now = strftime("%Y-%m-%d_%Hh%Mm%S") # wit % (out an extension.)
-                # print 'bgimage_glob_next (debug) time is  % (ow :', now)
 
             if len(files) > 0:
                 old_val = self._bgimage_glob_index
                 new_val = (self._bgimage_glob_index + increment) % len(files)
-                #print 'bgimage_glob_next old_val :', old_val
                 print('bgimage_glob_next new_val :' % (new_val))
                 if old_val == new_val:
                     if self.config.verbose:
@@ -666,13 +678,7 @@ class Toonloop(render.Game):
                 else:
                     file_path = sorted(files)[new_val]
                     self._bgimage_glob_index = new_val 
-                    # print 'bgimage_glob_next self._bgimage_glob_index:', self._bgimage_glob_index
-                    #if self.config.verbose:
-                        # print 'bgimage_glob_next file_path:', file_path
                     self.bgimage_load(file_path)
-                    # if self.config.verbose:
-                    #     print 'bgimage_glob_next done'
-                    #     print '----------------'
 
     def print_stats(self):
         """
@@ -853,8 +859,9 @@ class Toonloop(render.Game):
             draw.texture_from_image(self.textures[self.TEXTURE_ONION], self.most_recent_image)
             self._has_just_added_frame = True
             if self.config.verbose:
-                print("Added frame at index %d" % (index))
-                print('num frames: %s' % (len(self.clip.images)))
+                pass
+                #print("Added frame at index %d" % (index))
+                #print('num frames: %s' % (len(self.clip.images)))
             self.signal_writehead(len(self.clip.images))
             self.signal_frame_add()
     
@@ -1295,12 +1302,13 @@ class Toonloop(render.Game):
                 modifiers = pygame.key.get_mods()
                 if modifiers & PYGM.KMOD_LSHIFT != 0:
                     if self.config.verbose:
-                        print("Left shit is being pressed.")
+                        #print("Left shit is being pressed.")
+                        pass
                 try:
                     if self.config.verbose:
                         if e.key < 255 and not e.key == PYGM.K_ESCAPE:
                             c = chr(e.key)
-                            print("key down: %s (\"%s\")" % (e.key, c))
+                            #print("key down: %s (\"%s\")" % (e.key, c))
                     if e.key == PYGM.K_k: # K
                         self.intervalometer_rate_increase(1)
                     elif e.key == PYGM.K_j: # J
@@ -1323,6 +1331,8 @@ class Toonloop(render.Game):
                         self.effect_next()
                     elif e.key == PYGM.K_o: # O Onion
                         self.onionskin_toggle()
+                    elif e.key == PYGM.K_b: # B Background image snapshot
+                        self.bgimage_snap()
                     elif e.key == PYGM.K_a: # A Auto
                         print("toggle intervalometer")
                         self.intervalometer_toggle()
