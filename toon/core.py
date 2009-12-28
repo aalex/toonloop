@@ -230,12 +230,19 @@ class Configuration(object): #Serializable):
     def save(self):
         """
         Save to JSON config file.
+
+        Uses self.config_file as a file to save to.
         """
+        exclude_list = ["toonloop_home", "config_file", "bgimage"]
         if STATESAVING_LOADED:
             data = {}
-            for k in sorted(self.__dict__): # FIXME: does not work!
-                v = self.__dict__[k]
-                data[k] = v
+            for key in sorted(self.__dict__): # FIXME: does not work!
+                value = self.__dict__[key]
+                if key in exclude_list:
+                    if self.verbose:
+                        print("Excluding %s since it is in the exclude list." % (key))
+                else:
+                    data[key] = value
             if self.verbose:
                 print("Saving config to %s" % (self.config_file))
             try:
@@ -243,6 +250,8 @@ class Configuration(object): #Serializable):
             except statesaving.StateSavingError, e:
                 if self.verbose:
                     print(e.message)
+            else:
+                print("Saved config file to %s." % (self.config_file))
         else:
             if self.verbose:
                 print("Could not save config. Json is not loaded.")
@@ -250,6 +259,8 @@ class Configuration(object): #Serializable):
     def load(self):
         """
         Load from JSON config file.
+
+        Uses self.config_file as a file to load from.
         """
         # TODO: fix the bugs it can create. (by saving/loading only vars that are safe)
         # FIXME: not used now.
@@ -260,8 +271,7 @@ class Configuration(object): #Serializable):
                 if self.verbose:
                     print("Could not load configuration file \"%s\". %s" % (self.config_file, e.message))
             else:
-                if self.verbose:
-                    print("Loading configuration values from \"%s\"." % (self.config_file))
+                print("Loading configuration values from \"%s\"." % (self.config_file))
                 self.__dict__.update(data)
         else:
             if self.verbose:
@@ -699,6 +709,7 @@ class Toonloop(render.Game):
             print("Num images: " + str(len(self.clip.images)))
             print("FPS: %d" % (self.fps))
             print("Playhead frequency ratio: 30 / %d" % (self.clip.playhead_iterate_every))
+            self.print_optgroups()
             print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
         except AttributeError, e:
             print sys.exc_info()

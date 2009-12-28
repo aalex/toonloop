@@ -49,7 +49,7 @@ Toonloop interactive keyboard controls :
  - Press 'p' to pause playback.
  - Press 'o' to toggle the onion skinning on/off.
  - Press 'b' to take a snapshot as the new background image.
- - Press 'n' to select the next effect available."""
+ - Press 'n' to select the next effect available.
 
 [OSC INTERFACE]
 

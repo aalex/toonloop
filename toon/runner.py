@@ -83,8 +83,9 @@ def run():
     config_dict = config.__dict__
     if options.config_file:
         config_dict["config_file"] = options.config_file
-    # FIXME: not using the json config file, since it adds some bugs. 
-    #config.load() # updates the config dict with values serialized before.
+    # XXX: Loading from the json state saving file might cause bugs that 
+    # are hard to find.
+    config.load() # updates the config dict with values serialized before.
     if options.toonloop_home:
         config_dict['toonloop_home'] = options.toonloop_home
     if options.fullscreen:
@@ -93,7 +94,7 @@ def run():
         config_dict['image_width'] = options.image_width
         config_dict['image_height'] = options.image_width * 3 / 4 # fixed aspect ratio
     # options that have default values:
-    config_dict['video_device'] = options.device
+    config_dict['video_device'] = options.device #FIXME
     config_dict['intervalometer_rate_seconds'] = options.intervalometer_rate_seconds
     config_dict['intervalometer_on'] = options.intervalometer_on == True
     config_dict['intervalometer_enabled'] = options.intervalometer_enabled
