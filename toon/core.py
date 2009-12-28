@@ -191,9 +191,9 @@ class Configuration(object): #Serializable):
         # background
         self.bgimage_enabled = False
         self.bgimage = os.path.join(PACKAGE_DATA_PATH, 'bgimage_02.jpg')
-        self.bgcolor_b = 0.2 #TODO: not used so much.
-        self.bgcolor_g = 0.8
-        self.bgcolor_r = 1.0
+        #self.bgcolor_b = 0.2 #TODO: not used right now
+        #self.bgcolor_g = 0.8
+        #self.bgcolor_r = 1.0
         self.bgimage_glob_enabled = False # list of glob JPG files that can be browsed using +/- iteration
         self.bgimage_glob = '' # os.path.join(self.toonloop_home, self.project_name, 'data') # defaults to the images from the current project !
         
@@ -335,6 +335,7 @@ class SplitScreenTheme(object):
     """
     def __init__(self):
         self.name = THEME_SPLIT_SCREEN
+        self.render_play_first = True
         self.play_pos = (2.0, 0.0, 0.0)
         self.play_scale = (2.0, 1.5, 1.0)
         self.edit_pos = (-2.0, 0.0, 0.0)
@@ -354,6 +355,7 @@ class PictureInPictureTheme(SplitScreenTheme):
     """
     def __init__(self):
         SplitScreenTheme.__init__(self) # inherit some attributes from the base theme.
+        self.render_play_first = False
         self.name = THEME_PICTURE_IN_PICTURE
         self.play_pos = (0.0, 0.0, 0.0)
         self.play_scale = (4.0, 3.0, 1.0)
@@ -937,30 +939,25 @@ class Toonloop(render.Game):
                     self.signal_playhead(self.clip.playhead)
                 # 30/3 = 10 FPS
         self._camera_grab_frame() # grab a frame
-        current_effect = self._get_current_effect()
 
         # now, let's draw something
         GL.glEnable(GL.GL_TEXTURE_RECTANGLE_ARB)
-        self._draw_background() # only if enabled
-        # ---------- playback view
-        current_effect.pre_draw()
-        self._draw_playback_view()
-        current_effect.post_draw()
-        # --------- edit view
-        current_effect.pre_draw()
-        self._draw_edit_view()
-        current_effect.post_draw()
-        # ---------- onion skin (rendered after the edit view, over it)
-        current_effect.pre_draw()
-        if self.config.onionskin_enabled and self.config.onionskin_on:
+        if self.theme.render_play_first:
+            self._draw_edit_background()
+            self._draw_edit_view()
             self._draw_onion_skin()
-        current_effect.post_draw()
-        if self._has_just_added_frame:
-            self._has_just_added_frame = False
-            if self.config.fx_white_flash:
-                self._draw_white_flash()
-        # ----------- saving progress bar
+            self._draw_white_flash()
+            self._draw_play_background()
+            self._draw_playback_view()
+        else:
+            self._draw_play_background()
+            self._draw_playback_view()
+            self._draw_edit_background()
+            self._draw_edit_view()
+            self._draw_onion_skin()
+            self._draw_white_flash()
         GL.glDisable(GL.GL_TEXTURE_RECTANGLE_ARB) # important not to draw a big pixel !
+        # ----------- saving progress bar
         self._draw_saving_progress_bar()
         # ----------- done drawing.
         self.clock.tick()
@@ -987,19 +984,20 @@ class Toonloop(render.Game):
             GL.glPopMatrix()
 
     def _draw_white_flash(self):
-        # TODO: use time.time() to create tween.
-        if self.config.verbose:
-            pass #print 'white flash'
-        # left view
-        a = self.config.fx_white_flash_alpha
-        GL.glColor4f(1.0, 1.0, 1.0, a)
-        GL.glPushMatrix()
-        GL.glTranslatef(*self.theme.edit_pos)#-2.0, 0.0, 0.0)
-        GL.glScalef(*self.theme.edit_scale)#2.0, 1.5, 1.0)
-        draw.draw_square()
-        GL.glPopMatrix()
+        if self._has_just_added_frame:
+            self._has_just_added_frame = False
+            if self.config.fx_white_flash:
+                # TODO: use time.time() to create tween.
+                # left view
+                a = self.config.fx_white_flash_alpha
+                GL.glColor4f(1.0, 1.0, 1.0, a)
+                GL.glPushMatrix()
+                GL.glTranslatef(*self.theme.edit_pos)
+                GL.glScalef(*self.theme.edit_scale)
+                draw.draw_square()
+                GL.glPopMatrix()
     
-    def _draw_background(self):
+    def _draw_edit_background(self):
         """
         Renders the background 
         """
@@ -1016,15 +1014,19 @@ class Toonloop(render.Game):
             GL.glColor4f(1.0, 1.0, 1.0, 1.0)
             # playback view
             GL.glPushMatrix()
-            GL.glTranslatef(*self.theme.play_pos) #2.0, 0.0, 0.0)
-            GL.glScalef(*self.theme.play_scale)#2.0, 1.5, 1.0)
+            GL.glTranslatef(*self.theme.play_pos)
+            GL.glScalef(*self.theme.play_scale)
             GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
             draw.draw_textured_square(self.config.image_width, self.config.image_height)
             GL.glPopMatrix()
+
+    def _draw_play_background(self):
+        if self.config.bgimage_enabled:
+            GL.glColor4f(1.0, 1.0, 1.0, 1.0)
             # edit view
             GL.glPushMatrix()
-            GL.glTranslatef(*self.theme.edit_pos) #-2.0, 0.0, 0.0)
-            GL.glScalef(*self.theme.edit_scale)#2.0, 1.5, 1.0)
+            GL.glTranslatef(*self.theme.edit_pos)
+            GL.glScalef(*self.theme.edit_scale)
             GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
             draw.draw_textured_square(self.config.image_width, self.config.image_height)
             GL.glPopMatrix()
@@ -1044,6 +1046,7 @@ class Toonloop(render.Game):
         """
         Renders edit view (the live camera + onion peal)
         """
+        self._get_current_effect().pre_draw()
         GL.glColor4f(1.0, 1.0, 1.0, 1.0)
         GL.glPushMatrix()
         GL.glTranslatef(*self.theme.edit_pos) #-2.0, 0.0, 0.0)
@@ -1056,22 +1059,27 @@ class Toonloop(render.Game):
         # self.display_width = 1024
         GL.glPopMatrix()
         # old: self.display.blit(self.most_recent_image, (0, 0))
+        self._get_current_effect().post_draw()
 
     def _draw_onion_skin(self):
-        # Onion skin over dit view:
-        GL.glPushMatrix()
-        GL.glTranslatef(*self.theme.edit_pos)#-2.0, 0.0, 0.0)
-        GL.glScalef(*self.theme.edit_scale)#2.0, 1.5, 1.0)
-        GL.glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
-        GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
-        draw.draw_textured_square(self.config.image_width, self.config.image_height)
-        GL.glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
-        GL.glPopMatrix()
+        if self.config.onionskin_enabled and self.config.onionskin_on:
+            # Onion skin over dit view:
+            self._get_current_effect().pre_draw()
+            GL.glPushMatrix()
+            GL.glTranslatef(*self.theme.edit_pos)#-2.0, 0.0, 0.0)
+            GL.glScalef(*self.theme.edit_scale)#2.0, 1.5, 1.0)
+            GL.glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
+            GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
+            draw.draw_textured_square(self.config.image_width, self.config.image_height)
+            GL.glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
+            GL.glPopMatrix()
+            self._get_current_effect().post_draw()
 
     def _draw_playback_view(self):
         """
         Renders the playback view. 
         """
+        self._get_current_effect().pre_draw()
         GL.glColor4f(1.0, 1.0, 1.0, 1.0)
         GL.glPushMatrix()
         GL.glTranslatef(*self.theme.play_pos)#2.0, 0.0, 0.0)
@@ -1079,6 +1087,7 @@ class Toonloop(render.Game):
         GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_PLAYBACK])
         draw.draw_textured_square(self.config.image_width, self.config.image_height)
         GL.glPopMatrix()
+        self._get_current_effect().post_draw()
     
     def _playhead_iterate(self):
         """ 
