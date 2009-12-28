@@ -69,12 +69,11 @@ class SimpleChromaOptions(optgroup.OptionsGroup):
 
 class SimpleChromaEffect(fx.Effect):
     def __init__(self):
+        fx.Effect.__init__(self)
         self.program = None
-        self.loaded = False
-        self.enabled = False
         self.options = SimpleChromaOptions()
         self.name = "simplechroma"
-        print("init %s" % (self.name))
+        #print("init %s" % (self.name))
         
     def setup(self):
         global vert
@@ -89,7 +88,6 @@ class SimpleChromaEffect(fx.Effect):
         #    print(e.message)
         #else:
             self.loaded = True
-            print("Set up effect %s" % (self.name))
             #print(self.config)
     
     def pre_draw(self):

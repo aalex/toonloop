@@ -14,7 +14,7 @@ toonloop [options]
 You can launch Toonloop with a whole bunch of options. Options are set
 using the -o flag :
 
-toonloop -o toonloop_home ~/Public/toonloop -o project_name hello -o intervalometer_enabled False -o bgimage_glob_enabled True -o image_flip_horizontal True -o chromakey_on True -o chromakey_on True -o chromakey_r 0.2 -o chromakey_g 0.9 -o chromakey_b 0.0 -o chromakey_thresh 0.5 -o chromakey_slope 0.2 -o fudi_enabled True -w 320 -v
+toonloop -o toonloop_home ~/Public/toonloop -o project_name hello -o intervalometer_enabled False -o bgimage_glob_enabled True -o image_flip_horizontal True -o fudi_enabled True -w 320 -v
 
 To control Toonloop with a Pure Data patch, launch it with options such as the following : 
 
@@ -92,13 +92,6 @@ Here is the list of options with their default values:
   -o bgimage_enabled False
   -o bgimage_glob 
   -o bgimage_glob_enabled False
-  -o chromakey_b 0.0
-  -o chromakey_enabled True
-  -o chromakey_g 0.9
-  -o chromakey_on False
-  -o chromakey_r 0.2
-  -o chromakey_slope 0.2
-  -o chromakey_thresh 0.5
   -o config_file ~/.toonloop.json
   -o delete_jpeg False
   -o display_height 480

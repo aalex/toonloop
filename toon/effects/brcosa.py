@@ -65,21 +65,9 @@ class BrCoSaEffect(fx.Effect):
     def __init__(self):
         fx.Effect.__init__(self)
         self.program = None
-        self.loaded = False
-        self.enabled = False
         self.options = BrCoSaOptions()
-        self.config = {
-            'avgluma_r':1.0, #0.5,
-            'avgluma_g':1.0, #0.5,
-            'avgluma_b':1.0, #0.5,
-            'saturation':0.1,
-            'contrast':1.0, #0.5,
-            'brightness':1.0, #0.5,
-            'alpha':1.0, #0.5,
-            'texture_id':0,
-            }
         self.name = "brcosa"
-        print("init %s" % (self.name))
+        #print("init %s" % (self.name))
         
     def setup(self):
         global vert
@@ -94,8 +82,6 @@ class BrCoSaEffect(fx.Effect):
         #    print(e.message)
         #else:
             self.loaded = True
-            print("Set up effect %s" % (self.name))
-            print(self.config)
     
     def pre_draw(self):
         if self.enabled and self.loaded:

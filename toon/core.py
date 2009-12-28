@@ -31,23 +31,6 @@ give a professional tool for movie creators.
 In the left window, you can see what is seen by the live camera.
 In the right window, it is the result of the stop motion loop.
 
-Usage :
- - Press the SPACE bar to grab a frame.
- - Press DELETE or BACKSPACE to delete the last frame.
- - Press 'r' to reset and start the current sequence. (an remove all its frames)
- - Press 's' to save the current sequence as a QuickTime movie.
- - Press 'i' to print current loop frame number, number of frames in loop 
-   and global framerate.
- - Press 'h' to print a help message.
- - Press UP to increase frame rate.
- - Press DOWN to decrease frame rate.
- - Press 'a' to toggle on/off the auto recording. 
-   (it records one frame on every frame) It is an intervalometer.
-   Best used to create timelapse sequences automatically.
- - Press 'k' or 'j' to increase or decrease the auto rate.
- - Press 'f' or ESCAPE to toggle fullscreen mode.
- - Press SHIFT-'q' to quit.
-
 INSTALLATION NOTES : 
 The camera module for pygame is available from pygame's svn revision 
 1744 or greater
@@ -55,6 +38,30 @@ svn co svn://seul.org/svn/pygame/trunk
 
 The startup file to execute is toonloop
 """
+
+INTERACTIVE_HELP = """Toonloop interactive keyboard controls :
+ - Press the SPACE bar to grab a frame.
+ - Press DELETE or BACKSPACE to delete the last frame.
+ - Press 'r' to reset and start the current sequence. 
+   (and remove all its frames)
+ - Press 's' to save the current sequence as a Motion-JPEG movie.
+ - Press 'i' to print current loop frame number, number of frames in loop 
+   and global framerate.
+ - Press 'h' to print a help message.
+ - Press UP to increase frame rate.
+ - Press DOWN to decrease frame rate.
+ - Press 'a' to toggle on/off the auto recording.
+   (it records one frame on every frame) It is an intervalometer.
+   Best used to create timelapse clips automatically.
+ - Press 'k' or 'j' to increase or decrease the auto recording rate.
+ - Press 'f' or ESCAPE to toggle fullscreen mode.
+ - Press SHIFT-'q' to quit.
+ - Press '.' to change the graphical theme.
+ - Press TAB to change the playback direction.
+ - Press a number from 0 to 9 to switch to a different clip number.
+ - Press 'p' to pause playback.
+ - Press 'o' to toggle the onion skinning on/off.
+ - Press 'n' to select the next effect available."""
 import gc 
 import sys
 from time import strftime
@@ -80,8 +87,7 @@ from toon import midi
 from toon import save
 from toon import sampler
 from toon import data
-from toon.effects import noeffect
-from toon.effects import chromakey
+from toon import fx
 try:
     from toon import web
     WEB_LOADED = True
@@ -196,14 +202,6 @@ class Configuration(object): #Serializable):
         # todo:duration
         # effects
         self.effect_name = "None"
-        # chromakey
-        self.chromakey_enabled = True
-        self.chromakey_on = False
-        self.chromakey_r = 0.2
-        self.chromakey_g = 0.9
-        self.chromakey_b = 0.0
-        self.chromakey_thresh = 0.5
-        self.chromakey_slope = 0.2
         
         # intervalometer
         self.intervalometer_on = False 
@@ -378,7 +376,7 @@ class Toonloop(render.Game):
         Starts pygame, the camera, the clips list.
         Creates the window. Hides the mouse.
         Start services (OSC, web and FUDI)
-        Enables the chromakey shader or the onion peal.
+        Enables the effects or the onion peal.
         """
         self.config = config
         # size of the rendering window
@@ -472,14 +470,10 @@ class Toonloop(render.Game):
         """
         Set all effects up.
         """
-        for module in [chromakey, noeffect]:
-            effect = module.get_effect()
-            effect.setup()
-            if not effect.loaded:
-                print("Could not load effect %s." % (effect.name))
-            else:
-                self.effects[effect.name] = effect
-                self.optgroups[effect.name] = effect.options
+        self.effects = fx.load_effects()
+        # current effect name is "None"
+        for effect in self.effects.itervalues():
+            self.optgroups[effect.name] = effect.options
     
     def effect_next(self):
         """
@@ -487,7 +481,6 @@ class Toonloop(render.Game):
         """
         previous = self.config.effect_name 
         all = self.effects.keys()
-        print(all)
         if len(all) == 0:
             print("No effect loaded.")
         else:
@@ -496,7 +489,8 @@ class Toonloop(render.Game):
                 new = all[0]
             else:
                 new = all[index_of_previous + 1]
-            print("Using effect %s" % (new))
+            if self.config.verbose:
+                print("Using effect %s" % (new))
             self.config.effect_name = new
 
     def _get_current_effect(self):
@@ -730,23 +724,7 @@ class Toonloop(render.Game):
         """
         Prints help for live keyboard controls.
         """
-        print("Toonloop keyboard controls :")
-        print("<Space bar> = add image to clip.")
-        print("<Backspace> = remove image from clip.")
-        print("r       = reset clip.")
-        print("p       = pause.")
-        print("o       = toggle onion skin on/off.")
-        print("i       = prints informations.")
-        print("h       = prints this help message.")
-        print("s       = saves current clip as jpeg and movie.")
-        print("a       = enable the intervalometer auto grab.")
-        print("k       = increase the intervalometer interval.")
-        print("j       = decrease the intervalometer interval.")
-        print(".       = Changes the graphical theme.")
-        print("tab     = Changes the playback direction for the current clip.")
-        print("[0, 9]  = select a clip from the current project")
-        print("<Esc> of f   = toggles the fullscreen mode")
-        print("SHIFT-q = quit.")
+        print(INTERACTIVE_HELP)
 
     def _draw_hud(self):
         """
@@ -1228,62 +1206,47 @@ class Toonloop(render.Game):
             self.signal_writehead(self.clip.writehead)
             self.signal_frame_remove()
     
-    def chromakey_toggle(self, val=None):
+    def effect_select(self, name_or_index=None):
         """
-        Mutually exclusive with onionskin_toggle
+        :param name_or_index: Either a int from 0 to n-1 or a string
         """
-        if val is not None:
-            self.config.chromakey_on = val is True # set
+        if self.config.verbose:
+            print("effect_select(%s)" % (name_or_index))
+        all = self.effects.keys()
+        curr = self.config.effect_name
+        
+        if name_or_index is None:
+            try:
+                noeffect = all.index("None")
+            except ValueError, e:
+                print(e.message)
+            else:
+                self.config.effect_name = "None"
+        elif type(name_or_index) == int:
+            try:
+                name = all[name_or_index]
+            except IndexError, e:
+                print(e.message)
+            else:
+                self.config.effect_name = name
         else:
-            self.config.chromakey_on = not self.config.chromakey_on # toggle
-        print('config.chromakey_on = %s' % (self.config.chromakey_on))
-        # check chroma key and disables it if so
-        if self.config.chromakey_on:
-            if self.config.onionskin_on:
-                self.config.onionskin_on = False
-                print('config.onionskin_on =' % (self.config.onionskin_on))
-    
-    def effect_select(self, index=0):
-        """
-        Selects an effect.
-
-        Current choices :
-        * 0 : None
-        * 1 : chromakey
-        * 2 : onionskin
-        """
-        if index == 1:
-            if self.config.verbose:
-                print('EFFECT: chromakey')
-            self.config.chromakey_on = True
-            self.config.onionskin_on = False
-        elif index == 2:
-            if self.config.verbose:
-                print('EFFECT: onionskin')
-            self.config.chromakey_on = False
-            self.config.onionskin_on = True
-        else:
-            if self.config.verbose:
-                print('EFFECT: None')
-            self.config.chromakey_on = False
-            self.config.onionskin_on = False
+            try:
+                _tmp = self.effects[name_or_index]
+            except IndexError, e:
+                print(e.message)
+            else:
+                self.config.effect_name = name_or_index
 
     def onionskin_toggle(self, val=None):
         """
         Toggles on/off the onion skin. 
         (see most recent frame grabbed in transparency)
-        Mutually exclusive with chromakey_toggle
         """
         if val is not None:
             self.config.onionskin_on = val is True # set to val
         else:
             self.config.onionskin_on = not self.config.onionskin_on # toggle
         print('config.onionskin_on = %s' % (self.config.onionskin_on))
-        # check onionskin and disables it if so
-        if self.config.onionskin_on:
-            if self.config.chromakey_on:
-                self.config.chromakey_on = False
-                print('config.chromakey_on =' % (self.config.chromakey_on))
             
     def framerate_increase(self, dir=1):
         """
@@ -1340,9 +1303,6 @@ class Toonloop(render.Game):
                             print("key down: %s (\"%s\")" % (e.key, c))
                     if e.key == PYGM.K_k: # K
                         self.intervalometer_rate_increase(1)
-                    elif e.key == PYGM.K_c: # C : chromakey toggle
-                        # self.config.chromakey_on
-                        self.chromakey_toggle()
                     elif e.key == PYGM.K_j: # J
                         self.intervalometer_rate_increase(-1)
                     elif e.key == PYGM.K_f: # F Fullscreen

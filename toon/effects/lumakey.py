@@ -22,13 +22,13 @@ from toon import optgroup
 class LumaKeyOptions(optgroup.OptionsGroup):
     def __init__(self):
         self.avgluma = [1.0, 1.0, 1.0]
-        self.luma_gate = 0.5 #
+        self.luma_gate = 0.3
         self.saturation = 1.0
         self.contrast = 1.0
-        self.invert = 0 # 0 or 1
+        self.invert = 1 # 0 or 1
         self.brightness = 1.0
-        self.alpha_under = 0.0
-        self.alpha_over = 1.0
+        self.alpha_under = 1.0
+        self.alpha_over = 0.0
         self.texture_id = 0
 
 # ---------------------------- glsl vertex shader ----------
@@ -107,12 +107,11 @@ class LumaKeyEffect(fx.Effect):
     Makes all the image desaturated expect target color.
     """
     def __init__(self):
+        fx.Effect.__init__(self)
         self.program = None
-        self.loaded = False
-        self.enabled = False
         self.options = LumaKeyOptions()
         self.name = "lumakey"
-        print("init %s" % (self.name))
+        #print("init %s" % (self.name))
         
     def setup(self):
         global vert
@@ -127,7 +126,7 @@ class LumaKeyEffect(fx.Effect):
         #    print(e.message)
         #else:
             self.loaded = True
-            print("Set up effect %s" % (self.name))
+            #print("Set up effect %s" % (self.name))
             #print(self.config)
     
     def pre_draw(self):

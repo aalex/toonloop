@@ -10,6 +10,6 @@ class NoEffect(fx.Effect):
     def setup(self):
         self.loaded = True
 
-def get_effect():
+def create_effect():
     return NoEffect()
 

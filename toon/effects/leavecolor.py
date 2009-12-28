@@ -97,12 +97,11 @@ class LeaveColorEffect(fx.Effect):
     Makes all the image desaturated expect target color.
     """
     def __init__(self):
+        fx.Effect.__init__(self)
         self.program = None
-        self.loaded = False
-        self.enabled = False
         self.options = LeaveColorOptions()
         self.name = "leavecolor"
-        print("init %s" % (self.name))
+        #print("init %s" % (self.name))
         
     def setup(self):
         global vert
@@ -117,7 +116,7 @@ class LeaveColorEffect(fx.Effect):
         #    print(e.message)
         #else:
             self.loaded = True
-            print("Set up effect %s" % (self.name))
+            #print("Set up effect %s" % (self.name))
             #print(self.config)
     
     def pre_draw(self):

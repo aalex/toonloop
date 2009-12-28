@@ -105,7 +105,7 @@ class ChromaKeyEffect(fx.Effect):
         except ShaderError, e:
             print("Error: %s" % (e.message))
             print("Disabling the chromakey effect")
-        self.enabled = True
+        self.loaded = True
     
     def pre_draw(self):
         if self.loaded and self.enabled:
@@ -128,7 +128,7 @@ class ChromaKeyEffect(fx.Effect):
                 self.loaded = False
                 print(e.message)
 
-def get_effect():
+def create_effect():
     """
     Factory for the effect in this module.
     """

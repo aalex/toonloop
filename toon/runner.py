@@ -69,7 +69,7 @@ def run():
     parser.add_option("-i", "--intervalometer-on", \
         dest="intervalometer_on", action="store_true", \
         help="Starts the intervalometer at startup.") # default=False
-    parser.add_option("-x", "--option-group", 
+    parser.add_option("-x", "--options-group", 
         action="append", nargs=3, 
         help="Sets option from an option group.")
     parser.add_option("-e", "--intervalometer-enabled", \
@@ -146,7 +146,7 @@ def run():
     if options.list_options:
         toonloop.print_optgroups()
         sys.exit(0)
-    if options.option_group is not None:
+    if options.options_group is not None:
         for group, key, value in options.options_group:
             try:
                 toonloop.set_option_in_group(group, key, value)
