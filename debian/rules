@@ -6,11 +6,13 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
 # Add here any variable or target overrides you need.
+# dh_install toonloop.svg usr/share/icons/hicolor/scalable/apps
+# dh_install toonloop.png usr/share/icons/hicolor/48x48/apps
 binary-install/toonloop::
 	dh_pycentral -ptoonloop
 	dh_install toonloop.desktop usr/share/applications
-	dh_install toonloop.svg usr/share/icons/hicolor/scalable/apps
-	convert -geometry 48x48 toonloop.svg toonloop.png
-	dh_install toonloop.png usr/share/icons/hicolor/48x48/apps
+	convert -geometry 48x48 -background none toonloop.svg toonloop.png
+	dh_install toonloop.png usr/share/pixmaps
+	dh_icons
 	help2man --no-info --include=man_toonloop.txt --name="The Toonloop Live Stop Motion Tool" ./toonloop > toonloop.1 
 	dh_installman toonloop.1

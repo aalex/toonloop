@@ -1,3 +1,22 @@
+toonloop (1.1.0-2) unstable; urgency=low
+
+  * Made the icon background transparent
+
+ -- Alexandre Quessy <alexandre@quessy.net> Sun, 27 Dec 2009 22:27:05 -0500
+
+toonloop (1.1.0) unstable; urgency=low
+
+  * Added groups of options. One for each effect.
+  * Unified interface to effects.
+  * Added simplechroma, lumakey, leavecolor and brcosa effects.
+  * Background image is one taken using a special key stroke.
+  * Able to add or delete frames anywhere in a clip.
+  * Playback direction : forward, backward, back&forth.
+  * Display a progress bar when saving a clip.
+  * Shift-Q to quit, and not ESC anymore.
+
+ -- Alexandre Quessy <alexandre@quessy.net> Sun, 27 Dec 2009 21:58:05 -0500
+
 toonloop (1.0.9-2) unstable; urgency=low
 
   * Fixing version number in python files.

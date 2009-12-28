@@ -2,11 +2,11 @@
 
 [Desktop Entry]
 Encoding=UTF-8
-Version=1.0.9
+Version=1.1.0
 Exec=toonloop 
 Type=Application
 Terminal=false
-MimeType=application/json;
+#MimeType=application/json;
 Name=Toonloop
 Comment=The Toonloop Live Stop Motion Tool
 Comment[fr]=Logiciel d'animation image par image en direct Toonloop
