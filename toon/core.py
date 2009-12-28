@@ -1034,6 +1034,8 @@ class Toonloop(render.Game):
             GL.glTranslatef(*self.theme.play_pos)
             GL.glScalef(*self.theme.play_scale)
             GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
+            if self.config.image_flip_horizontal: # FIXME?
+                GL.glRotatef(180., 0., 1., 0.)
             draw.draw_textured_square(self.config.image_width, self.config.image_height)
             GL.glPopMatrix()
 
@@ -1045,6 +1047,8 @@ class Toonloop(render.Game):
             GL.glTranslatef(*self.theme.edit_pos)
             GL.glScalef(*self.theme.edit_scale)
             GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
+            if self.config.image_flip_horizontal: # FIXME?
+                GL.glRotatef(180., 0., 1., 0.)
             draw.draw_textured_square(self.config.image_width, self.config.image_height)
             GL.glPopMatrix()
 
@@ -1080,17 +1084,20 @@ class Toonloop(render.Game):
 
     def _draw_onion_skin(self):
         if self.config.onionskin_enabled and self.config.onionskin_on:
-            # Onion skin over dit view:
-            self._get_current_effect().pre_draw()
-            GL.glPushMatrix()
-            GL.glTranslatef(*self.theme.edit_pos)#-2.0, 0.0, 0.0)
-            GL.glScalef(*self.theme.edit_scale)#2.0, 1.5, 1.0)
-            GL.glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
-            GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
-            draw.draw_textured_square(self.config.image_width, self.config.image_height)
-            GL.glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
-            GL.glPopMatrix()
-            self._get_current_effect().post_draw()
+            if len(self.clip.images) > 0:
+                # Onion skin over dit view:
+                self._get_current_effect().pre_draw()
+                GL.glPushMatrix()
+                GL.glTranslatef(*self.theme.edit_pos)#-2.0, 0.0, 0.0)
+                GL.glScalef(*self.theme.edit_scale)#2.0, 1.5, 1.0)
+                GL.glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
+                GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
+                if self.config.image_flip_horizontal: # FIXME?
+                    GL.glRotatef(180., 0., 1., 0.)
+                draw.draw_textured_square(self.config.image_width, self.config.image_height)
+                GL.glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
+                GL.glPopMatrix()
+                self._get_current_effect().post_draw()
 
     def _draw_playback_view(self):
         """
@@ -1102,6 +1109,8 @@ class Toonloop(render.Game):
         GL.glTranslatef(*self.theme.play_pos)#2.0, 0.0, 0.0)
         GL.glScalef(*self.theme.play_scale)#2.0, 1.5, 1.0)
         GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_PLAYBACK])
+        if self.config.image_flip_horizontal: # FIXME?
+            GL.glRotatef(180., 0., 1., 0.)
         draw.draw_textured_square(self.config.image_width, self.config.image_height)
         GL.glPopMatrix()
         self._get_current_effect().post_draw()

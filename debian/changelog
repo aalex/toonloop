@@ -1,3 +1,14 @@
+toonloop (1.1.1) unstable; urgency=low
+
+  * Rehabilitated ~/.toonloop.json state saving file.
+  * Rendering order configured in themes.
+  * Created the PlaybackPictureInPicture theme.
+  * Updated the toon/data/toonloop.fx.pd patch to be able to change the color in leavecolor fx.
+  * Fixed image_flip_horizontal
+  * Making sure not to draw onion skin if no image in clip.
+
+ -- Alexandre Quessy <alexandre@quessy.net> Mon, 28 Dec 2009 08:59:08 -0500
+
 toonloop (1.1.0-2) unstable; urgency=low
 
   * Made the icon background transparent
