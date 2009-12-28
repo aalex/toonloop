@@ -16,6 +16,12 @@ using the -o flag :
 
 toonloop -o toonloop_home ~/Public/toonloop -o project_name hello -o intervalometer_enabled False -o bgimage_glob_enabled True -o image_flip_horizontal True -o chromakey_on True -o chromakey_on True -o chromakey_r 0.2 -o chromakey_g 0.9 -o chromakey_b 0.0 -o chromakey_thresh 0.5 -o chromakey_slope 0.2 -o fudi_enabled True -w 320 -v
 
+To control Toonloop with a Pure Data patch, launch it with options such as the following : 
+
+toonloop -o fudi_enabled 1
+
+Next, you can find an example Pure Data patch in toon/data/toonloop.fx.pd where "toon" is the toon Python module. Toonloop includes two Python packages : rats and toon. 
+
 [INTERACTIVE USAGE]
 
 Toonloop is an interactive software. While it runs, or can control it using keyboard keys. Here is a list of keystrokes to control Toonloop.
