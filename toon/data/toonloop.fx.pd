@@ -1,4 +1,4 @@
-#N canvas 65 80 1141 775 10;
+#N canvas 53 95 1141 775 10;
 #X msg 253 330 /framerate/increase;
 #X msg 253 310 /framerate/decrease;
 #X msg 253 290 /shot/save;
@@ -13,17 +13,17 @@
 -1 -1 0;
 #X obj 181 747 s toonloop;
 #X obj 61 477 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -258113
--1 -1 4400 1;
+-1 -1 9300 1;
 #X obj 108 477 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 6600 1;
+-1 -1 4600 1;
 #X obj 160 478 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -4160
--1 -1 8000 1;
+-1 -1 7800 1;
 #X obj 354 508 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 7400 1;
+-1 -1 0 1;
 #X obj 639 118 symbol;
 #X msg 640 140 /config/set project_name \$1;
 #X obj 395 503 vsl 30 100 0 1 0 0 empty empty empty 0 -9 0 10 -191407
--1 -1 4500 1;
+-1 -1 0 1;
 #X msg 47 191 /call clip_save;
 #X msg 34 119 /call clip_select \$1;
 #X obj 221 364 s toonloop;
@@ -108,6 +108,7 @@
 #X msg 640 654 /call print_optgroups;
 #X obj 639 683 s toonloop;
 #X msg 446 275 /call effect_next;
+#X msg 90 669 /option/group leavecolor target_color \$1 \$2 \$3;
 #X connect 0 0 19 0;
 #X connect 1 0 19 0;
 #X connect 2 0 19 0;
@@ -131,6 +132,7 @@
 #X connect 30 0 28 0;
 #X connect 34 0 50 0;
 #X connect 37 0 41 0;
+#X connect 37 0 51 0;
 #X connect 38 0 37 0;
 #X connect 38 1 37 1;
 #X connect 39 0 37 0;
@@ -144,3 +146,4 @@
 #X connect 47 0 44 0;
 #X connect 48 0 49 0;
 #X connect 50 0 23 0;
+#X connect 51 0 9 0;
