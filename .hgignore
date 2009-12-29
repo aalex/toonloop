@@ -18,9 +18,11 @@ _trial_temp/*
 # toonloop custom files
 *.1
 toonloop.png
+doc/*
 # debian stuff
 debian/toonloop*
 debian/compat
 debian/files
 debian/pycompat
+debian/python-module-stampdir/toonloop
 python-build-stamp-*
