@@ -36,5 +36,5 @@ deb:
 	dpkg-buildpackage -r
 
 html:
-	mkdir doc
+	mkdir -p doc
 	epydoc --html --output=doc --verbose --show-imports --name=Toonloop  --url=http://toonloop.com/static/doc/ toon rats
