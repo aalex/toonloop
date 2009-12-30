@@ -39,17 +39,20 @@ uniform float saturation;
 uniform float contrast;
 uniform float brightness;
 uniform float alpha;
+uniform float opacity; // how much efficient this brcosa is. reinject some of the orig. img.
 // constants
 const vec3 LumCoeff = vec3(0.2125, 0.7154, 0.0721);
 void main (void)
 {
+    float input_alpha = gl_Color.a;
 	vec3 texColor = texture2DRect(image, texcoord0).rgb;
 	vec3 intensity = vec3(dot(texColor, LumCoeff));
 	vec3 color = mix(intensity, texColor, saturation);
 	color = mix(avgluma, color, contrast);
 	color *= brightness;
 	//gl_FragColor = vec4(color, color.g*alpha);
-	gl_FragColor = vec4(color, alpha);
+    color = mix(color, texColor, opacity);
+	gl_FragColor = vec4(color, alpha * input_alpha);
 }
 """
 class BrCoSaOptions(optgroup.OptionsGroup):
@@ -59,6 +62,7 @@ class BrCoSaOptions(optgroup.OptionsGroup):
         self.contrast = 1.0
         self.brightness = 1.0
         self.alpha = 1.0
+        self.opacity = 0.5
         self.texture_id = 0
     
 class BrCoSaEffect(fx.Effect):
@@ -94,6 +98,7 @@ class BrCoSaEffect(fx.Effect):
             self.program.glUniform1f("contrast", self.options.contrast)
             self.program.glUniform1f("brightness", self.options.brightness)
             self.program.glUniform1f("alpha", self.options.alpha)
+            self.program.glUniform1f("opacity", self.options.opacity)
             self.program.glUniform3f("avgluma", *self.options.avgluma)
 
     def post_draw(self):

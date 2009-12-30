@@ -63,10 +63,11 @@ void main(void)
 {
     // sample from the texture 
     vec3 input_color = texture2DRect(image, texcoord0).rgb;
+    float input_alpha = gl_Color.a;
     float d = abs(length(abs(keying_color.rgb - input_color.rgb)));
     float edge0 = thresh * (1.0 - slope); 
     float alpha = smoothstep(edge0, thresh, d);
-    gl_FragColor = vec4(input_color, alpha); 
+    gl_FragColor = vec4(input_color, alpha * input_alpha); 
 }
 """
 
