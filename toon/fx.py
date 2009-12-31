@@ -5,6 +5,13 @@ Formalizing the effects.
 from toon import optgroup
 from twisted.python import modules
 
+#TODO:
+#class EffectError(Exception):
+#    """
+#    Effect modules should raise this type of error if any error occurs.
+#    """
+#    pass
+
 class Effect(object):
     """
     Video Effect base class
@@ -33,8 +40,9 @@ class Effect(object):
 
 def load_effects():
     """
-    Loads modules in the toon.effects package and returns a dict with 
-    their name as the key
+    Loads modules in the toon.effects package, call their create_effect
+    function, and if successful, returns a dict with their name as the key
+    and each loaded Effect as values.
     """
     ret = {}
     fx_package = modules.getModule("toon.effects")
@@ -43,6 +51,8 @@ def load_effects():
             loaded_module = module.load()
             effect = loaded_module.create_effect()
         except Exception, e:
+            #FIXME: catches all types of errors !
+            #TODO: be more specific, such as OpenGlError, or so.
             print("Error loading %s effect module : %s " % (module.name, e.message))
             #raise
         else:
