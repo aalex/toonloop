@@ -204,6 +204,7 @@ class Configuration(object): #Serializable):
         # todo:duration
         # effects
         self.effect_name = "None"
+        self.effects_enabled = True
         
         # intervalometer
         self.intervalometer_on = False 
@@ -498,11 +499,15 @@ class Toonloop(render.Game):
         """
         Set all effects up.
         """
-        self.effects = fx.load_effects()
-        # current effect name is "None"
-        for effect in self.effects.itervalues():
-            self.optgroups[effect.name] = effect.options
-    
+        #TODO: use glew or so to check if needed OpenGL extensions are there.
+        if self.config.effects_enabled:
+            self.effects = fx.load_effects()
+            # current effect name is "None"
+            for effect in self.effects.itervalues():
+                self.optgroups[effect.name] = effect.options
+        else:
+            self.effects = {}
+
     def effect_next(self):
         """
         Selects the next effect.
@@ -1071,7 +1076,8 @@ class Toonloop(render.Game):
         """
         Renders edit view (the live camera + onion peal)
         """
-        self._get_current_effect().pre_draw()
+        if self.config.effects_enabled:
+            self._get_current_effect().pre_draw()
         GL.glColor4f(1.0, 1.0, 1.0, 1.0)
         GL.glPushMatrix()
         GL.glTranslatef(*self.theme.edit_pos) 
@@ -1084,17 +1090,20 @@ class Toonloop(render.Game):
         # self.display_width = 1024
         GL.glPopMatrix()
         # old: self.display.blit(self.most_recent_image, (0, 0))
-        self._get_current_effect().post_draw()
+        if self.config.effects_enabled:
+            self._get_current_effect().post_draw()
 
     def _draw_onion_skin(self):
         if self.config.onionskin_enabled and self.config.onionskin_on:
             if len(self.clip.images) > 0:
                 # Onion skin over dit view:
-                effect = self._get_current_effect()
+                
                 texture_id = self.textures[self.TEXTURE_ONION]
                 # FIXME: the shader actually want the texture unit !
                 #effect.options.texture_id = texture_id
-                effect.pre_draw()
+                if self.config.effects_enabled:
+                    effect = self._get_current_effect()
+                    effect.pre_draw()
                 GL.glPushMatrix()
                 GL.glTranslatef(*self.theme.edit_pos)
                 GL.glScalef(*self.theme.edit_scale)
@@ -1105,14 +1114,16 @@ class Toonloop(render.Game):
                 draw.draw_textured_square(self.config.image_width, self.config.image_height)
                 GL.glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
                 GL.glPopMatrix()
-                self._get_current_effect().post_draw()
+                if self.config.effects_enabled:
+                    effect.post_draw()
 
     def _draw_playback_view(self):
         """
         Renders the playback view. 
         """
-        effect = self._get_current_effect()
-        effect.pre_draw()
+        if self.config.effects_enabled:
+            effect = self._get_current_effect()
+            effect.pre_draw()
         GL.glColor4f(1.0, 1.0, 1.0, 1.0)
         GL.glPushMatrix()
         GL.glTranslatef(*self.theme.play_pos)#2.0, 0.0, 0.0)
@@ -1122,7 +1133,8 @@ class Toonloop(render.Game):
             GL.glRotatef(180., 0., 1., 0.)
         draw.draw_textured_square(self.config.image_width, self.config.image_height)
         GL.glPopMatrix()
-        effect.post_draw()
+        if self.config.effects_enabled:
+            effect.post_draw()
     
     def _playhead_iterate(self):
         """ 
