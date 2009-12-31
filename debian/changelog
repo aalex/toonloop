@@ -1,3 +1,9 @@
+toonloop (1.1.2) unstable; urgency=low
+
+  * Added the --disable-effects option.
+
+ -- Alexandre Quessy <alexandre@quessy.net> Wed, 30 Dec 2009 21:05:06 -0500  
+
 toonloop (1.1.1) unstable; urgency=low
 
   * Rehabilitated ~/.toonloop.json state saving file.
