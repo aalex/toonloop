@@ -860,13 +860,24 @@ class Toonloop(render.Game):
             print(sys.exc_info())
             raise ToonloopError("Error initializing the video camera. %s" % (e.message))
         try:
-            print("cameras : %s" % (pygame.camera.list_cameras()))
+            all_cameras = pygame.camera.list_cameras()
+            print("cameras : %s" % (all_cameras))
             if self.is_mac:
                 print("Using camera %s" % (self.config.video_device))
                 self.camera = pygame.camera.Camera(str(self.config.video_device), size)
             else:
-                print("Using camera /dev/video%d" % (self.config.video_device))
-                self.camera = pygame.camera.Camera("/dev/video%d" % (self.config.video_device), size)
+                
+                camera_file_name = "/dev/video%d" % (self.config.video_device)
+                if camera_file_name not in all_cameras:
+                    print("ERROR : Camera %s does not exist !" % (camera_file_name))
+                    if len(all_cameras) == 0:
+                        raise ToonloopError("Could not find a valid V4L2 video camera.")
+                    else:
+                        # using the first camera in list.
+                        camera_file_name = all_cameras[0]
+                        self.config.video_device = int(camera_file_name[-1]) # last char of str
+                print("Using camera %s" % (camera_file_name))
+                self.camera = pygame.camera.Camera(camera_file_name, size)
             self.camera.start()
         except SystemError, e:
             print(sys.exc_info())
@@ -874,7 +885,7 @@ class Toonloop(render.Game):
         except Exception, e:
             print(sys.exc_info())
             raise ToonloopError("Invalid camera. %s" % (str(e.message)))
-
+    
     def frame_add(self):
         """
         Copies the last grabbed frame to the list of images.
