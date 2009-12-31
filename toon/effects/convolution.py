@@ -81,14 +81,21 @@ void main()
 
 class Options(optgroup.OptionsGroup):
     def __init__(self):
-        # sharpening
-        self.weight_row_0 = [0.0, -1.0, 0.0]
-        self.weight_row_1 = [-1.0, 4.0, -1.0]
-        self.weight_row_2 = [0.0, -1.0, 0.0]
+        # edge detection with the laplacian operator:
+        self.weight_row_0 = [0.0, 1.0, 0.0]
+        self.weight_row_1 = [1.0, -4.0, 1.0]
+        self.weight_row_2 = [0.0, 1.0, 0.0]
         self.sum = 0.0
-        self.width = 1.0
-        self.height = 1.0
+        self.width = 2.0
+        self.height = 2.0
         self.image = 0 # texture unit, not id !
+        
+        # ---- other example:
+        # smoothing:
+        #self.weight_row_0 = [1.0, 1.0, 1.0]
+        #self.weight_row_1 = [1.0, 1.0, 1.0]
+        #self.weight_row_2 = [1.0, 1.0, 1.0]
+        #self.sum = 9.0
 
 class Effect(fx.Effect):
     """
@@ -133,6 +140,11 @@ class Effect(fx.Effect):
                 self.program.glUniform3f("weight_row_0", *self.options.weight_row_0)
                 self.program.glUniform3f("weight_row_1", *self.options.weight_row_1)
                 self.program.glUniform3f("weight_row_2", *self.options.weight_row_2)
+                s = 0
+                for l in [self.options.weight_row_0, self.options.weight_row_1,  self.options.weight_row_2]:
+                    for i in l:
+                        s += i
+                self.options.sum = s
                 self.program.glUniform1f("sum", self.options.sum)
 
     def post_draw(self):
