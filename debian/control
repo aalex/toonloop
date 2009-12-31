@@ -10,7 +10,8 @@ Homepage: http://www.toonloop.com/
 Package: toonloop
 Architecture: all
 XB-Python-Version: ${python:Versions}
-Depends: ${misc:Depends}, python (>= 2.4), python-central (>= 0.6.7), python-twisted, python-numpy, python-opengl, python-pyglew, python-dev, python-pygame (>=1.9.0), mencoder
+Depends: ${misc:Depends}, python (>= 2.4), python-central (>= 0.6.7), python-twisted, python-numpy, python-opengl, python-dev, python-pygame (>=1.9.0), mencoder
+Suggests: puredata, ivtv-utils, python-nevow, python-purity, python-portmidi, python-gtk2
 Description: The Toonloop Live Stop Motion Tool. 
  .
  Toonloop is a live stop motion animation software. It aims at showing
@@ -19,13 +20,14 @@ Description: The Toonloop Live Stop Motion Tool.
  by one to a clip made of many frames. Clips are displayed in a never
  ending loop.
  .
- Toonloop supports MIDI input, the Open Sound Control protocol and the
- FUDI protocol (to communicate with Pure Data). Currently implemented
- video effects are: chroma keying using a GLSL shader, onion skinning
- and background image. Toonloop offers state saving in the JSON
- format. Default config file is ~/.toonloop.json, where tilde (~) is
- your home directory. Toonloop also allows users to save their clips
- to the photo-JPEG video codec (using mencoder), and as well to JPEG
- images. Finally, Toonloop offers an automatic time lapse
- functionnality, to allow one to easily create accelerated clips.
+ Toonloop provides features such as onion skinning, and an intervalometer, 
+ which allows one to automatically create accelerated time lapse clips. 
+ It can be controlled using MIDI input, the Open Sound Control protocol 
+ or the FUDI protocol. (with Pure Data) Toonloop offers video effects written 
+ in the OpenGL Shading Language, (GLSL) to do chroma keying, luma keying, 
+ image adjustements and more. Different themes allows one to choose how the 
+ editing and playback viewports are displayed. The configuration can be 
+ saved and restored in the JSON format. Finally, Toonloop allows users to 
+ save their clips to the photo-JPEG video codec (using mencoder), and as 
+ well to JPEG images. 
 
