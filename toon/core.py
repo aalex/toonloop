@@ -960,17 +960,21 @@ class Toonloop(render.Game):
         # now, let's draw something
         GL.glEnable(GL.GL_TEXTURE_RECTANGLE_ARB)
         if self.theme.render_play_first:
+            # edit
             self._draw_edit_background()
             self._draw_edit_view()
             self._draw_onion_skin()
             self._draw_white_flash()
+            # playback
             self._draw_play_background()
             self._draw_playback_view()
         else:
+            # playback
             self._draw_play_background()
             self._draw_playback_view()
             self._draw_edit_background()
             self._draw_edit_view()
+            # edit
             self._draw_onion_skin()
             self._draw_white_flash()
         GL.glDisable(GL.GL_TEXTURE_RECTANGLE_ARB) # important not to draw a big pixel !
@@ -1070,8 +1074,8 @@ class Toonloop(render.Game):
         self._get_current_effect().pre_draw()
         GL.glColor4f(1.0, 1.0, 1.0, 1.0)
         GL.glPushMatrix()
-        GL.glTranslatef(*self.theme.edit_pos) #-2.0, 0.0, 0.0)
-        GL.glScalef(*self.theme.edit_scale) #2.0, 1.5, 1.0)
+        GL.glTranslatef(*self.theme.edit_pos) 
+        GL.glScalef(*self.theme.edit_scale) 
         # most recent grabbed :
         GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_MOST_RECENT])
         if self.config.image_flip_horizontal: # FIXME?
@@ -1086,14 +1090,18 @@ class Toonloop(render.Game):
         if self.config.onionskin_enabled and self.config.onionskin_on:
             if len(self.clip.images) > 0:
                 # Onion skin over dit view:
-                self._get_current_effect().pre_draw()
+                effect = self._get_current_effect()
+                texture_id = self.textures[self.TEXTURE_ONION]
+                # FIXME: the shader actually want the texture unit !
+                #effect.options.texture_id = texture_id
+                effect.pre_draw()
                 GL.glPushMatrix()
-                GL.glTranslatef(*self.theme.edit_pos)#-2.0, 0.0, 0.0)
-                GL.glScalef(*self.theme.edit_scale)#2.0, 1.5, 1.0)
+                GL.glTranslatef(*self.theme.edit_pos)
+                GL.glScalef(*self.theme.edit_scale)
                 GL.glColor4f(1.0, 1.0, 1.0, self.config.onionskin_opacity)
-                GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_ONION])
-                if self.config.image_flip_horizontal: # FIXME?
-                    GL.glRotatef(180., 0., 1., 0.)
+                GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, texture_id)
+                #if self.config.image_flip_horizontal: # FIXME?
+                #    GL.glRotatef(180., 0., 1., 0.)
                 draw.draw_textured_square(self.config.image_width, self.config.image_height)
                 GL.glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
                 GL.glPopMatrix()
@@ -1103,7 +1111,8 @@ class Toonloop(render.Game):
         """
         Renders the playback view. 
         """
-        self._get_current_effect().pre_draw()
+        effect = self._get_current_effect()
+        effect.pre_draw()
         GL.glColor4f(1.0, 1.0, 1.0, 1.0)
         GL.glPushMatrix()
         GL.glTranslatef(*self.theme.play_pos)#2.0, 0.0, 0.0)
@@ -1113,7 +1122,7 @@ class Toonloop(render.Game):
             GL.glRotatef(180., 0., 1., 0.)
         draw.draw_textured_square(self.config.image_width, self.config.image_height)
         GL.glPopMatrix()
-        self._get_current_effect().post_draw()
+        effect.post_draw()
     
     def _playhead_iterate(self):
         """ 

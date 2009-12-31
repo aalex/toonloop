@@ -50,8 +50,8 @@ void main (void)
 	vec3 color = mix(intensity, texColor, saturation);
 	color = mix(avgluma, color, contrast);
 	color *= brightness;
-	//gl_FragColor = vec4(color, color.g*alpha);
-    color = mix(color, texColor, opacity);
+	                // What was that ?? gl_FragColor = vec4(color, color.g*alpha);
+    color = mix(color, texColor, opacity); // reinject some of the original image in it.
 	gl_FragColor = vec4(color, alpha * input_alpha);
 }
 """
