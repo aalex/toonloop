@@ -54,7 +54,6 @@ void main (void)
 	vec3 color = mix(vec3(luminance), texColor, saturation);
 	color = mix(avgluma, color, contrast);
 	color *= brightness;
-	                // What was that ?? gl_FragColor = vec4(color, color.g*alpha);
     // Next, we apply it in overlay over the original image !
     // color on top of texColor in overlay:
     if (luminance < 0.45) 
@@ -71,7 +70,6 @@ void main (void)
         vec3 result2 = white - 2.0 * (white - color) * (white - texColor);
         color = mix(result1, result2, (luminance - 0.45) * 10.0);
     }
-    color = mix(color, texColor, 0.5); // reinject some of the original image in it.
 	gl_FragColor = vec4(color, alpha * input_alpha);
 }
 """

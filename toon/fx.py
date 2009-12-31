@@ -46,9 +46,11 @@ def load_effects():
             print("Error loading %s effect module : %s " % (module.name, e.message))
             #raise
         else:
-            effect.setup()
-            if not effect.loaded:
-                print("Could not load effect %s." % (effect.name))
-            else:
-                ret[effect.name] = effect
+            # the create_effect may return None, to disable the effect.
+            if effect is not None:
+                effect.setup()
+                if not effect.loaded:
+                    print("Could not load effect %s." % (effect.name))
+                else:
+                    ret[effect.name] = effect
     return ret

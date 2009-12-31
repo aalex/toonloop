@@ -94,6 +94,7 @@ class Effect(fx.Effect):
                 print e.message
 
 def create_effect():
-    return Effect()
+    #return Effect()
+    return None
 
 
