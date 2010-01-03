@@ -46,7 +46,7 @@ INTERACTIVE_HELP = """Toonloop interactive keyboard controls :
    (and remove all its frames)
  - Press 's' to save the current sequence as a Motion-JPEG movie.
  - Press 'i' to print current loop frame number, number of frames in loop 
-   and global framerate.
+   and global framerate. It toggles on/off a head-up display of text.
  - Press 'h' to print a help message.
  - Press UP to increase frame rate.
  - Press DOWN to decrease frame rate.

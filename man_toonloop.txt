@@ -37,7 +37,7 @@ Toonloop interactive keyboard controls :
    (and remove all its frames)
  - Press 's' to save the current sequence as a Motion-JPEG movie.
  - Press 'i' to print current loop frame number, number of frames in loop 
-   and global framerate.
+   and global framerate. It toggles on/off a head-up display of text.
  - Press 'h' to print a help message.
  - Press UP to increase frame rate.
  - Press DOWN to decrease frame rate.
@@ -87,45 +87,28 @@ The --option command line option allows one to specify specific keyword identifi
 
 Once Toonloop has been started by some keyword config options, those options can be saved to the ~/.toonloop.json configuration file. Next time Toonloop is launched, those configuration options will be read from that file. If Toonloop behaves strangely, you should try deleting that file. 
 
-Here is the list of options with their default values:
-  -o autosave_enabled True
+Here is a list of some of the options with their default values:
   -o autosave_on False
   -o autosave_rate_seconds 600.0
-  -o bgcolor_b 0.2
-  -o bgcolor_g 0.8
-  -o bgcolor_r 1.0
-  -o bgimage [toonloop package data path]/bgimage_05.jpg
-  -o bgimage_enabled False
-  -o bgimage_glob 
-  -o bgimage_glob_enabled False
   -o config_file ~/.toonloop.json
   -o delete_jpeg False
   -o display_height 480
   -o display_width 640
-  -o framerate_max 30
-  -o framerate_min 1
   -o fudi_enabled False
   -o fudi_receive_port 15555
   -o fudi_send_host localhost
   -o fudi_send_port 17777
-  -o fx_white_flash True
-  -o fx_white_flash_alpha 0.5
   -o image_flip_horizontal False
   -o image_height 240
   -o image_width 320
-  -o intervalometer_enabled True
   -o intervalometer_on False
   -o intervalometer_rate_seconds 30.0
-  -o max_num_clips 10
   -o midi_enabled False
   -o midi_input_id -1
   -o midi_note_play 62
   -o midi_note_record 60
   -o midi_pedal_control_id 64
-  -o midi_verbose True
-  -o onionskin_enabled True
   -o onionskin_on False
-  -o onionskin_opacity 0.3
   -o osc_enabled False
   -o osc_listen_port 7772
   -o osc_send_host localhost
@@ -134,8 +117,6 @@ Here is the list of options with their default values:
   -o toonloop_home ~/Documents/toonloop
   -o verbose False
   -o video_device 0
-  -o web_enabled False
-  -o web_server_port 8000
 
 [AUTHOR]
 Alexandre Quessy. Thanks to Tristan Matthews and Society for Arts and Technology for their help. 
