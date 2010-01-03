@@ -1,3 +1,10 @@
+toonloop (1.1.4) unstable; urgency=low
+
+  * Implemented the head-up display, which writes statistics and help.
+  * Updated documentation a little.
+
+ -- Alexandre Quessy <alexandre@quessy.net> Sun, 03 Jan 2010 00:33:35 -0500
+
 toonloop (1.1.3-2) unstable; urgency=low
 
   * Fixed a crash when video1 is present, but no video0

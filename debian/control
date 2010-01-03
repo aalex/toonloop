@@ -25,7 +25,7 @@ Description: The Toonloop Live Stop Motion Tool.
  It can be controlled using MIDI input, the Open Sound Control protocol 
  or the FUDI protocol. (with Pure Data) Toonloop offers video effects written 
  in the OpenGL Shading Language, (GLSL) to do chroma keying, luma keying, 
- image adjustements and more. Different themes allows one to choose how the 
+ image adjustements and more. Different themes allow one to choose how the 
  editing and playback viewports are displayed. The configuration can be 
  saved and restored in the JSON format. Finally, Toonloop allows users to 
  save their clips to the photo-JPEG video codec (using mencoder), and as 
