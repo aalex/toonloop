@@ -186,6 +186,7 @@ class Configuration(object): #Serializable):
         
         # hud infos (text over images)
         self.hud_enabled = False
+        self.hud_enabled = False
 
         # onionskin
         self.onionskin_enabled = True
@@ -844,6 +845,11 @@ class Toonloop(render.Game):
                 _write("OSC sending on %s:%s, receiving on %s.: %s" % (self.config.osc_send_host, self.config.osc_send_port, self.config.osc_listen_port), _current_pos)
 
             _write("Configuration file: %s. (press x to save)" % (self.config.config_file), _current_pos)
+            _current_pos[1] += hud_line_height # spacer
+            _write("~~~ HELP ~~~", _current_pos)
+            for line in INTERACTIVE_HELP.splitlines():
+                if _current_pos > -4.0:
+                    _write(line, _current_pos)
 
     def _init_clips(self):
         """
@@ -1468,13 +1474,14 @@ class Toonloop(render.Game):
                     elif e.key == PYGM.K_f: # F Fullscreen
                         self.toggle_fullscreen()
                     elif e.key == PYGM.K_i: # I Info
-                        self.print_stats()
+                        if self.config.verbose: 
+                            self.print_stats()
                         self.hud_toggle()
                     elif e.key == PYGM.K_p: # P Pause
                         self.pause()
                     elif e.key == PYGM.K_r: # R Reset
                         self.clip_reset()
-                    elif e.key == PYGM.K_h: # H Help
+                    elif e.key == PYGM.K_h or e.key == PYGM.K_F1: # H Help
                         self.print_help()
                     elif e.key == PYGM.K_s: # S Save
                         self.clip_save()
