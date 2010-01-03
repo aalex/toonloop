@@ -787,7 +787,11 @@ class Toonloop(render.Game):
             # style
             hud_base_position = (-3.8, 2.8, 0.0)
             hud_text_color = (1.0, 1.0, 1.0, 1.0)
-            hud_line_height = -0.2 # FIXME
+            _font_height = 16
+            # got the value 16 pixels of height with:
+            #GLUT.glutBitmapHeight(GLUT.GLUT_BITMAP_HELVETICA_12) 
+            hud_line_height = 6.0 / (float(self.config.display_height) / float(_font_height))
+            hud_line_height *= -1
             # holds state between each text drawing
             _current_pos = [
                     hud_base_position[0], 
