@@ -798,6 +798,8 @@ class Toonloop(render.Game):
                 draw.draw_text(txt, position=_current_pos, color=hud_text_color)
                 _current_pos[1] += hud_line_height
 
+            _write("Press \"i\" to make this text disappear.", _current_pos)
+            _write("Toonloop statistics and help.", _current_pos)
             # draw number of images in each clip
             total_imgs = 0
             txt_num = "Number of images: "
