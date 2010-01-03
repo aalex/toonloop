@@ -184,6 +184,9 @@ class Configuration(object): #Serializable):
         self.osc_sampler_num_sounds = 500
         #self.osc_receive_hosts = ''
         
+        # hud infos (text over images)
+        self.hud_enabled = False
+
         # onionskin
         self.onionskin_enabled = True
         self.onionskin_on = False
@@ -768,12 +771,79 @@ class Toonloop(render.Game):
         """
         print(INTERACTIVE_HELP)
 
+    def hud_toggle(self):
+        """
+        Toggles on/off the head-up display of statistics.
+        """
+        self.config.hud_enabled = not self.config.hud_enabled
+
     def _draw_hud(self):
         """
         Draws the head-up-display. Numbers, text, etc. overlayed on top of images. 
         """
         #TODO
-        pass
+        if self.config.hud_enabled:
+            # style
+            hud_base_position = (-3.8, 2.8, 0.0)
+            hud_text_color = (1.0, 1.0, 1.0, 1.0)
+            hud_line_height = -0.2 # FIXME
+            # holds state between each text drawing
+            _current_pos = [
+                    hud_base_position[0], 
+                    hud_base_position[1], 
+                    hud_base_position[2] 
+                ]
+            def _write(txt, _current_pos):
+                draw.draw_text(txt, position=_current_pos, color=hud_text_color)
+                _current_pos[1] += hud_line_height
+
+            # draw number of images in each clip
+            total_imgs = 0
+            txt_num = "Number of images: "
+            num_clips = len(self.clips)
+            for clip_num in range(num_clips):
+                num_images = len(self.clips[clip_num].images)
+                txt_num += "%3d" % (num_images)
+                if clip_num != num_clips - 1:
+                    txt_num += ", "
+                total_imgs += num_images
+            # and total number of images
+            txt_num += ". Total: %d" % (total_imgs)
+            _write(txt_num, _current_pos)
+            # draw playhead position
+            _write("Current playhead: " + str(self.clip.playhead), _current_pos)
+            _write("Num images: " + str(len(self.clip.images)), _current_pos)
+            _write("Rendering FPS: %d" % (self.fps), _current_pos)
+
+            actual_playhead_fps = self.fps / float(self.clip.playhead_iterate_every)
+            _write("Playhead frequency ratio: 30 / %d. Actual playhead FPS: %2.2f" % (self.clip.playhead_iterate_every, actual_playhead_fps), _current_pos)
+            
+            if self.config.autosave_enabled:
+                _write("Auto saving every %s seconds." % (self.config.autosave_rate_seconds), _current_pos)
+            if self.config.web_enabled:
+                _write("Web server running on port %s." % (self.config.web_server_port), _current_pos)
+            _write("Project name: %s" % (self.config.project_name), _current_pos)
+            _write("Video device: %s" % (self.config.video_device), _current_pos)
+            _write("Toonloop directory: %s" % (self.config.toonloop_home), _current_pos)
+            _write("Capturing dimensions: %sx%s" % (self.config.image_width, self.config.image_height), _current_pos)
+            _write("Rendering dimensions: %sx%s" % (self.config.display_width, self.config.display_height), _current_pos)
+            _write("Theme: %s" % (self.config.display_theme), _current_pos)
+            if self.config.effects_enabled:
+                _write("Effect: %s" % (self.config.effect_name), _current_pos)
+            if self.config.fudi_enabled:
+                _write("FUDI sending on %s:%s, receiving on %s.: %s" % (self.config.fudi_send_host, self.config.fudi_send_port, self.config.fudi_receive_port), _current_pos)
+            if self.config.image_flip_horizontal:
+                _write("The image is flipped horizontally", _current_pos)
+            if self.config.intervalometer_enabled and self.config.intervalometer_on:
+                _write("Intervalometer is on. Grabbing an image every %s seconds." % (self.config.intervalometer_rate_seconds), _current_pos)
+            if self.config.midi_enabled:
+                _write("Using MIDI input %s" % (self.config.midi_input_id), _current_pos)
+            if self.config.onionskin_enabled:
+                _write("Onion skinning is on.", _current_pos)
+            if self.config.osc_enabled:
+                _write("OSC sending on %s:%s, receiving on %s.: %s" % (self.config.osc_send_host, self.config.osc_send_port, self.config.osc_listen_port), _current_pos)
+
+            _write("Configuration file: %s. (press x to save)" % (self.config.config_file), _current_pos)
 
     def _init_clips(self):
         """
@@ -996,6 +1066,7 @@ class Toonloop(render.Game):
         GL.glDisable(GL.GL_TEXTURE_RECTANGLE_ARB) # important not to draw a big pixel !
         # ----------- saving progress bar
         self._draw_saving_progress_bar()
+        self._draw_hud()
         # ----------- done drawing.
         self.clock.tick()
         self.fps = self.clock.get_fps()
@@ -1105,6 +1176,8 @@ class Toonloop(render.Game):
             self._get_current_effect().post_draw()
 
     def _draw_onion_skin(self):
+        # FIXME: onion skin does not work with every effect. 
+        # glsl effects should take alpha into account.
         if self.config.onionskin_enabled and self.config.onionskin_on:
             if len(self.clip.images) > 0:
                 # Onion skin over dit view:
@@ -1123,7 +1196,7 @@ class Toonloop(render.Game):
                 #if self.config.image_flip_horizontal: # FIXME?
                 #    GL.glRotatef(180., 0., 1., 0.)
                 draw.draw_textured_square(self.config.image_width, self.config.image_height)
-                GL.glColor4f(1.0, 1.0, 1.0, 1.0) # self.config.playback_opacity)
+                GL.glColor4f(1.0, 1.0, 1.0, 1.0) 
                 GL.glPopMatrix()
                 if self.config.effects_enabled:
                     effect.post_draw()
@@ -1396,6 +1469,7 @@ class Toonloop(render.Game):
                         self.toggle_fullscreen()
                     elif e.key == PYGM.K_i: # I Info
                         self.print_stats()
+                        self.hud_toggle()
                     elif e.key == PYGM.K_p: # P Pause
                         self.pause()
                     elif e.key == PYGM.K_r: # R Reset

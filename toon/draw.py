@@ -24,20 +24,38 @@
 #
 import pygame
 from OpenGL.GL import *
+from OpenGL import GLUT
 """
 Draws things in OpenGL
 """
-# no need for glut for now
-# from OpenGL.GLUT import *
-# 
-# def draw_text(text, font=GLUT_STROKE_ROMAN):
-#     """
-#     Draws text in OpenGL
-#     """
-#     #font=GLUT_BITMAP_TIMES_ROMAN_24
-#     for c in text:
-#         glutStrokeCharacter(font, ord(c))
-#         # glutBitmapCharacter(font, ord(c))
+text_sizes = {
+        10: GLUT.GLUT_BITMAP_HELVETICA_10,
+        12: GLUT.GLUT_BITMAP_HELVETICA_12,
+        18: GLUT.GLUT_BITMAP_HELVETICA_18
+    }
+_glut_init_called = False
+
+def draw_text(text, size=12, position=(0.0, 0.0, 0.0), color=(1.0, 1.0, 1.0, 1.0)):
+    """
+    Draws text in OpenGL
+
+    @param text: String to be drawn
+    @type text: str
+    @param size: 10, 12 or 18
+    @type size: int
+    @param position: 3-tuple of float
+    """
+    global _glut_init_called
+    global text_sizes
+    if not _glut_init_called:
+        GLUT.glutInit()
+        _glut_init_called = True
+    glPushMatrix()
+    glColor4f(*color)
+    glRasterPos3f(*position)
+    for ch in text:
+        GLUT.glutBitmapCharacter(text_sizes[size], ord(ch))
+    glPopMatrix()
 
 def texture_from_image(texture, image, square_texture=False):
     """
