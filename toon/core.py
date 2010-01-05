@@ -454,14 +454,22 @@ class Toonloop(render.Game):
         pygame.display.set_caption("Toonloop")
         pygame.mouse.set_visible(False)
         # the images
-        self.most_recent_image = pygame.surface.Surface(self.image_size) # , 0, self.display)
         
         self.osc = None # sender and receiver.
         self.camera = None # pygame camera
         self.is_mac = False # is on Mac OS X or not. (linux) For the camera.
         self.textures = [0, 0, 0, 0] # list of OpenGL texture objects id
-        self._setup_camera()
         self._setup_window()
+        # updates the size of the image according to the actual image size grabbed from the camera.
+        self._setup_camera()
+        self.most_recent_image = pygame.surface.Surface(self.image_size)
+        self._camera_grab_frame()
+        _w, _h = self.most_recent_image.get_size()
+        print _w, _h
+        if _w != self.config.image_width or _h != self.config.image_height:
+            print("Expected image dimensions are %sx%s, but we got %sx%s." % (self.config.image_width, self.config.image_height, _w, _h))
+            self.config.image_width = _w
+            self.config.image_height = _h
         self.effects = {}
         self.optgroups = {}
         self._setup_effects()
