@@ -840,8 +840,8 @@ class Toonloop(render.Game):
             _write("Project name: %s" % (self.config.project_name), _current_pos)
             _write("Video device: %s" % (self.config.video_device), _current_pos)
             _write("Toonloop directory: %s" % (self.config.toonloop_home), _current_pos)
-            _write("Capturing dimensions: %sx%s" % (self.config.image_width, self.config.image_height), _current_pos)
-            _write("Rendering dimensions: %sx%s" % (self.config.display_width, self.config.display_height), _current_pos)
+            _write("Captured image dimensions: %sx%s" % (self.config.image_width, self.config.image_height), _current_pos)
+            _write("Window dimensions: %sx%s" % (self.config.display_width, self.config.display_height), _current_pos)
             _write("Theme: %s" % (self.config.display_theme), _current_pos)
             if self.config.effects_enabled:
                 _write("Effect: %s" % (self.config.effect_name), _current_pos)
