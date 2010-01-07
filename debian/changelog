@@ -3,25 +3,25 @@ toonloop (1.1.4) unstable; urgency=low
   * Implemented the head-up display, which writes statistics and help.
   * Updated documentation a little.
 
- -- Alexandre Quessy <alexandre@quessy.net> Sun, 03 Jan 2010 00:33:35 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Sun, 03 Jan 2010 00:33:35 -0500
 
 toonloop (1.1.3-2) unstable; urgency=low
 
   * Fixed a crash when video1 is present, but no video0
 
- -- Alexandre Quessy <alexandre@quessy.net> Thu, 31 Dec 2009 16:02:29 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Thu, 31 Dec 2009 16:02:29 -0500
 
 toonloop (1.1.3) unstable; urgency=low
 
   * Updated debian description and man page text.
 
- -- Alexandre Quessy <alexandre@quessy.net> Thu, 31 Dec 2009 12:33:31 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Thu, 31 Dec 2009 12:33:31 -0500
 
 toonloop (1.1.2) unstable; urgency=low
 
   * Added the --disable-effects option.
 
- -- Alexandre Quessy <alexandre@quessy.net> Wed, 30 Dec 2009 21:05:06 -0500  
+ -- Alexandre Quessy <alexandre@quessy.net>  Wed, 30 Dec 2009 21:05:06 -0500  
 
 toonloop (1.1.1) unstable; urgency=low
 
@@ -32,13 +32,13 @@ toonloop (1.1.1) unstable; urgency=low
   * Fixed image_flip_horizontal
   * Making sure not to draw onion skin if no image in clip.
 
- -- Alexandre Quessy <alexandre@quessy.net> Mon, 28 Dec 2009 08:59:08 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Mon, 28 Dec 2009 08:59:08 -0500
 
 toonloop (1.1.0-2) unstable; urgency=low
 
   * Made the icon background transparent
 
- -- Alexandre Quessy <alexandre@quessy.net> Sun, 27 Dec 2009 22:27:05 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Sun, 27 Dec 2009 22:27:05 -0500
 
 toonloop (1.1.0) unstable; urgency=low
 
@@ -51,13 +51,13 @@ toonloop (1.1.0) unstable; urgency=low
   * Display a progress bar when saving a clip.
   * Shift-Q to quit, and not ESC anymore.
 
- -- Alexandre Quessy <alexandre@quessy.net> Sun, 27 Dec 2009 21:58:05 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Sun, 27 Dec 2009 21:58:05 -0500
 
 toonloop (1.0.9-2) unstable; urgency=low
 
   * Fixing version number in python files.
 
- -- Alexandre Quessy <alexandre@quessy.net> Thu, 24 Dec 2009 12:22:45 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Thu, 24 Dec 2009 12:22:45 -0500
 
 toonloop (1.0.9) unstable; urgency=low
   
@@ -68,7 +68,7 @@ toonloop (1.0.9) unstable; urgency=low
   * Trying to catch error when GLSL is not available on the system at launch
     time.
 
- -- Alexandre Quessy <alexandre@quessy.net> Thu, 24 Dec 2009 11:53:43 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Thu, 24 Dec 2009 11:53:43 -0500
 
 
 toonloop (1.0.8) unstable; urgency=low
@@ -80,26 +80,26 @@ toonloop (1.0.8) unstable; urgency=low
   * Added --fullscreen flag.
   * Changed default selected clip to #1.
  
- -- Alexandre Quessy <alexandre@quessy.net> Sun, 13 Dec 2009 16:28:59 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Sun, 13 Dec 2009 16:28:59 -0500
 
 toonloop (1.0.7) unstable; urgency=low
   
   * Creating a PNG icon at install time.
  
- -- Alexandre Quessy <alexandre@quessy.net> Sat, 12 Dec 2009 12:35:21 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Sat, 12 Dec 2009 12:35:21 -0500
 
 toonloop (1.0.6-2) unstable; urgency=low
   
   * SVG icon now goes to the right place, and not into a directory with its
     name.
  
- -- Alexandre Quessy <alexandre@quessy.net> Sat, 12 Dec 2009 09:57:15 -0500 
+ -- Alexandre Quessy <alexandre@quessy.net>  Sat, 12 Dec 2009 09:57:15 -0500 
 
 toonloop (1.0.6) unstable; urgency=low
   
   * Fixed crash when deleting a frame. Dangerous in fullscreen mode.  
  
- -- Alexandre Quessy <alexandre@quessy.net> Mon, 07 Dec 2009 23:24:37 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Mon, 07 Dec 2009 23:24:37 -0500
 
 toonloop (1.0.5) unstable; urgency=low
   
@@ -112,19 +112,19 @@ toonloop (1.0.5) unstable; urgency=low
   * Forcing garbage collection on every frame...
   * .desktop file corrected.
  
- -- Alexandre Quessy <alexandre@quessy.net> Sat, 28 Nov 2009 10:52:10 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Sat, 28 Nov 2009 10:52:10 -0500
 
 toonloop (1.0.4-3) unstable; urgency=low
   
   * fixed more error with .desktop file.
  
- -- Alexandre Quessy <alexandre@quessy.net> Sat, 28 Nov 2009 10:35:58 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Sat, 28 Nov 2009 10:35:58 -0500
 
 toonloop (1.0.4-2) unstable; urgency=low
   
   * fixed error with .desktop file.
  
- -- Alexandre Quessy <alexandre@quessy.net> Fri, 27 Nov 2009 15:20:23 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Fri, 27 Nov 2009 15:20:23 -0500
 
 toonloop (1.0.4) unstable; urgency=low
 
@@ -132,7 +132,7 @@ toonloop (1.0.4) unstable; urgency=low
   * Cleaned up globals
   * Renamed desktop file and icon to lowercase.
 
- -- Alexandre Quessy <alexandre@quessy.net> Wed, 25 Nov 2009 14:52:21 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Wed, 25 Nov 2009 14:52:21 -0500
 
 toonloop (1.0.3-2) unstable; urgency=low
 
