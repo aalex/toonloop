@@ -454,14 +454,22 @@ class Toonloop(render.Game):
         pygame.display.set_caption("Toonloop")
         pygame.mouse.set_visible(False)
         # the images
-        self.most_recent_image = pygame.surface.Surface(self.image_size) # , 0, self.display)
         
         self.osc = None # sender and receiver.
         self.camera = None # pygame camera
         self.is_mac = False # is on Mac OS X or not. (linux) For the camera.
         self.textures = [0, 0, 0, 0] # list of OpenGL texture objects id
-        self._setup_camera()
         self._setup_window()
+        # updates the size of the image according to the actual image size grabbed from the camera.
+        self._setup_camera()
+        self.most_recent_image = pygame.surface.Surface(self.image_size)
+        self._camera_grab_frame()
+        _w, _h = self.most_recent_image.get_size()
+        print _w, _h
+        if _w != self.config.image_width or _h != self.config.image_height:
+            print("Expected image dimensions are %sx%s, but we got %sx%s." % (self.config.image_width, self.config.image_height, _w, _h))
+            self.config.image_width = _w
+            self.config.image_height = _h
         self.effects = {}
         self.optgroups = {}
         self._setup_effects()
@@ -832,8 +840,8 @@ class Toonloop(render.Game):
             _write("Project name: %s" % (self.config.project_name), _current_pos)
             _write("Video device: %s" % (self.config.video_device), _current_pos)
             _write("Toonloop directory: %s" % (self.config.toonloop_home), _current_pos)
-            _write("Capturing dimensions: %sx%s" % (self.config.image_width, self.config.image_height), _current_pos)
-            _write("Rendering dimensions: %sx%s" % (self.config.display_width, self.config.display_height), _current_pos)
+            _write("Captured image dimensions: %sx%s" % (self.config.image_width, self.config.image_height), _current_pos)
+            _write("Window dimensions: %sx%s" % (self.config.display_width, self.config.display_height), _current_pos)
             _write("Theme: %s" % (self.config.display_theme), _current_pos)
             if self.config.effects_enabled:
                 _write("Effect: %s" % (self.config.effect_name), _current_pos)
