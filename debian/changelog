@@ -1,3 +1,10 @@
+toonloop (1.1.6) unstable; urgency=low
+
+  * Added copyright file
+  * Added rule to install copyright file 
+
+ -- Alexandre Quessy <alexandre@quessy.net>  Thu, 07 Jan 2010 23:12:46 -0500
+
 toonloop (1.1.5) unstable; urgency=low
 
   * Fixed dimension of the video textures when data from camera is not as
