@@ -69,9 +69,9 @@ def run():
     parser.add_option("-i", "--intervalometer-on", \
         dest="intervalometer_on", action="store_true", \
         help="Starts the intervalometer at startup.")
-    parser.add_option("-n", "--disable-effects", \
+    parser.add_option("-n", "--enable-effects", \
         action="store_true", \
-        help="Disables GLSL shader effects.")
+        help="Enables GLSL shader effects.")
     parser.add_option("-x", "--options-group", 
         action="append", nargs=3, 
         help="Sets option from an option group.")
@@ -93,8 +93,8 @@ def run():
         config_dict['toonloop_home'] = options.toonloop_home
     if options.fullscreen:
         config_dict["display_fullscreen"] = options.fullscreen
-    if options.disable_effects:
-        config_dict["effects_enabled"] = False
+    if options.enable_effects:
+        config_dict["effects_enabled"] = True
     if options.image_width:
         config_dict['image_width'] = options.image_width
         config_dict['image_height'] = options.image_width * 3 / 4 # fixed aspect ratio

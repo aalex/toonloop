@@ -70,6 +70,11 @@ import os
 import glob
 import pprint
 
+# ignore (mostly nevow) warnings
+import warnings
+from exceptions import DeprecationWarning
+warnings.simplefilter("ignore", DeprecationWarning)
+
 from twisted.internet import reactor
 from twisted.internet import defer
 
@@ -202,13 +207,13 @@ class Configuration(object): #Serializable):
         self.bgimage_glob_enabled = False # list of glob JPG files that can be browsed using +/- iteration
         self.bgimage_glob = '' # os.path.join(self.toonloop_home, self.project_name, 'data') # defaults to the images from the current project !
         
-        # white flash
+        # white flash (TODO: move to themes)
         self.fx_white_flash = True
         self.fx_white_flash_alpha = 0.5
-        # todo:duration
+        
         # effects
         self.effect_name = "None"
-        self.effects_enabled = True
+        self.effects_enabled = False
         
         # intervalometer
         self.intervalometer_on = False 
