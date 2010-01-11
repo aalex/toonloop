@@ -68,6 +68,7 @@ def texture_from_image(texture, image, square_texture=False):
     else:
         # FIXME: not tested
         textureData = pygame.surfarray.pixels2d(image)
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1) # ??
     if square_texture:
         glBindTexture(GL_TEXTURE_2D, texture)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.get_width(), image.get_height(), 0, \
