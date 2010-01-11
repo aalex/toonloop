@@ -61,17 +61,23 @@ def texture_from_image(texture, image, square_texture=False):
     """
     Copies the pixels from a pygame surface to an OpenGL texture object.
     """
-    textureData = pygame.image.tostring(image, "RGBX", True) # vertically flipped
+    #
+    bit_depth = image.get_bitsize()
+    if bit_depth == 24:
+        textureData = pygame.image.tostring(image, "RGB", True) # vertically flipped
+    else:
+        # FIXME: not tested
+        textureData = pygame.surfarray.pixels2d(image)
     if square_texture:
         glBindTexture(GL_TEXTURE_2D, texture)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.get_width(), image.get_height(), 0, \
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.get_width(), image.get_height(), 0, \
                   GL_RGBA, GL_UNSIGNED_BYTE, textureData)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
     else:   
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, texture)
-        glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, image.get_width(), \
-            image.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)
+        glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, image.get_width(), \
+            image.get_height(), 0, GL_RGB, GL_UNSIGNED_BYTE, textureData)
         glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
