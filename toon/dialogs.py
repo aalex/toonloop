@@ -60,7 +60,39 @@ class Save(object):
         dialog.destroy()
         self.deferredResult.callback(file_name)
 
-def non_blocking_save_dialog():
+class ErrorDialog(object):
+    def __init__(self, deferred, message):
+        self.deferredResult = deferred
+        parent = None
+        error_dialog = gtk.MessageDialog(
+            parent=None, 
+            flags=0, 
+            type=gtk.MESSAGE_ERROR, 
+            buttons=gtk.BUTTONS_CLOSE, 
+            message_format=message)
+        error_dialog.connect("close", self.on_close)
+        error_dialog.connect("response", self.on_response)
+        error_dialog.show()
+
+    def on_close(self, dialog, *params):
+        print("on_close %s %s" % (dialog, params))
+
+    def on_response(self, dialog, response_id, *params):
+        #print("on_response %s %s %s" % (dialog, response_id, params))
+        if response_id == gtk.RESPONSE_DELETE_EVENT:
+            print("Deleted")
+        elif response_id == gtk.RESPONSE_CANCEL:
+            print("Cancelled")
+            self.terminate(dialog)
+        elif response_id == gtk.RESPONSE_OK:
+            print("Accepted")
+        self.terminate(dialog)
+
+    def terminate(self, dialog):
+        dialog.destroy()
+        self.deferredResult.callback(True)
+
+def _non_blocking_save_dialog():
     def _on_result(result):
         print(result)
     deferred = defer.Deferred()
@@ -68,14 +100,28 @@ def non_blocking_save_dialog():
     Save(deferred)
     return deferred
 
-def non_blocking():
+def _error_dialog(mess):
     def _later():
         def _cb(result):
             reactor.stop()
-        deferred = non_blocking_save_dialog()
+        deferred = defer.Deferred()
+        deferred.addCallback(_cb)
+        ErrorDialog(deferred, mess)
+    reactor.callLater(0.1, _later)
+    reactor.run()
+    
+def _save():
+    def _later():
+        def _cb(result):
+            reactor.stop()
+        deferred = _non_blocking_save_dialog()
         deferred.addCallback(_cb)
     reactor.callLater(0.1, _later)
     reactor.run()
 
 if __name__ == "__main__":
-    non_blocking()
+    #_save()
+    mess = """An error happened.
+You are either in big troubles, or in very big troubles."""
+    _error_dialog(mess)
+
