@@ -1,3 +1,9 @@
+toonloop (1.1.8-0ubuntu2) lucid; urgency=low
+
+  * Packaging for Ubuntu Lucid
+
+ -- Alexandre Quessy <alexandre@quessy.net>  Tue, 19 Jan 2010 00:57:18 -0500
+
 toonloop (1.1.8-0ubuntu1) unstable; urgency=low
 
   * Improved texture loading speed.
