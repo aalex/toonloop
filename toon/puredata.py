@@ -230,7 +230,7 @@ class PureDataController(object):
             self.app.quit()
         else:
             reactor.stop()
-        
+
 def start(**kwargs): 
     """
     Factory for the Toonloop FUDI service.
