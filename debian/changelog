@@ -1,3 +1,10 @@
+toonloop (1.1.8-0ubuntu1) unstable; urgency=low
+
+  * Improved texture loading speed.
+  * Ubuntu packaging.
+
+ -- Alexandre Quessy <alexandre@quessy.net>  Tue, 19 Jan 2010 00:34:59 -0500
+
 toonloop (1.1.7-2) unstable; urgency=low
 
   * Fixed debian rules and control files. Removed dh_icons. Added python
