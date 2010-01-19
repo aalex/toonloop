@@ -191,4 +191,3 @@ class Sampler(object):
             self.osc.send_sampler_clear(buffer_id)
             if self.verbose:
                 print("send /sampler/clear %d" % (buffer_id))
-        
