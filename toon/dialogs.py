@@ -83,7 +83,6 @@ class ErrorDialog(object):
             print("Deleted")
         elif response_id == gtk.RESPONSE_CANCEL:
             print("Cancelled")
-            self.terminate(dialog)
         elif response_id == gtk.RESPONSE_OK:
             print("Accepted")
         self.terminate(dialog)

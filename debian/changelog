@@ -1,3 +1,9 @@
+toonloop (1.1.8-0ubuntu3) lucid; urgency=low
+
+  * Trying again to package for Launchpad..
+
+ -- Alexandre Quessy <alexandre@quessy.net>  Tue, 19 Jan 2010 01:50:01 -0500
+
 toonloop (1.1.8-0ubuntu2) lucid; urgency=low
 
   * Packaging for Ubuntu Lucid
