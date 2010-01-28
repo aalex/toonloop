@@ -83,7 +83,6 @@ class ErrorDialog(object):
             print("Deleted")
         elif response_id == gtk.RESPONSE_CANCEL:
             print("Cancelled")
-            self.terminate(dialog)
         elif response_id == gtk.RESPONSE_OK:
             print("Accepted")
         self.terminate(dialog)
@@ -91,6 +90,53 @@ class ErrorDialog(object):
     def terminate(self, dialog):
         dialog.destroy()
         self.deferredResult.callback(True)
+
+class YesNoDialog(object):
+    def __init__(self, deferred, message):
+        self.deferredResult = deferred
+        parent = None
+        error_dialog = gtk.MessageDialog(
+            parent=None, 
+            flags=0, 
+            type=gtk.MESSAGE_QUESTION, 
+            buttons=gtk.BUTTONS_YES_NO, 
+            message_format=message)
+# gtk.BUTTONS_YES_NO: (gtk.STOCK_NO, gtk.RESPONSE_NO,
+# gtk.STOCK_YES, gtk.RESPONSE_YES),
+# image = gtk.STOCK_DIALOG_QUESTION
+        error_dialog.connect("close", self.on_close)
+        error_dialog.connect("response", self.on_response)
+        error_dialog.show()
+
+    @staticmethod
+    def create(message):
+        """
+        Returns a Deferred which will be called with a boolean result.
+        @param message: str
+        @rettype: L{Deferred}
+        """
+        d = defer.Deferred()
+        dialog = YesNoDialog(d, message)
+        return d
+
+    def on_close(self, dialog, *params):
+        print("on_close %s %s" % (dialog, params))
+
+    def on_response(self, dialog, response_id, *params):
+        print("on_response %s %s %s" % (dialog, response_id, params))
+        if response_id == gtk.RESPONSE_DELETE_EVENT:
+            print("Deleted")
+            self.terminate(dialog, False)
+        elif response_id == gtk.RESPONSE_NO:
+            print("Cancelled")
+            self.terminate(dialog, False)
+        elif response_id == gtk.RESPONSE_YES:
+            print("Accepted")
+            self.terminate(dialog, True)
+
+    def terminate(self, dialog, answer):
+        dialog.destroy()
+        self.deferredResult.callback(answer)
 
 def _non_blocking_save_dialog():
     def _on_result(result):
@@ -121,7 +167,14 @@ def _save():
 
 if __name__ == "__main__":
     #_save()
-    mess = """An error happened.
-You are either in big troubles, or in very big troubles."""
-    _error_dialog(mess)
-
+    #mess = """An error happened. You are either in big troubles, or in very big troubles."""
+    #_error_dialog(mess)
+    
+    def _cb(result):
+        print "result", result
+        reactor.stop()
+    def _later():
+        d = YesNoDialog.create("Really quit ?")
+        d.addCallback(_cb)
+    reactor.callLater(0, _later)
+    reactor.run()
