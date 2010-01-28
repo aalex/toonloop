@@ -475,6 +475,7 @@ class Toonloop(render.Game):
             print("Expected image dimensions are %sx%s, but we got %sx%s." % (self.config.image_width, self.config.image_height, _w, _h))
             self.config.image_width = _w
             self.config.image_height = _h
+        self._blank_surface = pygame.Surface((self.config.image_width, self.config.image_height))
         self.effects = {}
         self.optgroups = {}
         self._setup_effects()
@@ -1297,15 +1298,15 @@ class Toonloop(render.Game):
         """
         Sets all pixels in the playback view as black.
         """
-        blank_surface = pygame.Surface((self.config.image_width, self.config.image_height))
-        draw.texture_from_image(self.textures[self.TEXTURE_PLAYBACK], blank_surface)
+        #blank_surface = pygame.Surface((self.config.image_width, self.config.image_height))
+        draw.texture_from_image(self.textures[self.TEXTURE_PLAYBACK], self._blank_surface)
         
     def _clear_onion_peal(self):
         """
         Sets all pixels in the onion peal as black.
         """
-        blank_surface = pygame.Surface((self.config.image_width, self.config.image_height))
-        draw.texture_from_image(self.textures[self.TEXTURE_ONION], blank_surface)
+        #blank_surface = pygame.Surface((self.config.image_width, self.config.image_height))
+        draw.texture_from_image(self.textures[self.TEXTURE_ONION], self._blank_surface)
 
     def pause(self, val=None):
         """

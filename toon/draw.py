@@ -62,13 +62,13 @@ def texture_from_image(texture, image, square_texture=False):
     Copies the pixels from a pygame surface to an OpenGL texture object.
     """
     #
-    bit_depth = image.get_bitsize()
-    if bit_depth == 24:
-        textureData = pygame.image.tostring(image, "RGB", True) # vertically flipped
-    else:
-        # FIXME: not tested
-        textureData = pygame.surfarray.pixels2d(image)
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1) # ??
+    #bit_depth = image.get_bitsize()
+    #if bit_depth == 24:
+    textureData = pygame.image.tostring(image, "RGB", True) # vertically flipped
+    #else:
+    #    # FIXME: not tested
+    #    textureData = pygame.surfarray.pixels2d(image)
+    #    glPixelStorei(GL_UNPACK_ALIGNMENT, 1) # ??
     if square_texture:
         glBindTexture(GL_TEXTURE_2D, texture)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.get_width(), image.get_height(), 0, \
