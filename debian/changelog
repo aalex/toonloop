@@ -1,3 +1,9 @@
+toonloop (1.1.9-0ubuntu1) lucid; urgency=low
+
+  * Fixed ugly texture problem when blank image.
+
+ -- Alexandre Quessy <alexandre@quessy.net>  Thu, 28 Jan 2010 00:56:37 -0500
+
 toonloop (1.1.8-0ubuntu2) lucid; urgency=low
 
   * Packaging for Ubuntu Lucid

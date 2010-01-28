@@ -40,9 +40,11 @@ To make package::
 from setuptools import find_packages
 from setuptools import setup
 
+__version__ = "1.1.9"
+
 setup(
     name = "toonloop",
-    version = "1.1.8", # MUST ALSO BE CHANGED IN toon/runner.py and .desktop
+    version = "1.1.9", # MUST ALSO BE CHANGED IN toon/runner.py 
     author = "Alexandre Quessy and Tristan Matthews",
     author_email = "alexandre@quessy.net",
     url = "http://www.toonloop.com/",
