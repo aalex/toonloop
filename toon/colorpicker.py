@@ -13,6 +13,7 @@ class ColorDialog(object):
         self.deferredResult = deferred
         parent = None
         color_dialog = gtk.ColorSelectionDialog(text)
+        color_dialog.get_color_selection().connect("color-changed", self.on_changing)
         self.color_dialog = color_dialog
         #color_dialog.set_modal(True)
         color_dialog.ok_button.connect("clicked", self.on_chosen)
@@ -31,11 +32,17 @@ class ColorDialog(object):
         dialog = ColorDialog(d, message)
         return d
 
+    def _color_to_gl(self, color):
+        return (color.red / 65535.0, color.green / 65535.0, color.blue / 65535.0)
+    def on_changing(self, colorselection):
+        color = colorselection.get_current_color()
+        print self._color_to_gl(color)
+        
     def on_chosen(self, dialog, *params):
         print("on_chosen %s %s" % (dialog, params))
         color = self.color_dialog.get_color_selection().get_current_color()
         print color
-        result = (color.red / 65535.0, color.green / 65535.0, color.blue / 65535.0)
+        result = self._color_to_gl(color)
         self.terminate(result)
 
     def on_none(self, *args):
