@@ -112,7 +112,7 @@ except ImportError, e:
 import pygame
 import pygame.camera
 import pygame.locals as PYGM # no namespace contamination
-from pygame import time
+#from pygame import time
 from OpenGL import GL # no namespace contamination
 
 PACKAGE_DATA_PATH = os.path.dirname(data.__file__)
@@ -862,7 +862,7 @@ class Toonloop(render.Game):
             if self.config.onionskin_enabled:
                 _write("Onion skinning is on.", _current_pos)
             if self.config.osc_enabled:
-                _write("OSC sending on %s:%s, receiving on %s.: %s" % (self.config.osc_send_host, self.config.osc_send_port, self.config.osc_listen_port), _current_pos)
+                _write("OSC sending on %s:%s, receiving on %s.: %s" % (self.config.osc_send_host, self.config.osc_send_port, self.config.osc_listen_port, _current_pos))
 
             _write("Configuration file: %s. (press x to save)" % (self.config.config_file), _current_pos)
             _current_pos[1] += hud_line_height # spacer
@@ -1691,7 +1691,7 @@ class Toonloop(render.Game):
             del self.osc
         # glDeleteTextures(3, self.textures)
 
-    def config_set(name, value):
+    def config_set(self, name, value):
         """
         Changes a configuration option.
         """
