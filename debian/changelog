@@ -1,3 +1,9 @@
+toonloop (1.1.10-0ubuntu1) lucid; urgency=low
+
+  * Many bugfixes. Some critical with OSC and MIDI. Added a build dep.
+
+ -- Alexandre Quessy <alexandre@quessy.net>  Mon, 01 Feb 2010 21:36:34 -0500
+
 toonloop (1.1.9-0ubuntu1) lucid; urgency=low
 
   * Fixed ugly texture problem when blank image.

@@ -25,7 +25,7 @@
 """
 Main runner of the Toonloop application.
 """
-__version__ = "1.1.9" # MUST ALSO CHANGE IT IN setup.py
+__version__ = "1.1.10" # MUST ALSO CHANGE IT IN setup.py
 
 import sys
 import os
