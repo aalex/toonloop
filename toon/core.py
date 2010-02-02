@@ -852,7 +852,7 @@ class Toonloop(render.Game):
             if self.config.effects_enabled:
                 _write("Effect: %s" % (self.config.effect_name), _current_pos)
             if self.config.fudi_enabled:
-                _write("FUDI sending on %s:%s, receiving on %s.: %s" % (self.config.fudi_send_host, self.config.fudi_send_port, self.config.fudi_receive_port), _current_pos)
+                _write("FUDI sending on %s:%s, receiving on %s." % (self.config.fudi_send_host, self.config.fudi_send_port, self.config.fudi_receive_port), _current_pos)
             if self.config.image_flip_horizontal:
                 _write("The image is flipped horizontally", _current_pos)
             if self.config.intervalometer_enabled and self.config.intervalometer_on:
@@ -862,7 +862,7 @@ class Toonloop(render.Game):
             if self.config.onionskin_enabled:
                 _write("Onion skinning is on.", _current_pos)
             if self.config.osc_enabled:
-                _write("OSC sending on %s:%s, receiving on %s.: %s" % (self.config.osc_send_host, self.config.osc_send_port, self.config.osc_listen_port, _current_pos))
+                _write("OSC sending on %s:%s, receiving on %s." % (self.config.osc_send_host, self.config.osc_send_port, self.config.osc_listen_port), _current_pos)
 
             _write("Configuration file: %s. (press x to save)" % (self.config.config_file), _current_pos)
             _current_pos[1] += hud_line_height # spacer
