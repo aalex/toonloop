@@ -1042,19 +1042,19 @@ class Toonloop(render.Game):
             if self.theme.white_flash_enabled:
                 # TODO: use time.time() to create tween.
                 # left view
-                GL.glColor4f(self.theme.flash_color)
+                GL.glColor4f(*self.theme.flash_color)
                 GL.glPushMatrix()
                 GL.glTranslatef(*self.theme.edit_pos)
                 GL.glScalef(*self.theme.edit_scale)
                 draw.draw_square()
                 GL.glPopMatrix()
     def _draw_window_background(self):
-        GL.glColor(*self.theme.background_color)
+        GL.glColor3f(*self.theme.background_color)
         GL.glPushMatrix()
         GL.glScalef(4.0, 3, 1.0)
         draw.draw_square()
         GL.glPopMatrix()
-        GL.glColor(1.0, 1.0, 1.0, 1.0)
+        GL.glColor4f(1.0, 1.0, 1.0, 1.0)
 
     def _draw_edit_background(self):
         """
