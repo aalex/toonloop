@@ -132,7 +132,7 @@ class Configuration(object): #Serializable):
     """
     def __init__(self, **argd): 
         # basics
-        self.verbose = True
+        self.verbose = False
         self.video_device = 0 
         
         # project
