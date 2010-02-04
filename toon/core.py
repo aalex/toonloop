@@ -1049,12 +1049,12 @@ class Toonloop(render.Game):
                 draw.draw_square()
                 GL.glPopMatrix()
     def _draw_window_background(self):
-        glColor(*self.theme.background_color)
-        glPushMatrix()
-        glScalef(4.0, 3, 1.0)
-        draw_square()
-        glPopMatrix()
-        glColor(1.0, 1.0, 1.0, 1.0)
+        GL.glColor(*self.theme.background_color)
+        GL.glPushMatrix()
+        GL.glScalef(4.0, 3, 1.0)
+        draw.draw_square()
+        GL.glPopMatrix()
+        GL.glColor(1.0, 1.0, 1.0, 1.0)
 
     def _draw_edit_background(self):
         """
