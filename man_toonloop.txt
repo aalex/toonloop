@@ -46,7 +46,7 @@ Toonloop interactive keyboard controls :
    Best used to create timelapse clips automatically.
  - Press 'k' or 'j' to increase or decrease the auto recording rate.
  - Press 'f' or ESCAPE to toggle fullscreen mode.
- - Press SHIFT-'q' to quit.
+ - Press CONTROL-'q' to quit.
  - Press '.' to change the graphical theme.
  - Press TAB to change the playback direction.
  - Press a number from 0 to 9 to switch to a different clip number.

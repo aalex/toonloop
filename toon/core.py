@@ -55,7 +55,7 @@ INTERACTIVE_HELP = """Toonloop interactive keyboard controls :
    Best used to create timelapse clips automatically.
  - Press 'k' or 'j' to increase or decrease the auto recording rate.
  - Press 'f' or ESCAPE to toggle fullscreen mode.
- - Press SHIFT-'q' to quit.
+ - Press CTRL-'q' to quit.
  - Press '.' to change the graphical theme.
  - Press TAB to change the playback direction.
  - Press a number from 0 to 9 to switch to a different clip number.
@@ -1433,7 +1433,7 @@ class Toonloop(render.Game):
                         print("toggle intervalometer")
                         self.intervalometer_toggle()
                     elif e.key == PYGM.K_q: # q Start recording sample
-                        if modifiers & PYGM.KMOD_LSHIFT != 0: # if left key is being pressed
+                        if modifiers & PYGM.KMOD_CTRL != 0: # if control is being pressed
                             self.quit()
                         else:
                             self.sampler_record(True)
