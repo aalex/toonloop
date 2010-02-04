@@ -1,3 +1,11 @@
+toonloop (1.1.11-0ubuntu1) lucid; urgency=low
+
+  * Removed features: bgimage_glob, web/rss server.
+  * Changed quit shortcut to ctrl-Q.
+  * Added icon and makefile to repository. Skipping those steps in debian packaing.
+
+ -- Alexandre Quessy <alexandre@quessy.net>  Wed, 03 Feb 2010 22:29:16 -0500
+
 toonloop (1.1.10-0ubuntu1) lucid; urgency=low
 
   * Many bugfixes. Some critical with OSC and MIDI. Added a build dep.
