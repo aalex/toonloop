@@ -137,6 +137,9 @@ def run():
                 raise core.ToonloopError('Error with Toonloop option :', e.message)
     try:
         toonloop = core.Toonloop(config)
+        if options.list_options:
+            toonloop.print_optgroups()
+            sys.exit(0)
         if options.verbose:
             toonloop.print_help()
     except core.ToonloopError, e:
@@ -149,9 +152,6 @@ def run():
     pygame_timer.desired_fps = options.fps
     # optgroups must be set once toonloop has been initialized.
 
-    if options.list_options:
-        toonloop.print_optgroups()
-        sys.exit(0)
     if options.options_group is not None:
         for group, key, value in options.options_group:
             try:
