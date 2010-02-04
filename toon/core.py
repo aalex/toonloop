@@ -95,13 +95,6 @@ from toon import sampler
 from toon import data
 from toon import fx
 try:
-    from toon import web
-    WEB_LOADED = True
-except ImportError, e:
-    print("For web support, please install the python-nevow package.")
-    print(e.message)
-    WEB_LOADED = False
-try:
     from rats import statesaving
     STATESAVING_LOADED = True
 except ImportError, e:
@@ -112,7 +105,6 @@ except ImportError, e:
 import pygame
 import pygame.camera
 import pygame.locals as PYGM # no namespace contamination
-#from pygame import time
 from OpenGL import GL # no namespace contamination
 
 PACKAGE_DATA_PATH = os.path.dirname(data.__file__)
@@ -169,10 +161,6 @@ class Configuration(object): #Serializable):
         self.display_fullscreen = False
         self.display_theme = THEME_SPLIT_SCREEN
         
-        # web services
-        self.web_server_port = 8000
-        self.web_enabled = False
-        
         # fudi puredata interface
         self.fudi_enabled = False
         self.fudi_receive_port = 15555
@@ -200,16 +188,6 @@ class Configuration(object): #Serializable):
         
         # background
         self.bgimage_enabled = False
-        self.bgimage = os.path.join(PACKAGE_DATA_PATH, 'bgimage_02.jpg')
-        #self.bgcolor_b = 0.2 #TODO: not used right now
-        #self.bgcolor_g = 0.8
-        #self.bgcolor_r = 1.0
-        self.bgimage_glob_enabled = False # list of glob JPG files that can be browsed using +/- iteration
-        self.bgimage_glob = '' # os.path.join(self.toonloop_home, self.project_name, 'data') # defaults to the images from the current project !
-        
-        # white flash (TODO: move to themes)
-        self.fx_white_flash = True
-        self.fx_white_flash_alpha = 0.5
         
         # effects
         self.effect_name = "None"
@@ -244,7 +222,7 @@ class Configuration(object): #Serializable):
 
         Uses self.config_file as a file to save to.
         """
-        exclude_list = ["toonloop_home", "config_file", "bgimage"]
+        exclude_list = ["toonloop_home", "config_file"]
         if STATESAVING_LOADED:
             data = {}
             for key in sorted(self.__dict__): # FIXME: does not work!
@@ -351,13 +329,15 @@ class SplitScreenTheme(object):
         self.play_scale = (2.0, 1.5, 1.0)
         self.edit_pos = (-2.0, 0.0, 0.0)
         self.edit_scale = (2.0, 1.5, 1.0)
+        self.background_color = (0.0, 0.0, 0.0)
         # saving progress bar
         self.progress_foreground_color = (1.0, 1.0, 1.0, 0.5) 
         self.progress_background_color = (0.7, 0.7, 0.7, 0.5) 
         self.progress_line_color = (1.0, 1.0, 1.0, 0.6)
         self.progress_pos = (0.0, -2.0, 0.0) 
         self.progress_scale = (3.0, 0.05, 1.0) 
-        #self.flash_color = (1.0, 1.0, 1.0, 1.0)
+        self.flash_color = (1.0, 1.0, 1.0, 0.5)
+        self.white_flash_enabled = True
         #TODO: add a theme not displaying the edit "viewport".
 
 class PictureInPictureTheme(SplitScreenTheme):
@@ -397,7 +377,7 @@ class Toonloop(render.Game):
 
     Onion skin effect and chroma key shader are mutually exclusives.
 
-    There are a lot of services/features that are disabled by default. (web, fudi, osc, midi, etc.)
+    There are a lot of services/features that are disabled by default. (fudi, osc, midi, etc.)
     """
     # OpenGL textures indices in the list
     TEXTURE_MOST_RECENT = 0
@@ -412,7 +392,7 @@ class Toonloop(render.Game):
         Reads config.
         Starts pygame, the camera, the clips list.
         Creates the window. Hides the mouse.
-        Start services (OSC, web and FUDI)
+        Start services (OSC and FUDI)
         Enables the effects or the onion peal.
         """
         self.config = config
@@ -487,7 +467,6 @@ class Toonloop(render.Game):
         # intervalometer
         self._intervalometer_delayed_id = None
         self.intervalometer_on = self.config.intervalometer_on
-        self._bgimage_glob_index = 0
         if config.intervalometer_on:
             self.intervalometer_toggle(True)
         # autosave
@@ -554,7 +533,6 @@ class Toonloop(render.Game):
         Called once the Twisted reactor has been started. 
 
         Implemented services : 
-         * web server with Media RSS and Restructured text
          * FUDI protocol with PureData
          * MIDI input (not quite a service, but we start it here)
         """
@@ -569,18 +547,6 @@ class Toonloop(render.Game):
             if self.config.osc_sampler_enabled:
                 self.sampler = sampler.Sampler(self, self.osc)
 
-        #index_file_path = os.path.join(os.curdir, 'toon', 'index.rst') 
-        # WEB
-        if WEB_LOADED and self.config.web_enabled:
-            try:
-                self.web = web.start(
-                    self, 
-                    self.config.web_server_port,
-                    static_files_path=self.config.toonloop_home)
-                    #index_file_path=index_file_path)
-            except:
-                print("Error loading web UI :")
-                print(sys.exc_info())
         # FUDI
         if self.config.fudi_enabled:
             try:
@@ -667,30 +633,14 @@ class Toonloop(render.Game):
         """
         Loads initial background image.
         """
-        if self.config.bgimage_enabled:
-            self.bgimage_load(self.config.bgimage)
-
-    def bgimage_load(self, path):
-        """
-        Replace the background image by a new image file path.
-        """
-        if self.config.bgimage_enabled:
-            self.config.bgimage = path
-            if self.config.verbose:
-                print('setup background %s' % (path))
-        try:
-            self.background_image = pygame.image.load(path)
-        except Exception, e: # FIXME: more specific
-            self.config.bgimage_enabled = False
-            print("Error with background image \"%s\": %s" % (path, e.message))
-        else:
-            # Create an OpenGL texture
-            draw.texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self.background_image)
+        draw.texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self._blank_surface)
 
     def bgimage_snap(self):
         """
         Makes the current image from the camera to be the background image.
         """
+        if self.config.verbose:
+            print("Taking a snapshot for background image.")
         try:
             if self.is_mac:
                 self.background_image = self.most_recent_image.copy()
@@ -702,36 +652,6 @@ class Toonloop(render.Game):
             self.config.bgimage_enabled = True
             # Create an OpenGL texture
             draw.texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self.background_image)
-
-    
-    def bgimage_glob_next(self, increment=1):
-        """
-        Loads the next image from the list of JPG images in a directory.
-
-        lowercase .jpg extension.
-        """
-        if self.config.bgimage_glob_enabled:
-            if self.config.bgimage_glob == '':
-                self.config.bgimage_glob = os.path.join(self.config.toonloop_home, self.config.project_name, 'data')
-            dir = self.config.bgimage_glob
-            ext = '.jpg'
-            pattern = '%s/*%s' % (dir, ext)
-            files = glob.glob(pattern)
-            if self.config.verbose:
-                print("bgimage_glob_next pattern :" % (pattern))
-                print("bgimage_glob_next len(files) :" % (len(files)))
-
-            if len(files) > 0:
-                old_val = self._bgimage_glob_index
-                new_val = (self._bgimage_glob_index + increment) % len(files)
-                print('bgimage_glob_next new_val :' % (new_val))
-                if old_val == new_val:
-                    if self.config.verbose:
-                        print('bgimage_glob_next same val. Not changing:' % (old_val))
-                else:
-                    file_path = sorted(files)[new_val]
-                    self._bgimage_glob_index = new_val 
-                    self.bgimage_load(file_path)
 
     def print_stats(self):
         """
@@ -841,8 +761,6 @@ class Toonloop(render.Game):
             
             if self.config.autosave_enabled:
                 _write("Auto saving every %s seconds." % (self.config.autosave_rate_seconds), _current_pos)
-            if self.config.web_enabled:
-                _write("Web server running on port %s." % (self.config.web_server_port), _current_pos)
             _write("Project name: %s" % (self.config.project_name), _current_pos)
             _write("Video device: %s" % (self.config.video_device), _current_pos)
             _write("Toonloop directory: %s" % (self.config.toonloop_home), _current_pos)
@@ -1068,9 +986,10 @@ class Toonloop(render.Game):
                     self.signal_playhead(self.clip.playhead)
                 # 30/3 = 10 FPS
         self._camera_grab_frame() # grab a frame
-
+        self._draw_window_background()
         # now, let's draw something
         GL.glEnable(GL.GL_TEXTURE_RECTANGLE_ARB)
+        
         if self.theme.render_play_first:
             # edit
             self._draw_edit_background()
@@ -1120,30 +1039,27 @@ class Toonloop(render.Game):
     def _draw_white_flash(self):
         if self._has_just_added_frame:
             self._has_just_added_frame = False
-            if self.config.fx_white_flash:
+            if self.theme.white_flash_enabled:
                 # TODO: use time.time() to create tween.
                 # left view
-                a = self.config.fx_white_flash_alpha
-                GL.glColor4f(1.0, 1.0, 1.0, a)
+                GL.glColor4f(self.theme.flash_color)
                 GL.glPushMatrix()
                 GL.glTranslatef(*self.theme.edit_pos)
                 GL.glScalef(*self.theme.edit_scale)
                 draw.draw_square()
                 GL.glPopMatrix()
-    
+    def _draw_window_background(self):
+        glColor(*self.theme.background_color)
+        glPushMatrix()
+        glScalef(4.0, 3, 1.0)
+        draw_square()
+        glPopMatrix()
+        glColor(1.0, 1.0, 1.0, 1.0)
+
     def _draw_edit_background(self):
         """
         Renders the background 
         """
-        # r = self.config.bgcolor_r
-        # g = self.config.bgcolor_g
-        # b = self.config.bgcolor_b
-        # glColor(r, g, b, 1.0)
-        # glPushMatrix()
-        # glScalef(4.0, 3, 1.0)
-        # draw_square()
-        # glPopMatrix()
-        # glColor(1.0, 1.0, 1.0, 1.0)
         if self.config.bgimage_enabled:
             GL.glColor4f(1.0, 1.0, 1.0, 1.0)
             # playback view
