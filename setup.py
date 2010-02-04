@@ -51,14 +51,14 @@ setup(
     description = "Toonloop Live Stop Motion Software",
     long_description = """Toonloop stop motion tool and the rats package for OpenGL and Twisted Arts. 
     Requires: twisted, pygame 1.9, PyOpenGL, nevow and numpy.""",
-    install_requires = [], # "twisted", "PyOpenGL", "nevow"], # , "numpy"], 
-    # requires pygame from SVN for now.
+    install_requires = [], # "twisted", "PyOpenGL", 
+    # requires pygame 1.9,1 or later
     scripts = ["toonloop"], #, "scripts/glslang-run"], 
     license = "GPL",
     platforms = ["any"],
     zip_safe = False,
     packages = ["rats", "toon", "toon/data", "toon/effects"],
     package_data = {
-        "":["*.ttf", "*.rst", "*.cfg", "*.png", "*.jpg", "*.pd"]
+        "":["*.cfg", "*.png", "*.jpg", "*.pd"]
     }
     )
