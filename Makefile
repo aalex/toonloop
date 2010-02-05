@@ -32,6 +32,9 @@ clean:
 check:
 	trial rats/test toon/test
 
+prep:
+	convert -geometry 48x48 -background none toonloop.svg toonloop.png
+	help2man --no-info --include=man_toonloop.txt --name="The Toonloop Live Stop Motion Tool" ./toonloop > toonloop.1 
 deb:
 	dpkg-buildpackage -r
 

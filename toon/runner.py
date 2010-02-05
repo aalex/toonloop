@@ -31,13 +31,7 @@ import sys
 import os
 import pygame 
 import optparse
-try:
-    from twisted.internet import gtk2reactor
-    gtk2reactor.install() # has to be done before importing reactor
-    GTK_LOADED = True
-except Exception, e:
-    GTK_LOADED = False
-    print("Could not load GTK: %s" % (e))
+
 from twisted.internet import reactor
 from twisted.internet import error
 
@@ -45,25 +39,6 @@ from twisted.internet import error
 from rats import render
 from toon import core # Configuration, Toonloop, ToonloopError
 from toon import optgroup
-
-def exit_with_error(message):
-    """
-    Exits with error.
-    If possible, shows a GTK error dialog.
-    """
-    print(message)
-    if GTK_LOADED:
-        from toon import dialogs
-        d = dialogs.ErrorDialog.create(message)
-        def _cb(result):
-            if reactor.running:
-                reactor.stop()
-            sys.exit(1)
-        d.addCallback(_cb)
-        if not reactor.running:
-            reactor.run()
-    else:
-        sys.exit(1)
 
 def run():
     """
@@ -114,6 +89,12 @@ def run():
     # XXX: Loading from the json state saving file might cause bugs that 
     # are hard to find.
     config.load() # updates the config dict with values serialized before.
+    if options.list_options:
+        print("""Use Toonloop options with -o flag :
+        toonloop -o [name] [value]""")
+        print("Toonloop options and their current values :")
+        config.print_values()
+        sys.exit(0)
     if options.toonloop_home:
         config_dict['toonloop_home'] = options.toonloop_home
     if options.fullscreen:
@@ -130,18 +111,13 @@ def run():
     config_dict['intervalometer_enabled'] = options.intervalometer_enabled
     config_dict['verbose'] = options.verbose == True
 
-    if options.list_options:
-        print("""Use Toonloop options with -o flag :
-        toonloop -o [name] [value]""")
-        print("Toonloop options and their current values :")
-        config.print_values()
-    else:
-        print("Toonloop - Version " + str(__version__))
-        print("Copyright 2008 Alexandre Quessy & Tristan Matthews")
-        print("Released under the GNU General Public License")
-        print("Using video device %d" % options.device)
-        print("Press h for usage and instructions.")
-        print("Press i for informations and statistics.")
+    print("Toonloop - Version " + str(__version__))
+    print("Copyright 2008 Alexandre Quessy & Tristan Matthews")
+    print("Released under the GNU General Public License")
+    print("Using video device %d" % options.device)
+    print("Press h for usage and instructions.")
+    print("Press i for informations and statistics.")
+    
     if config_dict['verbose']:
         print("Started in verbose mode.")
     if options.option:
@@ -153,24 +129,26 @@ def run():
                 if config.verbose:
                     print("OPTION \"%s\" : %s       %s" % (k, v, kind))
             except KeyError, e:
-                exit_with_error("Error. No such Toonloop option : %s" % (e.message))
+                print("Error. No such Toonloop option : %s" % (e.message))
+                sys.exit(1)
+                #raise core.ToonloopError('No such Toonloop option :', e.message)
             except Exception, e:
                 print(sys.exc_info())
-                exit_with_error('Error with Toonloop option :', e.message)
+                raise core.ToonloopError('Error with Toonloop option :', e.message)
     try:
         toonloop = core.Toonloop(config)
-        if options.list_options:
-            toonloop.print_optgroups()
-            sys.exit(0)
         if options.verbose:
             toonloop.print_help()
     except core.ToonloopError, e:
-        exit_with_error("Exiting toonloop with error: %s" % (e))
+        print(str(e.message))
+        print("Exiting toonloop with error")
+        sys.exit(1)
     else:
         print("Congratulations ! Toonloop started gracefully.")
     pygame_timer = render.Renderer(toonloop, False) # not verbose !  options.verbose
     pygame_timer.desired_fps = options.fps
     # optgroups must be set once toonloop has been initialized.
+
     if options.options_group is not None:
         for group, key, value in options.options_group:
             try:
@@ -184,4 +162,11 @@ def run():
     except KeyboardInterrupt:
         pass # will exit on ctrl-c
     print("Exiting toonloop")
+    #try:
+    #    try:
+    #        reactor.stop() # just in case.
+    #    except error.ReactorNotRunning, e:
+    #        pass
+    #except AttributeError, e: # error.ReactorNotRunning is deprecated in later twisted version.
+    #    pass
     sys.exit(0)
