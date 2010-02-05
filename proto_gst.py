@@ -6,6 +6,10 @@ This is quite long to startup, though.
 """
 import os
 import sys
+if __name__ == "__main__":
+    from twisted.internet import gtk2reactor
+    gtk2reactor.install()
+from twisted.internet import reactor
 import pygtk
 pygtk.require('2.0')
 import gtk
@@ -15,10 +19,12 @@ from OpenGL.GLU import *
 import gst
 import struct
 import Image # PIL
+import numpy
+import time
 
 WIDTH = 640
 HEIGHT = 480
-DATA_PATH = "/var/tmp/pixbuffing"
+DATA_PATH = "/var/tmp/toonloop"
 
 def draw_square():
     """
@@ -90,8 +96,9 @@ class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
         self.connect_after('realize', self._on_realize)
         self.connect('configure_event', self._on_configure_event)
         self.connect('expose_event', self._on_expose_event)
-        self.texture_id = None
+        #self.texture_id = None
         self.pil_image_texture = None
+        
 
     def _on_realize(self, *args):
         """
@@ -165,12 +172,15 @@ class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
         ratio = self.allocation.width / float(self.allocation.height)
         self._set_view(ratio)
         # OpenGL end
-        if self.texture_id is None:
-            self._create_texture()
+        #if self.texture_id is None:
+        #    self._create_texture()
         gldrawable.gl_end()
         return False
 
     def _on_expose_event(self, *args):
+        self._draw()
+    
+    def _draw(self):
         """
         Called on every frame rendering of the drawing area.
 
@@ -187,7 +197,6 @@ class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
             return False
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
-        
         self.draw()
 
         # DONE
@@ -197,29 +206,31 @@ class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
             glFlush()
         # OpenGL end
         gldrawable.gl_end()
+        reactor.callLater(0.05, self._draw) # FIXME
         return False
     
-    def _create_texture(self):
-        black_pixel = struct.pack(">i", 255)
-        pixels = black_pixel * 320 * 240 # 32 bits black
-        w = 320
-        h = 240
-        
-        # Create Texture
-        tex_id = glGenTextures(1)
-        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex_id)
-
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
-        glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, w, h, 0,
-                     GL_RGBA, GL_UNSIGNED_BYTE, pixels)
-        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        self.texture_id = tex_id
+#    def _create_texture(self):
+#        black_pixel = struct.pack(">i", 255)
+#        pixels = black_pixel * 320 * 240 # 32 bits black
+#        w = 320
+#        h = 240
+#        
+#        # Create Texture
+#        tex_id = glGenTextures(1)
+#        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex_id)
+#
+#        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+#        glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, w, h, 0,
+#                     GL_RGBA, GL_UNSIGNED_BYTE, pixels)
+#        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+#        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+#        self.texture_id = tex_id
 
     def draw(self):
         """
         Draws each frame.
         """
+        sys.stdout.write('-')
         # DRAW STUFF HERE
         glDisable(GL_TEXTURE_RECTANGLE_ARB)
         glColor4f(1.0, 0.8, 0.2, 1.0)
@@ -235,16 +246,16 @@ class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
             draw_line(float(x), -2.0, float(x), 2.0)
             draw_line(-2.0, float(x), 2.0, float(x))
 
-        if self.texture_id is not None:
-            glColor4f(1.0, 1.0, 1.0, 1.0)
-            glEnable(GL_TEXTURE_RECTANGLE_ARB)
-            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.texture_id)
-            glPushMatrix()
-            glScale(0.4, 0.3, 1.0)
-            draw_textured_square(320, 240)
-            glPopMatrix()
-        else:
-            print "No texture to draw"
+#        if self.texture_id is not None:
+#            glColor4f(1.0, 1.0, 1.0, 1.0)
+#            glEnable(GL_TEXTURE_RECTANGLE_ARB)
+#            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.texture_id)
+#            glPushMatrix()
+#            glScale(0.4, 0.3, 1.0)
+#            draw_textured_square(320, 240)
+#            glPopMatrix()
+#        else:
+#            print "No texture to draw"
         if self.pil_image_texture is not None:
             glColor4f(1.0, 1.0, 1.0, 1.0)
             glEnable(GL_TEXTURE_RECTANGLE_ARB)
@@ -264,61 +275,67 @@ class Texture(object):
         self.height = 240
         self.image_mode = "RGB"
         
-        black_pixel = struct.pack(">i", 255)
-        self.image_data = black_pixel * self.width * self.height # 32 bits black
+        image_data = numpy.array([127 for i in range(self.width * self.height)])
         
         # Create Texture
         self.texture_id = glGenTextures(1)
-        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.texture_id)
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.texture_id)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 
             0, GL_RGB, 
             self.width, self.height, 
             0, GL_RGB, 
-            GL_UNSIGNED_BYTE, self.image_data)
-        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+            GL_UNSIGNED_BYTE, image_data)
 
     def load_image_to_texture(self, file_name):
         try:
             print 'opening ', file_name
-            image = Image.open(file_name)
-            self.width = image.size[0]
-            self.height = image.size[1]
-            self.image_mode = image.mode
-            self.image_data = image.tostring("raw", image.mode, 0, -1)
+            pil_image = Image.open(file_name)
+            self.width = pil_image.size[0]
+            self.height = pil_image.size[1]
+            self.image_mode = pil_image.mode
+            #image_data = pil_image.tostring("raw", pil_image.mode, 0, -1)
+            image_data = numpy.array(list(pil_image.getdata()), numpy.int8)
         except Exception, e:
             print e
         else:
             print 'binding texture %sx%s %s' % (self.width, self.height, self.image_mode)
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
             glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.texture_id)
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
             if self.image_mode == "RGB":
+                print 'rgb'
                 try:
                     glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB, 
-                        0, 0, 0, self.width,
-                        self.height, 
+                        0, # base level 
+                        0, 0, # x y offset
+                        self.width,self.height, 
                         GL_RGB, GL_UNSIGNED_BYTE,
-                        self.image_data)
+                        image_data)
                 except Exception, e:
                     print e
-                    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,
-                        0, 3, self.width, self.height, 0, GL_RGB, GL_UNSIGNED_BYTE, self.image_data)
-            elif self.image_mode == "RGBA":
-                try:
-                    glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB, 
-                        0, 0, 0, 
-                        self.width, self.height, 
-                        GL_RGBA, GL_UNSIGNED_BYTE, self.image_data)
-                except Exception, e:
-                    print e
-                    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,
-                        0, 4, self.width, self.height, 
-                        0, GL_RGBA, GL_UNSIGNED_BYTE, 
-                        self.image_data)
-            else:
-                print "image mode not implemented:", self.image_mode
-            glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-            glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+                    #glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,
+                    #    0, 3, self.width, self.height, 0, GL_RGB, GL_UNSIGNED_BYTE, self.image_data)
+            #elif self.image_mode == "RGBA":
+            #    print 'rgba'
+            #    try:
+            #        glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB, 
+            #            0, 0, 0, 
+            #            self.width, self.height, 
+            #            GL_RGBA, GL_UNSIGNED_BYTE, self.image_data)
+            #    except Exception, e:
+            #        print e
+            #        glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,
+            #            0, 4, self.width, self.height, 
+            #            0, GL_RGBA, GL_UNSIGNED_BYTE, 
+            #            self.image_data)
+            #else:
+            #    print "image mode not implemented:", self.image_mode
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
             
 
 class App(object):
@@ -389,19 +406,22 @@ class App(object):
         self.pixbuffer = gst.element_factory_make('gdkpixbufsink', 'snapshot')
         self.pipeline.add(self.source, self.queue_element, self.pixbuffer)
         gst.element_link_many(self.source, self.queue_element, self.pixbuffer)
-        self.bus = self.pipeline.get_bus()
-        self.bus.add_signal_watch()
-        self.bus.connect('message', self.on_bus_message)
+        #self.bus = self.pipeline.get_bus()
+        #self.bus.add_signal_watch()
+        #self.bus.connect('message', self.on_bus_message)
         self.pipeline.set_state(gst.STATE_PLAYING)
 
-    def on_bus_message(self, bus, message):
-        #print "bus,mess:", bus, message
-        t = message.type
-        if t == gst.MESSAGE_ELEMENT and message.structure.get_name() == 'pixbuf':
-            pixbuf = message.structure['pixbuf']
-            #pixbuf = self.pixbuffer.get_property('last-pixbuf')
-            #print "size:", pixbuf.get_width(), pixbuf.get_height()
-            self._update_texture(pixbuf)
+    def __del__(self):
+        self.pipeline.set_state(gst.STATE_NULL)
+
+    #def on_bus_message(self, bus, message):
+    #    #print "bus,mess:", bus, message
+    #    t = message.type
+    #    if t == gst.MESSAGE_ELEMENT and message.structure.get_name() == 'pixbuf':
+    #        pixbuf = message.structure['pixbuf']
+    #        #pixbuf = self.pixbuffer.get_property('last-pixbuf')
+    #        #print "size:", pixbuf.get_width(), pixbuf.get_height()
+    #        self._update_texture(pixbuf)
 
     def on_key_pressed(self, widget, event):
         """
@@ -418,6 +438,7 @@ class App(object):
             # TODO:try/except GError
             file_name = os.path.join(DATA_PATH, "snapshot_%d.jpg" % (self.incrementing_image_number))
             pixbuf.save(file_name, "jpeg", {"quality":"100"})
+            #time.sleep(0.1)
             if self.drawing_area.pil_image_texture is not None:
                 print "loading the image"
                 self.drawing_area.pil_image_texture.load_image_to_texture(file_name)
@@ -425,36 +446,37 @@ class App(object):
         elif name == "Escape":
             self.toggle_fullscreen()
         elif name == "q":
-            gtk.main_quit()
+            #self.window.destroy()
+            reactor.stop()
         return True
         
-    def _update_texture(self, image):
-        #if self.drawing_area.texture_id is not None:
-        #print("updating texture")
-        sys.stdout.write(".")
-        sys.stdout.flush()
-        pixels = image.get_pixels()
-        w = image.get_width() # 320
-        h = image.get_height() # 240
-        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.drawing_area.texture_id)
-        # 24 bits means it's RGBA. TODO: change the caps
-        glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, w, h, 0,
-            GL_RGBA, GL_UNSIGNED_BYTE, pixels)
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
-        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    #def _update_texture(self, image):
+    #    #if self.drawing_area.texture_id is not None:
+    #    #print("updating texture")
+    #    sys.stdout.write(".")
+    #    sys.stdout.flush()
+    #    pixels = image.get_pixels()
+    #    w = image.get_width() # 320
+    #    h = image.get_height() # 240
+    #    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.drawing_area.texture_id)
+    #    # 24 bits means it's RGBA. TODO: change the caps
+    #    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, w, h, 0,
+    #        GL_RGBA, GL_UNSIGNED_BYTE, pixels)
+    #    glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+    #    glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+    #    glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
  
     def on_delete_event(self, widget, event=None):
         """
         Closing the window quits.
         """
-        gtk.main_quit()
+        reactor.stop()
 
     def on_quit_clicked(self, widget, event=None):
         """
         The quit button quits.
         """
-        gtk.main_quit()
+        self.window.destroy()
         
     def toggle_fullscreen(self):
         """
@@ -504,12 +526,10 @@ class App(object):
             return
         self._showhideWidgets(parent, hide)
 
-    def __del__(self):
-        self.pipeline.set_state(gst.STATE_NULL)
 
 if __name__ == '__main__':
     if not os.path.exists(DATA_PATH):
         os.makedirs(DATA_PATH)
     print "screen is %sx%s" % (gtk.gdk.screen_width(), gtk.gdk.screen_height())
     app = App()
-    gtk.main()
+    reactor.run()
