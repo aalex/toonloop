@@ -1,26 +1,16 @@
 #!/usr/bin/env python
+"""
+GTK dialogs integrated with Twisted.
+"""
 import pprint
-from twisted.internet import gtk2reactor
-gtk2reactor.install()
+if __name__ == "__main__":
+    from twisted.internet import gtk2reactor
+    gtk2reactor.install()
 import gtk
 from twisted.internet import reactor
 from twisted.internet import defer
 
-#from kiwi.ui import dialogs
-#def blocking():
-#    dialogs.error("Error 404", "Not found.")
-#    print("error")
-#    dialogs.info("Some info")
-#    print("info")
-#    f = dialogs.save("Save to movie file...")
-#    print("Saving to %s" % (f))
-#    f = dialogs.open("Open a movie file...")
-#    print("Opening %s" % (f))
-#    answer = dialogs.yesno("You sure?")
-#    print("Yes/no: %s" % (answer == gtk.RESPONSE_YES))
-#    while gtk.events_pending():
-#        gtk.main_iteration()
-    
+
 class Save(object):
     def __init__(self, deferred, title="Save...", folder=None, default_file_name=None):
         self.deferredResult = deferred
@@ -61,18 +51,33 @@ class Save(object):
         self.deferredResult.callback(file_name)
 
 class ErrorDialog(object):
-    def __init__(self, deferred, message):
+    """
+    Error dialog. Fires the deferred given to it once done.
+    Use the create static method as a factory.
+    """
+    def __init__(self, deferred, message, parent=None):
         self.deferredResult = deferred
-        parent = None
         error_dialog = gtk.MessageDialog(
-            parent=None, 
+            parent=parent, 
             flags=0, 
             type=gtk.MESSAGE_ERROR, 
             buttons=gtk.BUTTONS_CLOSE, 
             message_format=message)
+        error_dialog.set_modal(True)
         error_dialog.connect("close", self.on_close)
         error_dialog.connect("response", self.on_response)
         error_dialog.show()
+
+    @staticmethod
+    def create(message, parent=None):
+        """
+        Returns a Deferred which will be called with a True result.
+        @param message: str
+        @rettype: L{Deferred}
+        """
+        d = defer.Deferred()
+        dialog = ErrorDialog(d, message, parent)
+        return d
 
     def on_close(self, dialog, *params):
         print("on_close %s %s" % (dialog, params))
@@ -92,11 +97,14 @@ class ErrorDialog(object):
         self.deferredResult.callback(True)
 
 class YesNoDialog(object):
-    def __init__(self, deferred, message):
+    """
+    Yes/no confirmation dialog.
+    Use the create static method as a factory.
+    """
+    def __init__(self, deferred, message, parent=None):
         self.deferredResult = deferred
-        parent = None
-        error_dialog = gtk.MessageDialog(
-            parent=None, 
+        dialog = gtk.MessageDialog(
+            parent=parent, 
             flags=0, 
             type=gtk.MESSAGE_QUESTION, 
             buttons=gtk.BUTTONS_YES_NO, 
@@ -104,19 +112,21 @@ class YesNoDialog(object):
 # gtk.BUTTONS_YES_NO: (gtk.STOCK_NO, gtk.RESPONSE_NO,
 # gtk.STOCK_YES, gtk.RESPONSE_YES),
 # image = gtk.STOCK_DIALOG_QUESTION
-        error_dialog.connect("close", self.on_close)
-        error_dialog.connect("response", self.on_response)
-        error_dialog.show()
+        dialog.set_modal(True)
+        dialog.connect("close", self.on_close)
+        dialog.connect("response", self.on_response)
+        dialog.show()
 
     @staticmethod
-    def create(message):
+    def create(message, parent=None):
+        parent = None
         """
         Returns a Deferred which will be called with a boolean result.
         @param message: str
         @rettype: L{Deferred}
         """
         d = defer.Deferred()
-        dialog = YesNoDialog(d, message)
+        dialog = YesNoDialog(d, message, parent)
         return d
 
     def on_close(self, dialog, *params):
@@ -146,6 +156,7 @@ def _non_blocking_save_dialog():
     Save(deferred)
     return deferred
 
+# deprecated
 def _error_dialog(mess):
     def _later():
         def _cb(result):
@@ -155,7 +166,7 @@ def _error_dialog(mess):
         ErrorDialog(deferred, mess)
     reactor.callLater(0.1, _later)
     reactor.run()
-    
+   
 def _save():
     def _later():
         def _cb(result):
