@@ -39,6 +39,8 @@ To make package::
 """
 from setuptools import find_packages
 from setuptools import setup
+import sys
+import subprocess
 
 __version__ = "1.2.0"
 
@@ -62,3 +64,13 @@ setup(
         "":["*.cfg", "*.png", "*.jpg", "*.pd"]
     }
     )
+
+if sys.argv[1] == "build":
+    command_icon = "convert -geometry 48x48 -background none toonloop.svg toonloop.png"
+    print(command_icon)
+    retcode = subprocess.call(command_icon, shell=True)
+    print("Command returned %s" % (retcode))
+    command_man = """help2man --no-info --include=man_toonloop.txt --name="The Toonloop Live Stop Motion Tool" ./toonloop > toonloop.1"""
+    print(command_man)
+    retcode = subprocess.call(command_man, shell=True)
+    print("Command returned %s" % (retcode))
