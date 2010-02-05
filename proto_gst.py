@@ -108,7 +108,7 @@ class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
             return
 
         self.pil_image_texture = Texture()
-        self.pil_image_texture.load_image_to_texture("./example.jpg")
+        #self.pil_image_texture.load_image_to_texture("./example.jpg")
 
         self._set_view(WIDTH / float(HEIGHT))
 
@@ -422,8 +422,10 @@ class App(object):
                 print "loading the image"
                 self.drawing_area.pil_image_texture.load_image_to_texture(file_name)
             self.incrementing_image_number += 1
-        if name == "Escape":
+        elif name == "Escape":
             self.toggle_fullscreen()
+        elif name == "q":
+            gtk.main_quit()
         return True
         
     def _update_texture(self, image):
