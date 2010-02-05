@@ -240,7 +240,7 @@ class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
             print "No texture to draw"
 
 
-class App(object):
+class MainGui(object):
     """
     Main window of the application.
     """
@@ -410,5 +410,5 @@ class App(object):
 
 if __name__ == '__main__':
     print "screen is %sx%s" % (gtk.gdk.screen_width(), gtk.gdk.screen_height())
-    app = App()
+    app = MainGui()
     gtk.main()
