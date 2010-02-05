@@ -1,3 +1,9 @@
+toonloop (1.2.1-0ubuntu1) lucid; urgency=low
+
+  * Put icon and man page back into repository.
+
+ -- Alexandre Quessy <alexandre@quessy.net>  Fri, 05 Feb 2010 00:52:22 -0500
+
 toonloop (1.2.0-0ubuntu1) lucid; urgency=low
 
   * New stable branch.
