@@ -64,13 +64,13 @@ setup(
         "":["*.cfg", "*.png", "*.jpg", "*.pd"]
     }
     )
-
+# FIXME: this doesn't work:
 if sys.argv[1] == "build":
     command_icon = "convert -geometry 48x48 -background none toonloop.svg toonloop.png"
-    print(command_icon)
+    print("in setup.py: %s" % (command_icon))
     retcode = subprocess.call(command_icon, shell=True)
-    print("Command returned %s" % (retcode))
+    print("in setup.py: Command returned %s" % (retcode))
     command_man = """help2man --no-info --include=man_toonloop.txt --name="The Toonloop Live Stop Motion Tool" ./toonloop > toonloop.1"""
-    print(command_man)
+    print("in setup.py: %s" % (command_man))
     retcode = subprocess.call(command_man, shell=True)
-    print("Command returned %s" % (retcode))
+    print("in setup.py: Command returned %s" % (retcode))
