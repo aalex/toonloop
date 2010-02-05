@@ -25,7 +25,7 @@
 """
 Main runner of the Toonloop application.
 """
-__version__ = "1.1.10" # MUST ALSO CHANGE IT IN setup.py
+__version__ = "1.2.0" # MUST ALSO CHANGE IT IN setup.py
 
 import sys
 import os
@@ -45,7 +45,6 @@ from twisted.internet import error
 from rats import render
 from toon import core # Configuration, Toonloop, ToonloopError
 from toon import optgroup
-
 
 def exit_with_error(message):
     """
@@ -143,7 +142,6 @@ def run():
     print("Using video device %d" % options.device)
     print("Press h for usage and instructions.")
     print("Press i for informations and statistics.")
-    
     if config_dict['verbose']:
         print("Started in verbose mode.")
     if options.option:
@@ -165,6 +163,7 @@ def run():
             toonloop.print_help()
     except core.ToonloopError, e:
         exit_with_error("Exiting toonloop with error: %s" % (e))
+        return
     else:
         print("Congratulations ! Toonloop started gracefully.")
     pygame_timer = render.Renderer(toonloop, False) # not verbose !  options.verbose

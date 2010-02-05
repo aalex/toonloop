@@ -880,7 +880,6 @@ class Toonloop(render.Game):
                 print("Using camera %s" % (self.config.video_device))
                 self.camera = pygame.camera.Camera(str(self.config.video_device), size)
             else:
-                
                 camera_file_name = "/dev/video%d" % (self.config.video_device)
                 if camera_file_name not in all_cameras:
                     print("ERROR : Camera %s does not exist !" % (camera_file_name))
