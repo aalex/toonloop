@@ -716,7 +716,6 @@ class Toonloop(render.Game):
         """
         Draws the head-up-display. Numbers, text, etc. overlayed on top of images. 
         """
-        #TODO
         if self.config.hud_enabled:
             # style
             hud_base_position = (-3.8, 2.8, 0.0)
@@ -784,10 +783,10 @@ class Toonloop(render.Game):
 
             _write("Configuration file: %s. (press x to save)" % (self.config.config_file), _current_pos)
             _current_pos[1] += hud_line_height # spacer
-            _write("~~~ HELP ~~~", _current_pos)
-            for line in INTERACTIVE_HELP.splitlines():
-                if _current_pos > -4.0:
-                    _write(line, _current_pos)
+            #_write("~~~ HELP ~~~", _current_pos)
+            #for line in INTERACTIVE_HELP.splitlines():
+            #    if _current_pos > -4.0:
+            #        _write(line, _current_pos)
 
     def _init_clips(self):
         """
