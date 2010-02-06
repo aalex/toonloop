@@ -401,11 +401,22 @@ class App(object):
         # setup GST
 
         self.pipeline = gst.Pipeline('test_pipeline')
-        self.source = gst.element_factory_make('videotestsrc', 'source_1')
+        elements = []
+        #self.source = gst.element_factory_make('videotestsrc', 'source_1')
+        self.source = gst.element_factory_make('v4l2src', 'source_1')
+        elements.append(self.source)
+        caps = gst.Caps("video/x-raw-yuv, width=320, height=240")
+        filter = gst.element_factory_make("capsfilter", "filter")
+        filter.set_property("caps", caps)
+        elements.append(filter)
+        self.color_fix = gst.element_factory_make('ffmpegcolorspace', 'color_fix')
+        elements.append(self.color_fix)
         self.queue_element = gst.element_factory_make('queue', 'relax')
+        elements.append(self.queue_element)
         self.pixbuffer = gst.element_factory_make('gdkpixbufsink', 'snapshot')
-        self.pipeline.add(self.source, self.queue_element, self.pixbuffer)
-        gst.element_link_many(self.source, self.queue_element, self.pixbuffer)
+        elements.append(self.pixbuffer)
+        self.pipeline.add(*elements)
+        gst.element_link_many(*elements)
         #self.bus = self.pipeline.get_bus()
         #self.bus.add_signal_watch()
         #self.bus.connect('message', self.on_bus_message)
@@ -434,15 +445,19 @@ class App(object):
         if name == "space":
             print 'space pressed'
             pixbuf = self.pixbuffer.get_property('last-pixbuf')
-            print "grabbing size:", pixbuf.get_width(), pixbuf.get_height()
-            # TODO:try/except GError
-            file_name = os.path.join(DATA_PATH, "snapshot_%d.jpg" % (self.incrementing_image_number))
-            pixbuf.save(file_name, "jpeg", {"quality":"100"})
-            #time.sleep(0.1)
-            if self.drawing_area.pil_image_texture is not None:
-                print "loading the image"
-                self.drawing_area.pil_image_texture.load_image_to_texture(file_name)
-            self.incrementing_image_number += 1
+            print pixbuf
+            try:
+                print "grabbing size:", pixbuf.get_width(), pixbuf.get_height()
+                # TODO:try/except GError
+                file_name = os.path.join(DATA_PATH, "snapshot_%d.jpg" % (self.incrementing_image_number))
+                pixbuf.save(file_name, "jpeg", {"quality":"100"})
+                #time.sleep(0.1)
+                if self.drawing_area.pil_image_texture is not None:
+                    print "loading the image"
+                    self.drawing_area.pil_image_texture.load_image_to_texture(file_name)
+                self.incrementing_image_number += 1
+            except AttributeError, e:
+                print str(e)
         elif name == "Escape":
             self.toggle_fullscreen()
         elif name == "q":
