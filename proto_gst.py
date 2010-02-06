@@ -4,6 +4,12 @@ Testing OpenGL in a GTK Window.
 
 This is quite long to startup, though.
 """
+# TODO: screenshot !
+# screenshot = glReadPixels( 0,0, 800, 600, GL_RGBA, GL_UNSIGNED_BYTE)
+# im = Image.frombuffer("RGBA", (800,600), screenshot, "raw", "RGBA", 0, 0)
+# im.save("test.jpg")
+
+
 import os
 import sys
 if __name__ == "__main__":
@@ -231,6 +237,7 @@ class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
         Draws each frame.
         """
         sys.stdout.write('-')
+        sys.stdout.flush()
         # DRAW STUFF HERE
         glDisable(GL_TEXTURE_RECTANGLE_ARB)
         glColor4f(1.0, 0.8, 0.2, 1.0)
@@ -266,6 +273,8 @@ class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
             draw_textured_square(320, 240)
             glPopMatrix()
 
+        draw_line(0., 0., 1., 1.)
+
 class Texture(object):
     """
     Loads a texture from an image file.
@@ -296,8 +305,8 @@ class Texture(object):
             self.width = pil_image.size[0]
             self.height = pil_image.size[1]
             self.image_mode = pil_image.mode
-            #image_data = pil_image.tostring("raw", pil_image.mode, 0, -1)
-            image_data = numpy.array(list(pil_image.getdata()), numpy.int8)
+            image_data = pil_image.tostring("raw", pil_image.mode, 0, -1)
+            #image_data = numpy.array(list(pil_image.getdata()), numpy.int8)
         except Exception, e:
             print e
         else:
