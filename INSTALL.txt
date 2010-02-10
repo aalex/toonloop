@@ -127,4 +127,3 @@ If you use two displays, you might want to use 2 separate X screens::
 
   sudo nvidia-settings
   DISPLAY=:0.1 ./toonloop.py
-
