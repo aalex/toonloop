@@ -4,6 +4,7 @@ Testing OpenGL in a GTK Window.
 """
 import os
 import sys
+import glob
 if __name__ == "__main__":
     from twisted.internet import gtk2reactor
     gtk2reactor.install()
@@ -140,9 +141,6 @@ class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
         #self.texture_id = None
         self.pil_image_texture = None
 
-    def load_next_image(self):
-        self.pil_image_texture.load_image_to_texture(self._app.vj.choose_next())
-
     def _on_realize(self, *args):
         """
         Called at the creation of the drawing area.
@@ -234,7 +232,7 @@ class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
             return False
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
-        self.load_next_image()
+        self.pil_image_texture.load_image_to_texture(self._app.vj.choose_next())
         self.draw()
 
         # DONE
@@ -244,7 +242,7 @@ class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
             glFlush()
         # OpenGL end
         gldrawable.gl_end()
-        reactor.callLater(0.05, self._draw) # FIXME
+        reactor.callLater(0.1, self._draw) # FIXME
         return False
 
     def draw(self):
@@ -307,8 +305,12 @@ class Texture(object):
         try:
             print 'opening ', file_name
             pil_image = Image.open(file_name)
-            self.width = pil_image.size[0]
-            self.height = pil_image.size[1]
+            if self.width != pil_image.size[0]:
+                print 'image width is', pil_image.size[0], 'skipping'
+                return
+            if self.height != pil_image.size[1]:
+                print 'image height is', pil_image.size[1], 'skipping'
+                return
             self.image_mode = pil_image.mode
             image_data = pil_image.tostring("raw", pil_image.mode, 0, -1)
             #image_data = numpy.array(list(pil_image.getdata()), numpy.int8)
@@ -467,7 +469,6 @@ class App(object):
 
 if __name__ == '__main__':
     import optparse
-    import sys
     parser = optparse.OptionParser(usage="%prog [directory name]", version=str(__version__))
     parser.add_option("-d", "--directory", type="string", help="Specifies the to directory to look in for images to play.", default=".")
     (options, args) = parser.parse_args()
@@ -476,11 +477,11 @@ if __name__ == '__main__':
         dir_path = options.directory
     elif len(args) == 1: 
         dir_path = args[0]
+    if os.path.exists(dir_path) and os.path.isdir(dir_path):
+        print 'Using', dir_path
+        vj = VeeJay(dir_path)
+        app = App(vj)
+        reactor.run()
     else:
-        if os.path.exists(dir_path) and os.path.isdir(dir_path):
-            vj = VeeJay(dir_path)
-            app = App(vj)
-            reactor.run()
-        else:
-            print 'no directory', dir_path
-            sys.exit(1)
+        print 'no directory', dir_path
+        sys.exit(1)
