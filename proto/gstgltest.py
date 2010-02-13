@@ -91,7 +91,7 @@ class App(object):
         if self._sink is not None:
             #self._sink.expose() ?
             print 'draw'
-            gldrawable = self.area.get_gl_drawable()
+            gldrawable = self.area.get_gl_drawable() # throws an error
             glcontext = self.area.get_gl_context()
             if gldrawable is None:
                 return False
