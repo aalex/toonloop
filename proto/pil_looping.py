@@ -276,6 +276,7 @@ class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
             draw_textured_square(320, 240)
             glPopMatrix()
 
+        glDisable(GL_TEXTURE_RECTANGLE_ARB)
         draw_line(0., 0., 1., 1.)
 
 class Texture(object):
@@ -473,10 +474,10 @@ if __name__ == '__main__':
     parser.add_option("-d", "--directory", type="string", help="Specifies the to directory to look in for images to play.", default=".")
     (options, args) = parser.parse_args()
     dir_path = None
-    if options.directory:
-        dir_path = options.directory
-    elif len(args) == 1: 
+    if len(args) == 1: 
         dir_path = args[0]
+    elif options.directory:
+        dir_path = options.directory
     if os.path.exists(dir_path) and os.path.isdir(dir_path):
         print 'Using', dir_path
         vj = VeeJay(dir_path)
