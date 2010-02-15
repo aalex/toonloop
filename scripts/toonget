@@ -1,0 +1,91 @@
+#!/usr/bin/env python
+import os
+import sys
+from twisted.internet import reactor
+from twisted.web import error
+from twisted.web import client
+from twisted.python import failure
+
+__version__ = "0.1.0"
+
+class ProgressHTTPDownloader(client.HTTPDownloader):
+    """
+    HTTP File downloader.
+    """
+    def __init__(self, url, file, progressCallback, *args, **kwargs):
+        client.HTTPDownloader.__init__(self, url, file, *args, **kwargs)
+        self.progressCallback = progressCallback
+        self.written = 0
+
+    def gotHeaders(self, headers):
+        self.response_headers = headers
+        client.HTTPDownloader.gotHeaders(self, headers)
+        self.contentLength = headers.get("content-length", None)
+        if self.contentLength is not None:
+            self.contentLength = int(self.contentLength[0])
+
+    def pagePart(self, data):
+        if not self.file:
+            return
+        try:
+            self.file.write(data)
+            self.written += len(data)
+            if self.progressCallback:
+                self.progressCallback(self.written, self.contentLength)
+        except IOError:
+            #raise
+            self.file = None
+            self.deferred.errback(failure.Failure())
+
+def downloadPageFactory(url, file, progressCallback=None, agent="Toonloop", bindAddress=None, contextFactory=None):
+    """
+    Download a web page to a file.
+    @param file: path to file on filesystem, or file-like object.
+    """
+    scheme, host, port, path = client._parse(url)
+    factory = ProgressHTTPDownloader(url, file, progressCallback=progressCallback, agent=agent, supportPartial=0)
+    if scheme == 'https':
+        raise RuntimeError("HTTPS is not supported.")
+    else:
+        reactor.connectTCP(host, port, factory, bindAddress=bindAddress)
+    return factory
+
+def run(url, dir_path='.'): 
+    """
+    Downloads a file and saves it in a directory.
+    @param url: URL of the file to GET.
+    @param dir_path: The directory.
+    """
+    files_path = os.path.expanduser(dir_path)
+    if not os.path.isdir(files_path):
+        raise RuntimeError("%s must be a directory." % (files_path))
+    def progress(written, length):
+        print "%d " % (written / float(length) * 100), "%"
+    def cb(result):
+        print "done"
+        reactor.stop()
+        return result
+    def eb(reason):
+        print eb
+        reactor.stop()
+        return reason
+    def later():
+        downloader = downloadPageFactory(url, os.path.join(dir_path, 'test.mov'), progress)
+        d = downloader.deferred
+        d.addCallback(cb)
+        d.addErrback(eb)
+    reactor.callLater(0, later)
+
+if __name__ == "__main__":
+    import optparse
+    parser = optparse.OptionParser(usage="%prog", version=__version__) 
+    parser.add_option("-d", "--directory", type="string", help="Specifies the directory to which save the downloaded files.", default='.')
+    (options, args) = parser.parse_args()
+    if len(args) < 1:
+        print("You must specify a file URL to get.")
+        sys.exit(1)
+    run(args[0], dir_path=options.directory)
+    try:
+        reactor.run()
+    except KeyboardInterrupt:
+        pass
