@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
 Testing GST OpenGL in a GTK Window.
+Uses a v4l2 video source.
 """
 import os
 import sys
@@ -16,6 +17,39 @@ import gtk.gtkgl
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import gst
+
+class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
+    """
+    GTK drawing area which uses OpenGL.
+    """
+    def __init__(self, verbose=True):
+        gtk.DrawingArea.__init__(self)
+        # Query the OpenGL extension version.
+        if verbose:
+            print "OpenGL extension version - %d.%d\n" % gtk.gdkgl.query_version()
+        # Configure OpenGL framebuffer.
+        # Try to get a double-buffered framebuffer configuration,
+        # if not successful then try to get a single-buffered one.
+        display_mode = (
+            gtk.gdkgl.MODE_RGB |
+            gtk.gdkgl.MODE_DEPTH |
+            gtk.gdkgl.MODE_DOUBLE
+            )
+        try:
+            glconfig = gtk.gdkgl.Config(mode=display_mode)
+        except gtk.gdkgl.NoMatches:
+            display_mode &= ~gtk.gdkgl.MODE_DOUBLE
+            glconfig = gtk.gdkgl.Config(mode=display_mode)
+        if verbose:
+            print "is RGBA:", glconfig.is_rgba()
+            print "is double-buffered:", glconfig.is_double_buffered()
+            print "is stereo:", glconfig.is_stereo()
+            print "has alpha:", glconfig.has_alpha()
+            print "has depth buffer:", glconfig.has_depth_buffer()
+            print "has stencil buffer:", glconfig.has_stencil_buffer()
+            print "has accumulation buffer:", glconfig.has_accum_buffer()
+        # Set OpenGL-capability to the drawing area
+        self.set_gl_capability(glconfig)
 
 class App(object):
     def __init__(self):
@@ -49,7 +83,7 @@ class App(object):
         gst.element_link_many(*elements)
 
         # Drawing area:
-        self.area = gtk.DrawingArea()
+        self.area = GlDrawingArea()
         self.area.set_size_request(640, 480)
         self.window.add(self.area)
         self.window.show_all()
