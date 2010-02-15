@@ -22,6 +22,9 @@
 #
 """
 Tools to watch changes in a directory on GNU/Linux.
+
+Needs python-pyinotify
+
 """
 import pyinotify
 from twisted.internet import reactor
