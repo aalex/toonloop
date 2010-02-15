@@ -18,6 +18,15 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 import gst
 
+def draw_line(from_x, from_y, to_x, to_y):
+    """
+    Draws a line between given points.
+    """
+    glBegin(GL_LINES)
+    glVertex2f(from_x, from_y) 
+    glVertex2f(to_x, to_y) 
+    glEnd()
+
 class GlDrawingArea(gtk.DrawingArea, gtk.gtkgl.Widget):
     """
     GTK drawing area which uses OpenGL.
@@ -62,14 +71,16 @@ class App(object):
         self.window.connect('destroy-event', self.on_delete_event)
 
         # GST pipeline:
+        # v4l2src ! capsfilter ! ffmpegcolorspace ! queue ! glupload ! glimagesink
         self.pipeline = gst.Pipeline('test_pipeline')
         elements = []
         #self.source = gst.element_factory_make('videotestsrc', 'source_1')
+        #TODO: inputselector
         source = gst.element_factory_make('v4l2src', 'source_1')
         elements.append(source)
-        caps = gst.Caps("video/x-raw-yuv, width=320, height=240")
+        src_caps = gst.Caps("video/x-raw-yuv, width=320, height=240")
         filter = gst.element_factory_make("capsfilter", "filter")
-        filter.set_property("caps", caps)
+        filter.set_property("caps", src_caps)
         elements.append(filter)
         color_fix = gst.element_factory_make('ffmpegcolorspace', 'color_fix')
         elements.append(color_fix)
@@ -79,6 +90,11 @@ class App(object):
         elements.append(upload)
         sink = gst.element_factory_make('glimagesink', 'sink')
         elements.append(sink)
+        #sink_caps = gst.Caps("video/x-rax-gl, width=320, height=240")
+        #sink.set_property("caps", sink_caps) # XXX wrong
+        # does not work:
+        #sink.set_property("client-draw-callback", self.draw_cb)
+        #sink.set_property("client-reshape-callback", self.reshape_cb)
         self.pipeline.add(*elements)
         gst.element_link_many(*elements)
 
@@ -98,8 +114,21 @@ class App(object):
         print 'starting the pipeline'
         self.pipeline.set_state(gst.STATE_PLAYING)
 
-        self._draw_task = task.LoopingCall(self.draw)
-        self._draw_task.start(1.0, False)
+        #self._draw_task = task.LoopingCall(self.draw)
+        #self._draw_task.start(1.0, False)
+
+    def draw_cb(self, texture_id, width, height):
+        print 'draw-callback'
+        glEnable(GL_TEXTURE_RECTANGLE_ARB)
+        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, texture_id)
+        glPushMatrix()
+        glTranslate(0.4, 0, 0)
+        glScale(0.4, 0.3, 1.0)
+        draw_textured_square(width, height)
+        glPopMatrix()
+        
+    def client_reshape_cb(self):
+        print 'client-reshape-callback'
 
     def on_sync_message(self, bus, message):
         print 'on_sync_message'
@@ -121,25 +150,48 @@ class App(object):
             gtk.gdk.threads_leave()
 
     def draw(self):
-        print 'draw, but sink is none'
-        if self._sink is not None:
+        if self._sink is None:
+            print 'draw, but gl sink is not ready yet'
+        else:
             #self._sink.expose() ?
             print 'draw'
-            gldrawable = self.area.get_gl_drawable() # throws an error
+            gldrawable = self.area.get_gl_drawable()
             glcontext = self.area.get_gl_context()
             if gldrawable is None:
                 return False
             if not gldrawable.gl_begin(glcontext):
                 return False
-            glViewport(0, 0, self.area.allocation.width, self.area.allocation.height)
-            ratio = 4. / 3.
-            w = ratio
-            h = 1.
-            glMatrixMode(GL_PROJECTION)
-            glLoadIdentity()
-            glOrtho(-w, w, -h, h, -1.0, 1.0)
-            glMatrixMode(GL_MODELVIEW)
-            glLoadIdentity()
+            self._setup_viewport()
+            # OpenGL end
+            gldrawable.gl_end()
+        
+    def _setup_viewport(self):
+        """
+        Example GL coordinates setup. 
+        This view port uses orthographic projection and always has an height 
+        of 1.0 in OpenGL coordinates.
+        """
+        glViewport(0, 0, self.area.allocation.width, self.area.allocation.height)
+        ratio = 4. / 3.
+        w = ratio
+        h = 1.
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(-w, w, -h, h, -1.0, 1.0)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+
+    def _draw_stuff(self):
+        """
+        Example drawings.
+        Draws orange lines.
+        """
+        glColor4f(1.0, 1.0, 0.0, 1.0)
+        num = 64
+        for i in range(num):
+            x = (i / float(num)) * 4 - 2
+            draw_line(float(x), -2.0, float(x), 2.0)
+            draw_line(-2.0, float(x), 2.0, float(x))
 
     def on_delete_event(self, widget, event):
         print 'deleted'
@@ -147,8 +199,8 @@ class App(object):
 
     def __del__(self):
         print '__del__'
+        # FIXME: is this needed or buggy?
         self.pipeline.set_state(gst.STATE_NULL)
-
 
 if __name__ == '__main__':
     app = App()
