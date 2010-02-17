@@ -26,6 +26,7 @@ AC_CHECK_FUNCS([inet_ntoa memset socket])
 
 AC_CHECK_LIB([pthread],[pthread_exit],[AC_SUBST([LIBTHREAD_CXXFLAGS],["-lpthread"])])
 AC_CHECK_LIB([m],[sin],[AC_SUBST([LIBM_CXXFLAGS],["-lm"])])
+AC_CHECK_LIB([cppunit], [CppUnit::TestCase::TestCase],[AC_SUBST([LIBCPPUNIT_CXXFLAGS],["-lcppunit"])])
 AC_CHECK_LIB([lo],[lo_send_internal],[AC_SUBST([LIBLO_CXXFLAGS],["-llo"])])
 
 # GTK and GST

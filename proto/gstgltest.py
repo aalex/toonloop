@@ -117,7 +117,7 @@ class App(object):
         #self._draw_task = task.LoopingCall(self.draw)
         #self._draw_task.start(1.0, False)
 
-    def draw_cb(self, texture_id, width, height):
+    def draw_cb(self, texture_id, width, height, user_data=None):
         print 'draw-callback'
         glEnable(GL_TEXTURE_RECTANGLE_ARB)
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, texture_id)
