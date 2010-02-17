@@ -21,7 +21,7 @@ fi
 
 # could be replaced with autoreconf -fivI m4 (verbose, force rebuild of ltmain, .in files, etc.)
 libtoolize --force
-aclocal 
+aclocal -I m4
 autoheader
 automake -a -f --add-missing
 autoconf -f
