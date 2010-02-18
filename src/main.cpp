@@ -1,8 +1,101 @@
+#include <GL/glew.h>
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
+#include <iostream>
 
 #include "./gstgtk.h"
+
+//client reshape callback
+void reshapeCallback(GLuint width, GLuint height)
+{
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45, (gfloat)width / (gfloat)height, 0.1, 100);
+    glMatrixMode(GL_MODELVIEW);
+}
+
+//client draw callback
+gboolean drawCallback (GLuint texture, GLuint width, GLuint height)
+{
+    static GLfloat xrot = 0;
+    static GLfloat yrot = 0;
+    static GLfloat zrot = 0;
+    static GTimeVal current_time;
+    static glong last_sec = current_time.tv_sec;
+    static gint nbFrames = 0;
+
+    g_get_current_time(&current_time);
+    nbFrames++;
+
+    if ((current_time.tv_sec - last_sec) >= 1)
+    {
+        std::cout << "GRPHIC FPS = " << nbFrames << std::endl;
+        nbFrames = 0;
+        last_sec = current_time.tv_sec;
+    }
+
+    glEnable(GL_DEPTH_TEST);
+
+    glEnable (GL_TEXTURE_RECTANGLE_ARB);
+    glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
+    glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glTranslatef(0.0f,0.0f,-5.0f);
+
+    glRotatef(xrot,1.0f,0.0f,0.0f);
+    glRotatef(yrot,0.0f,1.0f,0.0f);
+    glRotatef(zrot,0.0f,0.0f,1.0f);
+
+    glBegin(GL_QUADS);
+	      // Front Face
+	      glTexCoord2f((gfloat)width, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+	      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+	      glTexCoord2f(0.0f, (gfloat)height); glVertex3f( 1.0f,  1.0f,  1.0f);
+	      glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f(-1.0f,  1.0f,  1.0f);
+	      // Back Face
+	      glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+	      glTexCoord2f(0.0f, (gfloat)height); glVertex3f(-1.0f,  1.0f, -1.0f);
+	      glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f( 1.0f,  1.0f, -1.0f);
+	      glTexCoord2f((gfloat)width, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+	      // Top Face
+	      glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f(-1.0f,  1.0f, -1.0f);
+	      glTexCoord2f((gfloat)width, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+	      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+	      glTexCoord2f(0.0f, (gfloat)height); glVertex3f( 1.0f,  1.0f, -1.0f);
+	      // Bottom Face
+	      glTexCoord2f((gfloat)width, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+	      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+	      glTexCoord2f(0.0f, (gfloat)height); glVertex3f( 1.0f, -1.0f,  1.0f);
+	      glTexCoord2f((gfloat)width,(gfloat)height); glVertex3f(-1.0f, -1.0f,  1.0f);
+	      // Right face
+	      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+	      glTexCoord2f(0.0f, (gfloat)height); glVertex3f( 1.0f,  1.0f, -1.0f);
+	      glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f( 1.0f,  1.0f,  1.0f);
+	      glTexCoord2f((gfloat)width, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+	      // Left Face
+	      glTexCoord2f((gfloat)width, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+	      glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+	      glTexCoord2f(0.0f, (gfloat)height); glVertex3f(-1.0f,  1.0f,  1.0f);
+	      glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f(-1.0f,  1.0f, -1.0f);
+    glEnd();
+
+    xrot+=0.3f;
+    yrot+=0.2f;
+    zrot+=0.4f;
+
+    //return TRUE causes a postRedisplay
+    return TRUE;
+}
 
 
 static GstBusSyncReply create_window (GstBus* bus, GstMessage* message, GtkWidget* widget)
@@ -170,7 +263,11 @@ gint main (gint argc, gchar *argv[])
                                         "framerate", GST_TYPE_FRACTION, 25, 1,
                                         "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'),
                                         NULL) ;
-
+    
+    // configure elements:
+    //g_object_set(G_OBJECT(videosrc), "num-buffers", 400, NULL);
+    //g_object_set(G_OBJECT(videosink), "client-reshape-callback", reshapeCallback, NULL);
+    //g_object_set(G_OBJECT(videosink), "client-draw-callback", drawCallback, NULL);
     gst_bin_add_many (GST_BIN (pipeline), videosrc, videosink, NULL);
 
     gboolean link_ok = gst_element_link_filtered(videosrc, videosink, caps) ;
