@@ -35,8 +35,7 @@ class Clip {
         {
             unsigned int image_number = 999; // TODO: create allocator.
             std::cout << "Adding image " << image_number << std::endl; 
-            images_.push_back(image_number); 
-            //images_.insert(writehead_, image_number);
+            images_.insert(writehead_, image_number);
             ++writehead_;
         }
         /** Removes an image at writehead index. */
@@ -44,12 +43,24 @@ class Clip {
         {
             if (! images_.empty())
             {
-                images_.pop_back(); // pop
-                //TODO: images_.erase(writehead_);
+                images_.erase(writehead_);
                 std::cout << "Removing image " << std::endl; 
+                --writehead_;
             } else {
                 std::cout << "Not enough images to pop one." << std::endl; 
             }
+        }
+        void print_writehead_position()
+        {
+            std::cout << "Writehead: " << *writehead_ << std::endl;
+            std::cout << "NUmber of frames: " << int(images_.size()) << std::endl;
+        }
+
+        void clear()
+        {
+            images_.clear();
+            //TODO: writehead_ ?
+            //TODO: playhead_  ?
         }
         void writehead_next()
         {
@@ -79,7 +90,9 @@ int main(int argc, char *argv[])
 {
     Clip clip = Clip();
     clip.add_image();
+    clip.print_writehead_position();
     clip.remove_image();
+    clip.print_writehead_position();
     assert(1 == 1);
     return 0;
 }
