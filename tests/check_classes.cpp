@@ -1,55 +1,43 @@
-// tests the map and allocation.
-#include <map>
 #include <iostream>
-#include <tr1/unordered_map>
-
-namespace TestData 
-{
-    int created_ = 0;
-    int destroyed_ = 0;
-    void incrementDestroyed();
-    void incrementCreated();
-}
-
-void TestData::incrementCreated()
-{
-    created_ += 1;
-}
-
-void TestData::incrementDestroyed()
-{
-    destroyed_ += 1;
-}
+#include <assert.h>
+#include <list>
 
 class Clip {
+    private:
+        std::list<int> images_;
     public:
         Clip() 
         {
-            TestData::incrementCreated();
+            images_ = std::list<int>();
+            std::cout << "Clip created" << std::endl;
         }
         ~Clip() 
         {
-            TestData::incrementDestroyed();
+            std::cout << "Clip destroyed" << std::endl;
+        }
+        void add_image(int i)
+        {
+            std::cout << "Adding image " << i << std::endl; 
+            images_.push_back(i); // append
+        }
+        void remove_image()
+        {
+            if (! images_.empty())
+            {
+                images_.pop_back(); // pop
+                std::cout << "Removing image " << std::endl; 
+            } else {
+                std::cout << "Not enough images to pop one." << std::endl; 
+            }
         }
 };
 
 int main(int argc, char *argv[])
 {
-    std::tr1::unordered_map<int, Clip*> dict;
-    dict[1] = new Clip();
-    dict[2] = new Clip();
-    if (TestData::created_ != 2)
-    {
-        std::cout << "Num created:" << TestData::created_ << std::endl;
-        return 1;
-    }
-    delete dict[1];
-    delete dict[2];
-    if (TestData::destroyed_ != 2)
-    {
-        std::cout << "Num destroyed:" << TestData::destroyed_ << std::endl;
-        return 1;
-    }
+    Clip clip = Clip();
+    clip.add_image(1);
+    clip.remove_image();
+    assert(1 == 1);
     return 0;
 }
 
