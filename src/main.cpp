@@ -60,6 +60,7 @@ static gboolean on_configure_event(GtkWidget *widget, GdkEventConfigure *event, 
         return FALSE;
     }
     glViewport(0, 0, widget->allocation.width, widget->allocation.height);
+    _set_view(widget->allocation.width / float(widget->allocation.height));
     gdk_gl_drawable_gl_end(gldrawable);
     /*** OpenGL END ***/
     return TRUE;
