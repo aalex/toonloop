@@ -6,51 +6,47 @@
 #include <iostream>
 #include <GL/gl.h>
 #include <GL/glu.h>
+
 #include "gltools.h"
+#include "draw.h"
+
+/**
+ * Sets up the orthographic projection.
+ * 
+ * Makes sure height is always 1.0 in GL modelview coordinates.
+ * 
+ * Coordinates should give a rendering area height of 1
+ * and a width of 1.33, when in 4:3 ratio.
+*/
+void _set_view(float ratio)
+{
+    float w = ratio;
+    float h = 1.0;
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-w, w, -h, h, -1.0, 1.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
 
 static void on_realize(GtkWidget *widget, gpointer data)
 {
     GdkGLContext *glcontext = gtk_widget_get_gl_context (widget);
     GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable (widget);
   
-    GLUquadricObj *qobj;
-    static GLfloat light_diffuse[] = {1.0, 0.0, 0.0, 1.0};
-    static GLfloat light_position[] = {1.0, 1.0, 1.0, 0.0};
-  
     /*** OpenGL BEGIN ***/
     if (! gdk_gl_drawable_gl_begin(gldrawable, glcontext))
+    {
         return;
+    }
+    glDisable(GL_DEPTH_TEST);
   
-    qobj = gluNewQuadric ();
-    gluQuadricDrawStyle (qobj, GLU_FILL);
-    glNewList (1, GL_COMPILE);
-    gluSphere(qobj, 1.0, 20, 20);
-    glEndList();
-  
-    glLightfv (GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glLightfv (GL_LIGHT0, GL_POSITION, light_position);
-    glEnable (GL_LIGHTING);
-    glEnable (GL_LIGHT0);
-    glEnable (GL_DEPTH_TEST);
-  
-    glClearColor (1.0, 1.0, 1.0, 1.0);
-    glClearDepth (1.0);
-  
-    glViewport (0, 0,
-                widget->allocation.width, widget->allocation.height);
-  
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity ();
-    gluPerspective (40.0, 1.0, 1.0, 10.0);
-  
-    glMatrixMode (GL_MODELVIEW);
-    glLoadIdentity ();
-    gluLookAt (0.0, 0.0, 3.0,
-               0.0, 0.0, 0.0,
-               0.0, 1.0, 0.0);
-    glTranslatef (0.0, 0.0, -3.0);
-  
-    gdk_gl_drawable_gl_end (gldrawable);
+    glClearColor(0.0, 0.0, 0.0, 1.0); // black background
+    glViewport(0, 0, widget->allocation.width, widget->allocation.height);
+    _set_view(widget->allocation.width / float(widget->allocation.height));
+    gdk_gl_drawable_gl_end(gldrawable);
     /*** OpenGL END ***/
 }
 
@@ -63,10 +59,32 @@ static gboolean on_configure_event(GtkWidget *widget, GdkEventConfigure *event, 
     {
         return FALSE;
     }
-    glViewport (0, 0, widget->allocation.width, widget->allocation.height);
-    gdk_gl_drawable_gl_end (gldrawable);
+    glViewport(0, 0, widget->allocation.width, widget->allocation.height);
+    gdk_gl_drawable_gl_end(gldrawable);
     /*** OpenGL END ***/
     return TRUE;
+}
+
+// draws the stuff
+void _draw()
+{
+        // DRAW STUFF HERE
+        glDisable(GL_TEXTURE_RECTANGLE_ARB);
+        glColor4f(1.0, 0.8, 0.2, 1.0);
+        glPushMatrix();
+        glScalef(0.5, 0.5, 1.0);
+        draw::draw_square();
+        glPopMatrix();
+
+        glColor4f(1.0, 1.0, 0.0, 0.8);
+        int num = 64;
+        float x;
+        for (int i = 0; i < num; i++)
+        {
+            x = (i / float(num)) * 4 - 2;
+            draw::draw_line(float(x), -2.0, float(x), 2.0);
+            draw::draw_line(-2.0, float(x), 2.0, float(x));
+        }
 }
 
 static gboolean on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
@@ -80,7 +98,7 @@ static gboolean on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpoin
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glCallList(1);
+    _draw();
 
     if (gdk_gl_drawable_is_double_buffered(gldrawable))
     {
