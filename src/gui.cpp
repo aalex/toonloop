@@ -10,6 +10,21 @@
 #include "gltools.h"
 #include "draw.h"
 
+class Gui
+{
+    public:
+        Gui(); // TODO: add pipeline argument
+        ~Gui() {};
+        static void on_realize(GtkWidget *widget, gpointer data);
+        static gboolean on_configure_event(GtkWidget *widget, GdkEventConfigure *event, gpointer data);
+        static gboolean on_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data);
+        static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data);
+
+    private:
+        GtkWidget *window_;
+        GtkWidget *drawing_area_;
+};
+
 /**
  * Sets up the orthographic projection.
  * 
@@ -31,8 +46,11 @@ void _set_view(float ratio)
     glLoadIdentity();
 }
 
-static void on_realize(GtkWidget *widget, gpointer data)
+void Gui::on_realize(GtkWidget *widget, gpointer data)
 {
+
+    Gui *context = static_cast<Gui*>(data);
+
     GdkGLContext *glcontext = gtk_widget_get_gl_context (widget);
     GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable (widget);
   
@@ -50,8 +68,9 @@ static void on_realize(GtkWidget *widget, gpointer data)
     /*** OpenGL END ***/
 }
 
-static gboolean on_configure_event(GtkWidget *widget, GdkEventConfigure *event, gpointer data)
+gboolean Gui::on_configure_event(GtkWidget *widget, GdkEventConfigure *event, gpointer data)
 {
+    Gui *context = static_cast<Gui*>(data);
     GdkGLContext *glcontext = gtk_widget_get_gl_context(widget);
     GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable(widget);
     /*** OpenGL BEGIN ***/
@@ -88,7 +107,7 @@ void _draw()
         }
 }
 
-static gboolean on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
+gboolean Gui::on_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
     GdkGLContext *glcontext = gtk_widget_get_gl_context (widget);
     GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable (widget);
@@ -112,17 +131,18 @@ static gboolean on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpoin
     return TRUE;
 }
 
-static void on_delete_event(GtkWidget* widget, GdkEvent* event, void* data)
+void Gui::on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data)
 {
+    Gui *context = static_cast<Gui*>(data);
     g_print("Close\n");
     gtk_main_quit();
 }
 
-void run_gui(gint argc, gchar* argv[])
+/**
+ * Exits the application if OpenGL needs are not met.
+ */
+Gui::Gui()
 {
-    gtk_init(&argc, &argv);
-    // Init GTK GL:
-    gtk_gl_init(&argc, &argv);
     gint major; 
     gint minor;
     gdk_gl_query_version(&major, &minor);
@@ -145,36 +165,43 @@ void run_gui(gint argc, gchar* argv[])
         }
     }
     gltools::examine_gl_config_attrib(glconfig);
-
     // Main GTK window
-    GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_widget_set_size_request(window, 640, 480);
-    gtk_window_set_title(GTK_WINDOW (window), "Toonloop 1.3 experimental");
+    window_ = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_widget_set_size_request(window_, 640, 480);
+    gtk_window_set_title(GTK_WINDOW (window_), "Toonloop 1.3 experimental");
     GdkGeometry geometry;
     geometry.min_width = 1;
     geometry.min_height = 1;
     geometry.max_width = -1;
     geometry.max_height = -1;
-    gtk_window_set_geometry_hints(GTK_WINDOW(window), window, &geometry, GDK_HINT_MIN_SIZE);
-    g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(on_delete_event), NULL);
+    gtk_window_set_geometry_hints(GTK_WINDOW(window_), window_, &geometry, GDK_HINT_MIN_SIZE);
+    g_signal_connect(G_OBJECT(window_), "delete-event", G_CALLBACK(on_delete_event), this);
 
     //area where the video is drawn
-    GtkWidget* drawing_area = gtk_drawing_area_new();
-    gtk_container_add(GTK_CONTAINER(window), drawing_area);
+    drawing_area_ = gtk_drawing_area_new();
+    gtk_container_add(GTK_CONTAINER(window_), drawing_area_);
 
     //avoid flickering when resizing or obscuring the main window
-    //gtk_widget_realize(drawing_area);
-    //gdk_window_set_back_pixmap(drawing_area->window, NULL, FALSE);
-    //gtk_widget_set_app_paintable(drawing_area, TRUE);
-    //gtk_widget_set_double_buffered(drawing_area, FALSE);
+    //gtk_widget_realize(drawing_area_);
+    //gdk_window_set_back_pixmap(drawing_area_->window_, NULL, FALSE);
+    //gtk_widget_set_app_paintable(drawing_area_, TRUE);
+    //gtk_widget_set_double_buffered(drawing_area_, FALSE);
 
     /* Set OpenGL-capability to the widget. */
-    gtk_widget_set_gl_capability(drawing_area, glconfig, NULL, TRUE, GDK_GL_RGBA_TYPE);
+    gtk_widget_set_gl_capability(drawing_area_, glconfig, NULL, TRUE, GDK_GL_RGBA_TYPE);
   
-    g_signal_connect_after(G_OBJECT(drawing_area), "realize", G_CALLBACK(on_realize), NULL);
-    g_signal_connect(G_OBJECT(drawing_area), "configure_event", G_CALLBACK(on_configure_event), NULL);
-    g_signal_connect(G_OBJECT(drawing_area), "expose_event", G_CALLBACK(on_expose_event), NULL);
+    g_signal_connect_after(G_OBJECT(drawing_area_), "realize", G_CALLBACK(on_realize), this);
+    g_signal_connect(G_OBJECT(drawing_area_), "configure_event", G_CALLBACK(on_configure_event), this);
+    g_signal_connect(G_OBJECT(drawing_area_), "expose_event", G_CALLBACK(on_expose_event), this);
 
-    gtk_widget_show_all(window);
+    gtk_widget_show_all(window_);
+}
+
+void run_gui(gint argc, gchar* argv[])
+{
+    gtk_init(&argc, &argv);
+    // Init GTK GL:
+    gtk_gl_init(&argc, &argv);
+    Gui gui = Gui();
     gtk_main();
 }
