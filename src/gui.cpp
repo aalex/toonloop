@@ -6,6 +6,7 @@
 #include <iostream>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <GL/glx.h>
 #include <gdk/gdkkeysyms.h>
 
 #include "gltools.h"
@@ -21,6 +22,7 @@ class Gui
     private:
         GtkWidget *window_;
         GtkWidget *drawing_area_;
+        GLXContext glx_context_;
         static void on_realize(GtkWidget *widget, gpointer data);
         static gboolean on_configure_event(GtkWidget *widget, GdkEventConfigure *event, gpointer data);
         static gboolean on_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data);
@@ -89,13 +91,15 @@ void _set_view(float ratio)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
-
+/**
+ * Handles the "realize" signal to take any necessary actions when the widget is instantiated on a particular display. (Create GDK resources in response to this signal.) 
+ */
 void Gui::on_realize(GtkWidget *widget, gpointer data)
 {
 
     Gui *context = static_cast<Gui*>(data);
 
-    GdkGLContext *glcontext = gtk_widget_get_gl_context (widget);
+    GdkGLContext *glcontext = gtk_widget_get_gl_context(widget);
     GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable (widget);
   
     /*** OpenGL BEGIN ***/
@@ -103,6 +107,7 @@ void Gui::on_realize(GtkWidget *widget, gpointer data)
     {
         return;
     }
+    context->glx_context_ = glXGetCurrentContext();
     glDisable(GL_DEPTH_TEST);
   
     glClearColor(0.0, 0.0, 0.0, 1.0); // black background
@@ -111,7 +116,9 @@ void Gui::on_realize(GtkWidget *widget, gpointer data)
     gdk_gl_drawable_gl_end(gldrawable);
     /*** OpenGL END ***/
 }
-
+/**
+ * Handles the "configure_event" signal to take any necessary actions when the widget changes size. 
+ */
 gboolean Gui::on_configure_event(GtkWidget *widget, GdkEventConfigure *event, gpointer data)
 {
     Gui *context = static_cast<Gui*>(data);
@@ -132,28 +139,30 @@ gboolean Gui::on_configure_event(GtkWidget *widget, GdkEventConfigure *event, gp
 // draws the stuff
 void _draw()
 {
-        // DRAW STUFF HERE
-        glDisable(GL_TEXTURE_RECTANGLE_ARB);
-        glColor4f(1.0, 0.8, 0.2, 1.0);
-        glPushMatrix();
-        glScalef(0.5, 0.5, 1.0);
-        draw::draw_square();
-        glPopMatrix();
+    // DRAW STUFF HERE
+    glDisable(GL_TEXTURE_RECTANGLE_ARB);
+    glColor4f(1.0, 0.8, 0.2, 1.0);
+    glPushMatrix();
+    glScalef(0.5, 0.5, 1.0);
+    draw::draw_square();
+    glPopMatrix();
 
-        glColor4f(1.0, 1.0, 0.0, 0.8);
-        int num = 64;
-        float x;
-        for (int i = 0; i < num; i++)
-        {
-            x = (i / float(num)) * 4 - 2;
-            draw::draw_line(float(x), -2.0, float(x), 2.0);
-            draw::draw_line(-2.0, float(x), 2.0, float(x));
-        }
+    glColor4f(1.0, 1.0, 0.0, 0.8);
+    int num = 64;
+    float x;
+    for (int i = 0; i < num; i++)
+    {
+        x = (i / float(num)) * 4 - 2;
+        draw::draw_line(float(x), -2.0, float(x), 2.0);
+        draw::draw_line(-2.0, float(x), 2.0, float(x));
+    }
 }
-
+/**
+ * Handles the "expose_event" signal to redraw the contents of the widget.
+ */
 gboolean Gui::on_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
-    GdkGLContext *glcontext = gtk_widget_get_gl_context (widget);
+    GdkGLContext *glcontext = gtk_widget_get_gl_context(widget);
     GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable (widget);
     /*** OpenGL BEGIN ***/
     if (!gdk_gl_drawable_gl_begin(gldrawable, glcontext))
@@ -227,8 +236,10 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
  * Exits the application if OpenGL needs are not met.
  */
 Gui::Gui() :
-    isFullscreen_(false) 
+    isFullscreen_(false)
 {
+
+    glx_context_ = NULL;
     gint major; 
     gint minor;
     gdk_gl_query_version(&major, &minor);
@@ -291,6 +302,8 @@ void run_gui(gint argc, gchar* argv[])
     gtk_init(&argc, &argv);
     // Init GTK GL:
     gtk_gl_init(&argc, &argv);
+    gst_init(&argc, &argv);
     Gui gui = Gui();
+    //Pipeline pipeline = Pipeline();
     gtk_main();
 }
