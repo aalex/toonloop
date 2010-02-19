@@ -6,6 +6,7 @@
 #include <iostream>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "gltools.h"
 #include "draw.h"
@@ -15,15 +16,58 @@ class Gui
     public:
         Gui(); // TODO: add pipeline argument
         ~Gui() {};
-        static void on_realize(GtkWidget *widget, gpointer data);
-        static gboolean on_configure_event(GtkWidget *widget, GdkEventConfigure *event, gpointer data);
-        static gboolean on_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data);
-        static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data);
+        void toggleFullscreen() { toggleFullscreen(window_); } // no argument version of the same method below.
 
     private:
         GtkWidget *window_;
         GtkWidget *drawing_area_;
+        static void on_realize(GtkWidget *widget, gpointer data);
+        static gboolean on_configure_event(GtkWidget *widget, GdkEventConfigure *event, gpointer data);
+        static gboolean on_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data);
+        static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data);
+        static gboolean key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data);
+
+        static int onWindowStateEvent(_GtkWidget *widget, _GdkEventWindowState *event, void *data);
+        void toggleFullscreen(GtkWidget* widget);
+        void makeFullscreen(GtkWidget* widget);
+        void makeUnfullscreen(GtkWidget* widget);
+        void hideCursor();
+        void showCursor();
+        bool isFullscreen_;
 };
+
+gboolean Gui::onWindowStateEvent(GtkWidget* widget, GdkEventWindowState *event, gpointer data)
+{
+    Gui *context = static_cast<Gui*>(data);
+    context->isFullscreen_ = (event->new_window_state & GDK_WINDOW_STATE_FULLSCREEN);
+    if (context->isFullscreen_)
+        context->hideCursor();
+    else
+        context->showCursor();
+    return TRUE;
+}
+
+void Gui::hideCursor()
+{
+    // FIXME: this is because gtk doesn't support GDK_BLANK_CURSOR before gtk-2.16
+    char invisible_cursor_bits[] = { 0x0 };
+    static GdkCursor* cursor = 0;
+    if (cursor == 0)
+    {
+        static GdkBitmap *empty_bitmap;
+        const static GdkColor color = {0, 0, 0, 0};
+        empty_bitmap = gdk_bitmap_create_from_data(GDK_WINDOW(drawing_area_->window), invisible_cursor_bits, 1, 1);
+        cursor = gdk_cursor_new_from_pixmap(empty_bitmap, empty_bitmap, &color, &color, 0, 0);
+    }
+    gdk_window_set_cursor(GDK_WINDOW(drawing_area_->window), cursor);
+}
+
+void Gui::showCursor()
+{
+    /// sets to default
+    gdk_window_set_cursor(GDK_WINDOW(drawing_area_->window), NULL);
+}
+
 
 /**
  * Sets up the orthographic projection.
@@ -131,6 +175,29 @@ gboolean Gui::on_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer
     return TRUE;
 }
 
+gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+    Gui *context = static_cast<Gui*>(data);
+    switch (event->keyval)
+    {
+        case GDK_Escape:
+            context->toggleFullscreen(widget);
+            break;
+        case GDK_q:
+            // Quit application on ctrl-q, this quits the main loop
+            // (if there is one)
+            if (event->state & GDK_CONTROL_MASK)
+            {
+                g_print("Ctrl-Q key pressed, quitting.");
+                //context->app_.quit();
+            }
+            break;
+        default:
+            break;
+    }
+    return TRUE;
+}
+
 void Gui::on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data)
 {
     Gui *context = static_cast<Gui*>(data);
@@ -138,10 +205,29 @@ void Gui::on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data)
     gtk_main_quit();
 }
 
+void Gui::toggleFullscreen(GtkWidget *widget)
+{
+    // toggle fullscreen state
+    isFullscreen_ ? makeUnfullscreen(widget) : makeFullscreen(widget);
+}
+
+void Gui::makeFullscreen(GtkWidget *widget)
+{
+    gtk_window_stick(GTK_WINDOW(widget)); // window is visible on all workspaces
+    gtk_window_fullscreen(GTK_WINDOW(widget));
+}
+
+void Gui::makeUnfullscreen(GtkWidget *widget)
+{
+    gtk_window_unstick(GTK_WINDOW(widget)); // window is not visible on all workspaces
+    gtk_window_unfullscreen(GTK_WINDOW(widget));
+}
+
 /**
  * Exits the application if OpenGL needs are not met.
  */
-Gui::Gui()
+Gui::Gui() :
+    isFullscreen_(false) 
 {
     gint major; 
     gint minor;
@@ -176,6 +262,9 @@ Gui::Gui()
     geometry.max_height = -1;
     gtk_window_set_geometry_hints(GTK_WINDOW(window_), window_, &geometry, GDK_HINT_MIN_SIZE);
     g_signal_connect(G_OBJECT(window_), "delete-event", G_CALLBACK(on_delete_event), this);
+    g_signal_connect(G_OBJECT(window_), "key-press-event", G_CALLBACK(key_press_event), this);
+    // add listener for window-state-event to detect fullscreenness
+    g_signal_connect(G_OBJECT(window_), "window-state-event", G_CALLBACK(onWindowStateEvent), this);
 
     //area where the video is drawn
     drawing_area_ = gtk_drawing_area_new();
