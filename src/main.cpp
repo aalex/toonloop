@@ -2,317 +2,210 @@
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
+#include <gtk/gtkgl.h>
 #include <iostream>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
-#include "./gstgtk.h"
-
-//client reshape callback
-void reshapeCallback(GLuint width, GLuint height)
+static void on_realize(GtkWidget *widget, gpointer data)
 {
-    glViewport(0, 0, width, height);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45, (gfloat)width / (gfloat)height, 0.1, 100);
-    glMatrixMode(GL_MODELVIEW);
+    GdkGLContext *glcontext = gtk_widget_get_gl_context (widget);
+    GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable (widget);
+  
+    GLUquadricObj *qobj;
+    static GLfloat light_diffuse[] = {1.0, 0.0, 0.0, 1.0};
+    static GLfloat light_position[] = {1.0, 1.0, 1.0, 0.0};
+  
+    /*** OpenGL BEGIN ***/
+    if (! gdk_gl_drawable_gl_begin(gldrawable, glcontext))
+        return;
+  
+    qobj = gluNewQuadric ();
+    gluQuadricDrawStyle (qobj, GLU_FILL);
+    glNewList (1, GL_COMPILE);
+    gluSphere(qobj, 1.0, 20, 20);
+    glEndList();
+  
+    glLightfv (GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv (GL_LIGHT0, GL_POSITION, light_position);
+    glEnable (GL_LIGHTING);
+    glEnable (GL_LIGHT0);
+    glEnable (GL_DEPTH_TEST);
+  
+    glClearColor (1.0, 1.0, 1.0, 1.0);
+    glClearDepth (1.0);
+  
+    glViewport (0, 0,
+                widget->allocation.width, widget->allocation.height);
+  
+    glMatrixMode (GL_PROJECTION);
+    glLoadIdentity ();
+    gluPerspective (40.0, 1.0, 1.0, 10.0);
+  
+    glMatrixMode (GL_MODELVIEW);
+    glLoadIdentity ();
+    gluLookAt (0.0, 0.0, 3.0,
+               0.0, 0.0, 0.0,
+               0.0, 1.0, 0.0);
+    glTranslatef (0.0, 0.0, -3.0);
+  
+    gdk_gl_drawable_gl_end (gldrawable);
+    /*** OpenGL END ***/
 }
 
-//client draw callback
-gboolean drawCallback (GLuint texture, GLuint width, GLuint height)
+static gboolean on_configure_event(GtkWidget *widget, GdkEventConfigure *event, gpointer data)
 {
-    static GLfloat xrot = 0;
-    static GLfloat yrot = 0;
-    static GLfloat zrot = 0;
-    static GTimeVal current_time;
-    static glong last_sec = current_time.tv_sec;
-    static gint nbFrames = 0;
-
-    g_get_current_time(&current_time);
-    nbFrames++;
-
-    if ((current_time.tv_sec - last_sec) >= 1)
+    GdkGLContext *glcontext = gtk_widget_get_gl_context(widget);
+    GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable(widget);
+    /*** OpenGL BEGIN ***/
+    if (! gdk_gl_drawable_gl_begin(gldrawable, glcontext))
     {
-        std::cout << "GRPHIC FPS = " << nbFrames << std::endl;
-        nbFrames = 0;
-        last_sec = current_time.tv_sec;
+        return FALSE;
     }
-
-    glEnable(GL_DEPTH_TEST);
-
-    glEnable (GL_TEXTURE_RECTANGLE_ARB);
-    glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
-    glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glTranslatef(0.0f,0.0f,-5.0f);
-
-    glRotatef(xrot,1.0f,0.0f,0.0f);
-    glRotatef(yrot,0.0f,1.0f,0.0f);
-    glRotatef(zrot,0.0f,0.0f,1.0f);
-
-    glBegin(GL_QUADS);
-	      // Front Face
-	      glTexCoord2f((gfloat)width, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
-	      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
-	      glTexCoord2f(0.0f, (gfloat)height); glVertex3f( 1.0f,  1.0f,  1.0f);
-	      glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f(-1.0f,  1.0f,  1.0f);
-	      // Back Face
-	      glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-	      glTexCoord2f(0.0f, (gfloat)height); glVertex3f(-1.0f,  1.0f, -1.0f);
-	      glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f( 1.0f,  1.0f, -1.0f);
-	      glTexCoord2f((gfloat)width, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
-	      // Top Face
-	      glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f(-1.0f,  1.0f, -1.0f);
-	      glTexCoord2f((gfloat)width, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
-	      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
-	      glTexCoord2f(0.0f, (gfloat)height); glVertex3f( 1.0f,  1.0f, -1.0f);
-	      // Bottom Face
-	      glTexCoord2f((gfloat)width, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-	      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
-	      glTexCoord2f(0.0f, (gfloat)height); glVertex3f( 1.0f, -1.0f,  1.0f);
-	      glTexCoord2f((gfloat)width,(gfloat)height); glVertex3f(-1.0f, -1.0f,  1.0f);
-	      // Right face
-	      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
-	      glTexCoord2f(0.0f, (gfloat)height); glVertex3f( 1.0f,  1.0f, -1.0f);
-	      glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f( 1.0f,  1.0f,  1.0f);
-	      glTexCoord2f((gfloat)width, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
-	      // Left Face
-	      glTexCoord2f((gfloat)width, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-	      glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
-	      glTexCoord2f(0.0f, (gfloat)height); glVertex3f(-1.0f,  1.0f,  1.0f);
-	      glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f(-1.0f,  1.0f, -1.0f);
-    glEnd();
-
-    xrot+=0.3f;
-    yrot+=0.2f;
-    zrot+=0.4f;
-
-    //return TRUE causes a postRedisplay
+    glViewport (0, 0, widget->allocation.width, widget->allocation.height);
+    gdk_gl_drawable_gl_end (gldrawable);
+    /*** OpenGL END ***/
     return TRUE;
 }
 
-
-static GstBusSyncReply create_window (GstBus* bus, GstMessage* message, GtkWidget* widget)
+static gboolean on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
-    // ignore anything but 'prepare-xwindow-id' element messages
-    if (GST_MESSAGE_TYPE (message) != GST_MESSAGE_ELEMENT)
-        return GST_BUS_PASS;
+    GdkGLContext *glcontext = gtk_widget_get_gl_context (widget);
+    GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable (widget);
+    /*** OpenGL BEGIN ***/
+    if (!gdk_gl_drawable_gl_begin(gldrawable, glcontext))
+    {
+      return FALSE;
+    }
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (!gst_structure_has_name (message->structure, "prepare-xwindow-id"))
-        return GST_BUS_PASS;
+    glCallList(1);
 
-    g_print ("setting xwindow id\n");
-
-    gst_x_overlay_set_gtk_window (GST_X_OVERLAY (GST_MESSAGE_SRC (message)), widget);
-
-    gst_message_unref (message);
-
-    return GST_BUS_DROP;
+    if (gdk_gl_drawable_is_double_buffered(gldrawable))
+    {
+        gdk_gl_drawable_swap_buffers(gldrawable);
+    } else {
+        glFlush();
+    }
+    gdk_gl_drawable_gl_end(gldrawable);
+    /*** OpenGL END ***/
+    return TRUE;
 }
 
-
-static void end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipeline)
+static void print_gl_config_attrib(GdkGLConfig *glconfig, const gchar *attrib_str, int attrib, gboolean is_boolean)
 {
-    g_print("End of stream\n");
-
-    gst_element_set_state (pipeline, GST_STATE_NULL);
-    gst_object_unref(pipeline);
-
-    gtk_main_quit();
+    int value;
+    g_print ("%s = ", attrib_str);
+    if (gdk_gl_config_get_attrib(glconfig, attrib, &value))
+    {
+        if (is_boolean)
+        {
+            g_print("%s\n", value == TRUE ? "TRUE" : "FALSE");
+        } else {
+            g_print("%d\n", value);
+        } 
+    } else {
+        g_print("*** Cannot get %s attribute value\n", attrib_str);
+    }
 }
 
-
-static gboolean expose_cb(GtkWidget* widget, GdkEventExpose* event, GstElement* videosink)
+static void examine_gl_config_attrib(GdkGLConfig *glconfig)
 {
-    gst_x_overlay_expose (GST_X_OVERLAY (videosink));
-    return FALSE;
+  g_print("\nOpenGL visual configurations :\n\n");
+  g_print("gdk_gl_config_is_rgba (glconfig) = %s\n", gdk_gl_config_is_rgba (glconfig) ? "TRUE" : "FALSE");
+  g_print("gdk_gl_config_is_double_buffered (glconfig) = %s\n", gdk_gl_config_is_double_buffered (glconfig) ? "TRUE" : "FALSE");
+  g_print("gdk_gl_config_is_stereo (glconfig) = %s\n", gdk_gl_config_is_stereo (glconfig) ? "TRUE" : "FALSE");
+  g_print("gdk_gl_config_has_alpha (glconfig) = %s\n", gdk_gl_config_has_alpha (glconfig) ? "TRUE" : "FALSE");
+  g_print("gdk_gl_config_has_depth_buffer (glconfig) = %s\n", gdk_gl_config_has_depth_buffer (glconfig) ? "TRUE" : "FALSE");
+  g_print("gdk_gl_config_has_stencil_buffer (glconfig) = %s\n", gdk_gl_config_has_stencil_buffer (glconfig) ? "TRUE" : "FALSE");
+  g_print("gdk_gl_config_has_accum_buffer (glconfig) = %s\n",
+  gdk_gl_config_has_accum_buffer (glconfig) ? "TRUE" : "FALSE");
+  g_print ("\n");
+  print_gl_config_attrib(glconfig, "GDK_GL_USE_GL", GDK_GL_USE_GL, TRUE);
+  print_gl_config_attrib(glconfig, "GDK_GL_BUFFER_SIZE", GDK_GL_BUFFER_SIZE, FALSE);
+  print_gl_config_attrib(glconfig, "GDK_GL_LEVEL", GDK_GL_LEVEL, FALSE);
+  print_gl_config_attrib(glconfig, "GDK_GL_RGBA", GDK_GL_RGBA, TRUE);
+  print_gl_config_attrib(glconfig, "GDK_GL_DOUBLEBUFFER", GDK_GL_DOUBLEBUFFER, TRUE);
+  print_gl_config_attrib(glconfig, "GDK_GL_STEREO", GDK_GL_STEREO, TRUE);
+  print_gl_config_attrib(glconfig, "GDK_GL_AUX_BUFFERS", GDK_GL_AUX_BUFFERS, FALSE);
+  print_gl_config_attrib(glconfig, "GDK_GL_RED_SIZE", GDK_GL_RED_SIZE, FALSE);
+  print_gl_config_attrib(glconfig, "GDK_GL_GREEN_SIZE", GDK_GL_GREEN_SIZE, FALSE);
+  print_gl_config_attrib(glconfig, "GDK_GL_BLUE_SIZE", GDK_GL_BLUE_SIZE, FALSE);
+  print_gl_config_attrib(glconfig, "GDK_GL_ALPHA_SIZE", GDK_GL_ALPHA_SIZE, FALSE);
+  print_gl_config_attrib(glconfig, "GDK_GL_DEPTH_SIZE", GDK_GL_DEPTH_SIZE, FALSE);
+  print_gl_config_attrib(glconfig, "GDK_GL_STENCIL_SIZE", GDK_GL_STENCIL_SIZE, FALSE);
+  print_gl_config_attrib(glconfig, "GDK_GL_ACCUM_RED_SIZE", GDK_GL_ACCUM_RED_SIZE, FALSE);
+  print_gl_config_attrib(glconfig, "GDK_GL_ACCUM_GREEN_SIZE", GDK_GL_ACCUM_GREEN_SIZE, FALSE);
+  print_gl_config_attrib(glconfig, "GDK_GL_ACCUM_BLUE_SIZE", GDK_GL_ACCUM_BLUE_SIZE, FALSE);
+  print_gl_config_attrib(glconfig, "GDK_GL_ACCUM_ALPHA_SIZE", GDK_GL_ACCUM_ALPHA_SIZE, FALSE);
+  g_print ("\n");
 }
 
-
-static void destroy_cb(GtkWidget* widget, GdkEvent* event, GstElement* pipeline)
+static void on_delete_event(GtkWidget* widget, GdkEvent* event, void* data)
 {
     g_print("Close\n");
-
-    gst_element_set_state (pipeline, GST_STATE_NULL);
-    gst_object_unref(pipeline);
-
     gtk_main_quit();
 }
 
-
-static void button_state_null_cb(GtkWidget* widget, GstElement* pipeline)
+gint main(gint argc, gchar* argv[])
 {
-    gst_element_set_state (pipeline, GST_STATE_NULL);
-    g_print ("GST_STATE_NULL\n");
-}
+    gtk_init(&argc, &argv);
+    // Init GTK GL:
+    gtk_gl_init(&argc, &argv);
+    gint major; 
+    gint minor;
+    gdk_gl_query_version(&major, &minor);
+    g_print("\nOpenGL extension version - %d.%d\n", major, minor);
+    /* Try double-buffered visual */
 
+    GdkGLConfig* glconfig;
+    // the line above does not work in C++ if the cast is not there.
+    glconfig = gdk_gl_config_new_by_mode(static_cast<GdkGLConfigMode>(GDK_GL_MODE_RGB | GDK_GL_MODE_DOUBLE));
+    if (glconfig == NULL)
+    {
+        g_print("*** Cannot find the double-buffered visual.\n");
+        g_print("*** Trying single-buffered visual.\n");
+        /* Try single-buffered visual */
+        glconfig = gdk_gl_config_new_by_mode(static_cast<GdkGLConfigMode>(GDK_GL_MODE_RGB));
+        if (glconfig == NULL)
+        {
+            g_print ("*** No appropriate OpenGL-capable visual found.\n");
+            exit(1);
+        }
+    }
+    examine_gl_config_attrib(glconfig);
 
-static void button_state_ready_cb(GtkWidget* widget, GstElement* pipeline)
-{
-    gst_element_set_state (pipeline, GST_STATE_READY);
-    g_print ("GST_STATE_READY\n");
-}
-
-
-static void button_state_paused_cb(GtkWidget* widget, GstElement* pipeline)
-{
-    gst_element_set_state (pipeline, GST_STATE_PAUSED);
-    g_print ("GST_STATE_PAUSED\n");
-}
-
-
-static void button_state_playing_cb(GtkWidget* widget, GstElement* pipeline)
-{
-    gst_element_set_state (pipeline, GST_STATE_PLAYING);
-    g_print ("GST_STATE_PLAYING\n");
-}
-
-
-static gchar* slider_fps_cb (GtkScale* scale, gdouble value, GstElement* pipeline)
-{
-    //change the video frame rate dynamically
-    return g_strdup_printf ("video framerate: %0.*g", gtk_scale_get_digits (scale), value);
-}
-
-
-
-gint main (gint argc, gchar *argv[])
-{
-    gtk_init (&argc, &argv);
-    gst_init (&argc, &argv);
-
-    GstElement* pipeline = gst_pipeline_new ("pipeline");
-
-    //window that contains an area where the video is drawn
+    // Main GTK window
     GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_widget_set_size_request (window, 640, 480);
-    gtk_window_move (GTK_WINDOW (window), 300, 10);
-    gtk_window_set_title (GTK_WINDOW (window), "glimagesink implement the gstxoverlay interface");
+    gtk_widget_set_size_request(window, 640, 480);
+    gtk_window_set_title(GTK_WINDOW (window), "Toonloop 1.3 experimental");
     GdkGeometry geometry;
     geometry.min_width = 1;
     geometry.min_height = 1;
     geometry.max_width = -1;
     geometry.max_height = -1;
-    gtk_window_set_geometry_hints (GTK_WINDOW (window), window, &geometry, GDK_HINT_MIN_SIZE);
-
-    //window to control the states
-    GtkWidget* window_control = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-    geometry.min_width = 1;
-    geometry.min_height = 1;
-    geometry.max_width = -1;
-    geometry.max_height = -1;
-    gtk_window_set_geometry_hints (GTK_WINDOW (window_control), window_control, &geometry, GDK_HINT_MIN_SIZE);
-    gtk_window_set_resizable (GTK_WINDOW (window_control), FALSE);
-    gtk_window_move (GTK_WINDOW (window_control), 10, 10);
-    GtkWidget* table = gtk_table_new (2, 1, TRUE);
-    gtk_container_add (GTK_CONTAINER (window_control), table);
-
-    //control state null
-    GtkWidget* button_state_null = gtk_button_new_with_label ("GST_STATE_NULL");
-    g_signal_connect (G_OBJECT (button_state_null), "clicked",
-        G_CALLBACK (button_state_null_cb), pipeline);
-    gtk_table_attach_defaults (GTK_TABLE (table), button_state_null, 0, 1, 0, 1);
-    gtk_widget_show (button_state_null);
-
-    //control state ready
-    GtkWidget* button_state_ready = gtk_button_new_with_label ("GST_STATE_READY");
-    g_signal_connect (G_OBJECT (button_state_ready), "clicked",
-        G_CALLBACK (button_state_ready_cb), pipeline);
-    gtk_table_attach_defaults (GTK_TABLE (table), button_state_ready, 0, 1, 1, 2);
-    gtk_widget_show (button_state_ready);
-
-    //control state paused
-    GtkWidget* button_state_paused = gtk_button_new_with_label ("GST_STATE_PAUSED");
-    g_signal_connect (G_OBJECT (button_state_paused), "clicked",
-        G_CALLBACK (button_state_paused_cb), pipeline);
-    gtk_table_attach_defaults (GTK_TABLE (table), button_state_paused, 0, 1, 2, 3);
-    gtk_widget_show (button_state_paused);
-
-    //control state playing
-    GtkWidget* button_state_playing = gtk_button_new_with_label ("GST_STATE_PLAYING");
-    g_signal_connect (G_OBJECT (button_state_playing), "clicked",
-        G_CALLBACK (button_state_playing_cb), pipeline);
-    gtk_table_attach_defaults (GTK_TABLE (table), button_state_playing, 0, 1, 3, 4);
-    gtk_widget_show (button_state_playing);
-
-    //change framerate
-    GtkWidget* slider_fps = gtk_vscale_new_with_range (1, 30, 2);
-    g_signal_connect (G_OBJECT (slider_fps), "format-value",
-        G_CALLBACK (slider_fps_cb), pipeline);
-    gtk_table_attach_defaults (GTK_TABLE (table), slider_fps, 1, 2, 0, 4);
-    gtk_widget_show (slider_fps);
-
-    gtk_widget_show (table);
-    gtk_widget_show (window_control);
-
-    //configure the pipeline
-    g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(destroy_cb), pipeline);
-
-    GstElement* videosrc  = gst_element_factory_make ("videotestsrc", "videotestsrc");
-    GstElement* videosink = gst_element_factory_make ("glimagesink", "glimagesink");
-
-    GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv",
-                                        "width", G_TYPE_INT, 640,
-                                        "height", G_TYPE_INT, 480,
-                                        "framerate", GST_TYPE_FRACTION, 25, 1,
-                                        "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'),
-                                        NULL) ;
-    
-    // configure elements:
-    //g_object_set(G_OBJECT(videosrc), "num-buffers", 400, NULL);
-    //g_object_set(G_OBJECT(videosink), "client-reshape-callback", reshapeCallback, NULL);
-    //g_object_set(G_OBJECT(videosink), "client-draw-callback", drawCallback, NULL);
-    gst_bin_add_many (GST_BIN (pipeline), videosrc, videosink, NULL);
-
-    gboolean link_ok = gst_element_link_filtered(videosrc, videosink, caps) ;
-    gst_caps_unref(caps) ;
-    if(!link_ok)
-    {
-        g_warning("Failed to link videosrc to videosink!\n") ;
-        return -1;
-    }
+    gtk_window_set_geometry_hints(GTK_WINDOW(window), window, &geometry, GDK_HINT_MIN_SIZE);
+    g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(on_delete_event), NULL);
 
     //area where the video is drawn
-    GtkWidget* area = gtk_drawing_area_new();
-    gtk_container_add (GTK_CONTAINER (window), area);
+    GtkWidget* drawing_area = gtk_drawing_area_new();
+    gtk_container_add(GTK_CONTAINER(window), drawing_area);
 
     //avoid flickering when resizing or obscuring the main window
-    gtk_widget_realize(area);
-    gdk_window_set_back_pixmap(area->window, NULL, FALSE);
-    gtk_widget_set_app_paintable(area,TRUE);
-    gtk_widget_set_double_buffered(area, FALSE);
+    //gtk_widget_realize(drawing_area);
+    //gdk_window_set_back_pixmap(drawing_area->window, NULL, FALSE);
+    //gtk_widget_set_app_paintable(drawing_area, TRUE);
+    //gtk_widget_set_double_buffered(drawing_area, FALSE);
 
-    //set window id on this event
-    GstBus* bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-    gst_bus_set_sync_handler (bus, (GstBusSyncHandler) create_window, area);
-    gst_bus_add_signal_watch (bus);
-    g_signal_connect(bus, "message::error", G_CALLBACK(end_stream_cb), pipeline);
-    g_signal_connect(bus, "message::warning", G_CALLBACK(end_stream_cb), pipeline);
-    g_signal_connect(bus, "message::eos", G_CALLBACK(end_stream_cb), pipeline);
-    gst_object_unref (bus);
+    /* Set OpenGL-capability to the widget. */
+    gtk_widget_set_gl_capability(drawing_area, glconfig, NULL, TRUE, GDK_GL_RGBA_TYPE);
+  
+    g_signal_connect_after(G_OBJECT(drawing_area), "realize", G_CALLBACK(on_realize), NULL);
+    g_signal_connect(G_OBJECT(drawing_area), "configure_event", G_CALLBACK(on_configure_event), NULL);
+    g_signal_connect(G_OBJECT(drawing_area), "expose_event", G_CALLBACK(on_expose_event), NULL);
 
-    //needed when being in GST_STATE_READY, GST_STATE_PAUSED
-    //or resizing/obscuring the window
-    g_signal_connect(area, "expose-event", G_CALLBACK(expose_cb), videosink);
-
-    //start
-    GstStateChangeReturn ret = gst_element_set_state (pipeline, GST_STATE_PLAYING);
-    if (ret == GST_STATE_CHANGE_FAILURE)
-    {
-        g_print ("Failed to start up pipeline!\n");
-        return -1;
-    }
-
-    gtk_widget_show_all (window);
-
+    gtk_widget_show_all(window);
     gtk_main();
-
     return 0;
 }
 
