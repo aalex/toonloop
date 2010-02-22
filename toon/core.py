@@ -719,12 +719,22 @@ class Toonloop(render.Game):
         """
         self.config.hud_enabled = not self.config.hud_enabled
 
+    def _draw_grid(self):
+        # a grid of lines:
+        GL.glColor4f(1.0, 1.0, 1.0, 0.2)
+        width = 4.0
+        height = 3.0
+        for x in range(-width, width):
+            draw.draw_line(float(x), -height, float(x), height)
+        for y in range(-height, height):
+            draw.draw_line(-width, float(y), width, float(y))
+
     def _draw_hud(self):
         """
         Draws the head-up-display. Numbers, text, etc. overlayed on top of images. 
         """
         if self.config.hud_enabled:
-            # a grid of lines:
+            self._draw_grid()
             
             # style
             hud_base_position = (-3.8, 2.8, 0.0)

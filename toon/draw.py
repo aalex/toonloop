@@ -162,3 +162,13 @@ def draw_horizontal_progress_bar(background_color=(0.0, 0.0, 0.0, 1.0), foregrou
     glVertex2f(1.0, 1.0) # Top Right Of Quad
     glVertex2f(-1.0, 1.0) # Top Left Of Quad
     glEnd()
+
+def draw_line(from_x, from_y, to_x, to_y):
+    """
+    Draws a line between given points.
+    """
+    glBegin(GL_LINES)
+    glVertex2f(from_x, from_y) 
+    glVertex2f(to_x, to_y) 
+    glEnd()
+
