@@ -111,9 +111,7 @@ PACKAGE_DATA_PATH = os.path.dirname(data.__file__)
 DIRECTION_FORWARD = "forward"
 DIRECTION_BACKWARD = "backward"
 DIRECTION_YOYO = "yoyo" # back and forth
-THEME_SPLIT_SCREEN = "split_screen"
-THEME_PICTURE_IN_PICTURE = "picture_in_picture"
-THEME_PLAYBACK_PICTURE_IN_PICTURE = "playback_picture_in_picture"
+DEFAULT_THEME_NAME = "split_screen"
 
 class ToonloopError(Exception):
     """
@@ -159,7 +157,7 @@ class Configuration(object): #Serializable):
         self.display_width = self.image_width * 2 # 640 , was 1024
         self.display_height = self.image_height * 2 # 480 , was 768
         self.display_fullscreen = False
-        self.display_theme = THEME_SPLIT_SCREEN
+        self.display_theme = DEFAULT_THEME_NAME
         
         # fudi puredata interface
         self.fudi_enabled = False
@@ -321,14 +319,18 @@ class SplitScreenTheme(object):
     """
     Theme allow to customize the graphical attributes of the rendering.
     This is the base theme with a split screen.
+    
+    The most important attribute is the "name" attribute.
+    All the other attributes are used by the rendering.
     """
     def __init__(self):
-        self.name = THEME_SPLIT_SCREEN
+        self.name = DEFAULT_THEME_NAME
         self.render_play_first = True
         self.play_pos = (2.0, 0.0, 0.0)
         self.play_scale = (2.0, 1.5, 1.0)
         self.edit_pos = (-2.0, 0.0, 0.0)
         self.edit_scale = (2.0, 1.5, 1.0)
+        self.edit_drawn = True
         self.background_color = (0.0, 0.0, 0.0)
         # saving progress bar
         self.progress_foreground_color = (1.0, 1.0, 1.0, 0.5) 
@@ -340,31 +342,40 @@ class SplitScreenTheme(object):
         self.white_flash_enabled = True
         #TODO: add a theme not displaying the edit "viewport".
 
-class PictureInPictureTheme(SplitScreenTheme):
-    """
-    This theme is a picture in picture theme.
-    """
+#class PictureInPictureTheme(SplitScreenTheme):
+#    """
+#    This theme is a picture in picture theme.
+#    """
+#    def __init__(self):
+#        SplitScreenTheme.__init__(self) # inherit some attributes from the base theme.
+#        self.name = "picture_in_picture"
+#        self.render_play_first = False
+#        self.play_pos = (0.0, 0.0, 0.0)
+#        self.play_scale = (4.0, 3.0, 1.0)
+#        self.edit_pos = (3.0, 2.75, 0.0)
+#        self.edit_scale = (1.0, 0.75, 1.0)
+
+class FullscreenPlaybackTheme(SplitScreenTheme):
     def __init__(self):
         SplitScreenTheme.__init__(self) # inherit some attributes from the base theme.
+        self.name = "fullscreen_playback"
         self.render_play_first = False
-        self.name = THEME_PICTURE_IN_PICTURE
+        self.edit_drawn = False
         self.play_pos = (0.0, 0.0, 0.0)
         self.play_scale = (4.0, 3.0, 1.0)
-        self.edit_pos = (2.0, 1.5, 0.0)
-        self.edit_scale = (1.0, 0.75, 1.0)
 
-class PlaybackPictureInPictureTheme(SplitScreenTheme):
+def load_themes():
     """
-    This theme is a picture in picture theme as well, but the edit is big.
+    Returns a dict with all theme instances. The keys are their name.
     """
-    def __init__(self):
-        SplitScreenTheme.__init__(self) # inherit some attributes from the base theme.
-        self.render_play_first = True
-        self.name = THEME_PLAYBACK_PICTURE_IN_PICTURE
-        self.edit_pos = (0.0, 0.0, 0.0)
-        self.edit_scale = (4.0, 3.0, 1.0)
-        self.play_pos = (2.0, 1.5, 0.0)
-        self.play_scale = (1.0, 0.75, 1.0)
+    ret = { DEFAULT_THEME_NAME: SplitScreenTheme() }
+    theme_classes = [
+        FullscreenPlaybackTheme,
+        ]
+    for klass in theme_classes:
+        obj = klass()
+        ret[obj.name] = obj
+    return ret
     
 class Toonloop(render.Game):
     """
@@ -411,14 +422,10 @@ class Toonloop(render.Game):
         self._saver_progress = None # ClipSaver progress bar ratio. float from 0 to 1
         self._init_clips()
         self.renderer = None # Renderer instance that owns it.
-        self.themes = {
-            THEME_SPLIT_SCREEN: SplitScreenTheme(),
-            THEME_PICTURE_IN_PICTURE: PictureInPictureTheme(),
-            THEME_PLAYBACK_PICTURE_IN_PICTURE: PlaybackPictureInPictureTheme(),
-            }
+        self.themes = load_themes()
         if self.config.display_theme not in self.themes.keys():
             print("Error: not such theme: %s. using default")
-            self.config.display_theme = THEME_SPLIT_SCREEN
+            self.config.display_theme = DEFAULT_THEME_NAME
         self.theme = self.themes[self.config.display_theme]
             
         # the icon
@@ -990,10 +997,11 @@ class Toonloop(render.Game):
         
         if self.theme.render_play_first:
             # edit
-            self._draw_edit_background()
-            self._draw_edit_view()
-            self._draw_onion_skin()
-            self._draw_white_flash()
+            if self.theme.edit_drawn:
+                self._draw_edit_background()
+                self._draw_edit_view()
+                self._draw_onion_skin()
+                self._draw_white_flash()
             # playback
             self._draw_play_background()
             self._draw_playback_view()
@@ -1001,11 +1009,12 @@ class Toonloop(render.Game):
             # playback
             self._draw_play_background()
             self._draw_playback_view()
-            self._draw_edit_background()
-            self._draw_edit_view()
             # edit
-            self._draw_onion_skin()
-            self._draw_white_flash()
+            if self.theme.edit_drawn:
+                self._draw_edit_background()
+                self._draw_edit_view()
+                self._draw_onion_skin()
+                self._draw_white_flash()
         GL.glDisable(GL.GL_TEXTURE_RECTANGLE_ARB) # important not to draw a big pixel !
         # ----------- saving progress bar
         self._draw_saving_progress_bar()
@@ -1062,8 +1071,8 @@ class Toonloop(render.Game):
             GL.glColor4f(1.0, 1.0, 1.0, 1.0)
             # playback view
             GL.glPushMatrix()
-            GL.glTranslatef(*self.theme.play_pos)
-            GL.glScalef(*self.theme.play_scale)
+            GL.glTranslatef(*self.theme.edit_pos)
+            GL.glScalef(*self.theme.edit_scale)
             GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
             if self.config.image_flip_horizontal: # FIXME?
                 GL.glRotatef(180., 0., 1., 0.)
@@ -1075,8 +1084,8 @@ class Toonloop(render.Game):
             GL.glColor4f(1.0, 1.0, 1.0, 1.0)
             # edit view
             GL.glPushMatrix()
-            GL.glTranslatef(*self.theme.edit_pos)
-            GL.glScalef(*self.theme.edit_scale)
+            GL.glTranslatef(*self.theme.play_pos)
+            GL.glScalef(*self.theme.play_scale)
             GL.glBindTexture(GL.GL_TEXTURE_RECTANGLE_ARB, self.textures[self.TEXTURE_BACKGROUND])
             if self.config.image_flip_horizontal: # FIXME?
                 GL.glRotatef(180., 0., 1., 0.)
