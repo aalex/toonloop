@@ -66,10 +66,10 @@ setup(
     )
 # FIXME: this doesn't work:
 if sys.argv[1] == "build":
-    command_icon = "convert -geometry 48x48 -background none toonloop.svg toonloop.png"
-    print("in setup.py: %s" % (command_icon))
-    retcode = subprocess.call(command_icon, shell=True)
-    print("in setup.py: Command returned %s" % (retcode))
+    #command_icon = "convert -geometry 48x48 -background none toonloop.svg toonloop.png"
+    #print("in setup.py: %s" % (command_icon))
+    #retcode = subprocess.call(command_icon, shell=True)
+    #print("in setup.py: Command returned %s" % (retcode))
     command_man = """help2man --no-info --include=man_toonloop.txt --name="The Toonloop Live Stop Motion Tool" ./toonloop > toonloop.1"""
     print("in setup.py: %s" % (command_man))
     retcode = subprocess.call(command_man, shell=True)
