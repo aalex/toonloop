@@ -724,6 +724,8 @@ class Toonloop(render.Game):
         Draws the head-up-display. Numbers, text, etc. overlayed on top of images. 
         """
         if self.config.hud_enabled:
+            # a grid of lines:
+            
             # style
             hud_base_position = (-3.8, 2.8, 0.0)
             hud_text_color = (1.0, 1.0, 1.0, 1.0)
