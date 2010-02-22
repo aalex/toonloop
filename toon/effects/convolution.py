@@ -82,12 +82,12 @@ void main()
 class Options(optgroup.OptionsGroup):
     def __init__(self):
         # edge detection with the laplacian operator:
-        self.weight_row_0 = [0.0, 1.0, 0.0]
-        self.weight_row_1 = [1.0, -4.0, 1.0]
-        self.weight_row_2 = [0.0, 1.0, 0.0]
+        self.weight_row_0 = [1.0, 1.0, 1.0]
+        self.weight_row_1 = [1.0, -8.0, 1.0]
+        self.weight_row_2 = [1.0, 1.0, 1.0]
         self.sum = 0.0
-        self.width = 2.0
-        self.height = 2.0
+        self.width = 1.0 #  The distance between each pixel to sum
+        self.height = 1.0 # The distance between each pixel to sum
         self.image = 0 # texture unit, not id !
         
         # ---- other example:
