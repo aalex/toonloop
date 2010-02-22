@@ -22,13 +22,13 @@ from toon import optgroup
 class LumaKeyOptions(optgroup.OptionsGroup):
     def __init__(self):
         self.avgluma = [1.0, 1.0, 1.0]
-        self.luma_gate = 0.3
+        self.luma_gate = 0.2
         self.saturation = 1.0
         self.contrast = 1.0
-        self.invert = 1 # 0 or 1
+        self.invert = 0 # 0 or 1
         self.brightness = 1.0
-        self.alpha_under = 1.0
-        self.alpha_over = 0.0
+        self.alpha_under = 0.0 # Resulting alpha for pixel with luma under thresh
+        self.alpha_over = 1.0 #resulting alpha for pixels with luma over thresh
         self.texture_id = 0
 
 # ---------------------------- glsl vertex shader ----------
