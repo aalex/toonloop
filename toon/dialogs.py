@@ -12,15 +12,14 @@ from twisted.internet import defer
 
 
 class Save(object):
-    def __init__(self, deferred, title="Save...", folder=None, default_file_name=None):
+    def __init__(self, deferred, title="Save...", folder=None, default_file_name=None, parent=None):
         self.deferredResult = deferred
-        parent = None
         filechooser = gtk.FileChooserDialog(
             title,
-            parent,
             gtk.FILE_CHOOSER_ACTION_SAVE,
             (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-            gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+            gtk.STOCK_SAVE, gtk.RESPONSE_OK),
+            parent=parent)
         if default_file_name is not None:
             filechooser.set_current_name(default_file_name)
         filechooser.set_default_response(gtk.RESPONSE_OK)
@@ -76,7 +75,7 @@ class ErrorDialog(object):
         @rettype: L{Deferred}
         """
         d = defer.Deferred()
-        dialog = ErrorDialog(d, message, parent)
+        dialog = ErrorDialog(d, message, parent=parent)
         return d
 
     def on_close(self, dialog, *params):
@@ -119,14 +118,13 @@ class YesNoDialog(object):
 
     @staticmethod
     def create(message, parent=None):
-        parent = None
         """
         Returns a Deferred which will be called with a boolean result.
         @param message: str
         @rettype: L{Deferred}
         """
         d = defer.Deferred()
-        dialog = YesNoDialog(d, message, parent)
+        dialog = YesNoDialog(d, message, parent=parent)
         return d
 
     def on_close(self, dialog, *params):

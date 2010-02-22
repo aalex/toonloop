@@ -1,5 +1,6 @@
-from twisted.internet import gtk2reactor
-gtk2reactor.install()
+if __name__ == "__main__":
+    from twisted.internet import gtk2reactor
+    gtk2reactor.install()
 from twisted.internet import reactor
 from twisted.internet import defer
 import gtk
@@ -9,9 +10,15 @@ class ColorDialog(object):
     Color Selection dialog.
     Use the create static method as a factory.
     """
-    def __init__(self, deferred, text):
+    def __init__(self, deferred, text, parent=None):
+        """
+        #TODO: parent is still not used
+        """
+        # parent
+        # title
+        # flags
+        # buttons
         self.deferredResult = deferred
-        parent = None
         color_dialog = gtk.ColorSelectionDialog(text)
         color_dialog.get_color_selection().connect("color-changed", self.on_changing)
         self.color_dialog = color_dialog
@@ -56,13 +63,13 @@ class ColorDialog(object):
         print "help"
         return True # ?
 
-def _later():
-    def _cb(result):
-        print result
-        reactor.stop()
-    d = ColorDialog.create("Pick a color...")
-    d.addCallback(_cb)
+if __name__ == "__main__":
+    def _later():
+        def _cb(result):
+            print result
+            reactor.stop()
+        d = ColorDialog.create("Pick a color...")
+        d.addCallback(_cb)
 
-reactor.callLater(0, _later)
-reactor.run()
-
+    reactor.callLater(0, _later)
+    reactor.run()
