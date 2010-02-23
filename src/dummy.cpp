@@ -53,7 +53,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
 
     if ((current_time.tv_sec - last_sec) >= 1)
     {
-        std::cout << "GRPHIC FPS = " << nbFrames << std::endl;
+        std::cout << "GRAPHIC FPS = " << nbFrames << std::endl;
         nbFrames = 0;
         last_sec = current_time.tv_sec;
     }
@@ -91,7 +91,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
 
     // DRAW LINES
     glDisable(GL_TEXTURE_RECTANGLE_ARB);
-    glColor4f(1.0, 1.0, 0.0, 0.6);
+    glColor4f(0.2, 0.2, 0.2, 0.2);
     int num = 64;
     float x;
     for (int i = 0; i < num; i++)
@@ -111,16 +111,11 @@ static GstBusSyncReply create_window (GstBus* bus, GstMessage* message, GtkWidge
     // ignore anything but 'prepare-xwindow-id' element messages
     if (GST_MESSAGE_TYPE (message) != GST_MESSAGE_ELEMENT)
         return GST_BUS_PASS;
-
     if (!gst_structure_has_name (message->structure, "prepare-xwindow-id"))
         return GST_BUS_PASS;
-
     g_print ("setting xwindow id\n");
-
     gst_x_overlay_set_gtk_window (GST_X_OVERLAY (GST_MESSAGE_SRC (message)), widget);
-
     gst_message_unref (message);
-
     return GST_BUS_DROP;
 }
 
@@ -130,16 +125,29 @@ static void end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipeline
     bool stop_it = true;
     if (GST_MESSAGE_TYPE(message) == GST_MESSAGE_ERROR)
     {
-        std::cout << "ERROR" << std::endl;
+        gchar *debug = NULL;
+        GError *err = NULL;
+        gst_message_parse_error(message, &err, &debug);
+        g_print("Error: %s\n", err->message);
+        g_error_free(err);
+        if (debug) 
+        {
+            g_print("Debug details: %s\n", debug);
+            g_free(debug);
+        }
     } else if (GST_MESSAGE_TYPE(message) == GST_MESSAGE_EOS) {
-        std::cout << "End of stream" << std::endl;
+        std::cout << "EOS: End of stream" << std::endl;
     } else if (GST_MESSAGE_TYPE(message) == GST_MESSAGE_WARNING) {
-        std::cout << "WARNING" << std::endl;
-        GError *gerror;
-        gchar *debug;
-        gst_message_parse_warning(message, &gerror, &debug);
-        std::cout << gerror << std::endl;
-        std::cout << debug << std::endl;
+        gchar *debug = NULL;
+        GError *err = NULL;
+        gst_message_parse_warning(message, &err, &debug);
+        g_print("Warning: %s\n", err->message);
+        g_error_free(err);
+        if (debug) 
+        {
+            g_print("Debug details: %s\n", debug);
+            g_free(debug);
+        }
         stop_it = false;
     }
     if (stop_it)
@@ -157,7 +165,6 @@ static gboolean expose_cb(GtkWidget* widget, GdkEventExpose* event, GstElement* 
     return FALSE;
 }
 
-
 static void destroy_cb(GtkWidget* widget, GdkEvent* event, GstElement* pipeline)
 {
     g_print("Close\n");
@@ -168,13 +175,11 @@ static void destroy_cb(GtkWidget* widget, GdkEvent* event, GstElement* pipeline)
     gtk_main_quit();
 }
 
-
 static void button_state_null_cb(GtkWidget* widget, GstElement* pipeline)
 {
     gst_element_set_state (pipeline, GST_STATE_NULL);
     g_print ("GST_STATE_NULL\n");
 }
-
 
 static void button_state_ready_cb(GtkWidget* widget, GstElement* pipeline)
 {
@@ -189,21 +194,17 @@ static void button_state_paused_cb(GtkWidget* widget, GstElement* pipeline)
     g_print ("GST_STATE_PAUSED\n");
 }
 
-
 static void button_state_playing_cb(GtkWidget* widget, GstElement* pipeline)
 {
     gst_element_set_state (pipeline, GST_STATE_PLAYING);
     g_print ("GST_STATE_PLAYING\n");
 }
 
-
 static gchar* slider_fps_cb (GtkScale* scale, gdouble value, GstElement* pipeline)
 {
     //change the video frame rate dynamically
     return g_strdup_printf ("video framerate: %0.*g", gtk_scale_get_digits (scale), value);
 }
-
-
 
 gint main (gint argc, gchar *argv[])
 {
@@ -369,10 +370,8 @@ gint main (gint argc, gchar *argv[])
         return -1;
     }
 
-    gtk_widget_show_all (window);
-
+    gtk_widget_show_all(window);
     gtk_main();
-
     return 0;
 }
 
