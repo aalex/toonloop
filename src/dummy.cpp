@@ -38,6 +38,11 @@ void reshapeCallback (GLuint width, GLuint height, gpointer data)
     glLoadIdentity();
     glOrtho(-w, w, -h, h, -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
+
+    glEnable (GL_POLYGON_SMOOTH);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+    //glEnable (GL_LINE_SMOOTH);
+    //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 }
 
 //client draw callback
@@ -53,7 +58,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
 
     if ((current_time.tv_sec - last_sec) >= 1)
     {
-        //std::cout << "GRAPHIC FPS = " << nbFrames << std::endl;
+        std::cout << "GRAPHIC FPS = " << nbFrames << std::endl;
         nbFrames = 0;
         last_sec = current_time.tv_sec;
     }
@@ -293,12 +298,10 @@ gint main (gint argc, gchar *argv[])
     //                                    "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'),
     //                                    NULL) ;
     /* change video source caps */
-    GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv",
+    GstCaps *caps = gst_caps_new_simple("video/x-raw-rgb",
                                         "width", G_TYPE_INT, 320,
                                         "height", G_TYPE_INT, 240,
                                         "framerate", GST_TYPE_FRACTION, 25, 1,
-                                        "format", GST_TYPE_FOURCC, 
-                                        GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'),
                                         NULL) ;
 
 
