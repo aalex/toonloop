@@ -278,10 +278,11 @@ gint main (gint argc, gchar *argv[])
     g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(destroy_cb), pipeline);
 
     GstElement* videosrc  = gst_element_factory_make ("videotestsrc", "videotestsrc0");
+    GstElement* queue  = gst_element_factory_make("queue", "queue0");
     GstElement* glupload  = gst_element_factory_make ("glupload", "gloupload0");
     GstElement* videosink = gst_element_factory_make ("glimagesink", "glimagesink0");
 
-    if (!videosrc || !glupload || !videosink)
+    if (!videosrc || !queue || !glupload || !videosink)
     {
         g_print ("one element could not be found \n");
         return -1;
@@ -313,14 +314,20 @@ gint main (gint argc, gchar *argv[])
     //g_object_set(G_OBJECT(videosink), "client-data", NULL, NULL);
 
     // add elements
-    gst_bin_add_many (GST_BIN (pipeline), videosrc, glupload, videosink, NULL);
+    gst_bin_add_many (GST_BIN (pipeline), videosrc, queue, glupload, videosink, NULL);
 
     // link elements
-    gboolean link_ok = gst_element_link_filtered(videosrc, glupload, caps) ;
+    gboolean link_ok = gst_element_link(videosrc, queue) ;
+    if(!link_ok)
+    {
+        g_warning("Failed to link videosrc to queue!\n") ;
+        return -1;
+    }
+    link_ok = gst_element_link_filtered(queue, glupload, caps) ;
     gst_caps_unref(caps) ;
     if(!link_ok)
     {
-        g_warning("Failed to link videosrc to glupload!\n") ;
+        g_warning("Failed to link queue to glupload!\n") ;
         return -1;
     }
     link_ok = gst_element_link_filtered(glupload, videosink, outcaps) ;
