@@ -53,7 +53,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
 
     if ((current_time.tv_sec - last_sec) >= 1)
     {
-        std::cout << "GRAPHIC FPS = " << nbFrames << std::endl;
+        //std::cout << "GRAPHIC FPS = " << nbFrames << std::endl;
         nbFrames = 0;
         last_sec = current_time.tv_sec;
     }
@@ -69,6 +69,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glPushMatrix();
+    glColor4f(1.0, 1.0, 1.0, 1.0);
 
     glTranslatef(0.0f,0.0f,0.0f);
 
@@ -94,6 +95,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     glColor4f(0.2, 0.2, 0.2, 0.2);
     int num = 64;
     float x;
+    
     for (int i = 0; i < num; i++)
     {
         x = (i / float(num)) * 4 - 2;
@@ -102,7 +104,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     }
     
     //return TRUE causes a postRedisplay
-    return TRUE;
+    return FALSE;
 }
 
 
@@ -159,11 +161,6 @@ static void end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipeline
     }
 }
 
-static gboolean expose_cb(GtkWidget* widget, GdkEventExpose* event, GstElement* videosink)
-{
-    gst_x_overlay_expose (GST_X_OVERLAY (videosink));
-    return FALSE;
-}
 
 static void destroy_cb(GtkWidget* widget, GdkEvent* event, GstElement* pipeline)
 {
@@ -279,11 +276,11 @@ gint main (gint argc, gchar *argv[])
     g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(destroy_cb), pipeline);
 
     GstElement* videosrc  = gst_element_factory_make ("videotestsrc", "videotestsrc0");
-    GstElement* queue  = gst_element_factory_make("queue", "queue0");
     GstElement* glupload  = gst_element_factory_make ("glupload", "gloupload0");
     GstElement* videosink = gst_element_factory_make ("glimagesink", "glimagesink0");
-
-    if (!videosrc || !queue || !glupload || !videosink)
+    g_object_set(videosink, "sync", FALSE, NULL);
+    
+    if (!videosrc or !glupload or !videosink)
     {
         g_print ("one element could not be found \n");
         return -1;
@@ -296,10 +293,12 @@ gint main (gint argc, gchar *argv[])
     //                                    "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'),
     //                                    NULL) ;
     /* change video source caps */
-    GstCaps *caps = gst_caps_new_simple("video/x-raw-rgb",
+    GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv",
                                         "width", G_TYPE_INT, 320,
                                         "height", G_TYPE_INT, 240,
                                         "framerate", GST_TYPE_FRACTION, 25, 1,
+                                        "format", GST_TYPE_FOURCC, 
+                                        GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'),
                                         NULL) ;
 
 
@@ -309,26 +308,19 @@ gint main (gint argc, gchar *argv[])
                                         NULL) ;
 
     // configure elements
-    g_object_set(G_OBJECT(videosrc), "num-buffers", 400, NULL);
     g_object_set(G_OBJECT(videosink), "client-reshape-callback", reshapeCallback, NULL);
     g_object_set(G_OBJECT(videosink), "client-draw-callback", drawCallback, NULL);
     //g_object_set(G_OBJECT(videosink), "client-data", NULL, NULL);
 
     // add elements
-    gst_bin_add_many (GST_BIN (pipeline), videosrc, queue, glupload, videosink, NULL);
+    gst_bin_add_many (GST_BIN (pipeline), videosrc, glupload, videosink, NULL);
 
     // link elements
-    gboolean link_ok = gst_element_link(videosrc, queue) ;
-    if(!link_ok)
-    {
-        g_warning("Failed to link videosrc to queue!\n") ;
-        return -1;
-    }
-    link_ok = gst_element_link_filtered(queue, glupload, caps) ;
+    gboolean link_ok = gst_element_link_filtered(videosrc, glupload, caps) ;
     gst_caps_unref(caps) ;
     if(!link_ok)
     {
-        g_warning("Failed to link queue to glupload!\n") ;
+        g_warning("Failed to link videosrc to glupload!\n") ;
         return -1;
     }
     link_ok = gst_element_link_filtered(glupload, videosink, outcaps) ;
@@ -360,7 +352,6 @@ gint main (gint argc, gchar *argv[])
 
     //needed when being in GST_STATE_READY, GST_STATE_PAUSED
     //or resizing/obscuring the window
-    g_signal_connect(area, "expose-event", G_CALLBACK(expose_cb), videosink);
 
     //start
     GstStateChangeReturn ret = gst_element_set_state (pipeline, GST_STATE_PLAYING);
