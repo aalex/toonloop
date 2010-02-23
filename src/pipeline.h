@@ -2,19 +2,27 @@
 #define __PIPELINE_H__
 
 #include <gst/gst.h>
+#include <gtk/gtk.h>
 #include <GL/glx.h>
 
 class Pipeline
 {
-    private:
-        GstPipeline* pipeline_;
-        GstState state_;
-        static void end_stream_cb(GstBug* bus, GstMessage* msg, gpointer data);
-        static void on_gst_buffer(GstElement* element, GstBuffer* buf, GstPad * pad, gpointer context)
     public:
+        void stop();
+        void set_drawing_area(GtkWidget *drawing_area);
         Pipeline();
         ~Pipeline();
-        void set_glx_context(GLXContext context);
+    private:
+        GstElement* videosrc_;
+        GstElement* videosink_;
+        GstPipeline* pipeline_;
+        GstState state_;
+        static void end_stream_cb(GstBus* bus, GstMessage* msg, gpointer data);
 };
+
+static GstBusSyncReply sync_handler(GstBus* bus, GstMessage* message, GtkWidget* widget);
+static gboolean on_expose_event(GtkWidget* widget, GdkEventExpose* event, GstElement* videosink);
+void reshapeCallback(GLuint width, GLuint height, gpointer data);
+gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data);
 
 #endif // __PIPELINE_H__
