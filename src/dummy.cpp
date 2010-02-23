@@ -24,22 +24,25 @@
 #include <gdk/gdk.h>
 #include <iostream>
 #include "./gstgtk.h"
+#include "./draw.h"
 
 //client reshape callback
 void reshapeCallback (GLuint width, GLuint height, gpointer data)
 {
     glViewport(0, 0, width, height);
+    
+    float w = float(width) / float(height);
+    float h = 1.0;
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45, (gfloat)width/(gfloat)height, 0.1, 100);
+    glOrtho(-w, w, -h, h, -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
 }
 
 //client draw callback
 gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer data)
 {
-    static GLfloat  xrot = 0;
-    static GLfloat  yrot = 0;
     static GLfloat  zrot = 0;
     static GTimeVal current_time;
     static glong last_sec = current_time.tv_sec;
@@ -55,63 +58,49 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         last_sec = current_time.tv_sec;
     }
 
-    glEnable(GL_DEPTH_TEST);
-
     glEnable (GL_TEXTURE_RECTANGLE_ARB);
     glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
     glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    glPushMatrix();
 
-    glTranslatef(0.0f,0.0f,-5.0f);
+    glTranslatef(0.0f,0.0f,0.0f);
 
-    glRotatef(xrot,1.0f,0.0f,0.0f);
-    glRotatef(yrot,0.0f,1.0f,0.0f);
     glRotatef(zrot,0.0f,0.0f,1.0f);
 
     glBegin(GL_QUADS);
-          // Front Face
-          glTexCoord2f((gfloat)width, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
-          glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
-          glTexCoord2f(0.0f, (gfloat)height); glVertex3f( 1.0f,  1.0f,  1.0f);
-          glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f(-1.0f,  1.0f,  1.0f);
-          // Back Face
-          glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-          glTexCoord2f(0.0f, (gfloat)height); glVertex3f(-1.0f,  1.0f, -1.0f);
-          glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f( 1.0f,  1.0f, -1.0f);
-          glTexCoord2f((gfloat)width, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
-          // Top Face
-          glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f(-1.0f,  1.0f, -1.0f);
-          glTexCoord2f((gfloat)width, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
-          glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
-          glTexCoord2f(0.0f, (gfloat)height); glVertex3f( 1.0f,  1.0f, -1.0f);
-          // Bottom Face
-          glTexCoord2f((gfloat)width, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-          glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
-          glTexCoord2f(0.0f, (gfloat)height); glVertex3f( 1.0f, -1.0f,  1.0f);
-          glTexCoord2f((gfloat)width,(gfloat)height); glVertex3f(-1.0f, -1.0f,  1.0f);
-          // Right face
-          glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
-          glTexCoord2f(0.0f, (gfloat)height); glVertex3f( 1.0f,  1.0f, -1.0f);
-          glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f( 1.0f,  1.0f,  1.0f);
-          glTexCoord2f((gfloat)width, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
-          // Left Face
-          glTexCoord2f((gfloat)width, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-          glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
-          glTexCoord2f(0.0f, (gfloat)height); glVertex3f(-1.0f,  1.0f,  1.0f);
-          glTexCoord2f((gfloat)width, (gfloat)height); glVertex3f(-1.0f,  1.0f, -1.0f);
+    // Front Face
+    glTexCoord2f((gfloat)width, 0.0f); 
+    glVertex3f(-0.666f, -0.5f,  0.0f);
+    glTexCoord2f(0.0f, 0.0f); 
+    glVertex3f( 0.666f, -0.5f,  0.0f);
+    glTexCoord2f(0.0f, (gfloat)height); 
+    glVertex3f( 0.666f,  0.5f,  0.0f);
+    glTexCoord2f((gfloat)width, (gfloat)height); 
+    glVertex3f(-0.666f,  0.5f,  0.0f);
     glEnd();
 
-    xrot+=0.3f;
-    yrot+=0.2f;
-    zrot+=0.4f;
+    zrot+=0.001f;
+    glPopMatrix();
 
+    // DRAW LINES
+    glDisable(GL_TEXTURE_RECTANGLE_ARB);
+    glColor4f(1.0, 1.0, 0.0, 0.6);
+    int num = 64;
+    float x;
+    for (int i = 0; i < num; i++)
+    {
+        x = (i / float(num)) * 4 - 2;
+        draw::draw_line(float(x), -2.0, float(x), 2.0);
+        draw::draw_line(-2.0, float(x), 2.0, float(x));
+    }
+    
     //return TRUE causes a postRedisplay
     return TRUE;
 }
