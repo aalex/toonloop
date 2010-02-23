@@ -138,6 +138,7 @@ static GstBusSyncReply create_window (GstBus* bus, GstMessage* message, GtkWidge
 
 static void end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipeline)
 {
+    bool stop_it = true;
     if (GST_MESSAGE_TYPE(message) == GST_MESSAGE_ERROR)
     {
         std::cout << "ERROR" << std::endl;
@@ -150,11 +151,15 @@ static void end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipeline
         gst_message_parse_warning(message, &gerror, &debug);
         std::cout << gerror << std::endl;
         std::cout << debug << std::endl;
+        stop_it = false;
     }
-    g_print("Stopping the stream\n");
-    gst_element_set_state (pipeline, GST_STATE_NULL);
-    gst_object_unref(pipeline);
-    gtk_main_quit();
+    if (stop_it)
+    {
+        g_print("Stopping the stream and quitting.\n");
+        gst_element_set_state (pipeline, GST_STATE_NULL);
+        gst_object_unref(pipeline);
+        gtk_main_quit();
+    }
 }
 
 static gboolean expose_cb(GtkWidget* widget, GdkEventExpose* event, GstElement* videosink)
