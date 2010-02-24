@@ -67,46 +67,48 @@ Pipeline::Pipeline()
     //state_ = 0;
     GstElement* glupload;
     
+    // videotestsrc element
     videosrc_  = gst_element_factory_make("videotestsrc", "videotestsrc0");
+    // capsfilter element #0
+        // Possible values for the capture FPS:
+        // 25/1 
+        // 30000/1001
+        // 30/1
+    GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
+    GstCaps *caps = gst_caps_new_simple("video/x-raw-rgb",
+                                        "width", G_TYPE_INT, 640,
+                                        "height", G_TYPE_INT, 480,
+                                        "framerate", GST_TYPE_FRACTION, 30000, 1001,
+                                        NULL); 
+    g_object_set(capsfilter0, "caps", caps, NULL);
+    gst_caps_unref(caps);
+    // glupload element
     glupload  = gst_element_factory_make ("glupload", "glupload0");
+    // glimagesink
     videosink_ = gst_element_factory_make("glimagesink", "glimagesink0");
     g_object_set(videosink_, "sync", FALSE, NULL);
-
-    if (!videosrc_ || !glupload || !videosink_)
-    {
-        g_print("one element could not be found \n");
-        exit(1);
-    }
-    // TODO: use capsfilter elements
-    /* change video caps */
-    GstCaps *caps = gst_caps_new_simple("video/x-raw-rgb",
-                                        "width", G_TYPE_INT, 320,
-                                        "height", G_TYPE_INT, 240,
-                                        "framerate", GST_TYPE_FRACTION, 25, 1,
-                                        NULL) ;
+    g_object_set(G_OBJECT(videosink_), "client-reshape-callback", reshapeCallback, NULL);
+    g_object_set(G_OBJECT(videosink_), "client-draw-callback", drawCallback, NULL);
+    // capsfilter element #1
+    GstElement* capsfilter1 = gst_element_factory_make ("capsfilter", NULL);
     GstCaps *outcaps = gst_caps_new_simple("video/x-raw-gl",
                                         "width", G_TYPE_INT, 800,
                                         "height", G_TYPE_INT, 600,
                                         NULL) ;
-    
-    // configure elements
-    g_object_set(G_OBJECT(videosink_), "client-reshape-callback", reshapeCallback, NULL);
-    g_object_set(G_OBJECT(videosink_), "client-draw-callback", drawCallback, NULL);
+    g_object_set(capsfilter1, "caps", outcaps, NULL);
+    gst_caps_unref(outcaps);
 
     // add elements
-    gst_bin_add_many(GST_BIN(pipeline_), videosrc_, glupload, videosink_, NULL);
-    gboolean link_ok = gst_element_link_filtered(videosrc_, glupload, caps);
-    gst_caps_unref(caps);
-    if(!link_ok)
+    if (!videosrc_ or !capsfilter0 or !glupload or !capsfilter1 or !videosink_)
     {
-        g_warning("Failed to link videosrc to glupload!\n") ;
+        g_print("one element could not be found \n");
         exit(1);
     }
-    link_ok = gst_element_link_filtered(glupload, videosink_, outcaps) ;
-    gst_caps_unref(outcaps) ;
-    if(!link_ok)
+    gst_bin_add_many(GST_BIN(pipeline_), videosrc_, capsfilter0, glupload, capsfilter1, videosink_, NULL);
+    gboolean linked_ok = gst_element_link_many(videosrc_, capsfilter0, glupload, capsfilter1, videosink_, NULL);
+    if (!linked_ok)
     {
-        g_warning("Failed to link glupload to glimagesink!\n") ;
+        g_print("Could not link the elements\n.");
         exit(1);
     }
     /* setup bus */
