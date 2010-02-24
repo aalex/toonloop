@@ -1,6 +1,7 @@
 #include "application.h"
 #include "gui.h"
 #include "pipeline.h"
+#include "pipeline.h"
 #include <iostream>
 #include <gtk/gtk.h>
 
@@ -57,5 +58,7 @@ void Application::reset()
 void Application::quit()
 {
     std::cout << "Quitting the application." << std::endl;
+
+    get_pipeline().stop();
     gtk_main_quit();
 }

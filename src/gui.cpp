@@ -13,6 +13,7 @@
 #include "pipeline.h"
 #include "draw.h"
 #include "gui.h"
+#include "application.h"
 
 
 gboolean Gui::onWindowStateEvent(GtkWidget* widget, GdkEventWindowState *event, gpointer data)
@@ -60,8 +61,8 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
             // (if there is one)
             if (event->state & GDK_CONTROL_MASK)
             {
-                g_print("Ctrl-Q key pressed, quitting.");
-                //context->app_.quit();
+                g_print("Ctrl-Q key pressed, quitting.\n");
+                Application::get_instance().quit();
             }
             break;
         default:
@@ -74,9 +75,7 @@ void Gui::on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data)
 {
     Gui *context = static_cast<Gui*>(data);
     g_print("Window has been deleted.\n");
-    // TODO: call Application::quit()
-    // TODO: which sets the pipeline to GST_STATE_NULL
-    gtk_main_quit();
+    Application::get_instance().quit();
 }
 
 void Gui::toggleFullscreen(GtkWidget *widget)

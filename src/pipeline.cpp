@@ -44,16 +44,17 @@ void Pipeline::end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipel
     if (stop_it)
     {
         g_print("Stopping the stream and quitting.\n");
-        gst_element_set_state (pipeline, GST_STATE_NULL);
-        gst_object_unref(pipeline);
+        //gst_element_set_state(pipeline, GST_STATE_NULL);
+        //gst_object_unref(pipeline);
         // TODO: stop()
-        //TODO: Application::get_instance().quit();
-        gtk_main_quit();
+        Application::get_instance().quit();
+        //gtk_main_quit();
     }
 }
 
 void Pipeline::stop()
 {
+    std::cout << "Stopping the Gstreamer pipeline." << std::endl;
     gst_element_set_state(GST_ELEMENT(pipeline_), GST_STATE_NULL);
     gst_object_unref(pipeline_);
     // gtk main quit?
