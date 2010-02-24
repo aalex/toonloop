@@ -1,6 +1,6 @@
 bin_PROGRAMS = toonloop dummy
 
-toonloop_SOURCES = main.cpp gltools.cpp draw.cpp gui.cpp pipeline.cpp gstgtk.cpp
+toonloop_SOURCES = main.cpp gltools.cpp draw.cpp gui.cpp pipeline.cpp gstgtk.cpp application.cpp
 dummy_SOURCES = dummy.cpp gstgtk.cpp draw.cpp
 
 toonloop_CXXFLAGS = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS)  $(LIBLO_CXXFLAGS) $(GST_CFLAGS) $(BOOST_CPPFLAGS) $(GL_CFLAGS) $(GLU_CFLAGS) $(GTKGLEXT_CFLAGS) 

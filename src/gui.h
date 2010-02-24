@@ -1,6 +1,31 @@
 #ifndef __GUI_H__
 #define __GUI_H__
 
-void run_gui(gint argc, gchar* argv[]);
+#include <gtk/gtk.h>
+#include <gdk/gdk.h>
+#include <GL/glx.h>
+
+class Gui
+{
+    public:
+        GtkWidget *drawing_area_;
+        Gui(); 
+        ~Gui() {};
+        void toggleFullscreen() { toggleFullscreen(window_); } // no argument version of the same method below.
+
+    private:
+        GtkWidget *window_;
+        GLXContext glx_context_;
+        static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data);
+        static gboolean key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data);
+
+        static int onWindowStateEvent(_GtkWidget *widget, _GdkEventWindowState *event, void *data);
+        void toggleFullscreen(GtkWidget* widget);
+        void makeFullscreen(GtkWidget* widget);
+        void makeUnfullscreen(GtkWidget* widget);
+        void hideCursor();
+        void showCursor();
+        bool isFullscreen_;
+};
 
 #endif // __GUI_H__

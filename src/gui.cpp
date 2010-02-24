@@ -12,29 +12,8 @@
 #include "gltools.h"
 #include "pipeline.h"
 #include "draw.h"
+#include "gui.h"
 
-class Gui
-{
-    public:
-        GtkWidget *drawing_area_;
-        Gui(); 
-        ~Gui() {};
-        void toggleFullscreen() { toggleFullscreen(window_); } // no argument version of the same method below.
-
-    private:
-        GtkWidget *window_;
-        GLXContext glx_context_;
-        static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data);
-        static gboolean key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data);
-
-        static int onWindowStateEvent(_GtkWidget *widget, _GdkEventWindowState *event, void *data);
-        void toggleFullscreen(GtkWidget* widget);
-        void makeFullscreen(GtkWidget* widget);
-        void makeUnfullscreen(GtkWidget* widget);
-        void hideCursor();
-        void showCursor();
-        bool isFullscreen_;
-};
 
 gboolean Gui::onWindowStateEvent(GtkWidget* widget, GdkEventWindowState *event, gpointer data)
 {
@@ -174,15 +153,3 @@ Gui::Gui() :
     gtk_widget_show_all(window_);
 }
 
-void run_gui(gint argc, gchar* argv[])
-{
-    gtk_init(&argc, &argv);
-    // Init GTK GL:
-    gtk_gl_init(&argc, &argv);
-    gst_init(&argc, &argv);
-    Gui gui = Gui();
-    // init GST
-    Pipeline pipeline = Pipeline();
-    pipeline.set_drawing_area(gui.drawing_area_);
-    gtk_main();
-}
