@@ -17,10 +17,10 @@ class Pipeline
         GstElement* videosink_;
         GstPipeline* pipeline_;
         GstState state_;
-        static void end_stream_cb(GstBus* bus, GstMessage* msg, gpointer data);
+        static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);
 };
 
-static GstBusSyncReply sync_handler(GstBus* bus, GstMessage* message, GtkWidget* widget);
+static GstBusSyncReply create_window(GstBus* bus, GstMessage* message, GtkWidget* widget);
 static gboolean on_expose_event(GtkWidget* widget, GdkEventExpose* event, GstElement* videosink);
 void reshapeCallback(GLuint width, GLuint height, gpointer data);
 gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data);

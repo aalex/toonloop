@@ -73,7 +73,9 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
 void Gui::on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data)
 {
     Gui *context = static_cast<Gui*>(data);
-    g_print("Close\n");
+    g_print("Window has been deleted.\n");
+    // TODO: call Application::quit()
+    // TODO: which sets the pipeline to GST_STATE_NULL
     gtk_main_quit();
 }
 
@@ -128,6 +130,7 @@ Gui::Gui() :
     // Main GTK window
     window_ = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_widget_set_size_request(window_, 640, 480);
+    gtk_window_move (GTK_WINDOW (window_), 300, 10);
     gtk_window_set_title(GTK_WINDOW (window_), "Toonloop 1.3 experimental");
     GdkGeometry geometry;
     geometry.min_width = 1;
@@ -135,6 +138,7 @@ Gui::Gui() :
     geometry.max_width = -1;
     geometry.max_height = -1;
     gtk_window_set_geometry_hints(GTK_WINDOW(window_), window_, &geometry, GDK_HINT_MIN_SIZE);
+    // connect window signals:
     g_signal_connect(G_OBJECT(window_), "delete-event", G_CALLBACK(on_delete_event), this);
     g_signal_connect(G_OBJECT(window_), "key-press-event", G_CALLBACK(key_press_event), this);
     // add listener for window-state-event to detect fullscreenness
