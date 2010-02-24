@@ -1,3 +1,9 @@
+toonloop (1.2.2-0ubuntu1) lucid; urgency=low
+
+  * Fixed a bug with PyOpenGL related to LANG/charset.
+
+ -- Alexandre Quessy <alexandre@quessy.net>  Wed, 24 Feb 2010 15:22:58 -0500
+
 toonloop (1.2.1-0ubuntu1) lucid; urgency=low
 
   * Put icon and man page back into repository.
