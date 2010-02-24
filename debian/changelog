@@ -1,8 +1,8 @@
-toonloop (1.2.2-0ubuntu1) lucid; urgency=low
+toonloop (1.2.3-0ubuntu1) lucid; urgency=low
 
-  * Fixed a bug with PyOpenGL related to LANG/charset.
+  * Fixed a version error with a dependency. Namely, twisted.
 
- -- Alexandre Quessy <alexandre@quessy.net>  Wed, 24 Feb 2010 15:22:58 -0500
+ -- Alexandre Quessy <alexandre@quessy.net>  Wed, 24 Feb 2010 15:33:36 -0500
 
 toonloop (1.2.1-0ubuntu1) lucid; urgency=low
 
