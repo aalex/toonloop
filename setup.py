@@ -74,3 +74,4 @@ if sys.argv[1] == "build":
     print("in setup.py: %s" % (command_man))
     retcode = subprocess.call(command_man, shell=True)
     print("in setup.py: Command returned %s" % (retcode))
+    print("Done with the setup.py.")
