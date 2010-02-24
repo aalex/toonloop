@@ -29,6 +29,7 @@ __version__ = "1.2.1" # MUST ALSO CHANGE IT IN setup.py
 
 import sys
 import os
+os.environ["LANG"] = "C" # fixes a bug with PyOpenGL
 import pygame 
 import optparse
 try:
