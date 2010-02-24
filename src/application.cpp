@@ -14,7 +14,7 @@ void Application::run()
     std::cout << "Running toonloop\n";
     start_gui();
     start_pipeline();
-    get_pipeline().set_drawing_area(get_gui().drawing_area_);
+    get_pipeline().set_drawing_area(get_gui().get_drawing_area());
     gtk_main();
 }
 

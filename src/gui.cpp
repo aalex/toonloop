@@ -153,3 +153,8 @@ Gui::Gui() :
     gtk_widget_show_all(window_);
 }
 
+GtkWidget* Gui::get_drawing_area()
+{
+    return drawing_area_;
+}
+
