@@ -34,6 +34,10 @@
 
 #include <gst/gst.h>
 
+/* This is our SDL surface */
+SDL_Surface *surface;
+int videoFlags;;
+
 
 /* hack */
 typedef struct _GstGLBuffer GstGLBuffer;
@@ -56,15 +60,20 @@ float rquad = 0.0f;
 
 /* A general OpenGL initialization function.  Sets all of the initial parameters. */
 void
-InitGL (int Width, int Height)  // We call this right after our OpenGL window is created.
+InitGL ()   // We call this right after our OpenGL window is created.
 {
-  glViewport (0, 0, Width, Height);
   glClearColor (0.0f, 0.0f, 0.0f, 0.0f);        // This Will Clear The Background Color To Black
   glClearDepth (1.0);           // Enables Clearing Of The Depth Buffer
   glDepthFunc (GL_LESS);        // The Type Of Depth Test To Do
   glEnable (GL_DEPTH_TEST);     // Enables Depth Testing
   glShadeModel (GL_SMOOTH);     // Enables Smooth Color Shading
+}
 
+void resizeGL(int Width, int Height)
+{
+
+  g_print("Resize to %d %d\n", Width, Height);
+  glViewport (0, 0, Width, Height);
   glMatrixMode (GL_PROJECTION);
   glLoadIdentity ();            // Reset The Projection Matrix
 
@@ -152,10 +161,37 @@ update_sdl_scene (void *fk)
     if (event.type == SDL_QUIT) {
       g_main_loop_quit (loop);
     }
-    if (event.type == SDL_KEYDOWN) {
+    else if (event.type == SDL_KEYDOWN) {
       if (event.key.keysym.sym == SDLK_ESCAPE) {
         g_main_loop_quit (loop);
       }
+      else if (event.key.keysym.sym == SDLK_F1) {
+        /* F1 key was pressed
+         * this toggles fullscreen mode
+         */
+        //SDL_WM_ToggleFullScreen(surface);
+        videoFlags ^= SDL_FULLSCREEN; // toggles it
+        surface = SDL_SetVideoMode(0, 0, 0, videoFlags);
+        if(surface == NULL) {
+            videoFlags ^= SDL_FULLSCREEN; // toggles it
+            surface = SDL_SetVideoMode(0, 0, 0, videoFlags); /* If toggle FullScreen failed, then switch back */
+            if(surface == NULL) { 
+                g_print("Could not recreatea surface full screen.\n");
+                exit(1);
+            }
+        }
+        g_print("Fullscreen is %d\n", videoFlags & SDL_FULLSCREEN);
+      }
+    }
+    else if (event.type == SDL_VIDEORESIZE) {
+      /* handle resize event */
+      g_print("SDL_VIDEORESIZE\n");
+      surface = SDL_SetVideoMode(event.resize.w, event.resize.h, 16, videoFlags );
+      if (!surface) {
+        fprintf(stderr, "Could not get a surface after resize: %s\n", SDL_GetError());
+        g_main_loop_quit (loop);
+      }
+      resizeGL( event.resize.w, event.resize.h );
     }
   }
 
@@ -259,9 +295,10 @@ main (int argc, char **argv)
     fprintf (stderr, "Unable to initialize SDL: %s\n", SDL_GetError ());
     return -1;
   }
-
+  videoFlags = SDL_OPENGL | SDL_RESIZABLE;
   /* Create a 640x480 OpenGL screen */
-  if (SDL_SetVideoMode (640, 480, 0, SDL_OPENGL) == NULL) {
+  surface = SDL_SetVideoMode (640, 480, 0, videoFlags);
+  if (surface == NULL) {
     fprintf (stderr, "Unable to create OpenGL screen: %s\n", SDL_GetError ());
     SDL_Quit ();
     return -1;
@@ -272,7 +309,8 @@ main (int argc, char **argv)
 
 
   /* Loop, drawing and checking events */
-  InitGL (640, 480);
+  InitGL();
+  resizeGL(640, 480);
 
   gst_init (&argc, &argv);
   loop = g_main_loop_new (NULL, FALSE);
