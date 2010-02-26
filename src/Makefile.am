@@ -1,5 +1,5 @@
 bin_PROGRAMS = toonloop dummy sdlshare
-
+# gtkshare
 
 toonloop_SOURCES = main.cpp gltools.cpp draw.cpp gui.cpp pipeline.cpp gstgtk.cpp application.cpp
 toonloop_CXXFLAGS = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS)  $(LIBLO_CXXFLAGS) $(GST_CFLAGS) $(BOOST_CPPFLAGS) $(GL_CFLAGS) $(GLU_CFLAGS) $(GTKGLEXT_CFLAGS) 
@@ -12,3 +12,7 @@ dummy_LDADD = $(LIBM_LIBS) $(LIBTHREAD_LIBS) $(LIBLO_LIBS) $(GST_LIBS) $(BOOST_L
 sdlshare_SOURCES = sdlshare.cpp
 sdlshare_CXXFLAGS = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS) $(GST_CFLAGS) $(GL_CFLAGS) $(GLU_CFLAGS) $(GLEW_CFLAGS) $(SDL_CFLAGS)
 sdlshare_LDADD = $(LIBM_LIBS) $(LIBTHREAD_LIBS) $(GST_LIBS) $(GL_LIBS) $(GLU_LIBS) $(GLEW_LIBS) $(SDL_LIBS)
+
+gtkshare_SOURCES = gtkshare.cpp
+gtkshare_CXXFLAGS = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS) $(GST_CFLAGS) $(GL_CFLAGS) $(GLU_CFLAGS) $(GLEW_CFLAGS) $(GTKGLEXT_FLAGS)
+gtkshare_LDADD = $(LIBM_LIBS) $(LIBTHREAD_LIBS) $(GST_LIBS) $(GL_LIBS) $(GLU_LIBS) $(GLEW_LIBS) $(SDL_LIBS) $(GTKGLEXT_LIBS)
