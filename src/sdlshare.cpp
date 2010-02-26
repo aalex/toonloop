@@ -186,7 +186,7 @@ update_sdl_scene (void *fk)
     else if (event.type == SDL_VIDEORESIZE) {
       /* handle resize event */
       g_print("SDL_VIDEORESIZE\n");
-      surface = SDL_SetVideoMode(event.resize.w, event.resize.h, 16, videoFlags );
+      surface = SDL_SetVideoMode(event.resize.w, event.resize.h, 0, videoFlags );
       if (!surface) {
         fprintf(stderr, "Could not get a surface after resize: %s\n", SDL_GetError());
         g_main_loop_quit (loop);
