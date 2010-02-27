@@ -41,6 +41,8 @@
 /* This is our SDL surface */
 SDL_Surface *surface;
 int videoFlags;;
+int x11_screen_width = 0;
+int x11_screen_height = 0;
 
 
 /* hack */
@@ -175,16 +177,30 @@ update_sdl_scene (void *fk)
          */
         //SDL_WM_ToggleFullScreen(surface);
         videoFlags ^= SDL_FULLSCREEN; // toggles it
-        surface = SDL_SetVideoMode(0, 0, 0, videoFlags);
+        if ((videoFlags & SDL_FULLSCREEN) != 0)
+        {
+            g_print("Fullscreen ON \n");
+            int w = 0;
+            int h = 0;
+#ifndef WIN32
+            w = x11_screen_width;
+            h = x11_screen_height;
+#endif
+            g_print("using a size of %d x %d\n", w, h);
+            surface = SDL_SetVideoMode(w, h, 0, videoFlags);
+        } else{
+            g_print("Fullscreen OFF \n");
+            surface = SDL_SetVideoMode(0, 0, 0, videoFlags);
+        }
         if(surface == NULL) {
+            g_print("Surface is NULL. Back to what it was.\n");
             videoFlags ^= SDL_FULLSCREEN; // toggles it
             surface = SDL_SetVideoMode(0, 0, 0, videoFlags); /* If toggle FullScreen failed, then switch back */
             if(surface == NULL) { 
-                g_print("Could not recreatea surface full screen.\n");
+                g_print("Could not recreate a surface full screen.\n");
                 exit(1);
             }
         }
-        g_print("Fullscreen is %d\n", videoFlags & SDL_FULLSCREEN);
       }
     }
     else if (event.type == SDL_VIDEORESIZE) {
@@ -340,13 +356,17 @@ main (int argc, char **argv)
   glXMakeCurrent (sdl_display, None, 0);
 #endif
 
+#ifndef WIN32
   // XXX Linux only:
   std::cout << "display infos:" << std::endl;
   int scr = 0;
   for (int i = 0; i < ScreenCount(sdl_display); i++) 
   {
-    g_print("  screen #%d  dimensions:    %dx%d pixels \n", i, XDisplayWidth(sdl_display, scr), XDisplayHeight(sdl_display, scr));
+    x11_screen_width = XDisplayWidth(sdl_display, i);
+    x11_screen_height = XDisplayHeight(sdl_display, i);
+    g_print("  screen #%d  dimensions:    %dx%d pixels \n", i, x11_screen_width, x11_screen_height);
   }
+#endif
 
   pipeline =
       GST_PIPELINE (gst_parse_launch
