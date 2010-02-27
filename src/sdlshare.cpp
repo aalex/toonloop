@@ -29,10 +29,12 @@
 
 #ifndef WIN32
 #include <GL/glx.h>
+// #include <X11/Xlib.h>
 #include "SDL/SDL_syswm.h"
 #endif
 
 #include <gst/gst.h>
+#include <iostream>
 
 /* This is our SDL surface */
 SDL_Surface *surface;
@@ -296,6 +298,7 @@ main (int argc, char **argv)
     return -1;
   }
   videoFlags = SDL_OPENGL | SDL_RESIZABLE;
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   /* Create a 640x480 OpenGL screen */
   surface = SDL_SetVideoMode (640, 480, 0, videoFlags);
   if (surface == NULL) {
@@ -303,6 +306,11 @@ main (int argc, char **argv)
     SDL_Quit ();
     return -1;
   }
+
+  // Get the current video hardware information
+  //const SDL_VideoInfo* sdl_video_info = SDL_GetVideoInfo();
+  //std::cout << "Current video resolution is " << sdl_video_info->current_w << "x" << sdl_video_info->current_h << " pixels" << std::endl;
+
 
   /* Set the title bar in environments that support it */
   SDL_WM_SetCaption ("SDL and gst-plugins-gl", NULL);
@@ -328,6 +336,14 @@ main (int argc, char **argv)
   sdl_gl_context = glXGetCurrentContext ();
   glXMakeCurrent (sdl_display, None, 0);
 #endif
+
+  // XXX Linux only:
+  std::cout << "display infos:" << std::endl;
+  int scr = 0;
+  for (int i = 0; i < ScreenCount(sdl_display); i++) 
+  {
+    g_print("  screen #%d  dimensions:    %dx%d pixels \n", i, XDisplayWidth(sdl_display, scr), XDisplayHeight(sdl_display, scr));
+  }
 
   pipeline =
       GST_PIPELINE (gst_parse_launch
