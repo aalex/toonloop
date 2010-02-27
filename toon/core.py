@@ -194,7 +194,7 @@ class Configuration(object): #Serializable):
         # intervalometer
         self.intervalometer_on = False 
         self.intervalometer_enabled = True
-        self.intervalometer_rate_seconds = 10.0 # in seconds
+        self.intervalometer_rate_seconds = 5.0 # in seconds
         # TODO: clean intervalometer on/enabled stuff
         
         # autosave
