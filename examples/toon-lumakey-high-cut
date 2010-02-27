@@ -1,0 +1,12 @@
+#!/bin/bash
+# Sets the lumakey effect to cut black pixels.
+#
+# toonloop has to be started with the following options:
+# 
+# toonloop -o fudi_enabled 1 --enable-effects -v 
+# 
+
+echo /option/group lumakey luma_gate 0.8 \; | nc localhost 15555 -q 1
+echo /option/group lumakey alpha_under 1.0 \; | nc localhost 15555 -q 1
+echo /option/group lumakey alpha_over 0.0 \; | nc localhost 15555 -q 1
+
