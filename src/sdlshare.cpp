@@ -35,6 +35,8 @@
 
 #include <gst/gst.h>
 #include <iostream>
+#include <cstdlib> // for getenv
+
 
 /* This is our SDL surface */
 SDL_Surface *surface;
@@ -272,6 +274,7 @@ end_stream_cb (GstBus * bus, GstMessage * msg, GMainLoop * loop)
 int
 main (int argc, char **argv)
 {
+  std::cout << "DISPLAY=" << std::getenv("DISPLAY") << std::endl;
 
 #ifdef WIN32
   HGLRC sdl_gl_context = 0;
