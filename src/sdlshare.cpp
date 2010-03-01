@@ -311,7 +311,7 @@ main (int argc, char **argv)
   GMainLoop *loop = NULL;
   GstPipeline *pipeline = NULL;
   GstBus *bus = NULL;
-  GstElement *glfilter = NULL;
+  //GstElement *glfilter = NULL;
   GstElement *fakesink = NULL;
   GstState state;
   GAsyncQueue *queue_input_buf = NULL;
@@ -325,10 +325,10 @@ main (int argc, char **argv)
   videoFlags = SDL_OPENGL | SDL_RESIZABLE;
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   /* Create a 640x480 OpenGL screen */
-  surface = SDL_SetVideoMode (640, 480, 0, videoFlags);
+  surface = SDL_SetVideoMode(640, 480, 0, videoFlags);
   if (surface == NULL) {
-    fprintf (stderr, "Unable to create OpenGL screen: %s\n", SDL_GetError ());
-    SDL_Quit ();
+    fprintf(stderr, "Unable to create OpenGL screen: %s\n", SDL_GetError ());
+    SDL_Quit();
     return -1;
   }
 
@@ -338,7 +338,7 @@ main (int argc, char **argv)
 
 
   /* Set the title bar in environments that support it */
-  SDL_WM_SetCaption ("SDL and gst-plugins-gl", NULL);
+  SDL_WM_SetCaption("Toonloop 1.3 SDL Prototype", NULL);
 
 
   /* Loop, drawing and checking events */
@@ -374,6 +374,36 @@ main (int argc, char **argv)
   }
 #endif
 
+  // Gstreamer Pipeline:
+  //
+  pipeline = GST_PIPELINE(gst_pipeline_new("pipeline0"));
+  GstElement* videotestsrc0  = gst_element_factory_make("videotestsrc", "videotestsrc0");
+  GstElement* capsfilter0 = gst_element_factory_make("capsfilter", "capsfilter0");
+  GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv",
+                                      "width", G_TYPE_INT, 640,
+                                      "height", G_TYPE_INT, 480,
+                                      "framerate", GST_TYPE_FRACTION, 30, 1,
+                                      NULL); 
+  g_object_set(capsfilter0, "caps", caps, NULL);
+  gst_caps_unref(caps);
+  GstElement* glupload0 = gst_element_factory_make("glupload", "glupload0");
+  GstElement* fakesink0 = gst_element_factory_make("fakesink", "fakesink0");
+  if (!videotestsrc0 or !capsfilter0 or !glupload0 or !fakesink0)
+  {
+       g_print("one element could not be found \n");
+       exit(1);
+   }
+  gst_bin_add_many(GST_BIN(pipeline), videotestsrc0, capsfilter0, glupload0, fakesink0, NULL);
+  gboolean linked_ok = gst_element_link_many(videotestsrc0, capsfilter0, glupload0, fakesink0, NULL);
+  if (!linked_ok)
+  {
+      g_print("Could not link the elements\n.");
+      exit(1);
+  }
+  g_object_set(fakesink0, "sync", TRUE, NULL); // what for ?
+  g_object_set(G_OBJECT(glupload0), "external-opengl-context",
+      sdl_gl_context, NULL);
+#if 0
   pipeline =
       GST_PIPELINE (gst_parse_launch
       ("videotestsrc ! video/x-raw-yuv, width=320, height=240, framerate=(fraction)30/1 ! "
@@ -391,14 +421,15 @@ main (int argc, char **argv)
   g_object_set (G_OBJECT (glfilter), "external-opengl-context",
       sdl_gl_context, NULL);
   g_object_unref (glfilter);
+#endif 
 
   /* NULL to PAUSED state pipeline to make sure the gst opengl context is created and
    * shared with the sdl one */
-  gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_PAUSED);
+  gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PAUSED);
   state = GST_STATE_PAUSED;
-  if (gst_element_get_state (GST_ELEMENT (pipeline), &state, NULL,
+  if (gst_element_get_state(GST_ELEMENT(pipeline), &state, NULL,
           GST_CLOCK_TIME_NONE) != GST_STATE_CHANGE_SUCCESS) {
-    g_debug ("failed to pause pipeline\n");
+    g_debug("failed to pause pipeline\n");
     return -1;
   }
 
@@ -410,19 +441,19 @@ main (int argc, char **argv)
 #endif
 
   /* append a gst-gl texture to this queue when you do not need it no more */
-  fakesink = gst_bin_get_by_name (GST_BIN (pipeline), "fakesink0");
-  g_object_set (G_OBJECT (fakesink), "signal-handoffs", TRUE, NULL);
-  g_signal_connect (fakesink, "handoff", G_CALLBACK (on_gst_buffer), NULL);
-  queue_input_buf = g_async_queue_new ();
-  queue_output_buf = g_async_queue_new ();
-  g_object_set_data (G_OBJECT (fakesink), "queue_input_buf", queue_input_buf);
-  g_object_set_data (G_OBJECT (fakesink), "queue_output_buf", queue_output_buf);
-  g_object_set_data (G_OBJECT (fakesink), "loop", loop);
-  g_object_unref (fakesink);
+  fakesink = gst_bin_get_by_name(GST_BIN(pipeline), "fakesink0");
+  g_object_set(G_OBJECT(fakesink), "signal-handoffs", TRUE, NULL);
+  g_signal_connect(fakesink, "handoff", G_CALLBACK(on_gst_buffer), NULL);
+  queue_input_buf = g_async_queue_new();
+  queue_output_buf = g_async_queue_new();
+  g_object_set_data(G_OBJECT(fakesink), "queue_input_buf", queue_input_buf);
+  g_object_set_data(G_OBJECT(fakesink), "queue_output_buf", queue_output_buf);
+  g_object_set_data(G_OBJECT(fakesink), "loop", loop);
+  g_object_unref(fakesink);
 
-  gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_PLAYING);
+  gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PLAYING);
 
-  g_main_loop_run (loop);
+  g_main_loop_run(loop);
 
   /* before to deinitialize the gst-gl-opengl context,
    * no shared context (here the sdl one) must be current
@@ -430,17 +461,17 @@ main (int argc, char **argv)
 #ifdef WIN32
   wglMakeCurrent (0, 0);
 #else
-  glXMakeCurrent (sdl_display, sdl_win, sdl_gl_context);
+  glXMakeCurrent(sdl_display, sdl_win, sdl_gl_context);
 #endif
 
-  gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_NULL);
-  g_object_unref (pipeline);
+  gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_NULL);
+  g_object_unref(pipeline);
 
   /* turn on back sdl opengl context */
 #ifdef WIN32
-  wglMakeCurrent (sdl_dc, sdl_gl_context);
+  wglMakeCurrent(sdl_dc, sdl_gl_context);
 #else
-  glXMakeCurrent (sdl_display, None, 0);
+  glXMakeCurrent(sdl_display, None, 0);
 #endif
 
   SDL_Quit ();
@@ -448,14 +479,14 @@ main (int argc, char **argv)
   /* make sure there is no pending gst gl buffer in the communication queues 
    * between sdl and gst-gl
    */
-  while (g_async_queue_length (queue_input_buf) > 0) {
-    GstBuffer *buf = (GstBuffer *) g_async_queue_pop (queue_input_buf);
-    gst_buffer_unref (buf);
+  while (g_async_queue_length(queue_input_buf) > 0) {
+    GstBuffer *buf = (GstBuffer *) g_async_queue_pop(queue_input_buf);
+    gst_buffer_unref(buf);
   }
 
-  while (g_async_queue_length (queue_output_buf) > 0) {
-    GstBuffer *buf = (GstBuffer *) g_async_queue_pop (queue_output_buf);
-    gst_buffer_unref (buf);
+  while (g_async_queue_length(queue_output_buf) > 0) {
+    GstBuffer *buf = (GstBuffer *) g_async_queue_pop(queue_output_buf);
+    gst_buffer_unref(buf);
   }
 
   return 0;
