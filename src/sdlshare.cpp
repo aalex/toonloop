@@ -376,10 +376,12 @@ main (int argc, char **argv)
 
   // Gstreamer Pipeline:
   // gst-launch v4l2src device=/dev/video0 ! video/x-raw-yuv,format=\(fourcc\)UYVY,width=640,height=480 ! ffmpegcolorspace ! xvimagesink
+  // video source:
   pipeline = GST_PIPELINE(gst_pipeline_new("pipeline0"));
   g_assert(pipeline);
   GstElement* videotestsrc0  = gst_element_factory_make("videotestsrc", "videotestsrc0");
   g_assert(videotestsrc0);
+  // caps filter element:
   GstElement* capsfilter0 = gst_element_factory_make("capsfilter", "capsfilter0");
   g_assert(capsfilter0);
   GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv",
@@ -390,25 +392,21 @@ main (int argc, char **argv)
       NULL); 
   g_object_set(capsfilter0, "caps", caps, NULL);
   gst_caps_unref(caps);
+  // ffmpegcolorspace0 element:
   GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
   g_assert(ffmpegcolorspace0);
+  // glupload0 element:
   GstElement* glupload0 = gst_element_factory_make("glupload", "glupload0");
   g_assert(glupload0);
   GstElement* fakesink0 = gst_element_factory_make("fakesink", "fakesink0");
   g_assert(fakesink0);
-  //if (!videotestsrc0 or !capsfilter0 or !ffmpegcolorspace0 or !glupload0 or !fakesink0)
-  //{
-  //     g_print("one element could not be found \n");
-  //     exit(1);
-  // }
-  // 
   // add elements
   gst_bin_add(GST_BIN(pipeline), videotestsrc0);
   gst_bin_add(GST_BIN(pipeline), capsfilter0);
   gst_bin_add(GST_BIN(pipeline), ffmpegcolorspace0);
   gst_bin_add(GST_BIN(pipeline), glupload0);
   gst_bin_add(GST_BIN(pipeline), fakesink0);
-  // link pads
+  // link pads:
   gboolean is_linked = NULL;
   is_linked = gst_element_link_pads(videotestsrc0, "src", capsfilter0, "sink");
   if (!is_linked) { g_print("Could not link %s to %s.\n", "videotestsrc0", "capsfilter0"); exit(1); }
@@ -419,35 +417,17 @@ main (int argc, char **argv)
   is_linked = gst_element_link_pads(glupload0, "src", fakesink0, "sink");
   if (!is_linked) { g_print("Could not link %s to %s.\n", "glupload0", "fakesink0"); exit(1); }
 
-  //gst_bin_add_many(GST_BIN(pipeline), videotestsrc0, capsfilter0, ffmpegcolorspace0, glupload0, fakesink0, NULL);
-  //gboolean linked_ok = gst_element_link_many(videotestsrc0, capsfilter0, ffmpegcolorspace0, glupload0, fakesink0, NULL);
-  //if (!linked_ok)
-  //{
-  //    g_print("Could not link the elements\n.");
-  //    exit(1);
-  //}
-  g_object_set(fakesink0, "sync", TRUE, NULL); // what for ?
-  g_object_set(G_OBJECT(glupload0), "external-opengl-context",
-      sdl_gl_context, NULL);
-#if 0
-  pipeline =
-      GST_PIPELINE (gst_parse_launch
-      ("videotestsrc ! video/x-raw-yuv, width=320, height=240, framerate=(fraction)30/1 ! "
-          "glupload ! gleffects effect=5 ! fakesink sync=1", NULL));
-
-  bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-  gst_bus_add_signal_watch (bus);
-  g_signal_connect (bus, "message::error", G_CALLBACK (end_stream_cb), loop);
-  g_signal_connect (bus, "message::warning", G_CALLBACK (end_stream_cb), loop);
-  g_signal_connect (bus, "message::eos", G_CALLBACK (end_stream_cb), loop);
-  gst_object_unref (bus);
-
+  g_object_set(fakesink0, "sync", TRUE, NULL); 
+  //TODO: g_object_set(v4l2src0, "device", "/dev/video0", NULL); 
   /* sdl_gl_context is an external OpenGL context with which gst-plugins-gl want to share textures */
-  glfilter = gst_bin_get_by_name (GST_BIN (pipeline), "gleffects0");
-  g_object_set (G_OBJECT (glfilter), "external-opengl-context",
-      sdl_gl_context, NULL);
-  g_object_unref (glfilter);
-#endif 
+  g_object_set(G_OBJECT(glupload0), "external-opengl-context", sdl_gl_context, NULL);
+
+  bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline));
+  gst_bus_add_signal_watch(bus);
+  g_signal_connect(bus, "message::error", G_CALLBACK(end_stream_cb), loop);
+  g_signal_connect(bus, "message::warning", G_CALLBACK(end_stream_cb), loop);
+  g_signal_connect(bus, "message::eos", G_CALLBACK(end_stream_cb), loop);
+  gst_object_unref(bus);
 
   /* NULL to PAUSED state pipeline to make sure the gst opengl context is created and
    * shared with the sdl one */
