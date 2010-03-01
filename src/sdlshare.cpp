@@ -188,9 +188,15 @@ update_sdl_scene (void *fk)
 #endif
             g_print("using a size of %d x %d\n", w, h);
             surface = SDL_SetVideoMode(w, h, 0, videoFlags);
+            if(surface != NULL) {
+                resizeGL(w, h);
+            }
         } else{
             g_print("Fullscreen OFF \n");
-            surface = SDL_SetVideoMode(0, 0, 0, videoFlags);
+            surface = SDL_SetVideoMode(640, 480, 0, videoFlags);
+            if(surface != NULL) {
+                resizeGL(640, 480);
+            }
         }
         if(surface == NULL) {
             g_print("Surface is NULL. Back to what it was.\n");
