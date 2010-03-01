@@ -375,26 +375,28 @@ main (int argc, char **argv)
 #endif
 
   // Gstreamer Pipeline:
-  //
+  // gst-launch v4l2src device=/dev/video0 ! video/x-raw-yuv,format=\(fourcc\)UYVY,width=640,height=480 ! ffmpegcolorspace ! xvimagesink
   pipeline = GST_PIPELINE(gst_pipeline_new("pipeline0"));
   GstElement* videotestsrc0  = gst_element_factory_make("videotestsrc", "videotestsrc0");
   GstElement* capsfilter0 = gst_element_factory_make("capsfilter", "capsfilter0");
   GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv",
-                                      "width", G_TYPE_INT, 640,
-                                      "height", G_TYPE_INT, 480,
-                                      "framerate", GST_TYPE_FRACTION, 30, 1,
-                                      NULL); 
+      "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC('U','Y','V','Y'),
+      "width", G_TYPE_INT, 640,
+      "height", G_TYPE_INT, 480,
+      //"framerate", GST_TYPE_FRACTION, 30, 1,
+      NULL); 
   g_object_set(capsfilter0, "caps", caps, NULL);
   gst_caps_unref(caps);
+  GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
   GstElement* glupload0 = gst_element_factory_make("glupload", "glupload0");
   GstElement* fakesink0 = gst_element_factory_make("fakesink", "fakesink0");
-  if (!videotestsrc0 or !capsfilter0 or !glupload0 or !fakesink0)
+  if (!videotestsrc0 or !capsfilter0 or !ffmpegcolorspace0 or !glupload0 or !fakesink0)
   {
        g_print("one element could not be found \n");
        exit(1);
    }
-  gst_bin_add_many(GST_BIN(pipeline), videotestsrc0, capsfilter0, glupload0, fakesink0, NULL);
-  gboolean linked_ok = gst_element_link_many(videotestsrc0, capsfilter0, glupload0, fakesink0, NULL);
+  gst_bin_add_many(GST_BIN(pipeline), videotestsrc0, capsfilter0, ffmpegcolorspace0, glupload0, fakesink0, NULL);
+  gboolean linked_ok = gst_element_link_many(videotestsrc0, capsfilter0, ffmpegcolorspace0, glupload0, fakesink0, NULL);
   if (!linked_ok)
   {
       g_print("Could not link the elements\n.");
