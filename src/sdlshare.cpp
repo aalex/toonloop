@@ -18,6 +18,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
+
+// Try to launch with:
+//  --gst-debug=v4l2src:4
+
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -149,7 +153,7 @@ DrawGLScene (GstGLBuffer * gst_gl_buf)
 }
 
 gboolean
-update_sdl_scene (void *fk)
+update_sdl_scene(void *fk)
 {
   GstElement *fakesink = (GstElement *) fk;
   GMainLoop *loop =
@@ -168,10 +172,10 @@ update_sdl_scene (void *fk)
       g_main_loop_quit (loop);
     }
     else if (event.type == SDL_KEYDOWN) {
-      if (event.key.keysym.sym == SDLK_ESCAPE) {
+      if (event.key.keysym.sym == SDLK_q) {
         g_main_loop_quit (loop);
       }
-      else if (event.key.keysym.sym == SDLK_F1) {
+      else if (event.key.keysym.sym == SDLK_ESCAPE) {
         /* F1 key was pressed
          * this toggles fullscreen mode
          */
@@ -377,10 +381,12 @@ main (int argc, char **argv)
   // Gstreamer Pipeline:
   // gst-launch v4l2src device=/dev/video0 ! video/x-raw-yuv,format=\(fourcc\)UYVY,width=640,height=480 ! ffmpegcolorspace ! xvimagesink
   // video source:
+  // See also gtkmedia.c in pidgin for a nice auto-detected video source.
+  // See also cheese.
   pipeline = GST_PIPELINE(gst_pipeline_new("pipeline0"));
   g_assert(pipeline);
-  GstElement* videotestsrc0  = gst_element_factory_make("videotestsrc", "videotestsrc0");
-  g_assert(videotestsrc0);
+  GstElement* videosrc0  = gst_element_factory_make("v4l2src", "videosrc0");
+  g_assert(videosrc0);
   // caps filter element:
   GstElement* capsfilter0 = gst_element_factory_make("capsfilter", "capsfilter0");
   g_assert(capsfilter0);
@@ -401,15 +407,15 @@ main (int argc, char **argv)
   GstElement* fakesink0 = gst_element_factory_make("fakesink", "fakesink0");
   g_assert(fakesink0);
   // add elements
-  gst_bin_add(GST_BIN(pipeline), videotestsrc0);
+  gst_bin_add(GST_BIN(pipeline), videosrc0);
   gst_bin_add(GST_BIN(pipeline), capsfilter0);
   gst_bin_add(GST_BIN(pipeline), ffmpegcolorspace0);
   gst_bin_add(GST_BIN(pipeline), glupload0);
   gst_bin_add(GST_BIN(pipeline), fakesink0);
   // link pads:
   gboolean is_linked = NULL;
-  is_linked = gst_element_link_pads(videotestsrc0, "src", capsfilter0, "sink");
-  if (!is_linked) { g_print("Could not link %s to %s.\n", "videotestsrc0", "capsfilter0"); exit(1); }
+  is_linked = gst_element_link_pads(videosrc0, "src", capsfilter0, "sink");
+  if (!is_linked) { g_print("Could not link %s to %s.\n", "videosrc0", "capsfilter0"); exit(1); }
   is_linked = gst_element_link_pads(capsfilter0, "src", ffmpegcolorspace0, "sink");
   if (!is_linked) { g_print("Could not link %s to %s.\n", "capsfilter0", "ffmpegcolorspace0"); exit(1); }
   is_linked = gst_element_link_pads(ffmpegcolorspace0, "src", glupload0, "sink");
@@ -418,7 +424,10 @@ main (int argc, char **argv)
   if (!is_linked) { g_print("Could not link %s to %s.\n", "glupload0", "fakesink0"); exit(1); }
 
   g_object_set(fakesink0, "sync", TRUE, NULL); 
-  //TODO: g_object_set(v4l2src0, "device", "/dev/video0", NULL); 
+  //TODO: 
+  char* device_name = "/dev/video0";
+  g_print("Using camera %s.\n", device_name);
+  g_object_set(videosrc0, "device", device_name, NULL); 
   /* sdl_gl_context is an external OpenGL context with which gst-plugins-gl want to share textures */
   g_object_set(G_OBJECT(glupload0), "external-opengl-context", sdl_gl_context, NULL);
 
@@ -432,18 +441,21 @@ main (int argc, char **argv)
   /* NULL to PAUSED state pipeline to make sure the gst opengl context is created and
    * shared with the sdl one */
   gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PAUSED);
+  // FIXME: cannot set it to pause right now.
+#if 0
   state = GST_STATE_PAUSED;
   if (gst_element_get_state(GST_ELEMENT(pipeline), &state, NULL,
           GST_CLOCK_TIME_NONE) != GST_STATE_CHANGE_SUCCESS) {
     g_debug("failed to pause pipeline\n");
     return -1;
   }
+#endif 
 
   /* turn on back sdl opengl context */
 #ifdef WIN32
-  wglMakeCurrent (sdl_dc, sdl_gl_context);
+  wglMakeCurrent(sdl_dc, sdl_gl_context);
 #else
-  glXMakeCurrent (sdl_display, sdl_win, sdl_gl_context);
+  glXMakeCurrent(sdl_display, sdl_win, sdl_gl_context);
 #endif
 
   /* append a gst-gl texture to this queue when you do not need it no more */
@@ -465,7 +477,7 @@ main (int argc, char **argv)
    * no shared context (here the sdl one) must be current
    */
 #ifdef WIN32
-  wglMakeCurrent (0, 0);
+  wglMakeCurrent(0, 0);
 #else
   glXMakeCurrent(sdl_display, sdl_win, sdl_gl_context);
 #endif
