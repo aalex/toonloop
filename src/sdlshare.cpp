@@ -173,7 +173,10 @@ update_sdl_scene(void *fk)
     }
     else if (event.type == SDL_KEYDOWN) {
       if (event.key.keysym.sym == SDLK_q) {
-        g_main_loop_quit (loop);
+        if ((event.key.keysym.mod & KMOD_LCTRL) or (event.key.keysym.mod & KMOD_RCTRL)) 
+        {
+          g_main_loop_quit (loop);
+        }
       }
       else if (event.key.keysym.sym == SDLK_ESCAPE) {
         /* F1 key was pressed
