@@ -23,6 +23,7 @@ void draw::draw_square()
  * @param width: width of the image in pixels
  * @param height: height of the image in pixels
  */
+// FIXME: should be float args
 void draw::draw_textured_square(int width, int height)
 {
     glBegin(GL_QUADS);

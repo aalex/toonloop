@@ -1,23 +1,23 @@
 /*
- * GStreamer
- * Copyright (C) 2009 Julien Isorce <julien.isorce@gmail.com>
+ * Toonloop
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * Copyright 2010 Alexandre Quessy
+ * <alexandre@quessy.net>
+ * http://www.toonloop.com
  *
- * This library is distributed in the hope that it will be useful,
+ * Toonloop is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Toonloop is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * You should have received a copy of the gnu general public license
+ * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 
 // Try to launch with:
 //  --gst-debug=v4l2src:4
@@ -41,13 +41,11 @@
 #include <iostream>
 #include <cstdlib> // for getenv
 
-
 /* This is our SDL surface */
 SDL_Surface *surface;
 int videoFlags;;
 int x11_screen_width = 0;
 int x11_screen_height = 0;
-
 
 /* hack */
 typedef struct _GstGLBuffer GstGLBuffer;
@@ -62,98 +60,134 @@ struct _GstGLBuffer
   GLuint texture;
 };
 
-/* rotation angle for the triangle. */
-float rtri = 0.0f;
+/* rotation angle */
+float zrot = 0.0f;
 
-/* rotation angle for the quadrilateral. */
-float rquad = 0.0f;
-
-/* A general OpenGL initialization function.  Sets all of the initial parameters. */
-void
-InitGL ()   // We call this right after our OpenGL window is created.
+/**
+ * Draws a line between given points.
+ */
+void draw_line(float from_x, float from_y, float to_x, float to_y)
 {
-  glClearColor (0.0f, 0.0f, 0.0f, 0.0f);        // This Will Clear The Background Color To Black
-  glClearDepth (1.0);           // Enables Clearing Of The Depth Buffer
-  glDepthFunc (GL_LESS);        // The Type Of Depth Test To Do
-  glEnable (GL_DEPTH_TEST);     // Enables Depth Testing
-  glShadeModel (GL_SMOOTH);     // Enables Smooth Color Shading
+    glBegin(GL_LINES);
+    glVertex2f(from_x, from_y);
+    glVertex2f(to_x, to_y);
+    glEnd();
+}
+/**
+ * Draws a texture square of 2 x 2 size centered at 0, 0
+ * 
+ * Make sure to call glEnable(GL_TEXTURE_RECTANGLE_ARB) first.
+ * 
+ * @param width: width of the image in pixels
+ * @param height: height of the image in pixels
+ */
+void draw_vertically_flipped_textured_square(float width, float height)
+{
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, height);
+    glVertex2f(-1.0, -1.0); // Bottom Left
+    glTexCoord2f(width, height);
+    glVertex2f(1.0, -1.0); // Bottom Right
+    glTexCoord2f(width, 0.0);
+    glVertex2f(1.0, 1.0); // Top Right
+    glTexCoord2f(0.0, 0.0);
+    glVertex2f(-1.0, 1.0); // Top Left
+    glEnd();
 }
 
-void resizeGL(int Width, int Height)
+/* A general OpenGL initialization function.  Sets all of the initial parameters. */
+void init_opengl_scene()   // We call this right after our OpenGL window is created.
 {
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // This Will Clear The Background Color To Black
+    glShadeModel(GL_SMOOTH);     // Enables Smooth Color Shading
+    glEnable(GL_POLYGON_SMOOTH);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+}
 
-  g_print("Resize to %d %d\n", Width, Height);
-  glViewport (0, 0, Width, Height);
-  glMatrixMode (GL_PROJECTION);
-  glLoadIdentity ();            // Reset The Projection Matrix
-
-  gluPerspective (45.0f, (GLfloat) Width / (GLfloat) Height, 0.1f, 100.0f);     // Calculate The Aspect Ratio Of The Window
-
-  glMatrixMode (GL_MODELVIEW);
+void resize_rendering_area(int width, int height)
+{
+    // gl coords are 1.0 of height
+    float w = float(width) / float(height);
+    float h = 1.0;
+    g_print("Resize to %d %d\n", width, height);
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-w, w, -h, h, -1.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
 }
 
 /* The main drawing function. */
-void
-DrawGLScene (GstGLBuffer * gst_gl_buf)
+void DrawGLScene (GstGLBuffer * gst_gl_buf)
 {
-  GLuint texture = gst_gl_buf->texture;
-  GLfloat width = (GLfloat) gst_gl_buf->width;
-  GLfloat height = (GLfloat) gst_gl_buf->height;
+    GLuint texture = gst_gl_buf->texture;
+    GLfloat width = (GLfloat) gst_gl_buf->width;
+    GLfloat height = (GLfloat) gst_gl_buf->height;
 
-  glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clear The Screen And The Depth Buffer
-  glLoadIdentity ();            // Reset The View
+    glClear(GL_COLOR_BUFFER_BIT);  // Clear The Screen (and no need to clean the depth buffer)
+    glLoadIdentity();
 
-  glTranslatef (-1.5f, 0.0f, -6.0f);    // Move Left 1.5 Units And Into The Screen 6.0
+    static GLfloat  zrot = 0;
+    static GTimeVal current_time;
+    static glong last_sec = current_time.tv_sec;
+    static gint nbFrames = 0;
 
-  glRotatef (rtri, 0.0f, 1.0f, 0.0f);   // Rotate The Triangle On The Y axis 
-  // draw a triangle (in smooth coloring mode)
-  glBegin (GL_POLYGON);         // start drawing a polygon
-  glColor3f (1.0f, 0.0f, 0.0f); // Set The Color To Red
-  glVertex3f (0.0f, 1.0f, 0.0f);        // Top
-  glColor3f (0.0f, 1.0f, 0.0f); // Set The Color To Green
-  glVertex3f (1.0f, -1.0f, 0.0f);       // Bottom Right
-  glColor3f (0.0f, 0.0f, 1.0f); // Set The Color To Blue
-  glVertex3f (-1.0f, -1.0f, 0.0f);      // Bottom Left  
-  glEnd ();                     // we're done with the polygon (smooth color interpolation)
+    g_get_current_time(&current_time);
+    nbFrames++ ;
 
-  glEnable (GL_TEXTURE_RECTANGLE_ARB);
-  glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
-  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S,
-      GL_CLAMP_TO_EDGE);
-  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T,
-      GL_CLAMP_TO_EDGE);
-  glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    if ((current_time.tv_sec - last_sec) >= 1)
+    {
+        std::cout << "GRAPHIC FPS = " << nbFrames << std::endl;
+        nbFrames = 0;
+        last_sec = current_time.tv_sec;
+    }
+    // draw the video on a rectangle
+    glEnable(GL_TEXTURE_RECTANGLE_ARB);
+    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, texture);
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  glLoadIdentity ();            // make sure we're no longer rotated.
-  glTranslatef (1.5f, 0.0f, -6.0f);     // Move Right 3 Units, and back into the screen 6.0
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glColor4f(1.0, 1.0, 1.0, 1.0);
+    
+    glPushMatrix();
+    glTranslatef(0.66666666f,0.0f,0.0f);
+    glRotatef(zrot,0.0f,0.0f,1.0f);
+    glScalef(0.66666666666, 0.5, 1.0);
+    draw_vertically_flipped_textured_square(width, height);
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(-0.6666666f,0.0f,0.0f);
+    glRotatef(zrot,0.0f,0.0f,1.0f);
+    glScalef(0.66666666666, 0.5, 1.0);
+    draw_vertically_flipped_textured_square(width, height);
+    glPopMatrix();
+    
+    zrot += 0.1f;
 
-  glRotatef (rquad, 1.0f, 0.0f, 0.0f);  // Rotate The Quad On The X axis 
-  // draw a square (quadrilateral)
-  glColor3f (0.5f, 0.5f, 1.0f); // set color to a blue shade.
-  glBegin (GL_QUADS);           // start drawing a polygon (4 sided)
-  glTexCoord3f (0.0f, height, 0.0f);
-  glVertex3f (-1.0f, 1.0f, 0.0f);       // Top Left
-  glTexCoord3f (width, height, 0.0f);
-  glVertex3f (1.0f, 1.0f, 0.0f);        // Top Right
-  glTexCoord3f (width, 0.0f, 0.0f);
-  glVertex3f (1.0f, -1.0f, 0.0f);       // Bottom Right
-  glTexCoord3f (0.0f, 0.0f, 0.0f);
-  glVertex3f (-1.0f, -1.0f, 0.0f);      // Bottom Left  
-  glEnd ();                     // done with the polygon
-
-  glBindTexture (GL_TEXTURE_RECTANGLE_ARB, 0);
-
-  rtri += 1.0f;                 // Increase The Rotation Variable For The Triangle
-  rquad -= 1.0f;                // Decrease The Rotation Variable For The Quad 
+    // DRAW LINES
+    glDisable(GL_TEXTURE_RECTANGLE_ARB);
+    glColor4f(0.2, 0.2, 0.2, 0.2);
+    int num = 64;
+    float x;
+    
+    for (int i = 0; i < num; i++)
+    {
+        x = (i / float(num)) * 4 - 2;
+        draw_line(float(x), -2.0, float(x), 2.0);
+        draw_line(-2.0, float(x), 2.0, float(x));
+    }
 
   // swap buffers to display, since we're double buffered.
-  SDL_GL_SwapBuffers ();
+  SDL_GL_SwapBuffers();
 }
 
-gboolean
-update_sdl_scene(void *fk)
+gboolean update_sdl_scene(void *fk)
 {
   GstElement *fakesink = (GstElement *) fk;
   GMainLoop *loop =
@@ -193,16 +227,18 @@ update_sdl_scene(void *fk)
             w = x11_screen_width;
             h = x11_screen_height;
 #endif
-            g_print("using a size of %d x %d\n", w, h);
+            //g_print("using a size of %d x %d\n", w, h);
             surface = SDL_SetVideoMode(w, h, 0, videoFlags);
             if(surface != NULL) {
-                resizeGL(w, h);
+                resize_rendering_area(w, h);
+                SDL_ShowCursor(SDL_DISABLE);
             }
         } else{
             g_print("Fullscreen OFF \n");
+            SDL_ShowCursor(SDL_ENABLE);
             surface = SDL_SetVideoMode(640, 480, 0, videoFlags);
             if(surface != NULL) {
-                resizeGL(640, 480);
+                resize_rendering_area(640, 480);
             }
         }
         if(surface == NULL) {
@@ -224,7 +260,7 @@ update_sdl_scene(void *fk)
         fprintf(stderr, "Could not get a surface after resize: %s\n", SDL_GetError());
         g_main_loop_quit (loop);
       }
-      resizeGL( event.resize.w, event.resize.h );
+      resize_rendering_area( event.resize.w, event.resize.h );
     }
   }
 
@@ -237,9 +273,7 @@ update_sdl_scene(void *fk)
 }
 
 /* fakesink handoff callback */
-void
-on_gst_buffer (GstElement * fakesink, GstBuffer * buf, GstPad * pad,
-    gpointer data)
+void on_gst_buffer (GstElement * fakesink, GstBuffer * buf, GstPad * pad, gpointer data)
 {
   GAsyncQueue *queue_input_buf = NULL;
   GAsyncQueue *queue_output_buf = NULL;
@@ -264,44 +298,34 @@ on_gst_buffer (GstElement * fakesink, GstBuffer * buf, GstPad * pad,
 }
 
 /* gst bus signal watch callback */
-void
-end_stream_cb (GstBus * bus, GstMessage * msg, GMainLoop * loop)
+void end_stream_cb (GstBus * bus, GstMessage * msg, GMainLoop * loop)
 {
   switch (GST_MESSAGE_TYPE (msg)) {
-
     case GST_MESSAGE_EOS:
-      g_print ("End-of-stream\n");
-      g_print
-          ("For more information, try to run: GST_DEBUG=gldisplay:2 ./sdlshare\n");
+      g_print("End-of-stream\n");
+      g_print("For more information, try to run: GST_DEBUG=gldisplay:2 ./sdlshare\n");
       break;
-
     case GST_MESSAGE_ERROR:
     {
       gchar *debug = NULL;
       GError *err = NULL;
-
-      gst_message_parse_error (msg, &err, &debug);
-
-      g_print ("Error: %s\n", err->message);
-      g_error_free (err);
-
-      if (debug) {
-        g_print ("Debug deails: %s\n", debug);
-        g_free (debug);
+      gst_message_parse_error(msg, &err, &debug);
+      g_print("Error: %s\n", err->message);
+      g_error_free(err);
+      if (debug) 
+      {
+        g_print("Debug deails: %s\n", debug);
+        g_free(debug);
       }
-
       break;
     }
-
     default:
       break;
   }
-
   g_main_loop_quit (loop);
 }
 
-int
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
   std::cout << "DISPLAY=" << std::getenv("DISPLAY") << std::endl;
 
@@ -343,14 +367,12 @@ main (int argc, char **argv)
   //const SDL_VideoInfo* sdl_video_info = SDL_GetVideoInfo();
   //std::cout << "Current video resolution is " << sdl_video_info->current_w << "x" << sdl_video_info->current_h << " pixels" << std::endl;
 
-
   /* Set the title bar in environments that support it */
   SDL_WM_SetCaption("Toonloop 1.3 SDL Prototype", NULL);
 
-
   /* Loop, drawing and checking events */
-  InitGL();
-  resizeGL(640, 480);
+  init_opengl_scene();
+  resize_rendering_area(640, 480);
 
   gst_init (&argc, &argv);
   loop = g_main_loop_new (NULL, FALSE);
@@ -445,14 +467,12 @@ main (int argc, char **argv)
    * shared with the sdl one */
   gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PAUSED);
   // FIXME: cannot set it to pause right now.
-#if 0
   state = GST_STATE_PAUSED;
-  if (gst_element_get_state(GST_ELEMENT(pipeline), &state, NULL,
-          GST_CLOCK_TIME_NONE) != GST_STATE_CHANGE_SUCCESS) {
+  if (gst_element_get_state(GST_ELEMENT(pipeline), &state, NULL, GST_CLOCK_TIME_NONE) != GST_STATE_CHANGE_SUCCESS) 
+  {
     g_debug("failed to pause pipeline\n");
-    return -1;
+    //return -1;
   }
-#endif 
 
   /* turn on back sdl opengl context */
 #ifdef WIN32
