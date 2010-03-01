@@ -227,7 +227,7 @@ gboolean update_sdl_scene(void *fk)
             w = x11_screen_width;
             h = x11_screen_height;
 #endif
-            //g_print("using a size of %d x %d\n", w, h);
+            g_print("using a size of %d x %d\n", w, h);
             surface = SDL_SetVideoMode(w, h, 0, videoFlags);
             if(surface != NULL) {
                 resize_rendering_area(w, h);
@@ -401,6 +401,11 @@ int main (int argc, char **argv)
     x11_screen_height = XDisplayHeight(sdl_display, i);
     g_print("  screen #%d  dimensions:    %dx%d pixels \n", i, x11_screen_width, x11_screen_height);
   }
+  int default_screen_num = DefaultScreen(sdl_display);
+  x11_screen_width = XDisplayWidth(sdl_display, default_screen_num);
+  x11_screen_height = XDisplayHeight(sdl_display, default_screen_num);
+  g_print("Using  screen #%d  dimensions:    %dx%d pixels \n", default_screen_num, x11_screen_width, x11_screen_height);
+
 #endif
 
   // Gstreamer Pipeline:
