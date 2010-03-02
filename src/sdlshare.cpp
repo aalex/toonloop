@@ -453,7 +453,7 @@ int main (int argc, char **argv)
   is_linked = gst_element_link_pads(glupload0, "src", fakesink0, "sink");
   if (!is_linked) { g_print("Could not link %s to %s.\n", "glupload0", "fakesink0"); exit(1); }
 
-  g_object_set(fakesink0, "sync", TRUE, NULL); 
+  g_object_set(fakesink0, "sync", FALSE, NULL); 
   //TODO: 
   char* device_name = "/dev/video0";
   g_print("Using camera %s.\n", device_name);
