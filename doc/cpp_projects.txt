@@ -1,0 +1,5 @@
+Inspiration
+------------
+
+ * Hydrogen : src/lib/drivers/MidiDriver.cpp and src/lib/Song.cpp
+ * Ekiga : lib/engine/components/gstreamer/gst-videoinput.cpp
