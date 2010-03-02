@@ -20,7 +20,6 @@
 
 long latency = 0;
 
-
 /* read a number from console */
 /**/
 int get_number()
@@ -64,21 +63,18 @@ void main_test_input() {
         Pm_Read(midi, buffer, 1);
     }
     /* now start paying attention to messages */
-    i = 0; /* count messages as they arrive */
     while (true) {
         status = Pm_Poll(midi);
         if (status == TRUE) {
-            length = Pm_Read(midi,buffer, 1);
+            length = Pm_Read(midi, buffer, 1);
             if (length > 0) {
-                printf("Got message %d: time %ld, %2lx %2lx %2lx\n",
-                       i,
+                printf("Got message: time %ld, status: %2lx data1: %2lx data2: %2lx\n",
                        buffer[0].timestamp,
                        Pm_MessageStatus(buffer[0].message),
                        Pm_MessageData1(buffer[0].message),
                        Pm_MessageData2(buffer[0].message));
-                i++;
             } else {
-                printf("ERROR: MIDI message with bad lenght.\n");
+                printf("ERROR: MIDI message with bad length.\n");
                 assert(0);
             }
         }
@@ -87,12 +83,6 @@ void main_test_input() {
     printf("ready to close...");
     Pm_Close(midi);
     printf("done closing...");
-}
-
-void show_usage()
-{
-    printf("Usage: test [-h] [-l latency-in-ms]\n");
-    exit(0);
 }
 
 int main(int argc, char *argv[])
