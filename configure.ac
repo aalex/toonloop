@@ -48,6 +48,10 @@ PKG_CHECK_MODULES(SDL, sdl >= 1.2.0)
 AC_SUBST(SDL_LIBS)
 AC_SUBST(SDL_CFLAGS)
 
+# PORTMIDI
+AC_CHECK_LIB([asound],[snd_seq_open],[AC_SUBST([ASOUND_CXXFLAGS],["-lasound"])])
+AC_CHECK_LIB([portmidi],[Pm_Initialize],[AC_SUBST([PORTMIDI_CXXFLAGS],["-lportmidi -lporttime"])],[echo "Could not find portmidi !"], ["-lporttime"])
+
 AC_CONFIG_FILES([
     Makefile
     src/Makefile
