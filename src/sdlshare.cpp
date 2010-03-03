@@ -17,6 +17,17 @@
  *
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * This file is heavily inspired from an example coming with 
+ * the gst-plugins-gl, published under the LGPL:
+ *
+ * GStreamer
+ * Copyright (C) 2009 Julien Isorce <julien.isorce@gmail.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
  */
 
 // Try to launch with:
