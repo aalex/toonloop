@@ -442,6 +442,27 @@ int main (int argc, char **argv)
   // ffmpegcolorspace0 element:
   GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
   g_assert(ffmpegcolorspace0);
+  GstElement* tee0 = gst_element_factory_make("tee", "tee0");
+  g_assert(tee0);
+  GstElement* queue0 = gst_element_factory_make("queue", "queue0");
+  g_assert(queue0);
+  // TODO: GstElement* queue1 = gst_element_factory_make("queue", "queue1");
+
+  //   gst_pad_link(gst_element_get_request_pad(tee0, "src%d"), gst_element_get_pad(queue0, "sink"));
+
+  //   gst_pad_link(gst_element_get_request_pad(tee0, "src%d"), gst_element_get_pad(queue1, "sink"));
+
+  // TODO: GstElement* gdkpixbufsink0 = gst_element_factory_make("gdkpixbufsink", "gdkpixbufsink0");
+  // TODO: void add_image() {
+  // TODO:     GdkPixBuf* pixbuf = gdkpixbufsink0.get_property("last-pixbuf");
+  // TODO:     g_print("grabbing size: %dx%d\n", pixbuf.get_width(), pixbuf.get_height());
+  // TODO:     pixbuf.save(file_name, "jpeg", {"quality":"100"})
+  //           char* file_name = "example.jpg";
+  //           GError* error;
+  //           gdk_pixbuf_save (pixbuf, file_name, "jpeg", &error, "quality", "100", NULL);
+
+  // TODO: }
+
   // glupload0 element:
   GstElement* glupload0 = gst_element_factory_make("glupload", "glupload0");
   g_assert(glupload0);
@@ -451,6 +472,8 @@ int main (int argc, char **argv)
   gst_bin_add(GST_BIN(pipeline), videosrc0);
   gst_bin_add(GST_BIN(pipeline), capsfilter0);
   gst_bin_add(GST_BIN(pipeline), ffmpegcolorspace0);
+  gst_bin_add(GST_BIN(pipeline), tee0);
+  gst_bin_add(GST_BIN(pipeline), queue0);
   gst_bin_add(GST_BIN(pipeline), glupload0);
   gst_bin_add(GST_BIN(pipeline), fakesink0);
   // link pads:
@@ -459,8 +482,15 @@ int main (int argc, char **argv)
   if (!is_linked) { g_print("Could not link %s to %s.\n", "videosrc0", "capsfilter0"); exit(1); }
   is_linked = gst_element_link_pads(capsfilter0, "src", ffmpegcolorspace0, "sink");
   if (!is_linked) { g_print("Could not link %s to %s.\n", "capsfilter0", "ffmpegcolorspace0"); exit(1); }
-  is_linked = gst_element_link_pads(ffmpegcolorspace0, "src", glupload0, "sink");
-  if (!is_linked) { g_print("Could not link %s to %s.\n", "ffmpegcolorspace0", "glupload0"); exit(1); }
+  
+  is_linked = gst_element_link_pads(ffmpegcolorspace0, "src", tee0, "sink");
+  if (!is_linked) { g_print("Could not link %s to %s.\n", "ffmpegcolorspace0", "tee0"); exit(1); }
+  is_linked = gst_element_link_pads(tee0, "src0", queue0, "sink");
+  if (!is_linked) { g_print("Could not link %s to %s.\n", "tee0", "queue0"); exit(1); }
+  
+  is_linked = gst_element_link_pads(queue0, "src", glupload0, "sink");
+  if (!is_linked) { g_print("Could not link %s to %s.\n", "queue0", "glupload0"); exit(1); }
+  //
   is_linked = gst_element_link_pads(glupload0, "src", fakesink0, "sink");
   if (!is_linked) { g_print("Could not link %s to %s.\n", "glupload0", "fakesink0"); exit(1); }
 
