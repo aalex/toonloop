@@ -49,6 +49,10 @@
 #endif
 
 #include <gst/gst.h>
+#include <gtk/gtk.h>
+#include <gdk/gdk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+
 #include <iostream>
 #include <cstdlib> // for getenv
 
@@ -57,6 +61,7 @@ SDL_Surface *surface;
 int videoFlags;;
 int x11_screen_width = 0;
 int x11_screen_height = 0;
+GstElement* gdkpixbufsink0 = NULL; // FIXME
 
 /* hack */
 typedef struct _GstGLBuffer GstGLBuffer;
@@ -198,6 +203,31 @@ void DrawGLScene (GstGLBuffer * gst_gl_buf)
   SDL_GL_SwapBuffers();
 }
 
+
+// FIXME: use a class and encapsulate global variables !
+void add_frame() 
+{
+    g_print("add_frame\n");
+    GdkPixbuf* pixbuf; 
+    gpointer data;
+    g_object_get(G_OBJECT(gdkpixbufsink0), "last-pixbuf", &pixbuf, NULL);
+    g_print("got the pibuf!\n");
+    int w = gdk_pixbuf_get_width(pixbuf);
+    int h = gdk_pixbuf_get_height(pixbuf);
+
+    g_print("grabbing size: %dx%d\n", w, h);
+    //char* file_name = ;
+    //TODO:GError* error = NULL;
+    //TODO: pass &error
+    if (!gdk_pixbuf_save(pixbuf, "/var/tmp/gdkpixbuf-saved.jpg", "jpeg", NULL, "quality", "100", NULL))
+    {
+        g_print("Image could not be saved. Error\n");
+        // TODO : print error message.
+    }
+    //TODO:g_object_unref(error);
+    g_object_unref(pixbuf);
+}
+
 gboolean update_sdl_scene(void *fk)
 {
   GstElement *fakesink = (GstElement *) fk;
@@ -261,6 +291,9 @@ gboolean update_sdl_scene(void *fk)
                 exit(1);
             }
         }
+      }
+      else if (event.key.keysym.sym == SDLK_SPACE) {
+          add_frame();
       }
     }
     else if (event.type == SDL_VIDEORESIZE) {
@@ -335,6 +368,7 @@ void end_stream_cb (GstBus * bus, GstMessage * msg, GMainLoop * loop)
   }
   g_main_loop_quit (loop);
 }
+
 
 int main (int argc, char **argv)
 {
@@ -442,27 +476,54 @@ int main (int argc, char **argv)
   // ffmpegcolorspace0 element:
   GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
   g_assert(ffmpegcolorspace0);
+  GstElement* tee0 = gst_element_factory_make("tee", "tee0");
+  g_assert(tee0);
+  GstElement* queue0 = gst_element_factory_make("queue", "queue0");
+  g_assert(queue0);
+
   // glupload0 element:
   GstElement* glupload0 = gst_element_factory_make("glupload", "glupload0");
   g_assert(glupload0);
   GstElement* fakesink0 = gst_element_factory_make("fakesink", "fakesink0");
   g_assert(fakesink0);
+  // GdkPixbuf sink:
+  GstElement* queue1 = gst_element_factory_make("queue", "queue1");
+  g_assert(queue1);
+  //FIXME: GstElement* 
+  gdkpixbufsink0 = gst_element_factory_make("gdkpixbufsink", "gdkpixbufsink0");
+  g_assert(gdkpixbufsink0);
+
   // add elements
   gst_bin_add(GST_BIN(pipeline), videosrc0);
   gst_bin_add(GST_BIN(pipeline), capsfilter0);
   gst_bin_add(GST_BIN(pipeline), ffmpegcolorspace0);
+  gst_bin_add(GST_BIN(pipeline), tee0);
+  gst_bin_add(GST_BIN(pipeline), queue0);
   gst_bin_add(GST_BIN(pipeline), glupload0);
   gst_bin_add(GST_BIN(pipeline), fakesink0);
+  gst_bin_add(GST_BIN(pipeline), queue1);
+  gst_bin_add(GST_BIN(pipeline), gdkpixbufsink0);
   // link pads:
   gboolean is_linked = NULL;
   is_linked = gst_element_link_pads(videosrc0, "src", capsfilter0, "sink");
   if (!is_linked) { g_print("Could not link %s to %s.\n", "videosrc0", "capsfilter0"); exit(1); }
   is_linked = gst_element_link_pads(capsfilter0, "src", ffmpegcolorspace0, "sink");
   if (!is_linked) { g_print("Could not link %s to %s.\n", "capsfilter0", "ffmpegcolorspace0"); exit(1); }
-  is_linked = gst_element_link_pads(ffmpegcolorspace0, "src", glupload0, "sink");
-  if (!is_linked) { g_print("Could not link %s to %s.\n", "ffmpegcolorspace0", "glupload0"); exit(1); }
+  is_linked = gst_element_link_pads(ffmpegcolorspace0, "src", tee0, "sink");
+  if (!is_linked) { g_print("Could not link %s to %s.\n", "ffmpegcolorspace0", "tee0"); exit(1); }
+  is_linked = gst_element_link_pads(tee0, "src0", queue0, "sink");
+  if (!is_linked) { g_print("Could not link %s to %s.\n", "tee0", "queue0"); exit(1); }
+  // output 0: the OpenGL uploader.
+  is_linked = gst_element_link_pads(queue0, "src", glupload0, "sink");
+  if (!is_linked) { g_print("Could not link %s to %s.\n", "queue0", "glupload0"); exit(1); }
   is_linked = gst_element_link_pads(glupload0, "src", fakesink0, "sink");
   if (!is_linked) { g_print("Could not link %s to %s.\n", "glupload0", "fakesink0"); exit(1); }
+
+  // output 1: the GdkPixbuf sink
+  is_linked = gst_element_link_pads(tee0, "src1", queue1, "sink");
+  if (!is_linked) { g_print("Could not link %s to %s.\n", "tee0", "queue1"); exit(1); }
+  is_linked = gst_element_link_pads(queue1, "src", gdkpixbufsink0, "sink");
+  if (!is_linked) { g_print("Could not link %s to %s.\n", "queue1", "gdkpixbufsink0"); exit(1); }
 
   g_object_set(fakesink0, "sync", FALSE, NULL); 
   //TODO: 
