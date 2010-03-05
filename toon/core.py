@@ -1388,6 +1388,10 @@ class Toonloop(render.Game):
             self.config.onionskin_on = not self.config.onionskin_on # toggle
         print('config.onionskin_on = %s' % (self.config.onionskin_on))
             
+
+    def framerate_decrease(self):
+        self.framerate_increase(-1)
+
     def framerate_increase(self, dir=1):
         """
         Increase or decreases the FPS
@@ -1527,25 +1531,55 @@ class Toonloop(render.Game):
                         print("Key event error : %s" % (e.message))
             # joystick events:
             elif e.type == pygame.JOYBUTTONDOWN:
+                print("button %s" % (e.button))
                 if e.button == 0:
-                    print("button 0")
+                    self.frame_remove()
                 elif e.button == 1:
-                    print("button 1")
-                else:
-                    print("button %s" % (e.button))
+                    print("Not sure about what this button should do.") # FIXME
+                    #self.theme_change()
+                elif e.button == 2:
+                    self.frame_add()
+                elif e.button == 3:
+                    print("Not sure about what this button should do.") # FIXME
+                    self.onionskin_toggle()
+                elif e.button == 4:
+                    self.clip_save()
+                elif e.button == 5:
+                    self.clip_reset()
             elif e.type == pygame.JOYHATMOTION:
                 try:
                     # We only care for when an axis goes from 0 to 1 or -1
                     # so we store previous hat position in a dict.
                     try:
                         prev = self.joystick_hats[e.joy][e.hat] #raises an error first time it is called
+
+                        left = False
+                        right = False
+                        up = False
+                        down = False
                         for i in range(2):
                             if prev[i] != e.value[i] and e.value[i] != 0:
                                 if i == 0:
                                     axis = 'X'
+                                    if e.value[i] == -1:
+                                        left = True
+                                    else:
+                                        right = True
                                 else:
                                     axis = 'Y'
+                                    if e.value[i] == -1:
+                                        down = True
+                                    else:
+                                        up = True
                                 print("Hat %s position is %s" % (axis, e.value[i]))
+                        if up: # Y-axis
+                            self.framerate_increase()
+                        elif down:
+                            self.framerate_decrease()
+                        if right: # X-axis
+                            self.direction_change(DIRECTION_FORWARD)
+                        elif left:
+                            self.direction_change(DIRECTION_BACKWARD)
                     except ValueError, e:
                         print(str(e)) 
                     self.joystick_hats[e.joy][e.hat] = e.value
