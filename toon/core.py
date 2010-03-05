@@ -1409,7 +1409,10 @@ class Toonloop(render.Game):
         if will_be > self.config.framerate_min and will_be <= self.config.framerate_max:
             self.clip.playhead_iterate_every = will_be
             if self.config.verbose:
-                print("Playhead frequency ratio: 30 / %d" % (will_be))
+                print("Playhead frequency ratio: 30 / %d. Frame rate is %2.2f FPS." % (will_be, 30. / float(will_be)))
+        else:
+            if self.config.verbose:
+                print("Playhead freq ratio already at 30 / %d." % (will_be))
         self.signal_framerate(will_be)
 
     def toggle_fullscreen(self):
