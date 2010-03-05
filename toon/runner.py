@@ -101,9 +101,12 @@ def run():
     parser.add_option("-x", "--options-group", 
         action="append", nargs=3, 
         help="Sets option from an option group.")
+    parser.add_option("-j", "--enable-joystick", \
+        action="store_true", \
+        help="Enables/disables the use of a joystick or gamepad.")
     parser.add_option("-e", "--intervalometer-enabled", \
         dest="intervalometer_enabled", action="store_true", \
-        help="Enables/disables the use of the intervalometer.", default=True)
+        help="Enables/disables the use of the intervalometer.", default=True) # FIXME
     parser.add_option("-w", "--image-width", type="int", \
         help="Width of the images grabbed from the camera. Using this flag also sets the height, with a 4:3 ratio.")
     (options, args) = parser.parse_args()
@@ -127,6 +130,8 @@ def run():
         config_dict["display_fullscreen"] = options.fullscreen
     if options.enable_effects:
         config_dict["effects_enabled"] = True
+    if options.enable_joystick:
+        config_dict["joystick_enabled"] = True
     if options.image_width:
         config_dict['image_width'] = options.image_width
         config_dict['image_height'] = options.image_width * 3 / 4 # fixed aspect ratio

@@ -210,6 +210,9 @@ class Configuration(object): #Serializable):
         self.midi_note_record = 41 
         self.midi_note_clear = 43
 
+        # joystick
+        self.joystick_enabled = False
+
         # overrides some attributes whose defaults and names are below.
         self.__dict__.update(**argd) 
         # this one is special : it needs other values to set itself. Let's find a way to prevent this
@@ -471,6 +474,11 @@ class Toonloop(render.Game):
         self._clear_playback_view()
         self._clear_onion_peal()
         self._playhead_iterator = 0
+
+        # joystick
+        self.joysticks = []
+        self.joystick_hats = {}
+        self._init_joysticks()
         # intervalometer
         self._intervalometer_delayed_id = None
         self.intervalometer_on = self.config.intervalometer_on
@@ -532,6 +540,18 @@ class Toonloop(render.Game):
 
     def _get_current_effect(self):
         return self.effects[self.config.effect_name]
+
+    def _init_joysticks(self):
+        self.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
+        for _joystick in self.joysticks:
+            _joystick.init()
+            if self.config.verbose:
+                print(" * Joystick %s has %d buttons and %d hats." % (_joystick.get_name(), _joystick.get_numbuttons(), _joystick.get_numhats()))
+                if _joystick.get_numhats() >= 1:
+                    self.joystick_hats[_joystick.get_id()] = [(0, 0)] * _joystick.get_numhats()
+        if self.config.verbose:
+            print("Found %d joysticks." % (len(self.joysticks)))
+
 
     def _start_services(self):
         """
@@ -1505,6 +1525,39 @@ class Toonloop(render.Game):
                 except ValueError, e :
                     if self.config.verbose:
                         print("Key event error : %s" % (e.message))
+            # joystick events:
+            elif e.type == pygame.JOYBUTTONDOWN:
+                if e.button == 0:
+                    print("button 0")
+                elif e.button == 1:
+                    print("button 1")
+                else:
+                    print("button %s" % (e.button))
+            elif e.type == pygame.JOYHATMOTION:
+                try:
+                    # We only care for when an axis goes from 0 to 1 or -1
+                    # so we store previous hat position in a dict.
+                    try:
+                        prev = self.joystick_hats[e.joy][e.hat] #raises an error first time it is called
+                        for i in range(2):
+                            if prev[i] != e.value[i] and e.value[i] != 0:
+                                if i == 0:
+                                    axis = 'X'
+                                else:
+                                    axis = 'Y'
+                                print("Hat %s position is %s" % (axis, e.value[i]))
+                    except ValueError, e:
+                        print(str(e)) 
+                    self.joystick_hats[e.joy][e.hat] = e.value
+                    #print("hat %s: %s" % (e.hat, e.value))
+                except KeyError, e: # we don't care about errors
+                    print(str(e))
+                except ValueError, e:
+                    print(str(e))
+            #elif e.type == pygame.JOYBALLMOTION:
+            #    print("ball %s: %s" % (e.ball, e.rel))
+            #elif e.type == pygame.JOYAXISMOTION:
+            #    print("axis %s %s" % (e.axis, e.value))
 
     def quit(self):
         """
