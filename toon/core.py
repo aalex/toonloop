@@ -478,6 +478,7 @@ class Toonloop(render.Game):
         # joystick
         self.joysticks = []
         self.joystick_hats = {}
+        self.joystick_axis = {}
         self._init_joysticks()
         # intervalometer
         self._intervalometer_delayed_id = None
@@ -549,9 +550,10 @@ class Toonloop(render.Game):
                 print(" * Joystick %s has %d buttons and %d hats." % (_joystick.get_name(), _joystick.get_numbuttons(), _joystick.get_numhats()))
                 if _joystick.get_numhats() >= 1:
                     self.joystick_hats[_joystick.get_id()] = [(0, 0)] * _joystick.get_numhats()
+                if _joystick.get_numaxes() >= 1:
+                    self.joystick_axis[_joystick.get_id()] = [(0, 0)] * _joystick.get_numaxes()
         if self.config.verbose:
             print("Found %d joysticks." % (len(self.joysticks)))
-
 
     def _start_services(self):
         """
@@ -1549,17 +1551,18 @@ class Toonloop(render.Game):
                     self.clip_save()
                 elif e.button == 5:
                     self.clip_reset()
-            elif e.type == pygame.JOYHATMOTION:
-                try:
+            elif e.type == pygame.JOYHATMOTION or e.type == pygame.JOYAXISMOTION:
+                left = False
+                right = False
+                up = False
+                down = False
+                if e.type == pygame.JOYHATMOTION:
+                    print("hat %s: %s" % (e.hat, e.value))
                     # We only care for when an axis goes from 0 to 1 or -1
                     # so we store previous hat position in a dict.
                     try:
-                        prev = self.joystick_hats[e.joy][e.hat] #raises an error first time it is called
+                        prev = self.joystick_hats[e.joy][e.hat] 
 
-                        left = False
-                        right = False
-                        up = False
-                        down = False
                         for i in range(2):
                             if prev[i] != e.value[i] and e.value[i] != 0:
                                 if i == 0:
@@ -1575,26 +1578,48 @@ class Toonloop(render.Game):
                                     else:
                                         up = True
                                 print("Hat %s position is %s" % (axis, e.value[i]))
-                        if up: # Y-axis
-                            self.framerate_increase()
-                        elif down:
-                            self.framerate_decrease()
-                        if right: # X-axis
-                            self.direction_change(DIRECTION_FORWARD)
-                        elif left:
-                            self.direction_change(DIRECTION_BACKWARD)
-                    except ValueError, e:
-                        print(str(e)) 
+                    except ValueError, err:
+                        print(str(err))
+                    except TypeError, err:
+                        print(str(err)) 
+                    except KeyError, err: # we don't care about errors
+                        print(str(err))
                     self.joystick_hats[e.joy][e.hat] = e.value
-                    #print("hat %s: %s" % (e.hat, e.value))
-                except KeyError, e: # we don't care about errors
-                    print(str(e))
-                except ValueError, e:
-                    print(str(e))
-            #elif e.type == pygame.JOYBALLMOTION:
-            #    print("ball %s: %s" % (e.ball, e.rel))
-            #elif e.type == pygame.JOYAXISMOTION:
-            #    print("axis %s %s" % (e.axis, e.value))
+                else: #pygame.JOYAXISMOTION
+                    print("axis %s %s" % (e.axis, e.value))
+                    try:
+                        prev = self.joystick_axis[e.joy][e.axis] 
+                        if prev != e.value and e.value != 0.0:
+                            if e.axis == 0:
+                                axis = 'X'
+                                if e.value <= -1.0:
+                                    left = True
+                                else:
+                                    right = True
+                            else:
+                                axis = 'Y'
+                                if e.value <= -1.0:
+                                    down = True
+                                else:
+                                    up = True
+                            print("Axis %s position is %s" % (axis, e.value))
+                    except ValueError, err:
+                        print(str(err)) 
+                    #except TypeError, err:
+                    #    print(str(err)) 
+                    except KeyError, err: # we don't care about errors
+                        print(str(err))
+                    self.joystick_axis[e.joy][e.axis] = e.value
+                if up: # Y-axis
+                    self.framerate_increase()
+                elif down:
+                    self.framerate_decrease()
+                if right: # X-axis
+                    self.direction_change(DIRECTION_FORWARD)
+                elif left:
+                    self.direction_change(DIRECTION_BACKWARD)
+            elif e.type == pygame.JOYBALLMOTION:
+                print("ball %s: %s" % (e.ball, e.rel))
 
     def quit(self):
         """
