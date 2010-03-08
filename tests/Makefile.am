@@ -12,3 +12,8 @@ check_classes_LDADD = $(BOOST_LIBS)
 #check_files_SOURCES = check_files.cpp
 #check_files_CXXFLAGS = $(BOOST_CPPFLAGS)
 #check_files_LDADD = $(BOOST_LIBS) $(BOOST_FILESYSTEM_LIB)
+
+check_commands_SOURCES = check_commands.cpp ../src/command.cpp
+check_commands_CXXFLAGS = $(BOOST_CPPFLAGS)
+check_commands_LDADD = $(BOOST_LIBS)
+

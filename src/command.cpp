@@ -74,13 +74,13 @@ bool run_command(std::string command)
 }
 
 
-int main(int argc, char *argv[])
-{
-    std::string command("echo 'Hello'; sleep 1; echo 'bye'");
-    if (run_command(command))
-    {
-        return EXIT_SUCCESS;
-    } else {
-        return EXIT_FAILURE;
-    }
-}
+//int main(int argc, char *argv[])
+//{
+//    std::string command("echo 'Hello'; sleep 1; echo 'bye'");
+//    if (run_command(command))
+//    {
+//        return EXIT_SUCCESS;
+//    } else {
+//        return EXIT_FAILURE;
+//    }
+//}
