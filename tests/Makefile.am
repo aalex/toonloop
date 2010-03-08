@@ -1,4 +1,4 @@
-TESTS = check_looper check_classes 
+TESTS = check_looper check_classes check_commands
 noinst_PROGRAMS = $(TESTS)
 
 check_looper_SOURCES = check_looper.cpp
@@ -13,7 +13,7 @@ check_classes_LDADD = $(BOOST_LIBS)
 #check_files_CXXFLAGS = $(BOOST_CPPFLAGS)
 #check_files_LDADD = $(BOOST_LIBS) $(BOOST_FILESYSTEM_LIB)
 
-check_commands_SOURCES = check_commands.cpp ../src/command.cpp
+check_commands_SOURCES = check_commands.cpp ../src/subprocess.cpp
 check_commands_CXXFLAGS = $(BOOST_CPPFLAGS)
 check_commands_LDADD = $(BOOST_LIBS)
 

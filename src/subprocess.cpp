@@ -12,7 +12,6 @@
  */
 bool run_command(std::string command)
 {
-    const char* _command = command.c_str();
     pid_t fork_pid;
     int exec_ret;
     int status;
@@ -29,7 +28,7 @@ bool run_command(std::string command)
         {
             std::cout << "We are the child process." << std::endl;
             std::cout << "Calling $ bash " << command << std::endl;
-            exec_ret = execl("/bin/bash", "/bin/bash", "-c", _command, NULL);
+            exec_ret = execl("/bin/bash", "/bin/bash", "-c", command.c_str(), NULL);
             if (exec_ret == -1)
             {
                 std::cout << "Execution failed." << std::endl;
