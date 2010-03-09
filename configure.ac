@@ -39,7 +39,16 @@ AC_SUBST([GST_CFLAGS])
 
 # BOOST
 AX_BOOST_BASE([1.35])
+
 AX_BOOST_PROGRAM_OPTIONS
+if test "x${ax_cv_boost_program_options}" = "xno" ; then
+	AC_MSG_ERROR([missing package: libboost-program-options-dev])
+fi
+
+AX_BOOST_FILESYSTEM
+if test "x${ax_cv_boost_filesystem}" = "xno" ; then
+	AC_MSG_ERROR([missing package: libboost-filesystem-dev])
+fi
 
 AX_CHECK_GL
 AX_CHECK_GLU
