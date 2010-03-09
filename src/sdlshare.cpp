@@ -353,7 +353,6 @@ void end_stream_cb(GstBus * bus, GstMessage * msg, GMainLoop * loop)
     g_main_loop_quit(loop);
 }
 
-
 int main(int argc, char **argv)
 {
     std::cout << "DISPLAY=" << std::getenv("DISPLAY") << std::endl;
@@ -577,7 +576,7 @@ int main(int argc, char **argv)
     glXMakeCurrent(sdl_display, None, 0);
 #endif
 
-    SDL_Quit ();
+    SDL_Quit();
     
     /* make sure there is no pending gst gl buffer in the communication queues 
      * between sdl and gst-gl
