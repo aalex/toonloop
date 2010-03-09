@@ -61,7 +61,7 @@
 
 /* This is our SDL surface */
 SDL_Surface *surface;
-int videoFlags;;
+int videoFlags;
 int x11_screen_width = 0;
 int x11_screen_height = 0;
 GstElement* gdkpixbufsink0 = NULL; // FIXME
@@ -82,9 +82,18 @@ struct _GstGLBuffer
 /* rotation angle */
 float zrot = 0.0f;
 
+class Renderer
+{
+    public:
+        static void init_opengl_scene();
+        static void resize_rendering_area(int width, int height);
+        static void draw_scene(GstGLBuffer* gst_gl_buf);
+        static gboolean update_sdl_scene(void *fk);
+};
+
 
 /* A general OpenGL initialization function.  Sets all of the initial parameters. */
-void init_opengl_scene()   // We call this right after our OpenGL window is created.
+void Renderer::init_opengl_scene()   // We call this right after our OpenGL window is created.
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // This Will Clear The Background Color To Black
     glShadeModel(GL_SMOOTH);     // Enables Smooth Color Shading
@@ -92,7 +101,7 @@ void init_opengl_scene()   // We call this right after our OpenGL window is crea
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 }
 
-void resize_rendering_area(int width, int height)
+void Renderer::resize_rendering_area(int width, int height)
 {
     // gl coords are 1.0 of height
     float w = float(width) / float(height);
@@ -106,7 +115,7 @@ void resize_rendering_area(int width, int height)
 }
 
 /* The main drawing function. */
-void draw_scene(GstGLBuffer* gst_gl_buf)
+void Renderer::draw_scene(GstGLBuffer* gst_gl_buf)
 {
     GLuint texture = gst_gl_buf->texture;
     GLfloat width = (GLfloat) gst_gl_buf->width;
@@ -175,7 +184,6 @@ void draw_scene(GstGLBuffer* gst_gl_buf)
   SDL_GL_SwapBuffers();
 }
 
-
 // FIXME: use a class and encapsulate global variables !
 void add_frame() 
 {
@@ -200,7 +208,7 @@ void add_frame()
     g_object_unref(pixbuf);
 }
 
-gboolean update_sdl_scene(void *fk)
+gboolean Renderer::update_sdl_scene(void *fk)
 {
     GstElement *fakesink = (GstElement *) fk;
     GMainLoop *loop =
@@ -249,7 +257,7 @@ gboolean update_sdl_scene(void *fk)
                     surface = SDL_SetVideoMode(w, h, 0, videoFlags);
                     if(surface != NULL) 
                     {
-                        resize_rendering_area(w, h);
+                        Renderer::resize_rendering_area(w, h);
                         SDL_ShowCursor(SDL_DISABLE);
                     }
                 } else{
@@ -258,7 +266,7 @@ gboolean update_sdl_scene(void *fk)
                     surface = SDL_SetVideoMode(640, 480, 0, videoFlags);
                     if(surface != NULL) 
                     {
-                        resize_rendering_area(640, 480);
+                        Renderer::resize_rendering_area(640, 480);
                     }
                 }
                 if(surface == NULL) 
@@ -288,11 +296,11 @@ gboolean update_sdl_scene(void *fk)
                 fprintf(stderr, "Could not get a surface after resize: %s\n", SDL_GetError());
                 g_main_loop_quit(loop);
             }
-            resize_rendering_area(event.resize.w, event.resize.h );
+            Renderer::resize_rendering_area(event.resize.w, event.resize.h );
         }
     }
 
-    draw_scene(gst_gl_buf);
+    Renderer::draw_scene(gst_gl_buf);
 
     /* push buffer so it can be unref later */
     g_async_queue_push(queue_output_buf, gst_gl_buf);
@@ -311,7 +319,7 @@ void on_gst_buffer(GstElement* fakesink, GstBuffer* buf, GstPad* pad, gpointer d
     g_async_queue_push(queue_input_buf, buf);
     if (g_async_queue_length(queue_input_buf) > 3)
     {
-        g_idle_add(update_sdl_scene, (gpointer) fakesink);
+        g_idle_add(Renderer::update_sdl_scene, (gpointer) fakesink);
     }
     /* pop then unref buffer we have finished to use in sdl */
     queue_output_buf = (GAsyncQueue *) g_object_get_data(G_OBJECT (fakesink), "queue_output_buf");
@@ -375,7 +383,8 @@ int main (int argc, char **argv)
     GAsyncQueue *queue_output_buf = NULL;
 
     /* Initialize SDL for video output */
-    if (SDL_Init (SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init (SDL_INIT_VIDEO) < 0) 
+    {
         fprintf (stderr, "Unable to initialize SDL: %s\n", SDL_GetError ());
         return -1;
     }
@@ -383,7 +392,8 @@ int main (int argc, char **argv)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     /* Create a 640x480 OpenGL screen */
     surface = SDL_SetVideoMode(640, 480, 0, videoFlags);
-    if (surface == NULL) {
+    if (surface == NULL) 
+    {
         fprintf(stderr, "Unable to create OpenGL screen: %s\n", SDL_GetError ());
         SDL_Quit();
         return -1;
@@ -394,11 +404,11 @@ int main (int argc, char **argv)
     //std::cout << "Current video resolution is " << sdl_video_info->current_w << "x" << sdl_video_info->current_h << " pixels" << std::endl;
 
     /* Set the title bar in environments that support it */
-    SDL_WM_SetCaption("Toonloop 1.3 SDL Prototype", NULL);
+    SDL_WM_SetCaption("Toonloop 2.0", NULL);
 
     /* Loop, drawing and checking events */
-    init_opengl_scene();
-    resize_rendering_area(640, 480);
+    Renderer::init_opengl_scene();
+    Renderer::resize_rendering_area(640, 480);
 
     gst_init (&argc, &argv);
     loop = g_main_loop_new (NULL, FALSE);
@@ -409,12 +419,12 @@ int main (int argc, char **argv)
     sdl_dc = wglGetCurrentDC ();
     wglMakeCurrent (0, 0);
 #else
-    SDL_VERSION (&info.version);
+    SDL_VERSION(&info.version);
     SDL_GetWMInfo (&info);
     sdl_display = info.info.x11.display;
     sdl_win = info.info.x11.window;
-    sdl_gl_context = glXGetCurrentContext ();
-    glXMakeCurrent (sdl_display, None, 0);
+    sdl_gl_context = glXGetCurrentContext();
+    glXMakeCurrent(sdl_display, None, 0);
 #endif
 
 #ifndef WIN32
