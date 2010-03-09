@@ -50,6 +50,11 @@ if test "x${ax_cv_boost_filesystem}" = "xno" ; then
 	AC_MSG_ERROR([missing package: libboost-filesystem-dev])
 fi
 
+AX_BOOST_THREAD
+if test "x${ax_cv_boost_thread}" = "xno" ; then
+    AC_MSG_ERROR([missing package: libboost-thread-dev])
+fi
+
 AX_CHECK_GL
 AX_CHECK_GLU
 AC_CHECK_LIB([GLEW], [glewInit],[AC_SUBST([GLEW_LIBS],["-lGLEW"])])
