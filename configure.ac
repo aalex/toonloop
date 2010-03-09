@@ -2,7 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(TOONLOOP, 1.3.0 )
+AC_INIT(TOONLOOP, 2.0.0, support@toonloop.com)
+AC_DEFINE([PACKAGE_URL],["http://www.toonloop.com"])
 AC_CONFIG_HEADER([src/config.h])
 AC_CONFIG_MACRO_DIR([m4]) # check for m4 macros in directory m4
 AC_PROG_LIBTOOL
