@@ -63,6 +63,13 @@ AC_SUBST(SDL_CFLAGS)
 AC_CHECK_LIB([asound],[snd_seq_open],[AC_SUBST([ASOUND_CXXFLAGS],["-lasound"])])
 AC_CHECK_LIB([portmidi],[Pm_Initialize],[AC_SUBST([PORTMIDI_CXXFLAGS],["-lportmidi -lporttime"])],[echo "Could not find portmidi !"], ["-lporttime"])
 
+# external tools
+AC_CHECK_PROG(MENCODER, mencoder, yes, no)
+if test "$MENCODER" = no ; then
+    AC_MSG_ERROR([Cannot find mencoder.])
+fi
+
+
 AC_CONFIG_FILES([
     Makefile
     src/Makefile
