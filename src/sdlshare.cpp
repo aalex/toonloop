@@ -59,6 +59,34 @@
 #include <cstdlib> // for getenv
 #include "draw.h"
 
+/*
+ * class Pipeline
+ * {
+ *      public:
+ *          SDL_Surface* window_surface_;
+ *          int sdl_video_flags_;
+ *          int x11_screen_width_ = 0;
+ *          int x11_screen_height_ = 0;
+ *          GstPipeline* pipeline_;
+ *
+ * #ifdef WIN32
+ *          HGLRC sdl_gl_context = 0;
+ *          HDC sdl_dc = 0;
+ * #else
+ *          SDL_SysWMinfo info;
+ *          Display *sdl_display = NULL;
+ *          Window sdl_win = 0;
+ *          GLXContext sdl_gl_context = NULL;
+ * #endif
+ *          Pipeline();
+ *          play();
+ *          stop();
+ *          save_last_image(string file_name);
+ *          ~Pipeline();
+ * }
+ */
+
+
 /* This is our SDL surface */
 SDL_Surface *surface;
 int videoFlags;
@@ -89,6 +117,7 @@ class Renderer
         static void resize_rendering_area(int width, int height);
         static void draw_scene(GstGLBuffer* gst_gl_buf);
         static gboolean update_sdl_scene(void *fk);
+        // TODO: handle_key_event(SDL_Event* event);
 };
 
 
@@ -317,7 +346,7 @@ void on_gst_buffer(GstElement* fakesink, GstBuffer* buf, GstPad* pad, gpointer d
         g_idle_add(Renderer::update_sdl_scene, (gpointer) fakesink);
     }
     /* pop then unref buffer we have finished to use in sdl */
-    queue_output_buf = (GAsyncQueue *) g_object_get_data(G_OBJECT (fakesink), "queue_output_buf");
+    queue_output_buf = (GAsyncQueue *) g_object_get_data(G_OBJECT(fakesink), "queue_output_buf");
     if (g_async_queue_length(queue_output_buf) > 3) 
     {
         GstBuffer *buf_old = (GstBuffer *) g_async_queue_pop(queue_output_buf);
@@ -342,7 +371,7 @@ void end_stream_cb(GstBus * bus, GstMessage * msg, GMainLoop * loop)
             g_error_free(err);
             if (debug) 
             {
-                g_print("Debug deails: %s\n", debug);
+                g_print("Debug details: %s\n", debug);
                 g_free(debug);
             }
             break;
