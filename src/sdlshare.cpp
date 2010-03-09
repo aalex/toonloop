@@ -211,14 +211,9 @@ void add_frame()
 gboolean Renderer::update_sdl_scene(void *fk)
 {
     GstElement *fakesink = (GstElement *) fk;
-    GMainLoop *loop =
-        (GMainLoop *) g_object_get_data(G_OBJECT(fakesink), "loop");
-    GAsyncQueue *queue_input_buf =
-        (GAsyncQueue *) g_object_get_data(G_OBJECT(fakesink),
-        "queue_input_buf");
-    GAsyncQueue *queue_output_buf =
-        (GAsyncQueue *) g_object_get_data(G_OBJECT(fakesink),
-        "queue_output_buf");
+    GMainLoop *loop = (GMainLoop *) g_object_get_data(G_OBJECT(fakesink), "loop");
+    GAsyncQueue *queue_input_buf = (GAsyncQueue *) g_object_get_data(G_OBJECT(fakesink), "queue_input_buf");
+    GAsyncQueue *queue_output_buf = (GAsyncQueue *) g_object_get_data(G_OBJECT(fakesink), "queue_output_buf");
     GstGLBuffer *gst_gl_buf = (GstGLBuffer *) g_async_queue_pop(queue_input_buf);
 
     SDL_Event event;
@@ -359,7 +354,7 @@ void end_stream_cb(GstBus * bus, GstMessage * msg, GMainLoop * loop)
 }
 
 
-int main (int argc, char **argv)
+int main(int argc, char **argv)
 {
     std::cout << "DISPLAY=" << std::getenv("DISPLAY") << std::endl;
 
@@ -385,7 +380,7 @@ int main (int argc, char **argv)
     /* Initialize SDL for video output */
     if (SDL_Init (SDL_INIT_VIDEO) < 0) 
     {
-        fprintf (stderr, "Unable to initialize SDL: %s\n", SDL_GetError ());
+        fprintf (stderr, "Unable to initialize SDL: %s\n", SDL_GetError());
         return -1;
     }
     videoFlags = SDL_OPENGL | SDL_RESIZABLE;
@@ -394,7 +389,7 @@ int main (int argc, char **argv)
     surface = SDL_SetVideoMode(640, 480, 0, videoFlags);
     if (surface == NULL) 
     {
-        fprintf(stderr, "Unable to create OpenGL screen: %s\n", SDL_GetError ());
+        fprintf(stderr, "Unable to create OpenGL screen: %s\n", SDL_GetError());
         SDL_Quit();
         return -1;
     }
@@ -410,14 +405,14 @@ int main (int argc, char **argv)
     Renderer::init_opengl_scene();
     Renderer::resize_rendering_area(640, 480);
 
-    gst_init (&argc, &argv);
-    loop = g_main_loop_new (NULL, FALSE);
+    gst_init(&argc, &argv);
+    loop = g_main_loop_new(NULL, FALSE);
 
     /* retrieve and turn off sdl opengl context */
 #ifdef WIN32
-    sdl_gl_context = wglGetCurrentContext ();
-    sdl_dc = wglGetCurrentDC ();
-    wglMakeCurrent (0, 0);
+    sdl_gl_context = wglGetCurrentContext();
+    sdl_dc = wglGetCurrentDC();
+    wglMakeCurrent(0, 0);
 #else
     SDL_VERSION(&info.version);
     SDL_GetWMInfo (&info);
@@ -561,7 +556,6 @@ int main (int argc, char **argv)
     g_object_unref(fakesink);
 
     gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PLAYING);
-
     g_main_loop_run(loop);
 
     /* before to deinitialize the gst-gl-opengl context,
