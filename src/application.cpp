@@ -12,7 +12,7 @@ Application::Application()
 
 void Application::run()
 {
-    std::cout << "Running toonloop\n";
+    std::cout << "Running toonloop" << std::endl;
     start_gui();
     start_pipeline();
     get_pipeline().set_drawing_area(get_gui().get_drawing_area());
@@ -58,7 +58,6 @@ void Application::reset()
 void Application::quit()
 {
     std::cout << "Quitting the application." << std::endl;
-
     get_pipeline().stop();
     gtk_main_quit();
 }

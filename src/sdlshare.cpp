@@ -134,7 +134,7 @@ void resize_rendering_area(int width, int height)
 }
 
 /* The main drawing function. */
-void DrawGLScene (GstGLBuffer * gst_gl_buf)
+void DrawGLScene(GstGLBuffer* gst_gl_buf)
 {
     GLuint texture = gst_gl_buf->texture;
     GLfloat width = (GLfloat) gst_gl_buf->width;
@@ -232,14 +232,14 @@ gboolean update_sdl_scene(void *fk)
 {
   GstElement *fakesink = (GstElement *) fk;
   GMainLoop *loop =
-      (GMainLoop *) g_object_get_data (G_OBJECT (fakesink), "loop");
+      (GMainLoop *) g_object_get_data(G_OBJECT(fakesink), "loop");
   GAsyncQueue *queue_input_buf =
-      (GAsyncQueue *) g_object_get_data (G_OBJECT (fakesink),
+      (GAsyncQueue *) g_object_get_data(G_OBJECT(fakesink),
       "queue_input_buf");
   GAsyncQueue *queue_output_buf =
-      (GAsyncQueue *) g_object_get_data (G_OBJECT (fakesink),
+      (GAsyncQueue *) g_object_get_data(G_OBJECT(fakesink),
       "queue_output_buf");
-  GstGLBuffer *gst_gl_buf = (GstGLBuffer *) g_async_queue_pop (queue_input_buf);
+  GstGLBuffer *gst_gl_buf = (GstGLBuffer *) g_async_queue_pop(queue_input_buf);
 
   SDL_Event event;
   while (SDL_PollEvent (&event)) {
@@ -317,7 +317,7 @@ gboolean update_sdl_scene(void *fk)
 }
 
 /* fakesink handoff callback */
-void on_gst_buffer (GstElement * fakesink, GstBuffer * buf, GstPad * pad, gpointer data)
+void on_gst_buffer(GstElement* fakesink, GstBuffer* buf, GstPad* pad, gpointer data)
 {
   GAsyncQueue *queue_input_buf = NULL;
   GAsyncQueue *queue_output_buf = NULL;
@@ -327,24 +327,24 @@ void on_gst_buffer (GstElement * fakesink, GstBuffer * buf, GstPad * pad, gpoint
   queue_input_buf =
       (GAsyncQueue *) g_object_get_data (G_OBJECT (fakesink),
       "queue_input_buf");
-  g_async_queue_push (queue_input_buf, buf);
-  if (g_async_queue_length (queue_input_buf) > 3)
-    g_idle_add (update_sdl_scene, (gpointer) fakesink);
+  g_async_queue_push(queue_input_buf, buf);
+  if (g_async_queue_length(queue_input_buf) > 3)
+    g_idle_add(update_sdl_scene, (gpointer) fakesink);
 
   /* pop then unref buffer we have finished to use in sdl */
   queue_output_buf =
       (GAsyncQueue *) g_object_get_data (G_OBJECT (fakesink),
       "queue_output_buf");
-  if (g_async_queue_length (queue_output_buf) > 3) {
-    GstBuffer *buf_old = (GstBuffer *) g_async_queue_pop (queue_output_buf);
-    gst_buffer_unref (buf_old);
+  if (g_async_queue_length(queue_output_buf) > 3) {
+    GstBuffer *buf_old = (GstBuffer *) g_async_queue_pop(queue_output_buf);
+    gst_buffer_unref(buf_old);
   }
 }
 
 /* gst bus signal watch callback */
-void end_stream_cb (GstBus * bus, GstMessage * msg, GMainLoop * loop)
+void end_stream_cb(GstBus * bus, GstMessage * msg, GMainLoop * loop)
 {
-  switch (GST_MESSAGE_TYPE (msg)) {
+  switch (GST_MESSAGE_TYPE(msg)) {
     case GST_MESSAGE_EOS:
       g_print("End-of-stream\n");
       g_print("For more information, try to run: GST_DEBUG=gldisplay:2 ./sdlshare\n");
@@ -366,7 +366,7 @@ void end_stream_cb (GstBus * bus, GstMessage * msg, GMainLoop * loop)
     default:
       break;
   }
-  g_main_loop_quit (loop);
+  g_main_loop_quit(loop);
 }
 
 
