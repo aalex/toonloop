@@ -2,19 +2,25 @@
 #include <iostream>  
 #include <boost/thread.hpp>  
 #include <boost/date_time.hpp>  
-
-void run_worker()
+class Worker
 {
-    boost::posix_time::seconds workTime(1);  
-    std::cout << "Worker: running during one second..." << std::endl;  
-    boost::this_thread::sleep(workTime);  
-    std::cout << "Worker: finished" << std::endl;  
-}
+    public:
+        Worker() {}
+
+        void operator()()
+        {
+            boost::posix_time::seconds workTime(1);  
+            std::cout << "Worker: running during one second..." << std::endl;  
+            boost::this_thread::sleep(workTime);  
+            std::cout << "Worker: finished" << std::endl;  
+        }
+};
 
 int main(int argc, char* argv[])  
 {  
     std::cout << "main: startup" << std::endl;  
-    boost::thread workerThread(run_worker);  
+    Worker w = Worker();
+    boost::thread workerThread(w);  
     std::cout << "main: waiting for thread" << std::endl;  
     workerThread.join();  
     std::cout << "main: done" << std::endl;  
