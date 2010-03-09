@@ -70,13 +70,13 @@ GstElement* gdkpixbufsink0 = NULL; // FIXME
 typedef struct _GstGLBuffer GstGLBuffer;
 struct _GstGLBuffer
 {
-  GstBuffer buffer;
+    GstBuffer buffer;
 
-  GObject *obj;
+    GObject *obj;
 
-  gint width;
-  gint height;
-  GLuint texture;
+    gint width;
+    gint height;
+    GLuint texture;
 };
 
 /* rotation angle */
@@ -202,382 +202,393 @@ void add_frame()
 
 gboolean update_sdl_scene(void *fk)
 {
-  GstElement *fakesink = (GstElement *) fk;
-  GMainLoop *loop =
-      (GMainLoop *) g_object_get_data(G_OBJECT(fakesink), "loop");
-  GAsyncQueue *queue_input_buf =
-      (GAsyncQueue *) g_object_get_data(G_OBJECT(fakesink),
-      "queue_input_buf");
-  GAsyncQueue *queue_output_buf =
-      (GAsyncQueue *) g_object_get_data(G_OBJECT(fakesink),
-      "queue_output_buf");
-  GstGLBuffer *gst_gl_buf = (GstGLBuffer *) g_async_queue_pop(queue_input_buf);
+    GstElement *fakesink = (GstElement *) fk;
+    GMainLoop *loop =
+        (GMainLoop *) g_object_get_data(G_OBJECT(fakesink), "loop");
+    GAsyncQueue *queue_input_buf =
+        (GAsyncQueue *) g_object_get_data(G_OBJECT(fakesink),
+        "queue_input_buf");
+    GAsyncQueue *queue_output_buf =
+        (GAsyncQueue *) g_object_get_data(G_OBJECT(fakesink),
+        "queue_output_buf");
+    GstGLBuffer *gst_gl_buf = (GstGLBuffer *) g_async_queue_pop(queue_input_buf);
 
-  SDL_Event event;
-  while (SDL_PollEvent (&event)) {
-    if (event.type == SDL_QUIT) {
-      g_main_loop_quit (loop);
-    }
-    else if (event.type == SDL_KEYDOWN) {
-      if (event.key.keysym.sym == SDLK_q) {
-        if ((event.key.keysym.mod & KMOD_LCTRL) or (event.key.keysym.mod & KMOD_RCTRL)) 
+    SDL_Event event;
+    while (SDL_PollEvent (&event)) 
+    {
+        if (event.type == SDL_QUIT) 
         {
-          g_main_loop_quit (loop);
+            g_main_loop_quit(loop);
         }
-      }
-      else if (event.key.keysym.sym == SDLK_ESCAPE) {
-        /* F1 key was pressed
-         * this toggles fullscreen mode
-         */
-        //SDL_WM_ToggleFullScreen(surface);
-        videoFlags ^= SDL_FULLSCREEN; // toggles it
-        if ((videoFlags & SDL_FULLSCREEN) != 0)
+        else if (event.type == SDL_KEYDOWN) 
         {
-            g_print("Fullscreen ON \n");
-            int w = 0;
-            int h = 0;
+            if (event.key.keysym.sym == SDLK_q) 
+            {
+                if ((event.key.keysym.mod & KMOD_LCTRL) or (event.key.keysym.mod & KMOD_RCTRL)) 
+                {
+                    g_main_loop_quit(loop);
+                }
+            }
+            else if (event.key.keysym.sym == SDLK_ESCAPE) 
+            {
+                /* F1 key was pressed
+                 * this toggles fullscreen mode
+                 */
+                //SDL_WM_ToggleFullScreen(surface);
+                videoFlags ^= SDL_FULLSCREEN; // toggles it
+                if ((videoFlags & SDL_FULLSCREEN) != 0)
+                {
+                    g_print("Fullscreen ON \n");
+                    int w = 0;
+                    int h = 0;
 #ifndef WIN32
-            w = x11_screen_width;
-            h = x11_screen_height;
+                    w = x11_screen_width;
+                    h = x11_screen_height;
 #endif
-            g_print("using a size of %d x %d\n", w, h);
-            surface = SDL_SetVideoMode(w, h, 0, videoFlags);
-            if(surface != NULL) {
-                resize_rendering_area(w, h);
-                SDL_ShowCursor(SDL_DISABLE);
+                    g_print("using a size of %d x %d\n", w, h);
+                    surface = SDL_SetVideoMode(w, h, 0, videoFlags);
+                    if(surface != NULL) 
+                    {
+                        resize_rendering_area(w, h);
+                        SDL_ShowCursor(SDL_DISABLE);
+                    }
+                } else{
+                    g_print("Fullscreen OFF \n");
+                    SDL_ShowCursor(SDL_ENABLE);
+                    surface = SDL_SetVideoMode(640, 480, 0, videoFlags);
+                    if(surface != NULL) 
+                    {
+                        resize_rendering_area(640, 480);
+                    }
+                }
+                if(surface == NULL) 
+                {
+                    g_print("Surface is NULL. Back to what it was.\n");
+                    videoFlags ^= SDL_FULLSCREEN; // toggles it
+                    surface = SDL_SetVideoMode(0, 0, 0, videoFlags); /* If toggle FullScreen failed, then switch back */
+                    if(surface == NULL) 
+                    { 
+                        g_print("Could not recreate a surface full screen.\n");
+                        exit(1);
+                    }
+                }
             }
-        } else{
-            g_print("Fullscreen OFF \n");
-            SDL_ShowCursor(SDL_ENABLE);
-            surface = SDL_SetVideoMode(640, 480, 0, videoFlags);
-            if(surface != NULL) {
-                resize_rendering_area(640, 480);
+            else if (event.key.keysym.sym == SDLK_SPACE) 
+            {
+                add_frame();
             }
         }
-        if(surface == NULL) {
-            g_print("Surface is NULL. Back to what it was.\n");
-            videoFlags ^= SDL_FULLSCREEN; // toggles it
-            surface = SDL_SetVideoMode(0, 0, 0, videoFlags); /* If toggle FullScreen failed, then switch back */
-            if(surface == NULL) { 
-                g_print("Could not recreate a surface full screen.\n");
-                exit(1);
+        else if (event.type == SDL_VIDEORESIZE) 
+        {
+            /* handle resize event */
+            g_print("SDL_VIDEORESIZE\n");
+            surface = SDL_SetVideoMode(event.resize.w, event.resize.h, 0, videoFlags );
+            if (!surface) 
+            {
+                fprintf(stderr, "Could not get a surface after resize: %s\n", SDL_GetError());
+                g_main_loop_quit(loop);
             }
+            resize_rendering_area(event.resize.w, event.resize.h );
         }
-      }
-      else if (event.key.keysym.sym == SDLK_SPACE) {
-          add_frame();
-      }
     }
-    else if (event.type == SDL_VIDEORESIZE) {
-      /* handle resize event */
-      g_print("SDL_VIDEORESIZE\n");
-      surface = SDL_SetVideoMode(event.resize.w, event.resize.h, 0, videoFlags );
-      if (!surface) {
-        fprintf(stderr, "Could not get a surface after resize: %s\n", SDL_GetError());
-        g_main_loop_quit (loop);
-      }
-      resize_rendering_area(event.resize.w, event.resize.h );
-    }
-  }
 
-  draw_scene(gst_gl_buf);
+    draw_scene(gst_gl_buf);
 
-  /* push buffer so it can be unref later */
-  g_async_queue_push (queue_output_buf, gst_gl_buf);
-
-  return FALSE;
+    /* push buffer so it can be unref later */
+    g_async_queue_push(queue_output_buf, gst_gl_buf);
+    return FALSE;
 }
 
 /* fakesink handoff callback */
 void on_gst_buffer(GstElement* fakesink, GstBuffer* buf, GstPad* pad, gpointer data)
 {
-  GAsyncQueue *queue_input_buf = NULL;
-  GAsyncQueue *queue_output_buf = NULL;
-
-  /* ref then push buffer to use it in sdl */
-  gst_buffer_ref (buf);
-  queue_input_buf =
-      (GAsyncQueue *) g_object_get_data (G_OBJECT (fakesink),
-      "queue_input_buf");
-  g_async_queue_push(queue_input_buf, buf);
-  if (g_async_queue_length(queue_input_buf) > 3)
-    g_idle_add(update_sdl_scene, (gpointer) fakesink);
-
-  /* pop then unref buffer we have finished to use in sdl */
-  queue_output_buf =
-      (GAsyncQueue *) g_object_get_data (G_OBJECT (fakesink),
-      "queue_output_buf");
-  if (g_async_queue_length(queue_output_buf) > 3) {
-    GstBuffer *buf_old = (GstBuffer *) g_async_queue_pop(queue_output_buf);
-    gst_buffer_unref(buf_old);
-  }
+    GAsyncQueue *queue_input_buf = NULL;
+    GAsyncQueue *queue_output_buf = NULL;
+  
+    /* ref then push buffer to use it in sdl */
+    gst_buffer_ref(buf);
+    queue_input_buf = (GAsyncQueue *) g_object_get_data(G_OBJECT(fakesink), "queue_input_buf");
+    g_async_queue_push(queue_input_buf, buf);
+    if (g_async_queue_length(queue_input_buf) > 3)
+    {
+        g_idle_add(update_sdl_scene, (gpointer) fakesink);
+    }
+    /* pop then unref buffer we have finished to use in sdl */
+    queue_output_buf = (GAsyncQueue *) g_object_get_data(G_OBJECT (fakesink), "queue_output_buf");
+    if (g_async_queue_length(queue_output_buf) > 3) 
+    {
+        GstBuffer *buf_old = (GstBuffer *) g_async_queue_pop(queue_output_buf);
+        gst_buffer_unref(buf_old);
+    }
 }
 
 /* gst bus signal watch callback */
 void end_stream_cb(GstBus * bus, GstMessage * msg, GMainLoop * loop)
 {
-  switch (GST_MESSAGE_TYPE(msg)) {
-    case GST_MESSAGE_EOS:
-      g_print("End-of-stream\n");
-      g_print("For more information, try to run: GST_DEBUG=gldisplay:2 ./sdlshare\n");
-      break;
-    case GST_MESSAGE_ERROR:
-    {
-      gchar *debug = NULL;
-      GError *err = NULL;
-      gst_message_parse_error(msg, &err, &debug);
-      g_print("Error: %s\n", err->message);
-      g_error_free(err);
-      if (debug) 
-      {
-        g_print("Debug deails: %s\n", debug);
-        g_free(debug);
-      }
-      break;
+    switch (GST_MESSAGE_TYPE(msg)) {
+        case GST_MESSAGE_EOS:
+            g_print("End-of-stream\n");
+            g_print("For more information, try to run: GST_DEBUG=gldisplay:2 ./sdlshare\n");
+            break;
+        case GST_MESSAGE_ERROR:
+        {
+            gchar *debug = NULL;
+            GError *err = NULL;
+            gst_message_parse_error(msg, &err, &debug);
+            g_print("Error: %s\n", err->message);
+            g_error_free(err);
+            if (debug) 
+            {
+                g_print("Debug deails: %s\n", debug);
+                g_free(debug);
+            }
+            break;
+        }
+        default:
+            break;
     }
-    default:
-      break;
-  }
-  g_main_loop_quit(loop);
+    g_main_loop_quit(loop);
 }
 
 
 int main (int argc, char **argv)
 {
-  std::cout << "DISPLAY=" << std::getenv("DISPLAY") << std::endl;
+    std::cout << "DISPLAY=" << std::getenv("DISPLAY") << std::endl;
 
 #ifdef WIN32
-  HGLRC sdl_gl_context = 0;
-  HDC sdl_dc = 0;
+    HGLRC sdl_gl_context = 0;
+    HDC sdl_dc = 0;
 #else
-  SDL_SysWMinfo info;
-  Display *sdl_display = NULL;
-  Window sdl_win = 0;
-  GLXContext sdl_gl_context = NULL;
+    SDL_SysWMinfo info;
+    Display *sdl_display = NULL;
+    Window sdl_win = 0;
+    GLXContext sdl_gl_context = NULL;
 #endif
 
-  GMainLoop *loop = NULL;
-  GstPipeline *pipeline = NULL;
-  GstBus *bus = NULL;
-  //GstElement *glfilter = NULL;
-  GstElement *fakesink = NULL;
-  GstState state;
-  GAsyncQueue *queue_input_buf = NULL;
-  GAsyncQueue *queue_output_buf = NULL;
+    GMainLoop *loop = NULL;
+    GstPipeline *pipeline = NULL;
+    GstBus *bus = NULL;
+    //GstElement *glfilter = NULL;
+    GstElement *fakesink = NULL;
+    GstState state;
+    GAsyncQueue *queue_input_buf = NULL;
+    GAsyncQueue *queue_output_buf = NULL;
 
-  /* Initialize SDL for video output */
-  if (SDL_Init (SDL_INIT_VIDEO) < 0) {
-    fprintf (stderr, "Unable to initialize SDL: %s\n", SDL_GetError ());
-    return -1;
-  }
-  videoFlags = SDL_OPENGL | SDL_RESIZABLE;
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  /* Create a 640x480 OpenGL screen */
-  surface = SDL_SetVideoMode(640, 480, 0, videoFlags);
-  if (surface == NULL) {
-    fprintf(stderr, "Unable to create OpenGL screen: %s\n", SDL_GetError ());
-    SDL_Quit();
-    return -1;
-  }
+    /* Initialize SDL for video output */
+    if (SDL_Init (SDL_INIT_VIDEO) < 0) {
+        fprintf (stderr, "Unable to initialize SDL: %s\n", SDL_GetError ());
+        return -1;
+    }
+    videoFlags = SDL_OPENGL | SDL_RESIZABLE;
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    /* Create a 640x480 OpenGL screen */
+    surface = SDL_SetVideoMode(640, 480, 0, videoFlags);
+    if (surface == NULL) {
+        fprintf(stderr, "Unable to create OpenGL screen: %s\n", SDL_GetError ());
+        SDL_Quit();
+        return -1;
+    }
 
-  // Get the current video hardware information
-  //const SDL_VideoInfo* sdl_video_info = SDL_GetVideoInfo();
-  //std::cout << "Current video resolution is " << sdl_video_info->current_w << "x" << sdl_video_info->current_h << " pixels" << std::endl;
+    // Get the current video hardware information
+    //const SDL_VideoInfo* sdl_video_info = SDL_GetVideoInfo();
+    //std::cout << "Current video resolution is " << sdl_video_info->current_w << "x" << sdl_video_info->current_h << " pixels" << std::endl;
 
-  /* Set the title bar in environments that support it */
-  SDL_WM_SetCaption("Toonloop 1.3 SDL Prototype", NULL);
+    /* Set the title bar in environments that support it */
+    SDL_WM_SetCaption("Toonloop 1.3 SDL Prototype", NULL);
 
-  /* Loop, drawing and checking events */
-  init_opengl_scene();
-  resize_rendering_area(640, 480);
+    /* Loop, drawing and checking events */
+    init_opengl_scene();
+    resize_rendering_area(640, 480);
 
-  gst_init (&argc, &argv);
-  loop = g_main_loop_new (NULL, FALSE);
+    gst_init (&argc, &argv);
+    loop = g_main_loop_new (NULL, FALSE);
 
-  /* retrieve and turn off sdl opengl context */
+    /* retrieve and turn off sdl opengl context */
 #ifdef WIN32
-  sdl_gl_context = wglGetCurrentContext ();
-  sdl_dc = wglGetCurrentDC ();
-  wglMakeCurrent (0, 0);
+    sdl_gl_context = wglGetCurrentContext ();
+    sdl_dc = wglGetCurrentDC ();
+    wglMakeCurrent (0, 0);
 #else
-  SDL_VERSION (&info.version);
-  SDL_GetWMInfo (&info);
-  sdl_display = info.info.x11.display;
-  sdl_win = info.info.x11.window;
-  sdl_gl_context = glXGetCurrentContext ();
-  glXMakeCurrent (sdl_display, None, 0);
+    SDL_VERSION (&info.version);
+    SDL_GetWMInfo (&info);
+    sdl_display = info.info.x11.display;
+    sdl_win = info.info.x11.window;
+    sdl_gl_context = glXGetCurrentContext ();
+    glXMakeCurrent (sdl_display, None, 0);
 #endif
 
 #ifndef WIN32
-  // XXX Linux only:
-  std::cout << "display infos:" << std::endl;
-  int scr = 0;
-  for (int i = 0; i < ScreenCount(sdl_display); i++) 
-  {
-    x11_screen_width = XDisplayWidth(sdl_display, i);
-    x11_screen_height = XDisplayHeight(sdl_display, i);
-    g_print("  screen #%d  dimensions:    %dx%d pixels \n", i, x11_screen_width, x11_screen_height);
-  }
-  int default_screen_num = DefaultScreen(sdl_display);
-  x11_screen_width = XDisplayWidth(sdl_display, default_screen_num);
-  x11_screen_height = XDisplayHeight(sdl_display, default_screen_num);
-  g_print("Using  screen #%d  dimensions:    %dx%d pixels \n", default_screen_num, x11_screen_width, x11_screen_height);
+    // XXX Linux only:
+    std::cout << "display infos:" << std::endl;
+    int scr = 0;
+    for (int i = 0; i < ScreenCount(sdl_display); i++) 
+    {
+        x11_screen_width = XDisplayWidth(sdl_display, i);
+        x11_screen_height = XDisplayHeight(sdl_display, i);
+        g_print("  screen #%d  dimensions:    %dx%d pixels \n", i, x11_screen_width, x11_screen_height);
+    }
+    int default_screen_num = DefaultScreen(sdl_display);
+    x11_screen_width = XDisplayWidth(sdl_display, default_screen_num);
+    x11_screen_height = XDisplayHeight(sdl_display, default_screen_num);
+    g_print("Using  screen #%d  dimensions:    %dx%d pixels \n", default_screen_num, x11_screen_width, x11_screen_height);
 
 #endif
 
-  // Gstreamer Pipeline:
-  // gst-launch v4l2src device=/dev/video0 ! video/x-raw-yuv,format=\(fourcc\)UYVY,width=640,height=480 ! ffmpegcolorspace ! xvimagesink
-  // video source:
-  // See also gtkmedia.c in pidgin for a nice auto-detected video source.
-  // See also cheese.
-  pipeline = GST_PIPELINE(gst_pipeline_new("pipeline0"));
-  g_assert(pipeline);
-  GstElement* videosrc0  = gst_element_factory_make("v4l2src", "videosrc0");
-  g_assert(videosrc0);
-  // caps filter element:
-  GstElement* capsfilter0 = gst_element_factory_make("capsfilter", "capsfilter0");
-  g_assert(capsfilter0);
-  GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv",
-      "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC('U','Y','V','Y'),
-      "width", G_TYPE_INT, 640,
-      "height", G_TYPE_INT, 480,
-      //"framerate", GST_TYPE_FRACTION, 30, 1,
-      NULL); 
-  g_object_set(capsfilter0, "caps", caps, NULL);
-  gst_caps_unref(caps);
-  // ffmpegcolorspace0 element:
-  GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
-  g_assert(ffmpegcolorspace0);
-  GstElement* tee0 = gst_element_factory_make("tee", "tee0");
-  g_assert(tee0);
-  GstElement* queue0 = gst_element_factory_make("queue", "queue0");
-  g_assert(queue0);
+    // Gstreamer Pipeline:
+    // gst-launch v4l2src device=/dev/video0 ! video/x-raw-yuv,format=\(fourcc\)UYVY,width=640,height=480 ! ffmpegcolorspace ! xvimagesink
+    // video source:
+    // See also gtkmedia.c in pidgin for a nice auto-detected video source.
+    // See also cheese.
+    pipeline = GST_PIPELINE(gst_pipeline_new("pipeline0"));
+    g_assert(pipeline);
+    GstElement* videosrc0  = gst_element_factory_make("v4l2src", "videosrc0");
+    g_assert(videosrc0);
+    // caps filter element:
+    GstElement* capsfilter0 = gst_element_factory_make("capsfilter", "capsfilter0");
+    g_assert(capsfilter0);
+    GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv",
+        "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC('U','Y','V','Y'),
+        "width", G_TYPE_INT, 640,
+        "height", G_TYPE_INT, 480,
+        //"framerate", GST_TYPE_FRACTION, 30, 1,
+        NULL); 
+    g_object_set(capsfilter0, "caps", caps, NULL);
+    gst_caps_unref(caps);
+    // ffmpegcolorspace0 element:
+    GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
+    g_assert(ffmpegcolorspace0);
+    GstElement* tee0 = gst_element_factory_make("tee", "tee0");
+    g_assert(tee0);
+    GstElement* queue0 = gst_element_factory_make("queue", "queue0");
+    g_assert(queue0);
 
-  // glupload0 element:
-  GstElement* glupload0 = gst_element_factory_make("glupload", "glupload0");
-  g_assert(glupload0);
-  GstElement* fakesink0 = gst_element_factory_make("fakesink", "fakesink0");
-  g_assert(fakesink0);
-  // GdkPixbuf sink:
-  GstElement* queue1 = gst_element_factory_make("queue", "queue1");
-  g_assert(queue1);
-  //FIXME: GstElement* 
-  gdkpixbufsink0 = gst_element_factory_make("gdkpixbufsink", "gdkpixbufsink0");
-  g_assert(gdkpixbufsink0);
+    // glupload0 element:
+    GstElement* glupload0 = gst_element_factory_make("glupload", "glupload0");
+    g_assert(glupload0);
+    GstElement* fakesink0 = gst_element_factory_make("fakesink", "fakesink0");
+    g_assert(fakesink0);
+    // GdkPixbuf sink:
+    GstElement* queue1 = gst_element_factory_make("queue", "queue1");
+    g_assert(queue1);
+    //FIXME: GstElement* 
+    gdkpixbufsink0 = gst_element_factory_make("gdkpixbufsink", "gdkpixbufsink0");
+    g_assert(gdkpixbufsink0);
 
-  // add elements
-  gst_bin_add(GST_BIN(pipeline), videosrc0);
-  gst_bin_add(GST_BIN(pipeline), capsfilter0);
-  gst_bin_add(GST_BIN(pipeline), ffmpegcolorspace0);
-  gst_bin_add(GST_BIN(pipeline), tee0);
-  gst_bin_add(GST_BIN(pipeline), queue0);
-  gst_bin_add(GST_BIN(pipeline), glupload0);
-  gst_bin_add(GST_BIN(pipeline), fakesink0);
-  gst_bin_add(GST_BIN(pipeline), queue1);
-  gst_bin_add(GST_BIN(pipeline), gdkpixbufsink0);
-  // link pads:
-  gboolean is_linked = NULL;
-  is_linked = gst_element_link_pads(videosrc0, "src", capsfilter0, "sink");
-  if (!is_linked) { g_print("Could not link %s to %s.\n", "videosrc0", "capsfilter0"); exit(1); }
-  is_linked = gst_element_link_pads(capsfilter0, "src", ffmpegcolorspace0, "sink");
-  if (!is_linked) { g_print("Could not link %s to %s.\n", "capsfilter0", "ffmpegcolorspace0"); exit(1); }
-  is_linked = gst_element_link_pads(ffmpegcolorspace0, "src", tee0, "sink");
-  if (!is_linked) { g_print("Could not link %s to %s.\n", "ffmpegcolorspace0", "tee0"); exit(1); }
-  is_linked = gst_element_link_pads(tee0, "src0", queue0, "sink");
-  if (!is_linked) { g_print("Could not link %s to %s.\n", "tee0", "queue0"); exit(1); }
-  // output 0: the OpenGL uploader.
-  is_linked = gst_element_link_pads(queue0, "src", glupload0, "sink");
-  if (!is_linked) { g_print("Could not link %s to %s.\n", "queue0", "glupload0"); exit(1); }
-  is_linked = gst_element_link_pads(glupload0, "src", fakesink0, "sink");
-  if (!is_linked) { g_print("Could not link %s to %s.\n", "glupload0", "fakesink0"); exit(1); }
+    // add elements
+    gst_bin_add(GST_BIN(pipeline), videosrc0);
+    gst_bin_add(GST_BIN(pipeline), capsfilter0);
+    gst_bin_add(GST_BIN(pipeline), ffmpegcolorspace0);
+    gst_bin_add(GST_BIN(pipeline), tee0);
+    gst_bin_add(GST_BIN(pipeline), queue0);
+    gst_bin_add(GST_BIN(pipeline), glupload0);
+    gst_bin_add(GST_BIN(pipeline), fakesink0);
+    gst_bin_add(GST_BIN(pipeline), queue1);
+    gst_bin_add(GST_BIN(pipeline), gdkpixbufsink0);
+    // link pads:
+    gboolean is_linked = NULL;
+    is_linked = gst_element_link_pads(videosrc0, "src", capsfilter0, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "videosrc0", "capsfilter0"); exit(1); }
+    is_linked = gst_element_link_pads(capsfilter0, "src", ffmpegcolorspace0, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "capsfilter0", "ffmpegcolorspace0"); exit(1); }
+    is_linked = gst_element_link_pads(ffmpegcolorspace0, "src", tee0, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "ffmpegcolorspace0", "tee0"); exit(1); }
+    is_linked = gst_element_link_pads(tee0, "src0", queue0, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "tee0", "queue0"); exit(1); }
+    // output 0: the OpenGL uploader.
+    is_linked = gst_element_link_pads(queue0, "src", glupload0, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "queue0", "glupload0"); exit(1); }
+    is_linked = gst_element_link_pads(glupload0, "src", fakesink0, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "glupload0", "fakesink0"); exit(1); }
 
-  // output 1: the GdkPixbuf sink
-  is_linked = gst_element_link_pads(tee0, "src1", queue1, "sink");
-  if (!is_linked) { g_print("Could not link %s to %s.\n", "tee0", "queue1"); exit(1); }
-  is_linked = gst_element_link_pads(queue1, "src", gdkpixbufsink0, "sink");
-  if (!is_linked) { g_print("Could not link %s to %s.\n", "queue1", "gdkpixbufsink0"); exit(1); }
+    // output 1: the GdkPixbuf sink
+    is_linked = gst_element_link_pads(tee0, "src1", queue1, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "tee0", "queue1"); exit(1); }
+    is_linked = gst_element_link_pads(queue1, "src", gdkpixbufsink0, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "queue1", "gdkpixbufsink0"); exit(1); }
 
-  g_object_set(fakesink0, "sync", FALSE, NULL); 
-  //TODO: 
-  char* device_name = "/dev/video0";
-  g_print("Using camera %s.\n", device_name);
-  g_object_set(videosrc0, "device", device_name, NULL); 
-  /* sdl_gl_context is an external OpenGL context with which gst-plugins-gl want to share textures */
-  g_object_set(G_OBJECT(glupload0), "external-opengl-context", sdl_gl_context, NULL);
+    g_object_set(fakesink0, "sync", FALSE, NULL); 
+    //TODO: 
+    char* device_name = "/dev/video0";
+    g_print("Using camera %s.\n", device_name);
+    g_object_set(videosrc0, "device", device_name, NULL); 
+    /* sdl_gl_context is an external OpenGL context with which gst-plugins-gl want to share textures */
+    g_object_set(G_OBJECT(glupload0), "external-opengl-context", sdl_gl_context, NULL);
 
-  bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline));
-  gst_bus_add_signal_watch(bus);
-  g_signal_connect(bus, "message::error", G_CALLBACK(end_stream_cb), loop);
-  g_signal_connect(bus, "message::warning", G_CALLBACK(end_stream_cb), loop);
-  g_signal_connect(bus, "message::eos", G_CALLBACK(end_stream_cb), loop);
-  gst_object_unref(bus);
+    bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline));
+    gst_bus_add_signal_watch(bus);
+    g_signal_connect(bus, "message::error", G_CALLBACK(end_stream_cb), loop);
+    g_signal_connect(bus, "message::warning", G_CALLBACK(end_stream_cb), loop);
+    g_signal_connect(bus, "message::eos", G_CALLBACK(end_stream_cb), loop);
+    gst_object_unref(bus);
 
-  /* NULL to PAUSED state pipeline to make sure the gst opengl context is created and
-   * shared with the sdl one */
-  gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PAUSED);
-  // FIXME: cannot set it to pause right now.
-  state = GST_STATE_PAUSED;
-  if (gst_element_get_state(GST_ELEMENT(pipeline), &state, NULL, GST_CLOCK_TIME_NONE) != GST_STATE_CHANGE_SUCCESS) 
-  {
-    g_debug("failed to pause pipeline\n");
-    //return -1;
-  }
+    /* NULL to PAUSED state pipeline to make sure the gst opengl context is created and
+     * shared with the sdl one */
+    gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PAUSED);
+    // FIXME: cannot set it to pause right now.
+    state = GST_STATE_PAUSED;
+    if (gst_element_get_state(GST_ELEMENT(pipeline), &state, NULL, GST_CLOCK_TIME_NONE) != GST_STATE_CHANGE_SUCCESS) 
+    {
+      g_debug("failed to pause pipeline\n");
+      //return -1;
+    }
 
-  /* turn on back sdl opengl context */
+    /* turn on back sdl opengl context */
 #ifdef WIN32
-  wglMakeCurrent(sdl_dc, sdl_gl_context);
+    wglMakeCurrent(sdl_dc, sdl_gl_context);
 #else
-  glXMakeCurrent(sdl_display, sdl_win, sdl_gl_context);
+    glXMakeCurrent(sdl_display, sdl_win, sdl_gl_context);
 #endif
 
-  /* append a gst-gl texture to this queue when you do not need it no more */
-  fakesink = gst_bin_get_by_name(GST_BIN(pipeline), "fakesink0");
-  g_object_set(G_OBJECT(fakesink), "signal-handoffs", TRUE, NULL);
-  g_signal_connect(fakesink, "handoff", G_CALLBACK(on_gst_buffer), NULL);
-  queue_input_buf = g_async_queue_new();
-  queue_output_buf = g_async_queue_new();
-  g_object_set_data(G_OBJECT(fakesink), "queue_input_buf", queue_input_buf);
-  g_object_set_data(G_OBJECT(fakesink), "queue_output_buf", queue_output_buf);
-  g_object_set_data(G_OBJECT(fakesink), "loop", loop);
-  g_object_unref(fakesink);
+    /* append a gst-gl texture to this queue when you do not need it no more */
+    fakesink = gst_bin_get_by_name(GST_BIN(pipeline), "fakesink0");
+    g_object_set(G_OBJECT(fakesink), "signal-handoffs", TRUE, NULL);
+    g_signal_connect(fakesink, "handoff", G_CALLBACK(on_gst_buffer), NULL);
+    queue_input_buf = g_async_queue_new();
+    queue_output_buf = g_async_queue_new();
+    g_object_set_data(G_OBJECT(fakesink), "queue_input_buf", queue_input_buf);
+    g_object_set_data(G_OBJECT(fakesink), "queue_output_buf", queue_output_buf);
+    g_object_set_data(G_OBJECT(fakesink), "loop", loop);
+    g_object_unref(fakesink);
 
-  gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PLAYING);
+    gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PLAYING);
 
-  g_main_loop_run(loop);
+    g_main_loop_run(loop);
 
-  /* before to deinitialize the gst-gl-opengl context,
-   * no shared context (here the sdl one) must be current
-   */
+    /* before to deinitialize the gst-gl-opengl context,
+     * no shared context (here the sdl one) must be current
+     */
 #ifdef WIN32
-  wglMakeCurrent(0, 0);
+    wglMakeCurrent(0, 0);
 #else
-  glXMakeCurrent(sdl_display, sdl_win, sdl_gl_context);
+    glXMakeCurrent(sdl_display, sdl_win, sdl_gl_context);
 #endif
-
-  gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_NULL);
-  g_object_unref(pipeline);
-
-  /* turn on back sdl opengl context */
+  
+    gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_NULL);
+    g_object_unref(pipeline);
+  
+    /* turn on back sdl opengl context */
 #ifdef WIN32
-  wglMakeCurrent(sdl_dc, sdl_gl_context);
+    wglMakeCurrent(sdl_dc, sdl_gl_context);
 #else
-  glXMakeCurrent(sdl_display, None, 0);
+    glXMakeCurrent(sdl_display, None, 0);
 #endif
 
-  SDL_Quit ();
+    SDL_Quit ();
+    
+    /* make sure there is no pending gst gl buffer in the communication queues 
+     * between sdl and gst-gl
+     */
+    while (g_async_queue_length(queue_input_buf) > 0) 
+    {
+        GstBuffer *buf = (GstBuffer *) g_async_queue_pop(queue_input_buf);
+        gst_buffer_unref(buf);
+    }
 
-  /* make sure there is no pending gst gl buffer in the communication queues 
-   * between sdl and gst-gl
-   */
-  while (g_async_queue_length(queue_input_buf) > 0) {
-    GstBuffer *buf = (GstBuffer *) g_async_queue_pop(queue_input_buf);
-    gst_buffer_unref(buf);
-  }
+    while (g_async_queue_length(queue_output_buf) > 0) 
+    {
+        GstBuffer *buf = (GstBuffer *) g_async_queue_pop(queue_output_buf);
+        gst_buffer_unref(buf);
+    }
 
-  while (g_async_queue_length(queue_output_buf) > 0) {
-    GstBuffer *buf = (GstBuffer *) g_async_queue_pop(queue_output_buf);
-    gst_buffer_unref(buf);
-  }
-
-  return 0;
+    return 0;
 }
