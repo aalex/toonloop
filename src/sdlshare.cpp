@@ -17,7 +17,9 @@
  *
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
- *
+ */
+
+/*
  * This file is heavily inspired from an example coming with 
  * the gst-plugins-gl, published under the LGPL:
  *
@@ -55,6 +57,7 @@
 
 #include <iostream>
 #include <cstdlib> // for getenv
+#include "draw.h"
 
 /* This is our SDL surface */
 SDL_Surface *surface;
@@ -79,37 +82,6 @@ struct _GstGLBuffer
 /* rotation angle */
 float zrot = 0.0f;
 
-/**
- * Draws a line between given points.
- */
-void draw_line(float from_x, float from_y, float to_x, float to_y)
-{
-    glBegin(GL_LINES);
-    glVertex2f(from_x, from_y);
-    glVertex2f(to_x, to_y);
-    glEnd();
-}
-/**
- * Draws a texture square of 2 x 2 size centered at 0, 0
- * 
- * Make sure to call glEnable(GL_TEXTURE_RECTANGLE_ARB) first.
- * 
- * @param width: width of the image in pixels
- * @param height: height of the image in pixels
- */
-void draw_vertically_flipped_textured_square(float width, float height)
-{
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0, height);
-    glVertex2f(-1.0, -1.0); // Bottom Left
-    glTexCoord2f(width, height);
-    glVertex2f(1.0, -1.0); // Bottom Right
-    glTexCoord2f(width, 0.0);
-    glVertex2f(1.0, 1.0); // Top Right
-    glTexCoord2f(0.0, 0.0);
-    glVertex2f(-1.0, 1.0); // Top Left
-    glEnd();
-}
 
 /* A general OpenGL initialization function.  Sets all of the initial parameters. */
 void init_opengl_scene()   // We call this right after our OpenGL window is created.
@@ -134,7 +106,7 @@ void resize_rendering_area(int width, int height)
 }
 
 /* The main drawing function. */
-void DrawGLScene(GstGLBuffer* gst_gl_buf)
+void draw_scene(GstGLBuffer* gst_gl_buf)
 {
     GLuint texture = gst_gl_buf->texture;
     GLfloat width = (GLfloat) gst_gl_buf->width;
@@ -174,14 +146,14 @@ void DrawGLScene(GstGLBuffer* gst_gl_buf)
     glTranslatef(0.66666666f,0.0f,0.0f);
     glRotatef(zrot,0.0f,0.0f,1.0f);
     glScalef(0.66666666666, 0.5, 1.0);
-    draw_vertically_flipped_textured_square(width, height);
+    draw::draw_vertically_flipped_textured_square(width, height);
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-0.6666666f,0.0f,0.0f);
     glRotatef(zrot,0.0f,0.0f,1.0f);
     glScalef(0.66666666666, 0.5, 1.0);
-    draw_vertically_flipped_textured_square(width, height);
+    draw::draw_vertically_flipped_textured_square(width, height);
     glPopMatrix();
     
     zrot += 0.1f;
@@ -195,8 +167,8 @@ void DrawGLScene(GstGLBuffer* gst_gl_buf)
     for (int i = 0; i < num; i++)
     {
         x = (i / float(num)) * 4 - 2;
-        draw_line(float(x), -2.0, float(x), 2.0);
-        draw_line(-2.0, float(x), 2.0, float(x));
+        draw::draw_line(float(x), -2.0, float(x), 2.0);
+        draw::draw_line(-2.0, float(x), 2.0, float(x));
     }
 
   // swap buffers to display, since we're double buffered.
@@ -304,11 +276,11 @@ gboolean update_sdl_scene(void *fk)
         fprintf(stderr, "Could not get a surface after resize: %s\n", SDL_GetError());
         g_main_loop_quit (loop);
       }
-      resize_rendering_area( event.resize.w, event.resize.h );
+      resize_rendering_area(event.resize.w, event.resize.h );
     }
   }
 
-  DrawGLScene (gst_gl_buf);
+  draw_scene(gst_gl_buf);
 
   /* push buffer so it can be unref later */
   g_async_queue_push (queue_output_buf, gst_gl_buf);

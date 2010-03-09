@@ -48,3 +48,25 @@ void draw::draw_line(float from_x, float from_y, float to_x, float to_y)
     glVertex2f(to_x, to_y);
     glEnd();
 }
+
+/**
+ * Draws a texture square of 2 x 2 size centered at 0, 0
+ * 
+ * Make sure to call glEnable(GL_TEXTURE_RECTANGLE_ARB) first.
+ * 
+ * @param width: width of the image in pixels
+ * @param height: height of the image in pixels
+ */
+void draw::draw_vertically_flipped_textured_square(float width, float height)
+{
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, height);
+    glVertex2f(-1.0, -1.0); // Bottom Left
+    glTexCoord2f(width, height);
+    glVertex2f(1.0, -1.0); // Bottom Right
+    glTexCoord2f(width, 0.0);
+    glVertex2f(1.0, 1.0); // Top Right
+    glTexCoord2f(0.0, 0.0);
+    glVertex2f(-1.0, 1.0); // Top Left
+    glEnd();
+}
