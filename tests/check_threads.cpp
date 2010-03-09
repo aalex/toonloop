@@ -22,13 +22,13 @@ int main(int argc, char* argv[])
     Worker w = Worker();
     boost::thread workerThread(w);  
 
-    boost::posix_time::millisec rel_time(10);
+    boost::posix_time::millisec rel_time(20);
     bool returned(false);
     while (! returned)
     {
         std::cout << "main: waiting for thread" << std::endl;  
         returned = workerThread.timed_join(rel_time);
-        boost::this_thread::sleep(rel_time);  
+        boost::this_thread::sleep(rel_time); // simulates doing something else.
     }
     std::cout << "main: done" << std::endl;  
     return 0;  

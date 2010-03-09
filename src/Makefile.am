@@ -1,4 +1,4 @@
-bin_PROGRAMS = toonloop dummy sdlshare toonmidi
+bin_PROGRAMS = toonloop dummy sdlshare toonmidi runner
 # gtkshare
 
 toonloop_SOURCES = main.cpp gltools.cpp draw.cpp gui.cpp pipeline.cpp gstgtk.cpp application.cpp
@@ -20,4 +20,8 @@ sdlshare_LDADD = $(LIBM_LIBS) $(LIBTHREAD_LIBS) $(GST_LIBS) $(GL_LIBS) $(GLU_LIB
 
 toonmidi_SOURCES = toonmidi.cpp
 toonmidi_CXXFLAGS = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS) $(PORTMIDI_CXXFLAGS) $(ASOUND_CXXFLAGS)
-toonmidi_LIBS = $(LIBM_LIBS) $(LIBTHREAD_LIBS) $(PORTMIDI_LIBS) $(ASOUND_LIBS)
+toonmidi_LDADD = $(LIBM_LIBS) $(LIBTHREAD_LIBS) $(PORTMIDI_LIBS) $(ASOUND_LIBS)
+
+runner_SOURCES = runner.cpp
+runner_CXXFLAGS = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS) $(BOOST_CPPFLAGS)
+runner_LDADD = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS) $(BOOST_LIBS) $(BOOST_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LIB)
