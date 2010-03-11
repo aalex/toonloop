@@ -1417,6 +1417,17 @@ class Toonloop(render.Game):
                 print("Playhead freq ratio already at 30 / %d." % (will_be))
         self.signal_framerate(will_be)
 
+#    def fps_set(self, fps=10):
+#        """
+#        Sets the current clip's frame rate using FPS, not a strange ratio.
+#        @param fps: Frames per second !
+#        """
+#        weird_ratio = int(30 / float(fps))
+#        if self.config.verbose:
+#            print("Playhead frequency ratio: 30 / %d. Frame rate is %d FPS." % (weird_ratio, fps))
+#        self.clip.playhead_iterate_every = weird_ratio
+#        self.signal_framerate(weird_ratio)
+
     def toggle_fullscreen(self):
         """
         Toggles from window to fullscreen view.
@@ -1535,21 +1546,35 @@ class Toonloop(render.Game):
                     if self.config.verbose:
                         print("Key event error : %s" % (e.message))
             # joystick events:
+            # Button 1:  Remove an image
+            # Button 2:  Play back and forth
+            # Button 3:  Add an image
+            # Button 4:  Toggle onion skinning
+            # Button 5:  Add an image
+            # Button 6:  Add an image
+            # Button 7:  Add an image
+            # Button 8:  Add an image
+            # Button 9:  Save as a clip
+            # Button 10: Erase all images
+            # Up:        Faster
+            # Down:      Slower
+            # Left:      Play backward
+            # Right:     Play forward
             elif e.type == pygame.JOYBUTTONDOWN:
                 print("button %s" % (e.button))
                 if e.button == 0:
                     self.frame_remove()
                 elif e.button == 1:
-                    print("Not sure about what this button should do.") # FIXME
-                    #self.theme_change()
+                    self.direction_change(DIRECTION_YOYO)
                 elif e.button == 2:
                     self.frame_add()
                 elif e.button == 3:
-                    print("Not sure about what this button should do.") # FIXME
                     self.onionskin_toggle()
-                elif e.button == 4:
+                elif e.button == 4 or e.button == 5 or e.button == 6 or e.button == 7:
+                    self.frame_add()
+                elif e.button == 8:
                     self.clip_save()
-                elif e.button == 5:
+                elif e.button == 9:
                     self.clip_reset()
             elif e.type == pygame.JOYHATMOTION or e.type == pygame.JOYAXISMOTION:
                 left = False
@@ -1598,10 +1623,10 @@ class Toonloop(render.Game):
                                     right = True
                             else:
                                 axis = 'Y'
-                                if e.value <= -1.0:
-                                    down = True
+                                if e.value <= -1.0: 
+                                    up = True #oddly, they are inverted
                                 else:
-                                    up = True
+                                    down = True
                             print("Axis %s position is %s" % (axis, e.value))
                     except ValueError, err:
                         print(str(err)) 
@@ -1611,9 +1636,9 @@ class Toonloop(render.Game):
                         print(str(err))
                     self.joystick_axis[e.joy][e.axis] = e.value
                 if up: # Y-axis
-                    self.framerate_increase()
+                    self.framerate_increase(2)
                 elif down:
-                    self.framerate_decrease()
+                    self.framerate_increase(-2)
                 if right: # X-axis
                     self.direction_change(DIRECTION_FORWARD)
                 elif left:
