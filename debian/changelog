@@ -1,3 +1,9 @@
+toonloop (1.2.4-0ubuntu1) lucid; urgency=low
+
+  * Added support for a joystick.
+
+ -- Alexandre Quessy <alexandre@quessy.net>  Thu, 11 Mar 2010 01:54:40 -0500
+
 toonloop (1.2.3-0ubuntu1) lucid; urgency=low
 
   * Fixed a version error with a dependency. Namely, twisted.

@@ -14,10 +14,10 @@ Depends: ${misc:Depends}, python (>= 2.4), python-central (>= 0.6.7), python-twi
 Suggests: puredata, ivtv-utils, python-purity, python-portmidi, python-liblo
 Description: The Toonloop Live Stop Motion Tool 
  .
- Toonloop is a live stop motion animation software. It aims at showing
- the creation process the audience as well as the result of the
- creation. The frame by frame animation is made by adding frames one
- by one to a clip made of many frames. Clips are displayed in a never
+ Toonloop is a live stop motion animation software. It aims to show 
+ the creation process the audience as well as the result of the 
+ creation. The frame by frame animation is made by adding frames one 
+ by one to a clip made of many frames. Clips are displayed in a never 
  ending loop.
  .
  Toonloop provides features such as onion skinning, and an intervalometer, 

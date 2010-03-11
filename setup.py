@@ -42,7 +42,7 @@ from setuptools import setup
 import sys
 import subprocess
 
-__version__ = "1.2.3"
+__version__ = "1.2.4"
 
 setup(
     name = "toonloop",
