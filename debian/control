@@ -11,7 +11,7 @@ Package: toonloop
 Architecture: all
 XB-Python-Version: ${python:Versions}
 Depends: ${misc:Depends}, python (>= 2.4), python-central (>= 0.6.7), python-twisted (>= 8.1.0), python-numpy, python-opengl, python-dev, python-pygame (>=1.9.0), mencoder, python-gtk2
-Suggests: puredata, ivtv-utils, python-purity, python-portmidi, python-liblo
+Suggests: puredata, ivtv-utils, python-purity, python-portmidi, python-liblo, pyliblo-utils
 Description: The Toonloop Live Stop Motion Tool 
  .
  Toonloop is a live stop motion animation software. It aims at showing

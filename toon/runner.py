@@ -29,6 +29,7 @@ __version__ = "1.2.0" # MUST ALSO CHANGE IT IN setup.py
 
 import sys
 import os
+import threading
 import pygame 
 import optparse
 try:
@@ -58,12 +59,12 @@ def exit_with_error(message):
         def _cb(result):
             if reactor.running:
                 reactor.stop()
-            sys.exit(1)
+            return None
         d.addCallback(_cb)
         if not reactor.running:
             reactor.run()
-    else:
-        sys.exit(1)
+    print("Exiting with error.")
+    sys.exit(1)
 
 def run():
     """
@@ -177,9 +178,16 @@ def run():
                 print(e.message)
             except optgroup.OptionsError, e:
                 print(e.message)
-    try:
-        reactor.run()
-    except KeyboardInterrupt:
-        pass # will exit on ctrl-c
-    print("Exiting toonloop")
-    sys.exit(0)
+    #try:
+    reactor.run()
+    #except KeyboardInterrupt:
+    #    print("Control-C has been pressed.")
+    #    pass # will exit on ctrl-c
+    #if reactor.running: # very unlikely
+    #    reactor.stop()
+    if options.verbose:
+        print("There are %s threads left." % (threading.activeCount()))
+    print("Exiting toonloop.")
+    #pygame.quit()
+    #assert(False)
+    #sys.exit(0)

@@ -89,7 +89,6 @@ except ImportError, e:
 from toon import mencoder
 from toon import draw
 from toon import puredata
-from toon import midi
 from toon import save
 from toon import sampler
 from toon import data
@@ -562,6 +561,7 @@ class Toonloop(render.Game):
                 #raise
         # MIDI
         if self.config.midi_enabled:
+            from toon import midi
             self.midi_manager = midi.SimpleMidiInput(self.config.midi_input_id, self.config.midi_verbose)
             self.midi_manager.register_callback(self._cb_midi_event)
             try:
@@ -895,6 +895,9 @@ class Toonloop(render.Game):
         except SystemError, e:
             print(sys.exc_info())
             raise ToonloopError("Invalid camera. %s" % (str(e.message)))
+        except EnvironmentError, e:
+            print(sys.exc_info())
+            raise ToonloopError("Cannot use camera. %s" % (str(e.message)))
         except Exception, e:
             print(sys.exc_info())
             raise ToonloopError("Invalid camera. %s" % (str(e.message)))
@@ -1567,8 +1570,6 @@ class Toonloop(render.Game):
             if will_be > 0 and will_be <= 60:
                 self.config.intervalometer_rate_seconds = will_be
                 print("auto rate: %s" %  (will_be))
-        if self.config.verbose:
-            print("Cleaning up before exiting.")
 
     def _intervalometer_frame_add(self):
         """
@@ -1599,11 +1600,15 @@ class Toonloop(render.Game):
         Called by the rats.render.Renderer before quitting the application.
         """
         if self.config.verbose:
-            print("Cleaning up.")
+            print("Cleaning up before exiting.")
         if self.config.osc_enabled:
             if self.config.verbose:
                 print("Deleting OSC sender/receiver.")
             del self.osc
+        if self.config.midi_enabled:
+            if self.config.verbose:
+                print("cleaning up MIDI")
+            del self.midi_manager
         # glDeleteTextures(3, self.textures)
 
     def config_set(self, name, value):
