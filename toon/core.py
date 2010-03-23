@@ -1634,7 +1634,11 @@ class Toonloop(render.Game):
                     #    print(str(err)) 
                     except KeyError, err: # we don't care about errors
                         print(str(err))
-                    self.joystick_axis[e.joy][e.axis] = e.value
+                    try:
+                        self.joystick_axis[e.joy][e.axis] = e.value
+                    except KeyError, err: # we don't care about errors
+                        self.joystick_axis[e.joy] = {}
+                        print(str(err))
                 if up: # Y-axis
                     self.framerate_increase(2)
                 elif down:
