@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Scenic
+# Toonloop Launcher
+# Copyright (C) 2010 Alexandre Quessy
 # Copyright (C) 2008 Société des arts technologiques (SAT)
 # http://www.sat.qc.ca
 # All rights reserved.
@@ -20,45 +21,26 @@
 # along with Scenic. If not, see <http://www.gnu.org/licenses/>.
 
 """
-Scenic GTK GUI.
+Toonloop-launcher GTK GUI.
 """
-
 import os
-import smtplib
 import gtk.gdk
 import webbrowser
 from twisted.internet import reactor
 from twisted.internet import defer
 from twisted.internet import task
 from twisted.python.reflect import prefixedMethods
-from scenic import configure
-from scenic import process # just for constants
-from scenic import dialogs
-from scenic import glade
-from scenic import preview
-from scenic import network
-from scenic import communication
-from scenic.devices import cameras
-from scenic.devices import networkinterfaces
-from scenic.internationalization import _
+from toon.launcher import process # just for constants
+from toon.launcher import glade
+from toon.launcher import looper
+from toon.launcher import cameras
 
-INVITE_TIMEOUT = 10
-ONLINE_HELP_URL = "http://svn.sat.qc.ca/trac/scenic/wiki/Documentation"
-ONE_LINE_DESCRIPTION = """Scenic is a telepresence software oriented for live performances."""
-ALL_SUPPORTED_SIZE = [ # by milhouse video
-    "924x576",
-    "768x480",
-    "720x480",
-    "704x480",
-    "704x240",
-    "640x480",
-    "352x240",
-    "320x240",
-    "176x120"
-    ]
+ONLINE_HELP_URL = "http://www.toonloop.com/?q=how-to"
+ONE_LINE_DESCRIPTION = """The Toonloop launcher is an easy graphical interface to setup and start the Toonloop live animation software."""
 
-LICENSE_TEXT = _("""Scenic
-Copyright (C) 2009 Society for Arts and Technology (SAT)
+LICENSE_TEXT = _("""Toonlooop launcher
+Copyright (C) 2010 Alexandre Quessy
+Copyright (C) 2008 Society for Arts and Technology (SAT)
 http://www.sat.qc.ca
 All rights reserved.
 
@@ -75,7 +57,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Scenic.  If not, see <http://www.gnu.org/licenses/>.""")
 
-PROJECT_WEBSITE = "http://svn.sat.qc.ca/trac/scenic"
+PROJECT_WEBSITE = "http://www.toonloop.com"
 
 AUTHORS_LIST = [
     'Alexandre Quessy <alexandre@quessy.net>',
@@ -84,15 +66,7 @@ AUTHORS_LIST = [
     u'Étienne Désautels <etienne@teknozen.net>',
     ]
 
-COPYRIGHT_SHORT = _("Copyright 2009-2010 Society for Arts and Technology")
-
-def _get_key_for_value(dictionnary, value):
-    """
-    Returns the key for a value in a dict.
-    @param dictionnary: dict
-    @param value: The value.
-    """
-    return dictionnary.keys()[dictionnary.values().index(value)]
+COPYRIGHT_SHORT = _("Copyright 2010 Alexandre Quessy \nCopyright 2009-2010 Society for Arts and Technology")
 
 def _get_combobox_value(widget):
     """
@@ -143,60 +117,15 @@ def _set_combobox_value(widget, value=None):
         msg = "ComboBox widget %s doesn't have value %s." % (widget, value)
         print msg
 
-#videotestsrc legible name:
-VIDEO_TEST_INPUT = "Color bars"
-
-# GUI legible value to milhouse value mapping:
-VIDEO_CODECS = {
-    "h.264": "h264",
-    "h.263": "h263",
-    "Theora": "theora",
-    "MPEG4": "mpeg4"
-    }
-AUDIO_CODECS = {
-    "Raw": "raw",
-    "MP3": "mp3",
-    "Vorbis": "vorbis",
-    }
-AUDIO_SOURCES = {
-    "JACK": "jackaudiosrc",
-    "Test sound": "audiotestsrc"
-    }
-# min/max:
-VIDEO_BITRATE_MIN_MAX = {
-    "h.264": [2.0, 16.0],
-    "MPEG4": [0.5, 4.0],
-    "h.263": [0.5, 4.0],
-    }
-# standards:
-VIDEO_STANDARDS = ["NTSC", "PAL"]
-
-def format_contact_markup(contact):
-    """
-    Formats a contact for the Adressbook GTK widget.
-    @param contact: A dict with keys "name" and "address"
-    @rtype: str
-    @return: Pango markup for the TreeView widget.
-    """
-    auto_accept = ""
-    if contact["auto_accept"]:
-        auto_accept = "\n  " + _("Automatically accept invitations")
-    return "<b>%s</b>\n  IP: %s%s" % (contact["name"], contact["address"], auto_accept) 
-
-
 class Gui(object):
     """
     Graphical User Interface
      * Contains the main GTK window.
      * And some dialogs.
     """
-    def __init__(self, app, kiosk_mode=False, fullscreen=False):
+    def __init__(self, app):
         self.app = app
-        self.kiosk_mode_on = kiosk_mode
-        self._inviting_timeout_delayed = None
         widgets_tree = glade.get_widgets_tree()
-        
-        self._widgets_changed_by_user = True # if False, we are changing some widget's value programmatically.
         # connects callbacks to widgets automatically
         glade_signal_slots = {}
         for method in prefixedMethods(self, "on_"):
@@ -206,116 +135,14 @@ class Gui(object):
         # Get all the widgets that we use
         self.main_window = widgets_tree.get_widget("main_window")
         self.main_window.connect('delete-event', self.on_main_window_deleted)
-        self.main_window.set_icon_from_file(os.path.join(configure.PIXMAPS_DIR, 'scenic.png'))
-        self.main_tabs_widget = widgets_tree.get_widget("mainTabs")
-        self.system_tab_contents_widget = widgets_tree.get_widget("system_tab_contents")
-        self.main_window.connect("window-state-event", self.on_window_state_event)
-        
-        # ------------------------------ dialogs:
-        # confirm_dialog: (a simple yes/no)
-        self.confirm_dialog = dialogs.ConfirmDialog(parent=self.main_window)
-
-        # calling_dialog: (this widget is created and destroyed really often !!
-        self.calling_dialog = None
-        
-        # invited_dialog:
-        self.invited_dialog = dialogs.InvitedDialog(parent=self.main_window)
-        
-        # edit_contact_window:
-        self.edit_contact_window = widgets_tree.get_widget("edit_contact_window")
-        self.edit_contact_window.set_transient_for(self.main_window) # child of main window
-        self.edit_contact_window.connect('delete-event', self.edit_contact_window.hide_on_delete)
-        
-        # fields in the edit contact window:
-        self.contact_name_widget = widgets_tree.get_widget("contact_name")
-        self.contact_addr_widget = widgets_tree.get_widget("contact_addr")
-        self.contact_auto_accept_widget = widgets_tree.get_widget("contact_auto_accept")
-        
-        # -------------------- main window widgets:
-        # invite button:
-        self.invite_label_widget = widgets_tree.get_widget("invite_label")
-        self.invite_icon_widget = widgets_tree.get_widget("invite_icon")
-        
-        # addressbook buttons:
-        self.edit_contact_widget = widgets_tree.get_widget("edit_contact")
-        self.add_contact_widget = widgets_tree.get_widget("add_contact")
-        self.remove_contact_widget = widgets_tree.get_widget("remove_contact")
-        self.invite_contact_widget = widgets_tree.get_widget("invite_contact")
-        # treeview:
-        self.contact_list_widget = widgets_tree.get_widget("contact_list")
-        # position of currently selected contact in list of contact:
-        self.selected_contact_row = None
-        self.select_contact_index = None
-
-        # Summary text view:
-        self.info_peer_widget = widgets_tree.get_widget("info_peer")
-        self.info_send_video_widget = widgets_tree.get_widget("info_send_video")
-        self.info_send_audio_widget = widgets_tree.get_widget("info_send_audio")
-        self.info_receive_video_widget = widgets_tree.get_widget("info_receive_video")
-        self.info_receive_audio_widget = widgets_tree.get_widget("info_receive_audio")
-        self.info_ip_widget = widgets_tree.get_widget("info_ip")
-        self.info_receive_midi_widget = widgets_tree.get_widget("info_receive_midi")
-        self.info_send_midi_widget = widgets_tree.get_widget("info_send_midi")
+        #TODO: self.main_window.set_icon_from_file(os.path.join(configure.PIXMAPS_DIR, 'scenic.png'))
 
         # video
-        self.video_capture_size_widget = widgets_tree.get_widget("video_capture_size")
-        self.video_display_widget = widgets_tree.get_widget("video_display")
-        self.video_bitrate_widget = widgets_tree.get_widget("video_bitrate")
-        self.video_source_widget = widgets_tree.get_widget("video_source")
-        self.video_codec_widget = widgets_tree.get_widget("video_codec")
-        self.video_fullscreen_widget = widgets_tree.get_widget("video_fullscreen")
-        self.video_view_preview_widget = widgets_tree.get_widget("video_view_preview")
-        self.video_deinterlace_widget = widgets_tree.get_widget("video_deinterlace")
-        self.aspect_ratio_widget = widgets_tree.get_widget("aspect_ratio")
-        self.v4l2_input_widget = widgets_tree.get_widget("v4l2_input")
-        self.v4l2_standard_widget = widgets_tree.get_widget("v4l2_standard")
-        self.video_jitterbuffer_widget = widgets_tree.get_widget("video_jitterbuffer")
-        # video preview:
-        self.preview_area_widget = widgets_tree.get_widget("preview_area")
-        self.preview_area_x_window_id = None
-        self.preview_in_window_widget = widgets_tree.get_widget("preview_in_window")
-        
-        # audio
-        self.audio_source_widget = widgets_tree.get_widget("audio_source")
-        self.audio_codec_widget = widgets_tree.get_widget("audio_codec")
-        self.audio_jack_icon_widget = widgets_tree.get_widget("audio_jack_icon")
-        self.audio_jack_state_widget = widgets_tree.get_widget("audio_jack_state")
-        self.audio_numchannels_widget = widgets_tree.get_widget("audio_numchannels")
-
-        self.jack_latency_widget = widgets_tree.get_widget("jack_latency")
-        self.jack_sampling_rate_widget = widgets_tree.get_widget("jack_sampling_rate")
-        # system tab contents:
-        self.network_admin_widget = widgets_tree.get_widget("network_admin")
-
-        # MIDI tab
-        self.midi_send_enabled_widget = widgets_tree.get_widget("midi_send_enabled")
-        self.midi_recv_enabled_widget = widgets_tree.get_widget("midi_recv_enabled")
-        self.midi_input_device_widget = widgets_tree.get_widget("midi_input_device")
-        self.midi_output_device_widget = widgets_tree.get_widget("midi_output_device")
-        self.midi_jitterbuffer_widget = widgets_tree.get_widget("midi_jitterbuffer")
-
-        # switch to Kiosk mode if asked
-        if self.kiosk_mode_on:
-            self.main_window.set_decorated(False)
-        else:
-            # Removes the sytem_tab 
-            tab_num = self.main_tabs_widget.page_num(self.system_tab_contents_widget)
-            print "Removing tab number %d." % (tab_num)
-            self.main_tabs_widget.remove_page(tab_num)
-        
-        self.is_fullscreen = False
-        if fullscreen:
-            print("Making the main window fullscreen.")
-            self.toggle_fullscreen()
-        
-        # ------------------ contact list view
-        self.selection = self.contact_list_widget.get_selection()
-        self.selection.connect("changed", self.on_contact_list_changed, None) 
-        self.contact_tree = gtk.ListStore(str)
-        self.contact_list_widget.set_model(self.contact_tree)
-        column = gtk.TreeViewColumn(_("Contacts"), gtk.CellRendererText(), markup=False)
-        self.contact_list_widget.append_column(column)
-        # TODO: those state variables interactive/not could be merged into a single one
+        self.image_size_widget = widgets_tree.get_widget("image_size")
+        self.video_device_widget = widgets_tree.get_widget("video_device")
+        self.start_stop_widget = widgets_tree.get_widget("start_stop")
+        self.fullscreen_enabled_widget = widgets_tree.get_widget("fullscreen_enabled")
+        self.joystick_enabled_widget = widgets_tree.get_widget("joystick_enabled")
         # preview:
         self.preview_manager = preview.Preview(self.app)
         self.video_preview_icon_widget = widgets_tree.get_widget("video_preview_icon")
@@ -337,23 +164,6 @@ class Gui(object):
     #    return False
 
     # ------------------ window events and actions --------------------
-    def toggle_fullscreen(self):
-        """
-        Toggles the fullscreen mode on/off.
-        """
-        if self.is_fullscreen:
-            self.main_window.unfullscreen()
-        else:
-            self.main_window.fullscreen()
-
-    def on_window_state_event(self, widget, event):
-        """
-        Called when toggled fullscreen.
-        """
-        self.is_fullscreen = event.new_window_state & gtk.gdk.WINDOW_STATE_FULLSCREEN != 0
-        print('fullscreen %s' % (self.is_fullscreen))
-        return True
-    
     def on_main_window_deleted(self, *args):
         """
         Destroy method causes application to exit
@@ -508,164 +318,6 @@ class Gui(object):
         self.contact_addr_widget.set_text("")
         self.contact_auto_accept_widget.set_active(False)
         self.edit_contact_window.show()
-
-    def on_remove_contact_clicked(self, *args):
-        """
-        Upon confirmation, the selected contact is removed.
-        """
-        def _on_confirm_result(result):
-            if result:
-                del self.app.address_book.contact_list[self.selected_contact_index]
-                self.contact_tree.remove(self.selected_contact_row)
-                num = self.selected_contact_index - 1
-                if num < 0:
-                    num = 0
-                self.selection.select_path(num)
-        text = _("<b><big>Delete this contact from the list?</big></b>\n\nAre you sure you want "
-            "to delete this contact from the list?")
-        self.show_confirm_dialog(text, _on_confirm_result)
-
-    def on_edit_contact_clicked(self, *args):
-        """
-        Shows the edit contact dialog.
-        """
-        contact = self.app.address_book.selected_contact
-        self.contact_name_widget.set_text(contact["name"])
-        self.contact_addr_widget.set_text(contact["address"])
-        auto_accept = False
-        if contact["auto_accept"]:
-            auto_accept = True
-            print('auto accept should be true')
-        self.contact_auto_accept_widget.set_active(auto_accept)
-        self.edit_contact_window.show() # addr
-
-    def on_edit_contact_cancel_clicked(self, *args):
-        """
-        The cancel button in the "edit_contact" window has been clicked.
-        Hides the edit_contact window.
-        """
-        self.edit_contact_window.hide()
-
-    def on_edit_contact_save_clicked(self, *args):
-        """
-        The save button in the "edit_contact" window has been clicked.
-        Hides the edit_contact window and saves the changes. (new or modified contact)
-        """
-        def _when_valid_save():
-            # Saves contact info after it's been validated and then closes the window
-            # THIS IS WHERE WE CREATE THE CONTACTS IN THE ADDRESSBOOK
-            # TODO: move to a dedicated function in save.py or so.
-            contact = {
-                "name": self.contact_name_widget.get_text(),
-                "address": addr,
-                "auto_accept": self.contact_auto_accept_widget.get_active(),
-                }
-            contact_markup = format_contact_markup(contact)
-            if self.app.address_book.current_contact_is_new:
-                self.contact_tree.append([contact_markup]) # add it to the tree list
-                self.app.address_book.contact_list.append(contact) # and the internal address book
-                self.selection.select_path(len(self.app.address_book.contact_list) - 1) # select it ...?
-                self.app.address_book.selected_contact = self.app.address_book.contact_list[len(self.app.address_book.contact_list) - 1] #FIXME: we should not copy a dict like that
-                self.app.address_book.current_contact_is_new = False # FIXME: what does that mean?
-            else:
-                self.contact_tree.set_value(self.selected_contact_row, 0, contact_markup)
-                self.app.address_book.contact_list[self.selected_contact_index] = contact # FIXME: this is flaky. make some functions to handle this
-            self.app.address_book.selected_contact = contact
-            self.edit_contact_window.hide()
-
-        # Validate the address
-        addr = self.contact_addr_widget.get_text()
-        if not network.validate_address(addr):
-            dialogs.ErrorDialog.create(_("The address is not valid\n\nEnter a valid address\nExample: 192.0.32.10 or example.org"), parent=self.main_window)
-            return
-        # save it.
-        _when_valid_save()
-
-    # ---------------------------- Custom system tab buttons ---------------
-
-    def on_network_admin_clicked(self, *args):
-        """
-        Opens the network-admin Gnome applet.
-        """
-        process.run_once("gksudo", "network-admin")
-
-    def on_system_shutdown_clicked(self, *args):
-        """
-        Shuts down the computer.
-        """
-        def _on_confirm_result(result):
-            if result:
-                process.run_once("gksudo", "shutdown -h now")
-
-        text = _("<b><big>Shutdown the computer?</big></b>\n\nAre you sure you want to shutdown the computer now?")
-        self.show_confirm_dialog(text, _on_confirm_result)
-
-    def on_system_reboot_clicked(self, *args):
-        """
-        Reboots the computer.
-        """
-        def _on_confirm_result(result):
-            if result:
-                process.run_once("gksudo", "shutdown -r now")
-
-        text = _("<b><big>Reboot the computer?</big></b>\n\nAre you sure you want to reboot the computer now?")
-        self.show_confirm_dialog(text, _on_confirm_result)
-
-    def on_maintenance_apt_update_clicked(self, *args):
-        """
-        Opens APT update manager.
-        """
-        process.run_once("gksudo", "update-manager")
-
-    def on_maintenance_send_info_clicked(self, *args):
-        """
-        Sends an email to SAT with this information : 
-         * milhouse version
-         * kernel version
-         * Loaded kernel modules
-        """
-        # TODO: move this to an other file.
-        def _on_confirm_result(result):
-            milhouse_version = "unknown"
-            if result:
-                msg = "--- milhouse_version ---\n" + milhouse_version + "\n"
-                msg += "--- uname -a ---\n"
-                try:
-                    w, r, err = os.popen3('uname -a')
-                    msg += r.read() + "\n"
-                    errRead = err.read()
-                    if errRead:
-                        msg += errRead + "\n"
-                    w.close()
-                    r.close()
-                    err.close()
-                except:
-                    msg += "Error executing 'uname -a'\n"
-                msg += "--- lsmod ---\n"
-                try:
-                    w, r, err = os.popen3('lsmod')
-                    msg += r.read()
-                    errRead = err.read()
-                    if errRead:
-                        msg += "\n" + errRead
-                    w.close()
-                    r.close()
-                    err.close()
-                except:
-                    msg += "Error executing 'lsmod'"
-                fromaddr = self.app.config.email_info
-                toaddrs  = self.app.config.email_info
-                toaddrs = toaddrs.split(', ')
-                server = smtplib.SMTP(self.app.config.smtpserver)
-                server.set_debuglevel(0)
-                try:
-                    server.sendmail(fromaddr, toaddrs, msg)
-                except:
-                    dialogs.ErrorDialog.create(_("Could not send info.\nCheck your internet connection."), parent=self.main_window)
-                server.quit()
-        
-        text = _("<b><big>Send the settings?</big></b>\n\nAre you sure you want to send your computer settings to the administrator of scenic?")
-        self.show_confirm_dialog(text, _on_confirm_result)
 
     # --------------------- configuration and widgets value ------------
 
@@ -1457,7 +1109,6 @@ class Gui(object):
             self.jack_latency_widget.set_text("")
             self.jack_sampling_rate_widget.set_text("")
             
-
 class About(object):
     """
     About dialog
@@ -1502,4 +1153,3 @@ class About(object):
 
     def destroy_about(self, *args):
         self.about_dialog.destroy()
-

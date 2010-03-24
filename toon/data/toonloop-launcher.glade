@@ -59,7 +59,7 @@
         <child>
           <widget class="GtkTable" id="table1">
             <property name="visible">True</property>
-            <property name="n_rows">6</property>
+            <property name="n_rows">7</property>
             <property name="n_columns">2</property>
             <child>
               <widget class="GtkLabel" id="label1">
@@ -117,7 +117,7 @@
                 <property name="visible">True</property>
                 <property name="yscale">0</property>
                 <child>
-                  <widget class="GtkComboBox" id="combobox1">
+                  <widget class="GtkComboBox" id="video_device">
                     <property name="visible">True</property>
                     <property name="items" translatable="yes">/dev/video0</property>
                   </widget>
@@ -220,7 +220,7 @@
                 <property name="xscale">0</property>
                 <property name="yscale">0</property>
                 <child>
-                  <widget class="GtkToggleButton" id="running">
+                  <widget class="GtkToggleButton" id="start_stop">
                     <property name="label" translatable="yes">Start Toonloop</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -230,6 +230,33 @@
               </widget>
               <packing>
                 <property name="right_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label6">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">Fullscreen:</property>
+              </widget>
+              <packing>
+                <property name="top_attach">6</property>
+                <property name="bottom_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkCheckButton" id="fullscreen_enabled">
+                <property name="label" translatable="yes">yes</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+              </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">6</property>
+                <property name="bottom_attach">7</property>
               </packing>
             </child>
           </widget>
