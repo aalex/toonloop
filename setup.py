@@ -59,7 +59,7 @@ setup(
     license = "GPL",
     platforms = ["any"],
     zip_safe = False,
-    packages = ["rats", "toon", "toon/data", "toon/effects"],
+    packages = ["rats", "toon", "toon/data", "toon/effects", "toon/launcher"],
     package_data = {
         "":["*.cfg", "*.png", "*.jpg", "*.pd"]
     }
