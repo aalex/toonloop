@@ -543,17 +543,18 @@ class Toonloop(render.Game):
         return self.effects[self.config.effect_name]
 
     def _init_joysticks(self):
-        self.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
-        for _joystick in self.joysticks:
-            _joystick.init()
+        if self.config.joystick_enabled:
+            self.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
+            for _joystick in self.joysticks:
+                _joystick.init()
+                if self.config.verbose:
+                    print(" * Joystick %s has %d buttons and %d hats." % (_joystick.get_name(), _joystick.get_numbuttons(), _joystick.get_numhats()))
+                    if _joystick.get_numhats() >= 1:
+                        self.joystick_hats[_joystick.get_id()] = [(0, 0)] * _joystick.get_numhats()
+                    if _joystick.get_numaxes() >= 1:
+                        self.joystick_axis[_joystick.get_id()] = [(0, 0)] * _joystick.get_numaxes()
             if self.config.verbose:
-                print(" * Joystick %s has %d buttons and %d hats." % (_joystick.get_name(), _joystick.get_numbuttons(), _joystick.get_numhats()))
-                if _joystick.get_numhats() >= 1:
-                    self.joystick_hats[_joystick.get_id()] = [(0, 0)] * _joystick.get_numhats()
-                if _joystick.get_numaxes() >= 1:
-                    self.joystick_axis[_joystick.get_id()] = [(0, 0)] * _joystick.get_numaxes()
-        if self.config.verbose:
-            print("Found %d joysticks." % (len(self.joysticks)))
+                print("Found %d joysticks." % (len(self.joysticks)))
 
     def _start_services(self):
         """
@@ -1560,6 +1561,7 @@ class Toonloop(render.Game):
             # Down:      Slower
             # Left:      Play backward
             # Right:     Play forward
+            # (only if self.config.joystick_enabled)
             elif e.type == pygame.JOYBUTTONDOWN:
                 print("button %s" % (e.button))
                 if e.button == 0:
