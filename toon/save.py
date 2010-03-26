@@ -101,7 +101,7 @@ class ClipSaver(object):
                     os.makedirs(data_subdir)
                     print('mkdir %s' % (data_subdir))
             except OSError, e:
-                msg = 'Error creating directories' % (data_subdir, e.message)
+                msg = 'Error creating directories %s %s' % (data_subdir, e.message)
                 print(msg)
                 self._fail(msg)
             else:
