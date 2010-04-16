@@ -44,6 +44,8 @@ INTERACTIVE_HELP = """Toonloop interactive keyboard controls :
  - Press DELETE or BACKSPACE to delete the last frame.
  - Press 'r' to reset and start the current sequence. 
    (and remove all its frames)
+ - Press '[' to select next frame for removal, ']' to select previous frame for
+   removal, and 'Del' to actually delete the selected frame
  - Press 's' to save the current sequence as a Motion-JPEG movie.
  - Press 'i' to print current loop frame number, number of frames in loop 
    and global framerate. It toggles on/off a head-up display of text.
@@ -317,6 +319,7 @@ class ToonClip(object): #Serializable):
         self.__dict__.update(argd)
         self.images = []
         self.writehead = len(self.images) # index of the next image to be filled up. Between 0 and n.
+        self.removehead = -1 # index of the image to be removed.
 
 class SplitScreenTheme(object):
     """
@@ -698,6 +701,8 @@ class Toonloop(render.Game):
                 total_imgs += num_images
             print('TOTAL: %d images.' % (total_imgs))
             print("Current playhead: " + str(self.clip.playhead))
+            print("Current writehead: " + str(self.clip.writehead))
+            print("Current removehead: " + str(self.clip.removehead))
             print("Num images: " + str(len(self.clip.images)))
             print("FPS: %d" % (self.fps))
             print("Playhead frequency ratio: 30 / %d" % (self.clip.playhead_iterate_every))
@@ -794,6 +799,8 @@ class Toonloop(render.Game):
             _write(txt_num, _current_pos)
             # draw playhead position
             _write("Current playhead: " + str(self.clip.playhead), _current_pos)
+            _write("Current writehead: " + str(self.clip.writehead), _current_pos)
+            _write("Current removehead: " + str(self.clip.removehead), _current_pos)
             _write("Num images: " + str(len(self.clip.images)), _current_pos)
             _write("Rendering FPS: %d" % (self.fps), _current_pos)
 
@@ -1320,6 +1327,26 @@ class Toonloop(render.Game):
         :param success: boolean
         """
         self._saver_progress = None
+
+    def selective_frame_remove(self):
+        if self.clip.removehead == -1:
+            print("ERROR: No frame to drop")
+        else:
+            try:
+                self.clip.images.pop(self.clip.removehead)
+            except IndexError, e:
+                print("ERROR: Could not remove frame '%s' at writehead - 1 in clip %s." % (index, self.clip))
+            if self.clip.writehead != 0:
+                self.clip.writehead -= 1 # FIXME Is this ok?
+            if self.clip.removehead == self.clip.writehead:
+                self.clip.removehead -= 1
+            if self.clip.images == []:
+                self._clear_playback_view()
+            else:
+                pass
+            self.signal_writehead(self.clip.writehead)
+            self.signal_frame_remove()
+
         
     def frame_remove(self):
         """
@@ -1537,6 +1564,14 @@ class Toonloop(render.Game):
                         self.direction_change()
                     elif e.key == PYGM.K_PERIOD: # PERIOD changes theme
                         self.theme_change()
+                    elif e.key == PYGM.K_LEFTBRACKET: # [ ,] ,Delete: removehead:
+                        if self.clip.removehead > -1:
+                            self.clip.removehead -=1
+                    elif e.key == PYGM.K_RIGHTBRACKET:
+                        if self.clip.removehead < self.clip.writehead - 1:
+                            self.clip.removehead +=1
+                    elif e.key == PYGM.K_DELETE: # Backspace: remove a frame
+                        self.selective_frame_remove()
                     elif e.key == PYGM.K_MINUS:
                         pass # TODO
                     elif e.key == PYGM.K_PLUS:
