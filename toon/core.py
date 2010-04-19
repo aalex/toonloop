@@ -970,8 +970,30 @@ class Toonloop(render.Game):
                 pass
                 #print("Added frame at index %d" % (index))
                 #print('num frames: %s' % (len(self.clip.images)))
-            self.signal_writehead(len(self.clip.images))
+            self.signal_writehead(self.clip.writehead)
             self.signal_frame_add()
+
+    def writehead_previous(self):
+        """
+        Moves the writehead one step to the left.
+        """
+        if self.clip.writehead > 0:
+            self.clip.writehead -= 1
+
+    def writehead_next(self):
+        """
+        Moves the writehead one step to the right.
+        """
+        size = len(self.clip.images)
+        if self.clip.writehead < size:
+            self.clip.writehead += 1
+
+    def writehead_last(self):
+        """
+        Moves the writehead to the last frame.
+        """
+        size = len(self.clip.images)
+        self.clip.writehead = max(0, size - 1)
     
     def draw(self):
         """
@@ -1506,12 +1528,11 @@ class Toonloop(render.Game):
                     elif e.key == PYGM.K_DOWN: # DOWN Speed Decrease
                         self.framerate_increase(-1)
                     elif e.key == PYGM.K_RIGHT: # previous frame
-                        size = len(self.clip.images)
-                        if self.clip.writehead < size:
-                            self.clip.writehead += 1
+                        self.writehead_next()
                     elif e.key == PYGM.K_LEFT: # next frame
-			if self.clip.writehead > 0:
-                            self.clip.writehead -= 1
+                        self.writehead_previous()
+                    elif e.key == PYGM.K_RETURN: # RETURN: goes to last frame
+                        self.writehead_last()
                     elif e.key == PYGM.K_SPACE: # SPACE Add frame
                         self.frame_add()
                     elif e.key == PYGM.K_BACKSPACE: # BACKSPACE Remove frame
