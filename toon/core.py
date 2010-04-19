@@ -976,6 +976,18 @@ class Toonloop(render.Game):
     def writehead_previous(self):
         """
         Moves the writehead one step to the left.
+
+        The possible values for writehead are: [0, ..., clipsize], where
+        clipsize equals len(self.clip.images)
+        The semantics are:
+        * addition: insert new frame at position writehead (as originally
+        designed). E.g. with writehead=clipsize,the frame is inserted at the
+        end of the frame, whereas with writehead=0, the frame is inserted at
+        the beginning of the frame
+        * deletion: delete frame at position writehead-1 (as originally
+        designed). When the writehead value equals 0 or clipsize, this removes
+        the last frame of the clip. So for deletion, values 0 and clipsize do
+        the same thing.
         """
         if self.clip.writehead > 0:
             self.clip.writehead -= 1
