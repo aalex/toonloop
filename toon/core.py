@@ -973,51 +973,6 @@ class Toonloop(render.Game):
             self.signal_writehead(len(self.clip.images))
             self.signal_frame_add()
     
-    def writehead_move(self, steps):
-        """
-        Moves the writehead of the current clip.
-        :param steps: How many frames in which direction. 
-        To move to the left, give a steps value of 1. 
-        To move to the right, give a steps value of -1. 
-        """
-        index = self.clip.writehead + steps
-        if index == -1:
-            if self.config.verbose:
-                print("Already at the first frame. Type RETURN to go to last.")
-        else:
-            self.writehead_goto(index)
-    
-    def writehead_goto(self, index):
-        """
-        Moves the writehead of the current clip to the given index.
-        :param index: int
-        -1 for the end.
-        0 for the beginning
-        """
-        last = len(self.clip.images)
-        if index == -1:
-            index = last
-        elif index < 0: # if negative
-            index = last - index
-            if index < -last: # if more negative than it can be...
-                index = 0
-        elif index > last:
-            print("writehead_goto: Frame index %d is too big. Using %d instead." % (index, last))
-            index = last
-        if self.config.verbose:
-            print("writehead_goto %d" % (index))
-        if len(self.clip.images) == 0:
-            index = 0
-        else:
-            # copying the onion skinning texture
-            try:
-                draw.texture_from_image(self.textures[self.TEXTURE_ONION], self.clip.images[index])
-            except IndexError, e:
-                index = len(self.clip.images) - 1
-                draw.texture_from_image(self.textures[self.TEXTURE_ONION], self.clip.images[index])
-        self.clip.writehead = index
-        self.signal_writehead(index) # FIXME : is this ok to call it ?
-    
     def draw(self):
         """
         Renders one frame.
@@ -1353,14 +1308,14 @@ class Toonloop(render.Game):
         Deletes the last frame from the current list of images.
         """
         if self.clip.images != []:
-            index = self.clip.writehead - 1
+            if self.clip.writehead > 0:
+                index = self.clip.writehead - 1
+            else:
+                index = len(self.clip.images) - 1
             try:
                 self.clip.images.pop(index)
             except IndexError, e:
                 print("ERROR: Could not remove frame '%s' at writehead - 1 in clip %s." % (index, self.clip))
-                index = len(self.clip.images) - 1
-                self.clip.images.pop(index)
-                self.clip.writehead = max(0, index - 1)
             if self.clip.writehead != 0:
                 self.clip.writehead -= 1 # FIXME Is this ok?
             # would it be better to also delete it ? calling del
@@ -1551,11 +1506,12 @@ class Toonloop(render.Game):
                     elif e.key == PYGM.K_DOWN: # DOWN Speed Decrease
                         self.framerate_increase(-1)
                     elif e.key == PYGM.K_RIGHT: # previous frame
-                        self.writehead_move(1)
+                        size = len(self.clip.images)
+                        if self.clip.writehead < size:
+                            self.clip.writehead += 1
                     elif e.key == PYGM.K_LEFT: # next frame
-                        self.writehead_move(-1)
-                    elif e.key == PYGM.K_RETURN: # RETURN: goes to last frame
-                        self.writehead_goto(-1)
+			if self.clip.writehead > 0:
+                            self.clip.writehead -= 1
                     elif e.key == PYGM.K_SPACE: # SPACE Add frame
                         self.frame_add()
                     elif e.key == PYGM.K_BACKSPACE: # BACKSPACE Remove frame
