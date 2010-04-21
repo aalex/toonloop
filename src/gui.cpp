@@ -130,7 +130,7 @@ Gui::Gui() :
     window_ = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_widget_set_size_request(window_, 640, 480);
     gtk_window_move (GTK_WINDOW (window_), 300, 10);
-    gtk_window_set_title(GTK_WINDOW (window_), "Toonloop 1.3 experimental");
+    gtk_window_set_title(GTK_WINDOW (window_), "Toonloop 2.0 experimental");
     GdkGeometry geometry;
     geometry.min_width = 1;
     geometry.min_height = 1;
