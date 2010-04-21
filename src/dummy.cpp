@@ -2,10 +2,12 @@
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
+#include <gdk/gdkx.h>
 #include <iostream>
 #include "./gstgtk.h"
 #include "./draw.h"
 
+static gulong video_xwindow_id = 0;
 //client reshape callback
 void reshapeCallback (GLuint width, GLuint height, gpointer data)
 {
@@ -92,16 +94,44 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     return FALSE;
 }
 
+static void
+video_widget_realize_cb (GtkWidget * widget, gpointer data)
+{
+#if GTK_CHECK_VERSION(2,18,0)
+    // This is here just for pedagogical purposes, GDK_WINDOW_XID will call
+    // it as well in newer Gtk versions
+    /* if (!gdk_window_ensure_native (widget->window))
+           g_error ("Couldn't create native window needed for GstXOverlay!");
+    */       
+#endif
+
+#ifdef GDK_WINDOWING_X11
+    video_xwindow_id = GDK_WINDOW_XID (widget->window);
+#endif
+}
 
 static GstBusSyncReply create_window (GstBus* bus, GstMessage* message, GtkWidget* widget)
 {
+    GstXOverlay *xoverlay;
     // ignore anything but 'prepare-xwindow-id' element messages
     if (GST_MESSAGE_TYPE (message) != GST_MESSAGE_ELEMENT)
         return GST_BUS_PASS;
     if (!gst_structure_has_name (message->structure, "prepare-xwindow-id"))
         return GST_BUS_PASS;
     g_print ("setting xwindow id\n");
-    gst_x_overlay_set_gtk_window (GST_X_OVERLAY (GST_MESSAGE_SRC (message)), widget);
+
+	xoverlay = GST_X_OVERLAY (GST_MESSAGE_SRC (message));
+	if (video_xwindow_id != 0) 
+    {
+        gst_x_overlay_set_xwindow_id (xoverlay, video_xwindow_id);
+    } else 
+    {
+        g_warning ("Should have obtained video_xwindow id by now! X-related crash may occur");
+        gst_x_overlay_set_xwindow_id (xoverlay, 0);
+    }
+
+    gst_x_overlay_set_gtk_window ( xoverlay, widget);
+
     gst_message_unref (message);
     return GST_BUS_DROP;
 }
@@ -317,6 +347,7 @@ gint main (gint argc, gchar *argv[])
     //area where the video is drawn
     GtkWidget* area = gtk_drawing_area_new();
     gtk_container_add (GTK_CONTAINER (window), area);
+    g_signal_connect (area, "realize", G_CALLBACK (video_widget_realize_cb), NULL);
 
     //avoid flickering when resizing or obscuring the main window
     gtk_widget_realize(area);
