@@ -7,6 +7,7 @@
 #include "pipeline.h"
 #include "draw.h"
 #include "application.h"
+#include "gui.h"
 
 /**
  * GST bus signal watch callback 
@@ -230,13 +231,23 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
 // Important !
 static GstBusSyncReply create_window(GstBus* bus, GstMessage* message, GtkWidget* widget)
 {
+    GstXOverlay *xoverlay;
+    gulong xwindow_id;
     // ignore anything but 'prepare-xwindow-id' element messages
     if (GST_MESSAGE_TYPE(message) != GST_MESSAGE_ELEMENT)
         return GST_BUS_PASS;
     if (!gst_structure_has_name(message->structure, "prepare-xwindow-id"))
         return GST_BUS_PASS;
     g_print("setting xwindow id\n");
-    gst_x_overlay_set_gtk_window(GST_X_OVERLAY(GST_MESSAGE_SRC(message)), widget);
+    xoverlay = GST_X_OVERLAY(GST_MESSAGE_SRC(message));
+    xwindow_id = Application::get_instance().get_gui().video_xwindow_id_;
+    if (xwindow_id != 0)
+    {
+        gst_x_overlay_set_xwindow_id(xoverlay, xwindow_id);
+    } else {
+        g_warning ("Should have obtained video_xwindow id by now! X-related crash may occur");
+        gst_x_overlay_set_xwindow_id (xoverlay, 0);
+    }
     gst_message_unref(message);
     return GST_BUS_DROP;
 }
