@@ -17,6 +17,8 @@ class Gui
         GtkWidget *drawing_area_;
         GtkWidget *window_;
         GLXContext glx_context_;
+        gulong video_xwindow_id_;
+        static void video_widget_realize_cb (GtkWidget * widget, gpointer data);
         static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data);
         static gboolean key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
