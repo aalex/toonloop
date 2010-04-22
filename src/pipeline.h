@@ -35,6 +35,7 @@ class Pipeline
     private:
         GstElement* videosrc_;
         GstElement* videosink_;
+        GstElement* gdkpixbufsink_;
         GstPipeline* pipeline_;
         GstState state_;
         static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);

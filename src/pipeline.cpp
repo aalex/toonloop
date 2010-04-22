@@ -22,6 +22,7 @@
 #include <GL/glx.h>
 #include <gst/gst.h>
 #include <gdk/gdk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <iostream>
 #include "gstgtk.h"
 #include "pipeline.h"
@@ -86,52 +87,95 @@ Pipeline::Pipeline()
     
     pipeline_ = GST_PIPELINE(gst_pipeline_new("pipeline"));
     //state_ = 0;
-    GstElement* glupload;
+    GstElement* glupload0;
     
-    // videotestsrc element
-    videosrc_  = gst_element_factory_make("videotestsrc", "videotestsrc0");
+    // Video source element
+    //videosrc_  = gst_element_factory_make("videotestsrc", "videosrc0");
+    videosrc_  = gst_element_factory_make("v4l2src", "videosrc0"); // TODO: add more like in Ekiga
+    g_assert(videosrc_); // TODO: use something else than g_assert to see if we could create the elements.
     // capsfilter element #0
         // Possible values for the capture FPS:
         // 25/1 
         // 30000/1001
         // 30/1
     GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
+    // capsfilter0, for the capture FPS and size
     GstCaps *caps = gst_caps_new_simple("video/x-raw-rgb",
-                                        "width", G_TYPE_INT, 640,
+                                        "width", G_TYPE_INT, 640, // TODO: make configurable!
                                         "height", G_TYPE_INT, 480,
-                                        "framerate", GST_TYPE_FRACTION, 30000, 1001,
+                                        //"framerate", GST_TYPE_FRACTION, 30000, 1001,
                                         NULL); 
     g_object_set(capsfilter0, "caps", caps, NULL);
     gst_caps_unref(caps);
+    // ffmpegcolorspace0 element
+    GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
+    g_assert(ffmpegcolorspace0);
+    GstElement* tee0 = gst_element_factory_make("tee", "tee0");
+    g_assert(tee0);
+    GstElement* queue0 = gst_element_factory_make("queue", "queue0");
+    g_assert(queue0);
+
     // glupload element
-    glupload  = gst_element_factory_make ("glupload", "glupload0");
+    glupload0  = gst_element_factory_make ("glupload", "glupload0");
     // glimagesink
     videosink_ = gst_element_factory_make("glimagesink", "glimagesink0");
     g_object_set(videosink_, "sync", FALSE, NULL);
     g_object_set(G_OBJECT(videosink_), "client-reshape-callback", reshapeCallback, NULL);
     g_object_set(G_OBJECT(videosink_), "client-draw-callback", drawCallback, NULL);
-    // capsfilter element #1
+    // capsfilter element #1, for the OpenGL FPS and size
     GstElement* capsfilter1 = gst_element_factory_make ("capsfilter", NULL);
     GstCaps *outcaps = gst_caps_new_simple("video/x-raw-gl",
                                         "width", G_TYPE_INT, 800,
                                         "height", G_TYPE_INT, 600,
                                         NULL) ;
     g_object_set(capsfilter1, "caps", outcaps, NULL);
+
+    // GdkPixbuf sink:
+    GstElement* queue1 = gst_element_factory_make("queue", "queue1");
+    g_assert(queue1);
+    //FIXME: GstElement* 
+    gdkpixbufsink_ = gst_element_factory_make("gdkpixbufsink", "gdkpixbufsink0");
+    g_assert(gdkpixbufsink_);
     gst_caps_unref(outcaps);
 
     // add elements
-    if (!videosrc_ or !capsfilter0 or !glupload or !capsfilter1 or !videosink_)
-    {
-        g_print("one element could not be found \n");
-        exit(1);
-    }
-    gst_bin_add_many(GST_BIN(pipeline_), videosrc_, capsfilter0, glupload, capsfilter1, videosink_, NULL);
-    gboolean linked_ok = gst_element_link_many(videosrc_, capsfilter0, glupload, capsfilter1, videosink_, NULL);
-    if (!linked_ok)
-    {
-        g_print("Could not link the elements\n.");
-        exit(1);
-    }
+
+    // add elements
+    gst_bin_add(GST_BIN(pipeline_), videosrc_); // capture
+    gst_bin_add(GST_BIN(pipeline_), capsfilter0);
+    gst_bin_add(GST_BIN(pipeline_), ffmpegcolorspace0);
+    gst_bin_add(GST_BIN(pipeline_), tee0);
+    gst_bin_add(GST_BIN(pipeline_), queue0); // branch #0: videosink
+    gst_bin_add(GST_BIN(pipeline_), glupload0);
+    gst_bin_add(GST_BIN(pipeline_), capsfilter1);
+    gst_bin_add(GST_BIN(pipeline_), videosink_);
+    gst_bin_add(GST_BIN(pipeline_), queue1); // branch #1: gdkpixbufsink
+    gst_bin_add(GST_BIN(pipeline_), gdkpixbufsink_);
+
+    // link pads:
+    gboolean is_linked = NULL;
+    is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "videosrc0", "capsfilter0"); exit(1); }
+    is_linked = gst_element_link_pads(capsfilter0, "src", ffmpegcolorspace0, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "capsfilter0", "ffmpegcolorspace0"); exit(1); }
+    is_linked = gst_element_link_pads(ffmpegcolorspace0, "src", tee0, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "ffmpegcolorspace0", "tee0"); exit(1); }
+    is_linked = gst_element_link_pads(tee0, "src0", queue0, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "tee0", "queue0"); exit(1); }
+    // output 0: the OpenGL uploader.
+    is_linked = gst_element_link_pads(queue0, "src", glupload0, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "queue0", "glupload0"); exit(1); }
+    is_linked = gst_element_link_pads(glupload0, "src", capsfilter1, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "glupload0", "capsfilter1"); exit(1); }
+    is_linked = gst_element_link_pads(capsfilter1, "src", videosink_, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "capsfilter1", "fakesink0"); exit(1); }
+
+    // output 1: the GdkPixbuf sink
+    is_linked = gst_element_link_pads(tee0, "src1", queue1, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "tee0", "queue1"); exit(1); }
+    is_linked = gst_element_link_pads(queue1, "src", gdkpixbufsink_, "sink");
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "queue1", "gdkpixbufsink0"); exit(1); }
+
     /* setup bus */
     GstBus* bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline_));
     gst_bus_add_signal_watch(bus);
@@ -139,6 +183,11 @@ Pipeline::Pipeline()
     g_signal_connect(bus, "message::warning", G_CALLBACK(end_stream_cb), this);
     g_signal_connect(bus, "message::eos", G_CALLBACK(end_stream_cb), this);
     gst_object_unref(bus);
+
+    //TODO: 
+    char* device_name = "/dev/video0";
+    g_print("Using camera %s.\n", device_name);
+    g_object_set(videosrc_, "device", device_name, NULL); 
 
     // make it play !!
 
