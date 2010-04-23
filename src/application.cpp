@@ -55,6 +55,7 @@ void Application::run(int argc, char *argv[])
     gtk_main();
 }
 
+// FIXME: still causing errors, so we're not using it.
 void Application::parse_options(int argc, char *argv[])
 {
     std::cout << "Parsing options." << std::endl;

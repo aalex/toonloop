@@ -80,6 +80,8 @@ void Pipeline::grab_frame()
 {
     static int frameid = 0;
     GdkPixbuf* pixbuf;
+    // TODO: replace constants by const attributes
+    // TODO: use C++ strings, not C-style. :)
     char filename[TOON_MAX_FILENAME_LENGTH];
     char temp[8]; 
     g_object_get(G_OBJECT(gdkpixbufsink_), "last-pixbuf", &pixbuf, NULL);
@@ -276,6 +278,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
 
     glEnable (GL_TEXTURE_RECTANGLE_ARB);
     glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
+    // TODO: simplify those parameters
     glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
