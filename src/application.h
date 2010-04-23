@@ -24,11 +24,14 @@
 #include "gui.h"
 #include "pipeline.h"
 #include <tr1/memory>
+#include <boost/program_options.hpp>
+
+namespace po = boost::program_options;
 
 class Application 
 {
     public:
-        void run();
+        void run(int argc, char *argv[]);
         void start_gui();
         void start_pipeline();
         void quit();
@@ -36,9 +39,11 @@ class Application
         Gui &get_gui();
         Pipeline &get_pipeline();
         static Application& get_instance();
+        po::variables_map options_;
     private:
         Application();
-        static Application* instance_;
+        void parse_options(int argc, char *argv[]);
+        static Application* instance_; // singleton
         std::tr1::shared_ptr<Gui> gui_;
         std::tr1::shared_ptr<Pipeline> pipeline_;
 };
