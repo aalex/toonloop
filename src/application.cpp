@@ -41,16 +41,20 @@ Application* Application::instance_ = 0;
 Application::Application() 
 {}
 
+/**
+ * Parses the command line and runs the application.
+ */
 void Application::run(int argc, char *argv[])
 {
-    std::string default_video_source = "/dev/video0";
-    if (! fs::exists(default_video_source))
-        default_video_source = "videotestsrc";
+    std::string video_source = "/dev/video0";
+    std::string toonloop_home = std::string(std::getenv("HOME")) + "/Documents/toonloop";
+    if (! fs::exists(video_source))
+        video_source = "videotestsrc";
     po::options_description desc("Toonloop options");
     std::cout << "adding options" << std::endl;
     desc.add_options()
         ("help,h", "Show this help message and exit")
-        ("toonloop-home,H", po::value<std::string>()->default_value(std::getenv("HOME")), "Path to the saved files")
+        ("toonloop-home,H", po::value<std::string>()->default_value(toonloop_home), "Path to the saved files")
         ("version", "Show program's version number and exit")
         ("verbose,v", po::bool_switch(), "Enables a verbose output")
         ("intervalometer-on,i", po::bool_switch(), "Enables the intervalometer to create time lapse animations")
@@ -60,7 +64,7 @@ void Application::run(int argc, char *argv[])
         ("fps,r", po::value<double>()->default_value(30.0), "Rendering frame rate")
         ("image-size,s", po::value<std::string>()->default_value("640x480"), "Size of the images grabbed from the camera. Default is 640x480")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode.")
-        ("video-source,d", po::value<std::string>()->default_value(default_video_source), "Sets the video source or device");
+        ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device");
     po::variables_map options;
     po::store(po::parse_command_line(argc, argv, desc), options);
     po::notify(options);
@@ -75,21 +79,48 @@ void Application::run(int argc, char *argv[])
         return; 
     }
     if (options.count("video-source"))
-        if (options["video-source"].as<std::string>() != "videotestsrc")
+    {
+        video_source = options["video-source"].as<std::string>();
+        if (video_source != "videotestsrc")
         {
-            if (! fs::exists(options["video-source"].as<std::string>()))
+            if (! fs::exists(video_source))
             {
-                std::cout << "No such device file: " << options["video-source"].as<std::string>() << std::endl;
+                std::cout << "No such device file: " << video_source << std::endl;
                 exit(1); // exit with error
             }
         }
-        std::cout << "video-source is set to " << options["video-source"].as<std::string>() << std::endl;
+        std::cout << "video-source is set to " << video_source << std::endl;
+    }
+    if (options.count("toonloop-home"))
+    {
+        toonloop_home = options["toonloop-home"].as<std::string>();
+        if (! fs::exists(toonloop_home))
+        {
+            try 
+            {
+                fs::create_directories(toonloop_home); // TODO: check if it returns true
+            } catch(const std::exception& e) {
+                // TODO: be more specific to fs::basic_filesystem_error<Path> 
+                std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
+            }
+        } else {
+            if (! fs::is_directory(toonloop_home))
+            {
+                std::cout << "Error: " << toonloop_home << " is not a directory." << std::endl;
+                exit(1);
+            }
+        }
+        std::cout << "toonloop-home is set to " << toonloop_home << std::endl;
+    }
     if (options["intervalometer-on"].as<bool>())
         std::cout << "Intervalometer is on" << std::endl;
     if (options.count("intervalometer-interval"))
         std::cout << "The rate of the intervalometer is set to " << options["intervalometer-interval"].as<double>() << std::endl; 
     if (options.count("project-name"))
+    {
+        // TODO
         std::cout << "The project name is set to " << options["project-name"].as<std::string>() << std::endl;
+    }
     if (options.count("fps"))
         std::cout << "The frame rate is set to " << options["fps"].as<double>() << std::endl;
     if (options["fullscreen"].as<bool>())
