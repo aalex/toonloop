@@ -39,10 +39,8 @@ class Application
         Gui &get_gui();
         Pipeline &get_pipeline();
         static Application& get_instance();
-        po::variables_map options_;
     private:
         Application();
-        void parse_options(int argc, char *argv[]);
         static Application* instance_; // singleton
         std::tr1::shared_ptr<Gui> gui_;
         std::tr1::shared_ptr<Pipeline> pipeline_;
