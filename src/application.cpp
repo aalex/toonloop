@@ -26,6 +26,7 @@
 #include <string>
 #include <gtk/gtk.h>
 #include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
 #include <cstdlib> // for getenv
 #include "./config.h"
 #include <gtk/gtk.h>
@@ -33,6 +34,7 @@
 #include <gtk/gtkgl.h>
 
 namespace po = boost::program_options;
+namespace fs = boost::filesystem;
 
 Application* Application::instance_ = 0;
 
@@ -41,6 +43,9 @@ Application::Application()
 
 void Application::run(int argc, char *argv[])
 {
+    std::string default_video_source = "/dev/video0";
+    if (! fs::exists(default_video_source))
+        default_video_source = "videotestsrc";
     po::options_description desc("Toonloop options");
     std::cout << "adding options" << std::endl;
     desc.add_options()
@@ -55,7 +60,7 @@ void Application::run(int argc, char *argv[])
         ("fps,r", po::value<double>()->default_value(30.0), "Rendering frame rate")
         ("image-size,s", po::value<std::string>()->default_value("640x480"), "Size of the images grabbed from the camera. Default is 640x480")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode.")
-        ("video-device,d", po::value<std::string>(), "Sets the video device name or number");
+        ("video-source,d", po::value<std::string>()->default_value(default_video_source), "Sets the video source or device");
     po::variables_map options;
     po::store(po::parse_command_line(argc, argv, desc), options);
     po::notify(options);
@@ -69,8 +74,16 @@ void Application::run(int argc, char *argv[])
         std::cout << PACKAGE << " " << PACKAGE_VERSION << std::endl;
         return; 
     }
-    if (options.count("video-device"))
-        std::cout << "video-device is set to " << options["video-device"].as<std::string>() << std::endl;
+    if (options.count("video-source"))
+        if (options["video-source"].as<std::string>() != "videotestsrc")
+        {
+            if (! fs::exists(options["video-source"].as<std::string>()))
+            {
+                std::cout << "No such device file: " << options["video-source"].as<std::string>() << std::endl;
+                exit(1); // exit with error
+            }
+        }
+        std::cout << "video-source is set to " << options["video-source"].as<std::string>() << std::endl;
     if (options["intervalometer-on"].as<bool>())
         std::cout << "Intervalometer is on" << std::endl;
     if (options.count("intervalometer-interval"))
