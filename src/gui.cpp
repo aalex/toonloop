@@ -1,7 +1,28 @@
+/*
+ * Toonloop
+ *
+ * Copyright 2010 Alexandre Quessy
+ * <alexandre@quessy.net>
+ * http://www.toonloop.com
+ *
+ * Toonloop is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Toonloop is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the gnu general public license
+ * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include <GL/glew.h>
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
+#include <gdk/gdkx.h>
 #include <gtk/gtkgl.h>
 #include <iostream>
 #include <GL/gl.h>
@@ -96,13 +117,31 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
     gtk_window_unfullscreen(GTK_WINDOW(widget));
 }
 
+
+void Gui::video_widget_realize_cb (GtkWidget * widget, gpointer data)
+{
+    Gui *context = static_cast<Gui*>(data);
+#if GTK_CHECK_VERSION(2,18,0)
+    // This is here just for pedagogical purposes, GDK_WINDOW_XID will call
+    // it as well in newer Gtk versions
+    /* if (!gdk_window_ensure_native (widget->window))
+           g_error ("Couldn't create native window needed for GstXOverlay!");
+    */       
+#endif
+
+#ifdef GDK_WINDOWING_X11
+    context->video_xwindow_id_ = GDK_WINDOW_XID(widget->window);
+    g_print("Drawing area has been realized with xid %lu.\n", (long unsigned int) context->video_xwindow_id_);
+#endif
+}
+
 /**
  * Exits the application if OpenGL needs are not met.
  */
 Gui::Gui() :
     isFullscreen_(false)
 {
-
+    video_xwindow_id_ = 0;
     //glx_context_ = NULL;
     //gint major; 
     //gint minor;
@@ -129,8 +168,8 @@ Gui::Gui() :
     // Main GTK window
     window_ = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_widget_set_size_request(window_, 640, 480);
-    gtk_window_move (GTK_WINDOW (window_), 300, 10);
-    gtk_window_set_title(GTK_WINDOW (window_), "Toonloop 1.3 experimental");
+    gtk_window_move(GTK_WINDOW(window_), 300, 10);
+    gtk_window_set_title(GTK_WINDOW(window_), "Toonloop 2.0 experimental");
     GdkGeometry geometry;
     geometry.min_width = 1;
     geometry.min_height = 1;
@@ -139,6 +178,7 @@ Gui::Gui() :
     gtk_window_set_geometry_hints(GTK_WINDOW(window_), window_, &geometry, GDK_HINT_MIN_SIZE);
     // connect window signals:
     g_signal_connect(G_OBJECT(window_), "delete-event", G_CALLBACK(on_delete_event), this);
+
     g_signal_connect(G_OBJECT(window_), "key-press-event", G_CALLBACK(key_press_event), this);
     // add listener for window-state-event to detect fullscreenness
     g_signal_connect(G_OBJECT(window_), "window-state-event", G_CALLBACK(onWindowStateEvent), this);
@@ -146,6 +186,7 @@ Gui::Gui() :
     //area where the video is drawn
     drawing_area_ = gtk_drawing_area_new();
     gtk_container_add(GTK_CONTAINER(window_), drawing_area_);
+    g_signal_connect(drawing_area_, "realize", G_CALLBACK(video_widget_realize_cb), this);
 
     //avoid flickering when resizing or obscuring the main window
     gtk_widget_realize(drawing_area_);
