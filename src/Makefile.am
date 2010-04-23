@@ -1,4 +1,4 @@
-bin_PROGRAMS = toonloop dummy sdlshare toonmidi runner
+bin_PROGRAMS = toonloop dummy sdlshare toonmidi 
 # gtkshare
 
 toonloop_SOURCES = main.cpp gltools.cpp draw.cpp gui.cpp pipeline.cpp gstgtk.cpp application.cpp

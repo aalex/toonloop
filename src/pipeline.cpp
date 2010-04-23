@@ -19,6 +19,7 @@
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <gtk/gtk.h>
+#include <GL/gl.h>
 #include <GL/glx.h>
 #include <gst/gst.h>
 #include <gdk/gdk.h>
@@ -290,20 +291,11 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
 
     glRotatef(zrot,0.0f,0.0f,1.0f);
 
-    glBegin(GL_QUADS);
-    // Front Face
-    glTexCoord2f((gfloat)width, 0.0f); 
-    glVertex3f(-0.666f, -0.5f,  0.0f);
-    glTexCoord2f(0.0f, 0.0f); 
-    glVertex3f( 0.666f, -0.5f,  0.0f);
-    glTexCoord2f(0.0f, (gfloat)height); 
-    glVertex3f( 0.666f,  0.5f,  0.0f);
-    glTexCoord2f((gfloat)width, (gfloat)height); 
-    glVertex3f(-0.666f,  0.5f,  0.0f);
-    glEnd();
+    glScalef(0.666f, 0.5f, 1.0f);
+    draw::draw_vertically_flipped_textured_square(width, height);
+    glPopMatrix();
 
     zrot+=0.001f;
-    glPopMatrix();
 
     // DRAW LINES
     glDisable(GL_TEXTURE_RECTANGLE_ARB);
