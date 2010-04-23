@@ -24,6 +24,7 @@
 #include <gdk/gdk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <iostream>
+#include <cstring>
 #include "gstgtk.h"
 #include "pipeline.h"
 #include "draw.h"
@@ -72,6 +73,30 @@ void Pipeline::end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipel
         Application::get_instance().quit();
         //gtk_main_quit();
     }
+}
+
+void Pipeline::grab_frame()
+{
+    static int frameid = 0;
+    GdkPixbuf* pixbuf;
+    char filename[TOON_MAX_FILENAME_LENGTH];
+    char temp[8]; 
+    g_object_get(G_OBJECT(gdkpixbufsink_), "last-pixbuf", &pixbuf, NULL);
+    int w = gdk_pixbuf_get_width(pixbuf);
+    int h = gdk_pixbuf_get_height(pixbuf);
+
+    strcpy(filename, pixfileprefix);
+    sprintf(temp, "%d.jpg", frameid);
+    strcat(filename, temp);
+    if (!gdk_pixbuf_save(pixbuf, filename , "jpeg", NULL, "quality", "100", NULL))
+    {
+        g_print("Image %s could not be saved. Error\n", filename);
+        // TODO : print error message.
+    }
+    else
+        g_print("Image %s saved\n", filename);
+    frameid++;
+    g_object_unref(pixbuf);
 }
 
 void Pipeline::stop()
@@ -136,6 +161,7 @@ Pipeline::Pipeline()
     //FIXME: GstElement* 
     gdkpixbufsink_ = gst_element_factory_make("gdkpixbufsink", "gdkpixbufsink0");
     g_assert(gdkpixbufsink_);
+    pixfileprefix = TOON_DEFAULT_FILENAME;
     gst_caps_unref(outcaps);
 
     // add elements

@@ -77,6 +77,9 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
         case GDK_Escape:
             context->toggleFullscreen(widget);
             break;
+        case GDK_space:
+            Application::get_instance().get_pipeline().grab_frame();
+            break;
         case GDK_q:
             // Quit application on ctrl-q, this quits the main loop
             // (if there is one)
