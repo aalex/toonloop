@@ -26,15 +26,16 @@ Image::Image(int number)
     number_ = number;
 }
 
-Image::get_number()
+int Image::get_number()
 {
     return number_;
 }
 
 Clip::Clip()
 {
-    intervalometer_rate_(1, 1); // default: 1 FPS
-    fps_(12, 1); // default: 12 FPS
+    // FIXME: How to use a 2-int vector?
+    //intervalometer_rate_(1, 1); // default: 1 FPS
+    //fps_(12, 1); // default: 12 FPS
 }
 
 int Clip::frame_add()
@@ -80,7 +81,7 @@ int Clip::size()
     return (int) images_.size();
 }
 
-Image* get_image(int index)
+Image* Clip::get_image(int index)
 {
     // FIXME: will crash if no image at that index
     return images_[index];

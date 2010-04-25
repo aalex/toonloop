@@ -18,18 +18,21 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef __CLIP_H__
+#define __CLIP_H__
+
 #include <iostream>
 #include <vector>
 #include <string>
 #include <map>
 #include <tr1/unordered_map>
 
-enum 
+enum direction 
 {
     FORWARD, 
     BACKWARD,
     BACK_AND_FORTH
-} direction;
+};
 
 class Image 
 {
@@ -46,8 +49,8 @@ class Clip
         int playhead_;
         int writehead_;
         direction direction_;
-        vector<int,int> intervalometer_rate_;
-        vector<int,int> fps_;
+        std::vector<int> intervalometer_rate_;
+        std::vector<int> fps_;
         std::tr1::unordered_map<int, Image*> images_;
         int number_allocator_; // forever growing unique number TODO: use long int?
     public:
@@ -58,4 +61,6 @@ class Clip
         int size();
         Image* get_image(int index);
 };
+
+#endif // __CLIP_H__
 

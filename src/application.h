@@ -23,6 +23,7 @@
 
 #include "gui.h"
 #include "pipeline.h"
+#include "clip.h"
 #include <tr1/memory>
 #include <boost/program_options.hpp>
 
@@ -39,11 +40,15 @@ class Application
         Gui &get_gui();
         Pipeline &get_pipeline();
         static Application& get_instance();
+        Clip* get_current_clip();
+
     private:
         Application();
         static Application* instance_; // singleton
         std::tr1::shared_ptr<Gui> gui_;
         std::tr1::shared_ptr<Pipeline> pipeline_;
+        int selected_clip_;
+        std::tr1::unordered_map<int, Clip*> clips_;
 };
 
 #endif // __APPLICATION_H__

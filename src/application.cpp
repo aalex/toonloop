@@ -28,9 +28,10 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 #include <cstdlib> // for getenv
-#include "./config.h"
+#include "config.h"
 #include <gtk/gtk.h>
 #include <gst/gst.h>
+#include "clip.h"
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -38,7 +39,15 @@ namespace fs = boost::filesystem;
 Application* Application::instance_ = 0;
 
 Application::Application() 
-{}
+{
+    clips_[0] = new Clip();
+    selected_clip_ = 0;
+}
+
+Clip* Application::get_current_clip()
+{
+    return clips_[selected_clip_];
+}
 
 /**
  * Parses the command line and runs the application.
