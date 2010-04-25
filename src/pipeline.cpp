@@ -249,15 +249,15 @@ Pipeline::Pipeline()
 void reshapeCallback(GLuint width, GLuint height, gpointer data)
 {
     glViewport(0, 0, width, height);
-    
+    // if >= 4/3:
     float w = float(width) / float(height);
-    float h = 1.0;
+    float h = 1.0; // constant height
 
     // make sure the aspect ratio of the window is not less wide than 4:3
     if (w < 4.0f/3.0f)
     {
-        h = 1.0 / w;
-        w = 1.3333333333f;
+        h = (float(height) / float(width)) * 1.333333f;
+        w = 1.3333333333f; // constant width
     }
     std::cout << "Resized window to " << width << "x" << height << ". Ratio is " << w << "x" << h << std::endl; 
 
