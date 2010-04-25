@@ -31,6 +31,21 @@
 #include "draw.h"
 #include "application.h"
 #include "gui.h"
+#include <stdlib.h> // for itoa()
+
+
+// --------------------------- formats int to string:
+#include <sstream>
+#include <iostream>
+
+template <class T> 
+std::string to_string(T t, std::ios_base & (*f)(std::ios_base&))
+{
+    std::ostringstream oss;
+    oss << f << t;
+    return oss.str();
+}
+
 
 /**
  * GST bus signal watch callback 
@@ -76,37 +91,38 @@ void Pipeline::end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipel
     }
 }
 
+/** 
+ * Adds an image to the current clip.
+ * TODO: should be moved out of here, to application. 
+ */
 void Pipeline::grab_frame()
 {
     int current_clip_id = Application::get_instance().get_current_clip()->get_id();
     int image_number = Application::get_instance().get_current_clip()->frame_add();
     std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl; 
+    std::string file_name = std::string("/tmp/toon-") + to_string<int>(current_clip_id, std::dec) + "-" + to_string<int>(image_number, std::dec) + std::string(".jpg"); 
+    std::cout << "File name: " << file_name << std::endl;
     
-
-    static int frameid = 0;
     GdkPixbuf* pixbuf;
     // TODO: replace constants by const attributes
     // TODO: use C++ strings, not C-style. :)
-    char filename[TOON_MAX_FILENAME_LENGTH];
-    char temp[8]; 
     g_object_get(G_OBJECT(gdkpixbufsink_), "last-pixbuf", &pixbuf, NULL);
     int w = gdk_pixbuf_get_width(pixbuf);
     int h = gdk_pixbuf_get_height(pixbuf);
 
-    strcpy(filename, pixfileprefix);
-    sprintf(temp, "%d.jpg", frameid);
-    strcat(filename, temp);
-    if (!gdk_pixbuf_save(pixbuf, filename , "jpeg", NULL, "quality", "100", NULL))
+    if (!gdk_pixbuf_save(pixbuf, file_name.c_str(), "jpeg", NULL, "quality", "100", NULL))
     {
-        g_print("Image %s could not be saved. Error\n", filename);
+        g_print("Image %s could not be saved. Error\n", file_name.c_str());
         // TODO : print error message.
     }
     else
-        g_print("Image %s saved\n", filename);
-    frameid++;
+        g_print("Image %s saved\n", file_name.c_str());
     g_object_unref(pixbuf);
 }
-
+/**
+ * Stops the pipeline.
+ * Called from Application::quit()
+ */
 void Pipeline::stop()
 {
     std::cout << "Stopping the Gstreamer pipeline." << std::endl;
@@ -114,6 +130,10 @@ void Pipeline::stop()
     gst_object_unref(pipeline_);
     // gtk main quit?
 }
+/**
+ * Constructor which create the Gstreamer pipeline.
+ * This pipeline grabs the video and render the OpenGL.
+ */
 Pipeline::Pipeline()
 {
     pipeline_ = NULL;
@@ -169,7 +189,6 @@ Pipeline::Pipeline()
     //FIXME: GstElement* 
     gdkpixbufsink_ = gst_element_factory_make("gdkpixbufsink", "gdkpixbufsink0");
     g_assert(gdkpixbufsink_);
-    pixfileprefix = TOON_DEFAULT_FILENAME;
     gst_caps_unref(outcaps);
 
     // add elements
@@ -281,7 +300,10 @@ void reshapeCallback(GLuint width, GLuint height, gpointer data)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 }
 
-//client draw callback
+/**
+ * This is where the OpenGL drawing is done.
+ * Client draw callback
+ */
 gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer data)
 {
     static GTimeVal current_time;
@@ -368,7 +390,7 @@ static GstBusSyncReply create_window(GstBus* bus, GstMessage* message, GtkWidget
     gst_message_unref(message);
     return GST_BUS_DROP;
 }
-
+// TODO: we don't need this. Make it simpler.
 void Pipeline::set_drawing_area(GtkWidget* drawing_area)
 {
     GstBus* bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline_));
@@ -376,5 +398,6 @@ void Pipeline::set_drawing_area(GtkWidget* drawing_area)
     gst_object_unref (bus);
 }
 
+// Desctructor. TODO: do we need to free anything?
 Pipeline::~Pipeline() {}
 

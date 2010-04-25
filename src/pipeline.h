@@ -25,9 +25,6 @@
 #include <gtk/gtk.h>
 #include <GL/glx.h>
 
-#define TOON_DEFAULT_FILENAME    "/tmp/toon-gdkpixbuf"
-#define TOON_MAX_FILENAME_LENGTH 64
-
 class Pipeline
 {
     public:
@@ -42,7 +39,6 @@ class Pipeline
         GstElement* gdkpixbufsink_;
         GstPipeline* pipeline_;
         GstState state_;
-        char* pixfileprefix;
         static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);
 };
 
