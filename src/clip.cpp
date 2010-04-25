@@ -31,11 +31,19 @@ int Image::get_number()
     return number_;
 }
 
-Clip::Clip()
+Clip::Clip(int id)
 {
     // FIXME: How to use a 2-int vector?
     //intervalometer_rate_(1, 1); // default: 1 FPS
     //fps_(12, 1); // default: 12 FPS
+    id_ = id;
+    writehead_ = 0;
+    playhead_ = 0;
+}
+
+int Clip::get_id()
+{
+    return id_;
 }
 
 int Clip::frame_add()

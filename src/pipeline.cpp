@@ -78,6 +78,11 @@ void Pipeline::end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipel
 
 void Pipeline::grab_frame()
 {
+    int current_clip_id = Application::get_instance().get_current_clip()->get_id();
+    int image_number = Application::get_instance().get_current_clip()->frame_add();
+    std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl; 
+    
+
     static int frameid = 0;
     GdkPixbuf* pixbuf;
     // TODO: replace constants by const attributes

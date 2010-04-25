@@ -40,7 +40,11 @@ Application* Application::instance_ = 0;
 
 Application::Application() 
 {
-    clips_[0] = new Clip();
+    for (int i = 0; i < 10; i++)
+    {
+
+        clips_[i] = new Clip(i);
+    }
     selected_clip_ = 0;
 }
 
@@ -175,7 +179,8 @@ void Application::start_pipeline()
     pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline());
 }
 
-// delete the instance, not sure how safe this is
+// delete the instance
+// FIXME: not sure how safe this is
 void Application::reset()
 {
     std::cout << "Resetting the application" << std::endl;

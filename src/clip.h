@@ -46,6 +46,7 @@ class Image
 class Clip 
 {
     private:
+        int id_;
         int playhead_;
         int writehead_;
         direction direction_;
@@ -54,7 +55,8 @@ class Clip
         std::tr1::unordered_map<int, Image*> images_;
         int number_allocator_; // forever growing unique number TODO: use long int?
     public:
-        Clip();
+        Clip(int id);
+        int get_id();
         int frame_add();
         int frame_remove();
         int iterate_playhead();
