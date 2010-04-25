@@ -246,26 +246,34 @@ Pipeline::Pipeline()
  * and something like [-1.333, 1.333] horizontally.
  * It depends on the actual aspect ratio of the window.
 */
-void reshapeCallback (GLuint width, GLuint height, gpointer data)
+void reshapeCallback(GLuint width, GLuint height, gpointer data)
 {
     glViewport(0, 0, width, height);
     
     float w = float(width) / float(height);
     float h = 1.0;
 
+    // make sure the aspect ratio of the window is not less wide than 4:3
+    if (w < 4.0f/3.0f)
+    {
+        h = 1.0 / w;
+        w = 1.3333333333f;
+    }
+    std::cout << "Resized window to " << width << "x" << height << ". Ratio is " << w << "x" << h << std::endl; 
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(-w, w, -h, h, -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
 
-    glEnable (GL_POLYGON_SMOOTH);
+    glEnable(GL_POLYGON_SMOOTH);
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
     //glEnable (GL_LINE_SMOOTH);
     //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    //
     // enables transparency blending:
-    
-    //glEnable(GL_BLEND); 
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+    glEnable(GL_BLEND); 
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 }
 
 //client draw callback
@@ -288,10 +296,10 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     glEnable(GL_TEXTURE_RECTANGLE_ARB);
     glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
     // TODO: simplify those parameters
-    glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
@@ -300,22 +308,22 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     
     // Left image
     glPushMatrix();
-    glTranslatef(-0.666f, 0.0f, 0.0f);
-    glScalef(0.666f, 0.5f, 1.0f);
+    glTranslatef(-0.6666666f, 0.0f, 0.0f);
+    glScalef(0.6666666f, 0.5f, 1.0f);
     draw::draw_vertically_flipped_textured_square(width, height);
     glPopMatrix();
     
     // Right image
     glPushMatrix();
-    glTranslatef(0.666f, 0.0f, 0.0f);
-    glScalef(0.666f, 0.5f, 1.0f);
+    glTranslatef(0.6666666f, 0.0f, 0.0f);
+    glScalef(0.6666666f, 0.5f, 1.0f);
     draw::draw_vertically_flipped_textured_square(width, height);
     glPopMatrix();
 
     // DRAW LINES
     glDisable(GL_TEXTURE_RECTANGLE_ARB);
-    //glColor4f(1.0, 1.0, 1.0, 0.2);
-    glColor4f(0.2, 0.2, 0.2, 1.0);
+    glColor4f(1.0, 1.0, 1.0, 0.2);
+    //glColor4f(0.2, 0.2, 0.2, 1.0);
     int num = 64;
     float x;
     
@@ -325,6 +333,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         draw::draw_line(float(x), -2.0, float(x), 2.0);
         draw::draw_line(-2.0, float(x), 2.0, float(x));
     }
+    glColor4f(1.0, 1.0, 1.0, 1.0); // I don't know why, but this is necessary if we want to see the images in the next rendering pass.
     
     //return TRUE causes a postRedisplay
     return FALSE;
