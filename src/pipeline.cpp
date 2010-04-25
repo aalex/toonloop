@@ -261,7 +261,6 @@ void reshapeCallback (GLuint width, GLuint height, gpointer data)
 //client draw callback
 gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer data)
 {
-    static GLfloat  zrot = 0;
     static GTimeVal current_time;
     static glong last_sec = current_time.tv_sec;
     static gint nbFrames = 0;
@@ -289,16 +288,11 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     glLoadIdentity();
     glPushMatrix();
     glColor4f(1.0, 1.0, 1.0, 1.0);
-
     glTranslatef(0.0f,0.0f,0.0f);
-
-    glRotatef(zrot,0.0f,0.0f,1.0f);
 
     glScalef(0.666f, 0.5f, 1.0f);
     draw::draw_vertically_flipped_textured_square(width, height);
     glPopMatrix();
-
-    zrot+=0.001f;
 
     // DRAW LINES
     glDisable(GL_TEXTURE_RECTANGLE_ARB);
