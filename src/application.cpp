@@ -94,6 +94,7 @@ void Application::run(int argc, char *argv[])
     if (options.count("toonloop-home"))
     {
         toonloop_home = options["toonloop-home"].as<std::string>();
+        std::cout << "toonloop-home is set to " << toonloop_home << std::endl;
         if (! fs::exists(toonloop_home))
         {
             try 
@@ -110,7 +111,6 @@ void Application::run(int argc, char *argv[])
                 exit(1);
             }
         }
-        std::cout << "toonloop-home is set to " << toonloop_home << std::endl;
     }
     if (options["intervalometer-on"].as<bool>())
         std::cout << "Intervalometer is on" << std::endl;
