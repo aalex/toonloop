@@ -30,7 +30,6 @@ python-build-stamp-*
 #---------- cpp files
 *.o
 # autoconf generated
-AUTHORS
 COPYING
 ChangeLog
 INSTALL
