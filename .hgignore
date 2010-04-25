@@ -61,3 +61,13 @@ src/config.h
 src/config.h.in
 src/stamp-h1
 tests/.deps/*
+# --------- specific conmpiled files.
+src/dummy
+src/sdlshare
+src/toonloop
+src/toonmidi
+tests/check_classes
+tests/check_commands
+tests/check_looper
+tests/check_threads
+
