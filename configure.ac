@@ -34,7 +34,6 @@ PKG_CHECK_MODULES([GST], [gstreamer-gl-0.10 >= 0.10.0 gstreamer-0.10 >= 0.10.0  
 PKG_CHECK_MODULES([GTK], [gtk+-2.0])
 PKG_CHECK_MODULES([GDK], [gdk-2.0])
 
-PKG_CHECK_MODULES([GTKGLEXT], [gtkglext-1.0 >= 1.0])
 AC_SUBST([GST_LIBS])
 AC_SUBST([GST_CFLAGS])
 
@@ -60,11 +59,6 @@ AX_CHECK_GL
 AX_CHECK_GLU
 AC_CHECK_LIB([GLEW], [glewInit],[AC_SUBST([GLEW_LIBS],["-lGLEW"])])
 
-# SDL
-PKG_CHECK_MODULES(SDL, sdl >= 1.2.0)
-AC_SUBST(SDL_LIBS)
-AC_SUBST(SDL_CFLAGS)
-
 # PORTMIDI
 AC_CHECK_LIB([asound],[snd_seq_open],[AC_SUBST([ASOUND_CXXFLAGS],["-lasound"])])
 AC_CHECK_LIB([portmidi],[Pm_Initialize],[AC_SUBST([PORTMIDI_CXXFLAGS],["-lportmidi -lporttime"])],[echo "Could not find portmidi !"], ["-lporttime"])
@@ -74,7 +68,6 @@ AC_CHECK_PROG(MENCODER, mencoder, yes, no)
 if test "$MENCODER" = no ; then
     AC_MSG_ERROR([Cannot find mencoder.])
 fi
-
 
 AC_CONFIG_FILES([
     Makefile
