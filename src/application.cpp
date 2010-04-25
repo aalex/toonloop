@@ -31,7 +31,6 @@
 #include "./config.h"
 #include <gtk/gtk.h>
 #include <gst/gst.h>
-#include <gtk/gtkgl.h>
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -130,8 +129,6 @@ void Application::run(int argc, char *argv[])
     }
     // Init GTK:
     gtk_init(&argc, &argv);
-    // Init GTK GL:
-    gtk_gl_init(&argc, &argv);
     // Init GST:
     gst_init(&argc, &argv);
     start_gui();

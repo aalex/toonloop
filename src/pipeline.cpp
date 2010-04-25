@@ -239,7 +239,13 @@ Pipeline::Pipeline()
         exit(1);
     }
 }
-//client reshape callback
+/**
+ * Client reshape callback
+ *
+ * The OpenGL coordinates of the rendering are in the range [-1, 1] vertically 
+ * and something like [-1.333, 1.333] horizontally.
+ * It depends on the actual aspect ratio of the window.
+*/
 void reshapeCallback (GLuint width, GLuint height, gpointer data)
 {
     glViewport(0, 0, width, height);
@@ -256,6 +262,10 @@ void reshapeCallback (GLuint width, GLuint height, gpointer data)
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
     //glEnable (GL_LINE_SMOOTH);
     //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    // enables transparency blending:
+    
+    //glEnable(GL_BLEND); 
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 }
 
 //client draw callback
@@ -275,7 +285,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         last_sec = current_time.tv_sec;
     }
 
-    glEnable (GL_TEXTURE_RECTANGLE_ARB);
+    glEnable(GL_TEXTURE_RECTANGLE_ARB);
     glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
     // TODO: simplify those parameters
     glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -286,17 +296,26 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glPushMatrix();
     glColor4f(1.0, 1.0, 1.0, 1.0);
-    glTranslatef(0.0f,0.0f,0.0f);
-
+    
+    // Left image
+    glPushMatrix();
+    glTranslatef(-0.666f, 0.0f, 0.0f);
+    glScalef(0.666f, 0.5f, 1.0f);
+    draw::draw_vertically_flipped_textured_square(width, height);
+    glPopMatrix();
+    
+    // Right image
+    glPushMatrix();
+    glTranslatef(0.666f, 0.0f, 0.0f);
     glScalef(0.666f, 0.5f, 1.0f);
     draw::draw_vertically_flipped_textured_square(width, height);
     glPopMatrix();
 
     // DRAW LINES
     glDisable(GL_TEXTURE_RECTANGLE_ARB);
-    glColor4f(0.2, 0.2, 0.2, 0.2);
+    //glColor4f(1.0, 1.0, 1.0, 0.2);
+    glColor4f(0.2, 0.2, 0.2, 1.0);
     int num = 64;
     float x;
     

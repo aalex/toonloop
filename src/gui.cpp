@@ -23,14 +23,12 @@
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
-#include <gtk/gtkgl.h>
 #include <iostream>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glx.h>
 #include <gdk/gdkkeysyms.h>
 
-#include "gltools.h"
 #include "pipeline.h"
 #include "draw.h"
 #include "gui.h"
@@ -145,29 +143,6 @@ Gui::Gui() :
     isFullscreen_(false)
 {
     video_xwindow_id_ = 0;
-    //glx_context_ = NULL;
-    //gint major; 
-    //gint minor;
-    //gdk_gl_query_version(&major, &minor);
-    //g_print("\nOpenGL extension version - %d.%d\n", major, minor);
-    ///* Try double-buffered visual */
-
-    //GdkGLConfig* glconfig;
-    //// the line above does not work in C++ if the cast is not there.
-    //glconfig = gdk_gl_config_new_by_mode(static_cast<GdkGLConfigMode>(GDK_GL_MODE_RGB | GDK_GL_MODE_DOUBLE));
-    //if (glconfig == NULL)
-    //{
-    //    g_print("*** Cannot find the double-buffered visual.\n");
-    //    g_print("*** Trying single-buffered visual.\n");
-    //    /* Try single-buffered visual */
-    //    glconfig = gdk_gl_config_new_by_mode(static_cast<GdkGLConfigMode>(GDK_GL_MODE_RGB));
-    //    if (glconfig == NULL)
-    //    {
-    //        g_print ("*** No appropriate OpenGL-capable visual found.\n");
-    //        exit(1);
-    //    }
-    //}
-    //gltools::examine_gl_config_attrib(glconfig);
     // Main GTK window
     window_ = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_widget_set_size_request(window_, 640, 480);
