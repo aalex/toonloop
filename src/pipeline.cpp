@@ -97,18 +97,32 @@ void Pipeline::end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipel
  */
 void Pipeline::grab_frame()
 {
-    int current_clip_id = Application::get_instance().get_current_clip()->get_id();
+    GdkPixbuf* pixbuf;
+    Clip *thisclip = Application::get_instance().get_current_clip();
+    int current_clip_id = thisclip->get_id();
+    g_object_get(G_OBJECT(gdkpixbufsink_), "last-pixbuf", &pixbuf, NULL);
+
+    int w = gdk_pixbuf_get_width(pixbuf);
+    int h = gdk_pixbuf_get_height(pixbuf);
+    int nchannels = gdk_pixbuf_get_n_channels(pixbuf);
+
+    /* if this is the first frame grabbed, set frame properties in clip */
+    if (numframes == -1) 
+    {
+        thisclip->set_width(w);
+        thisclip->set_height(h);
+    }
+
     int image_number = Application::get_instance().get_current_clip()->frame_add();
     std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl; 
     std::string file_name = std::string("/tmp/toon-") + to_string<int>(current_clip_id, std::dec) + "-" + to_string<int>(image_number, std::dec) + std::string(".jpg"); 
     std::cout << "File name: " << file_name << std::endl;
-    
-    GdkPixbuf* pixbuf;
+    Image *thisimage = Application::get_instance().get_current_clip()->get_image(image_number);
+    thisimage->allocate_image(w * h * nchannels);
+    numframes++;
+
     // TODO: replace constants by const attributes
     // TODO: use C++ strings, not C-style. :)
-    g_object_get(G_OBJECT(gdkpixbufsink_), "last-pixbuf", &pixbuf, NULL);
-    int w = gdk_pixbuf_get_width(pixbuf);
-    int h = gdk_pixbuf_get_height(pixbuf);
 
     if (!gdk_pixbuf_save(pixbuf, file_name.c_str(), "jpeg", NULL, "quality", "100", NULL))
     {
@@ -117,6 +131,11 @@ void Pipeline::grab_frame()
     }
     else
         g_print("Image %s saved\n", file_name.c_str());
+
+    size_t buf_size = w * h * nchannels;
+    char *buf = thisimage->get_rawdata();
+    /* copy gdkpixbuf raw data to Image's buffer. Will be used for the texture of the grabbed frames */
+    memcpy(buf, gdk_pixbuf_get_pixels(pixbuf), w * h * nchannels);
     g_object_unref(pixbuf);
 }
 /**
@@ -241,7 +260,7 @@ Pipeline::Pipeline()
     char* device_name = "/dev/video0";
     g_print("Using camera %s.\n", device_name);
     g_object_set(videosrc_, "device", device_name, NULL); 
-
+    numframes = -1;
     // make it play !!
 
     /* run */
@@ -263,6 +282,12 @@ Pipeline::Pipeline()
         exit(1);
     }
 }
+
+int Pipeline::get_numframes()
+{
+    return numframes;
+}
+
 /**
  * Client reshape callback
  *
@@ -309,6 +334,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     static GTimeVal current_time;
     static glong last_sec = current_time.tv_sec;
     static gint nbFrames = 0;
+    GLuint frametexture;
 
     g_get_current_time (&current_time);
     nbFrames++ ;
@@ -340,6 +366,26 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     draw::draw_vertically_flipped_textured_square(width, height);
     glPopMatrix();
     
+    if(Application::get_instance().get_pipeline().get_numframes() >= 0) {     
+        Clip *thisclip = Application::get_instance().get_current_clip();
+        int image_number = thisclip->get_playhead();
+        Image *thisimage = Application::get_instance().get_current_clip()->get_image(image_number);
+
+        /*FIXME: we may not need this dimension update in general. But I get a weirdly cropped frame, for the right side rendering grabbed frame. It seems
+        the grabbed frame dimensions don't match with the width, height passed from glimasesink to the draw callback*/
+        width = thisclip->get_width();
+        height = thisclip->get_height();
+        char *buf = thisimage->get_rawdata();
+
+        glEnable(GL_TEXTURE_RECTANGLE_ARB);
+        glBindTexture (GL_TEXTURE_RECTANGLE_ARB, frametexture);
+        glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
+        // TODO: simplify those parameters
+        glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
     // Right image
     glPushMatrix();
     glTranslatef(0.6666666f, 0.0f, 0.0f);

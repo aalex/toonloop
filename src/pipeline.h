@@ -25,6 +25,7 @@
 #include <gtk/gtk.h>
 #include <GL/glx.h>
 
+
 class Pipeline
 {
     public:
@@ -33,12 +34,14 @@ class Pipeline
         Pipeline();
         ~Pipeline();
         void grab_frame();
+        int get_numframes();
     private:
         GstElement* videosrc_;
         GstElement* videosink_;
         GstElement* gdkpixbufsink_;
         GstPipeline* pipeline_;
         GstState state_;
+        int numframes;
         static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);
 };
 

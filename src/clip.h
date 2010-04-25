@@ -38,9 +38,12 @@ class Image
 {
     private:
         int number_;
+        char *rawdata_;
     public: 
         Image(int number);
         int get_number();
+        char* get_rawdata();
+        int allocate_image(int bufsize);
 };
 
 class Clip 
@@ -49,6 +52,9 @@ class Clip
         int id_;
         int playhead_;
         int writehead_;
+        int width_;
+        int height_;
+        int nchannels_;
         direction direction_;
         std::vector<int> intervalometer_rate_;
         std::vector<int> fps_;
@@ -62,6 +68,11 @@ class Clip
         int iterate_playhead();
         int size();
         Image* get_image(int index);
+        int get_playhead();
+        void set_width(int width);
+        void set_height(int height);
+        int get_width();
+        int get_height();
 };
 
 #endif // __CLIP_H__

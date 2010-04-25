@@ -26,9 +26,19 @@ Image::Image(int number)
     number_ = number;
 }
 
+int Image::allocate_image(int bufsize)
+{
+    rawdata_ = new char[bufsize];
+}
+
 int Image::get_number()
 {
     return number_;
+}
+
+char* Image::get_rawdata()
+{
+    return rawdata_;
 }
 
 Clip::Clip(int id)
@@ -44,6 +54,26 @@ Clip::Clip(int id)
 int Clip::get_id()
 {
     return id_;
+}
+
+int Clip::get_width()
+{
+    return width_;
+}
+
+int Clip::get_height()
+{
+    return height_;
+}
+
+void Clip::set_width(int width)
+{
+    width_ = width;
+}
+
+void Clip::set_height(int height)
+{
+    height_ = height;
 }
 
 int Clip::frame_add()
@@ -69,6 +99,11 @@ int Clip::frame_remove()
         how_many_deleted = 1;
     }
     return how_many_deleted;
+}
+
+int Clip::get_playhead()
+{
+    return playhead_;
 }
 
 int Clip::iterate_playhead()
