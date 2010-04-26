@@ -26,24 +26,13 @@
 #include <string>
 #include <map>
 #include <tr1/unordered_map>
+#include "image.h"
 
 enum direction 
 {
     FORWARD, 
     BACKWARD,
     BACK_AND_FORTH
-};
-
-class Image 
-{
-    private:
-        int number_;
-        char *rawdata_;
-    public: 
-        Image(int number);
-        int get_number();
-        char* get_rawdata();
-        int allocate_image(int bufsize);
 };
 
 class Clip 

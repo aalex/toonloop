@@ -20,26 +20,7 @@
  */
 
 #include "clip.h"
-
-Image::Image(int number)
-{
-    number_ = number;
-}
-
-int Image::allocate_image(int bufsize)
-{
-    rawdata_ = new char[bufsize];
-}
-
-int Image::get_number()
-{
-    return number_;
-}
-
-char* Image::get_rawdata()
-{
-    return rawdata_;
-}
+#include "image.h"
 
 Clip::Clip(int id)
 {
