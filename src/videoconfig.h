@@ -9,11 +9,13 @@ class VideoConfig
     public:
         VideoConfig(const boost::program_options::variables_map &options);
         int frameRate() const { return frame_rate_; }
+        int playheadFps() const { return playhead_fps_; }
         std::string videoSource() const { return video_source_; }
         std::string display() const { return display_; }
         bool fullscreen() const { return fullscreen_; }
     private:
         int frame_rate_;
+        int playhead_fps_;
         std::string video_source_;
         std::string display_;
         bool fullscreen_;

@@ -60,6 +60,7 @@ class Clip
         std::vector<int> fps_;
         std::tr1::unordered_map<int, Image*> images_;
         int number_allocator_; // forever growing unique number TODO: use long int?
+        int playhead_fps_;
     public:
         Clip(int id);
         int get_id();
@@ -73,6 +74,8 @@ class Clip
         void set_height(int height);
         int get_width();
         int get_height();
+        int get_playhead_fps();
+        void set_playhead_fps(int fps);
 };
 
 #endif // __CLIP_H__

@@ -49,6 +49,16 @@ Clip::Clip(int id)
     id_ = id;
     writehead_ = 0;
     playhead_ = 0;
+    playhead_fps_ = 12; // some default for now
+}
+
+int Clip::get_playhead_fps()
+{
+    return playhead_fps_;
+}
+void Clip::set_playhead_fps(int fps)
+{
+    playhead_fps_ = fps;
 }
 
 int Clip::get_id()

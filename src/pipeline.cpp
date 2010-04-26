@@ -347,7 +347,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     g_get_current_time (&current_time);
     nbFrames++ ;
 
-    if ((current_time.tv_sec - last_sec) >=  (1 / Application::get_instance().get_cfps()))
+    if ((current_time.tv_sec - last_sec) >=  (1 / Application::get_instance().get_current_clip()->get_playhead_fps()))
         move_playhead = true;
 
     if ((current_time.tv_sec - last_sec) >= 1)
@@ -379,7 +379,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     
     if(Application::get_instance().get_pipeline().get_numframes() >= 0) {     
         Clip *thisclip = Application::get_instance().get_current_clip();
-        double spf = (1 / Application::get_instance().get_cfps());
+        double spf = (1 / Application::get_instance().get_current_clip()->get_playhead_fps());
         if (move_playhead)
                thisclip->iterate_playhead();
         int image_number = thisclip->get_playhead();

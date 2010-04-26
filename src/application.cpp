@@ -54,11 +54,6 @@ Clip* Application::get_current_clip()
     return clips_[selected_clip_];
 }
 
-double Application::get_cfps()
-{
-    return cfps_;
-}
-
 /**
  * Parses the command line and runs the application.
  */
@@ -80,7 +75,7 @@ void Application::run(int argc, char *argv[])
         ("project-name,p", po::value<std::string>()->default_value("default"), "Sets the name of the project for image saving")
         ("display,D", po::value<std::string>()->default_value(std::getenv("DISPLAY")), "Sets the X11 display name")
         ("fps,r", po::value<int>()->default_value(30), "Rendering frame rate")
-        ("cfps", po::value<int>()->default_value(1), "Playback rate of Clip Sequence, to be controlled by user")
+        ("playhead-fps", po::value<int>()->default_value(12), "Playback rate of Clip Sequence, to be controlled by user")
         ("image-width,w", po::value<int>()->default_value(640), "Width of the images grabbed from the camera. Default is 640")
         ("image-height,y", po::value<int>()->default_value(480), "Height of the images grabbed from the camera. Default is 480")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode.")
@@ -132,6 +127,8 @@ void Application::run(int argc, char *argv[])
             }
         }
     }
+    // FIXME: From there, the options are set in videoconfig.cpp
+    // TODO: We should do this in only one place. 
     if (options["intervalometer-on"].as<bool>())
         std::cout << "Intervalometer is on" << std::endl;
     if (options.count("intervalometer-interval"))
@@ -145,10 +142,13 @@ void Application::run(int argc, char *argv[])
     if (options.count("fps"))
         std::cout << "The frame rate is set to " << options["fps"].as<int>() << std::endl;
     
-    if (options.count("cfps"))
+    if (options.count("playhead-fps"))
     { 
-        cfps_ = (double)options["cfps"].as<int>();
-        std::cout << "The frame rate for clip playback is set to " << options["cfps"].as<int>() << std::endl;
+        std::cout << "The initial frame rate for clip playhead is set to " << options["playhead-fps"].as<int>() << std::endl;
+        for (int i = 0; i < clips_.size(); i++)
+        {
+            clips_[i]->set_playhead_fps(options["playhead-fps"].as<int>());
+        }
     }
 
     if (options["fullscreen"].as<bool>())
