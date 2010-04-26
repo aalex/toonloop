@@ -176,7 +176,7 @@ Pipeline::Pipeline(const VideoConfig &config)
         // 30/1
     GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
     // capsfilter0, for the capture FPS and size
-    GstCaps *caps = gst_caps_new_simple("video/x-raw-rgb",
+    GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv", // TODO: rgb ?
                                         "width", G_TYPE_INT, 640, // TODO: make configurable!
                                         "height", G_TYPE_INT, 480,
                                         "framerate", GST_TYPE_FRACTION, config.frameRate() * 1000, 1001,

@@ -75,7 +75,8 @@ void Application::run(int argc, char *argv[])
         ("project-name,p", po::value<std::string>()->default_value("default"), "Sets the name of the project for image saving")
         ("display,D", po::value<std::string>()->default_value(std::getenv("DISPLAY")), "Sets the X11 display name")
         ("fps,r", po::value<int>()->default_value(30), "Rendering frame rate")
-        ("image-size,s", po::value<std::string>()->default_value("640x480"), "Size of the images grabbed from the camera. Default is 640x480")
+        ("image-width,w", po::value<int>()->default_value(640), "Width of the images grabbed from the camera. Default is 640")
+        ("image-height,y", po::value<int>()->default_value(480), "Height of the images grabbed from the camera. Default is 480")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode.")
         ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device");
     po::variables_map options;
