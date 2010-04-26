@@ -35,6 +35,7 @@
 #include "videoconfig.h"
 
 // --------------------------- formats int to string:
+// TODO: use boost/lexical_cast.hpp
 #include <sstream>
 #include <iostream>
 
@@ -120,9 +121,6 @@ void Pipeline::grab_frame()
     Image *thisimage = Application::get_instance().get_current_clip()->get_image(image_number);
     thisimage->allocate_image(w * h * nchannels);
     numframes++;
-
-    // TODO: replace constants by const attributes
-    // TODO: use C++ strings, not C-style. :)
 
     if (!gdk_pixbuf_save(pixbuf, file_name.c_str(), "jpeg", NULL, "quality", "100", NULL))
     {
