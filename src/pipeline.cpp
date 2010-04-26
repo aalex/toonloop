@@ -32,7 +32,7 @@
 #include "application.h"
 #include "gui.h"
 #include <stdlib.h> // for itoa()
-
+#include "videoconfig.h"
 
 // --------------------------- formats int to string:
 #include <sstream>
@@ -153,7 +153,7 @@ void Pipeline::stop()
  * Constructor which create the Gstreamer pipeline.
  * This pipeline grabs the video and render the OpenGL.
  */
-Pipeline::Pipeline(const po::variables_map &options)
+Pipeline::Pipeline(const VideoConfig &config)
 {
     pipeline_ = NULL;
     
@@ -162,7 +162,7 @@ Pipeline::Pipeline(const po::variables_map &options)
     GstElement* glupload0;
     
     // Video source element
-    if (options["video-source"].as<std::string>() == std::string("videotestsrc")) 
+    if (config.videoSource() == std::string("videotestsrc")) 
     {
         videosrc_  = gst_element_factory_make("videotestsrc", "videosrc0");
     } else {
@@ -179,8 +179,9 @@ Pipeline::Pipeline(const po::variables_map &options)
     GstCaps *caps = gst_caps_new_simple("video/x-raw-rgb",
                                         "width", G_TYPE_INT, 640, // TODO: make configurable!
                                         "height", G_TYPE_INT, 480,
-                                        //"framerate", GST_TYPE_FRACTION, 30000, 1001,
+                                        "framerate", GST_TYPE_FRACTION, config.frameRate() * 1000, 1001,
                                         NULL); 
+    std::cout << "Video capture caps: " << 640 << "x" << 480 << " @ " << config.frameRate() << std::endl;
     g_object_set(capsfilter0, "caps", caps, NULL);
     gst_caps_unref(caps);
     // ffmpegcolorspace0 element
@@ -203,6 +204,7 @@ Pipeline::Pipeline(const po::variables_map &options)
     GstCaps *outcaps = gst_caps_new_simple("video/x-raw-gl",
                                         "width", G_TYPE_INT, 800,
                                         "height", G_TYPE_INT, 600,
+                                        "framerate", GST_TYPE_FRACTION, config.frameRate() * 1000, 1001,
                                         NULL) ;
     g_object_set(capsfilter1, "caps", outcaps, NULL);
 
@@ -261,9 +263,12 @@ Pipeline::Pipeline(const po::variables_map &options)
     gst_object_unref(bus);
 
     //TODO: 
-    std::string device_name = "/dev/video0";
-    g_print("Using camera %s.\n", device_name.c_str());
-    g_object_set(videosrc_, "device", device_name.c_str(), NULL); 
+    if (config.videoSource() != "videotestsrc")
+    {
+        std::string device_name = config.videoSource(); // "/dev/video0";
+        g_print("Using camera %s.\n", device_name.c_str());
+        g_object_set(videosrc_, "device", device_name.c_str(), NULL); 
+    }
     numframes = -1;
     // make it play !!
 

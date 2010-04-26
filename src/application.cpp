@@ -32,6 +32,7 @@
 #include <gtk/gtk.h>
 #include <gst/gst.h>
 #include "clip.h"
+#include "videoconfig.h"
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -73,7 +74,7 @@ void Application::run(int argc, char *argv[])
         ("intervalometer-interval,I", po::value<double>()->default_value(5.0), "Sets the intervalometer rate in seconds")
         ("project-name,p", po::value<std::string>()->default_value("default"), "Sets the name of the project for image saving")
         ("display,D", po::value<std::string>()->default_value(std::getenv("DISPLAY")), "Sets the X11 display name")
-        ("fps,r", po::value<double>()->default_value(30.0), "Rendering frame rate")
+        ("fps,r", po::value<int>()->default_value(30), "Rendering frame rate")
         ("image-size,s", po::value<std::string>()->default_value("640x480"), "Size of the images grabbed from the camera. Default is 640x480")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode.")
         ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device");
@@ -134,12 +135,15 @@ void Application::run(int argc, char *argv[])
         std::cout << "The project name is set to " << options["project-name"].as<std::string>() << std::endl;
     }
     if (options.count("fps"))
-        std::cout << "The frame rate is set to " << options["fps"].as<double>() << std::endl;
+        std::cout << "The frame rate is set to " << options["fps"].as<int>() << std::endl;
     if (options["fullscreen"].as<bool>())
     {
         std::cout << "Fullscreen mode is on: " << std::endl;
         std::cout << "Fullscreen mode is on: " << options["fullscreen"].as<bool>() << std::endl;
     }
+    
+    VideoConfig config(options);
+    
     // Init GTK:
     gtk_init(&argc, &argv);
     // Init GST:
@@ -149,7 +153,7 @@ void Application::run(int argc, char *argv[])
     gui_ = std::tr1::shared_ptr<Gui>(new Gui());
     // start Pipeline
     std::cout << "Starting pipeline." << std::endl;
-    pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline(options));
+    pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline(config));
     // set drawing area TODO: simplify this
     get_pipeline().set_drawing_area(get_gui().get_drawing_area());
     std::cout << "Running toonloop" << std::endl;
