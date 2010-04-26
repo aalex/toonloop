@@ -24,14 +24,16 @@
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <GL/glx.h>
+#include <boost/program_options.hpp>
 
+namespace po = boost::program_options;
 
 class Pipeline
 {
     public:
         void stop();
         void set_drawing_area(GtkWidget *drawing_area);
-        Pipeline();
+        Pipeline(const po::variables_map &options);
         ~Pipeline();
         void grab_frame();
         int get_numframes();

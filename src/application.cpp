@@ -144,8 +144,13 @@ void Application::run(int argc, char *argv[])
     gtk_init(&argc, &argv);
     // Init GST:
     gst_init(&argc, &argv);
-    start_gui();
-    start_pipeline();
+    // start GUI
+    std::cout << "Starting GUI." << std::endl;
+    gui_ = std::tr1::shared_ptr<Gui>(new Gui());
+    // start Pipeline
+    std::cout << "Starting pipeline." << std::endl;
+    pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline(options));
+    // set drawing area TODO: simplify this
     get_pipeline().set_drawing_area(get_gui().get_drawing_area());
     std::cout << "Running toonloop" << std::endl;
     gtk_main();
@@ -167,17 +172,7 @@ Application& Application::get_instance()
     return *instance_;
 }
 
-void Application::start_gui()
-{
-    std::cout << "Starting GUI." << std::endl;
-    gui_ = std::tr1::shared_ptr<Gui>(new Gui());
-}
 
-void Application::start_pipeline()
-{
-    std::cout << "Starting pipeline." << std::endl;
-    pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline());
-}
 
 // delete the instance
 // FIXME: not sure how safe this is

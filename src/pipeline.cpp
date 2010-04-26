@@ -153,7 +153,7 @@ void Pipeline::stop()
  * Constructor which create the Gstreamer pipeline.
  * This pipeline grabs the video and render the OpenGL.
  */
-Pipeline::Pipeline()
+Pipeline::Pipeline(const po::variables_map &options)
 {
     pipeline_ = NULL;
     
@@ -162,8 +162,12 @@ Pipeline::Pipeline()
     GstElement* glupload0;
     
     // Video source element
-    //videosrc_  = gst_element_factory_make("videotestsrc", "videosrc0");
-    videosrc_  = gst_element_factory_make("v4l2src", "videosrc0"); // TODO: add more like in Ekiga
+    if (options["video-source"].as<std::string>() == std::string("videotestsrc")) 
+    {
+        videosrc_  = gst_element_factory_make("videotestsrc", "videosrc0");
+    } else {
+        videosrc_  = gst_element_factory_make("v4l2src", "videosrc0"); // TODO: add more like in Ekiga
+    }
     g_assert(videosrc_); // TODO: use something else than g_assert to see if we could create the elements.
     // capsfilter element #0
         // Possible values for the capture FPS:
@@ -257,9 +261,9 @@ Pipeline::Pipeline()
     gst_object_unref(bus);
 
     //TODO: 
-    char* device_name = "/dev/video0";
-    g_print("Using camera %s.\n", device_name);
-    g_object_set(videosrc_, "device", device_name, NULL); 
+    std::string device_name = "/dev/video0";
+    g_print("Using camera %s.\n", device_name.c_str());
+    g_object_set(videosrc_, "device", device_name.c_str(), NULL); 
     numframes = -1;
     // make it play !!
 

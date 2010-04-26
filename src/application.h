@@ -33,8 +33,6 @@ class Application
 {
     public:
         void run(int argc, char *argv[]);
-        void start_gui();
-        void start_pipeline();
         void quit();
         static void reset();
         Gui &get_gui();
