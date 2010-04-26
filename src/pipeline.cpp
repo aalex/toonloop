@@ -387,9 +387,12 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
 
         /*FIXME: we may not need this dimension update in general. But I get a weirdly cropped frame, for the right side rendering grabbed frame. It seems
         the grabbed frame dimensions don't match with the width, height passed from glimasesink to the draw callback*/
+        // XXX: yes, I think we should always check the size of the images. (especially when we will read them from the disk)
         width = thisclip->get_width();
         height = thisclip->get_height();
         char *buf = thisimage->get_rawdata();
+        // Storing image data in RAM is nice when we don't have too many images, but it doesn't scale very well.
+        // Let's read them from the disk.
 
         glEnable(GL_TEXTURE_RECTANGLE_ARB);
         glBindTexture (GL_TEXTURE_RECTANGLE_ARB, frametexture);
@@ -407,6 +410,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     draw::draw_vertically_flipped_textured_square(width, height);
     glPopMatrix();
 
+#if 0
     // DRAW LINES
     glDisable(GL_TEXTURE_RECTANGLE_ARB);
     glColor4f(1.0, 1.0, 1.0, 0.2);
@@ -421,7 +425,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         draw::draw_line(-2.0, float(x), 2.0, float(x));
     }
     glColor4f(1.0, 1.0, 1.0, 1.0); // I don't know why, but this is necessary if we want to see the images in the next rendering pass.
-    
+#endif
     //return TRUE causes a postRedisplay
     return FALSE;
 }
