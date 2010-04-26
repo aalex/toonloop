@@ -174,6 +174,8 @@ Pipeline::Pipeline(const VideoConfig &config)
         // 30/1
     GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
     // capsfilter0, for the capture FPS and size
+    // TODO: we should use the capture_frame_rate, not the rendering frame rate!
+    // There are 3 FPS values to consider.
     GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv", // TODO: rgb ?
                                         "width", G_TYPE_INT, 640, // TODO: make configurable!
                                         "height", G_TYPE_INT, 480,
