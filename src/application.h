@@ -39,6 +39,7 @@ class Application
         Pipeline &get_pipeline();
         static Application& get_instance();
         Clip* get_current_clip();
+        double get_cfps();
 
     private:
         Application();
@@ -46,6 +47,7 @@ class Application
         std::tr1::shared_ptr<Gui> gui_;
         std::tr1::shared_ptr<Pipeline> pipeline_;
         int selected_clip_;
+        double cfps_;
         std::tr1::unordered_map<int, Clip*> clips_;
 };
 

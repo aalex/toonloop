@@ -110,7 +110,7 @@ int Clip::iterate_playhead()
 {
     int len = (int) images_.size();
     // TODO: implement BACK_AND_FORTH and BACKWARD directions
-    if (playhead_ >= len)
+    if (playhead_ >= len - 1)
     {
         playhead_ = 0;
     } else {
