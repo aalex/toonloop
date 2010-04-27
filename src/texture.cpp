@@ -19,6 +19,7 @@
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <GL/gl.h>
 #include "texture.h"
 
 /**
@@ -26,9 +27,8 @@
  * 
  * We load the texture data using a GdkPixBuf. 
  */
-Texture::Texture(int number)
+Texture::Texture()
 {
-    number_ = number;
 }
 
 int Texture::allocate_image(int bufsize)
@@ -41,9 +41,14 @@ void Texture::free_image()
     delete rawdata_;
 }
 
-int Texture::get_number()
+GLuint Texture::get_number()
 {
     return number_;
+}
+
+void Texture::set_number(GLuint number)
+{
+    number_ = number;
 }
 
 char* Texture::get_rawdata()

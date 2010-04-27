@@ -25,6 +25,7 @@
 #include <gtk/gtk.h>
 #include <GL/glx.h>
 #include "videoconfig.h"
+#include "texture.h"
 
 class Pipeline
 {
@@ -35,6 +36,8 @@ class Pipeline
         ~Pipeline();
         void grab_frame();
         int get_numframes();
+        Texture playback_texture_;
+        Texture onionskin_texture_;
     private:
         GstElement* videosrc_;
         GstElement* videosink_;

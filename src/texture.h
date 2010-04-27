@@ -20,6 +20,7 @@
  */
 #ifndef __TEXTURE_H__
 #define __TEXTURE_H__
+#include <GL/gl.h>
 
 class Texture 
 {
@@ -27,8 +28,9 @@ class Texture
         int number_;
         char *rawdata_;
     public: 
-        Texture(int number);
-        int get_number();
+        Texture();
+        void set_number(GLuint number);
+        GLuint get_number();
         char* get_rawdata();
         int allocate_image(int bufsize);
         void free_image();

@@ -156,6 +156,9 @@ void Pipeline::stop()
  */
 Pipeline::Pipeline(const VideoConfig &config)
 {
+    onionskin_texture_ = Texture();
+    playback_texture_ = Texture();
+    
     pipeline_ = NULL;
     
     pipeline_ = GST_PIPELINE(gst_pipeline_new("pipeline"));
