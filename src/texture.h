@@ -25,12 +25,14 @@
 class Texture 
 {
     private:
-        int number_;
         char *rawdata_;
     public: 
+        GLuint number_;
         Texture();
         void set_number(GLuint number);
         GLuint get_number();
+        bool has_new_data_;
+        bool has_some_data_;
         char* get_rawdata();
         int allocate_image(int bufsize);
         void free_image();

@@ -29,6 +29,8 @@
  */
 Texture::Texture()
 {
+    has_new_data_ = false;
+    has_some_data_ = false;
 }
 
 int Texture::allocate_image(int bufsize)
