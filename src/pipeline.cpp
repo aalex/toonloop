@@ -184,9 +184,9 @@ Pipeline::Pipeline(const VideoConfig &config)
     GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv", // TODO: rgb ?
                                         "width", G_TYPE_INT, 640, // TODO: make configurable!
                                         "height", G_TYPE_INT, 480,
-                                        "framerate", GST_TYPE_FRACTION, config.frameRate() * 1000, 1001,
+                                        "framerate", GST_TYPE_FRACTION, config.get_capture_fps() * 1000, 1001,
                                         NULL); 
-    std::cout << "Video capture caps: " << 640 << "x" << 480 << " @ " << config.frameRate() << std::endl;
+    std::cout << "Video capture caps: " << 640 << "x" << 480 << " @ " << config.get_capture_fps() << std::endl;
     g_object_set(capsfilter0, "caps", caps, NULL);
     gst_caps_unref(caps);
     // ffmpegcolorspace0 element
@@ -209,7 +209,7 @@ Pipeline::Pipeline(const VideoConfig &config)
     GstCaps *outcaps = gst_caps_new_simple("video/x-raw-gl",
                                         "width", G_TYPE_INT, 800,
                                         "height", G_TYPE_INT, 600,
-                                        "framerate", GST_TYPE_FRACTION, config.frameRate() * 1000, 1001,
+                                        "framerate", GST_TYPE_FRACTION, config.get_rendering_fps() * 1000, 1001,
                                         NULL) ;
     g_object_set(capsfilter1, "caps", outcaps, NULL);
 
@@ -251,7 +251,7 @@ Pipeline::Pipeline(const VideoConfig &config)
     is_linked = gst_element_link_pads(glupload0, "src", capsfilter1, "sink");
     if (!is_linked) { g_print("Could not link %s to %s.\n", "glupload0", "capsfilter1"); exit(1); }
     is_linked = gst_element_link_pads(capsfilter1, "src", videosink_, "sink");
-    if (!is_linked) { g_print("Could not link %s to %s.\n", "capsfilter1", "fakesink0"); exit(1); }
+    if (!is_linked) { g_print("Could not link %s to %s.\n", "capsfilter1", "videosink0"); exit(1); }
 
     // output 1: the GdkPixbuf sink
     is_linked = gst_element_link_pads(tee0, "src1", queue1, "sink");
