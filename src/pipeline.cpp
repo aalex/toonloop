@@ -85,9 +85,7 @@ void Pipeline::end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipel
         g_print("Stopping the stream and quitting.\n");
         //gst_element_set_state(pipeline, GST_STATE_NULL);
         //gst_object_unref(pipeline);
-        // TODO: stop()
         Application::get_instance().quit();
-        //gtk_main_quit();
     }
 }
 
@@ -202,10 +200,11 @@ Pipeline::Pipeline(const VideoConfig &config)
     // glimagesink
     videosink_ = gst_element_factory_make("glimagesink", "glimagesink0");
     g_object_set(videosink_, "sync", FALSE, NULL);
-    g_object_set(G_OBJECT(videosink_), "client-reshape-callback", reshapeCallback, NULL);
+    g_object_set(G_OBJECT(videosink_), "client-reshape-callback", G_CALLBACK(reshapeCallback), NULL); // gpointer(this)
     g_object_set(G_OBJECT(videosink_), "client-draw-callback", drawCallback, NULL);
+    //g_object_set(G_OBJECT(videosink_), "client-draw-callback", G_CALLBACK(drawCallback), gpointer(this));
     // capsfilter element #1, for the OpenGL FPS and size
-    GstElement* capsfilter1 = gst_element_factory_make ("capsfilter", NULL);
+    GstElement* capsfilter1 = gst_element_factory_make("capsfilter", NULL);
     GstCaps *outcaps = gst_caps_new_simple("video/x-raw-gl",
                                         "width", G_TYPE_INT, 800,
                                         "height", G_TYPE_INT, 600,
@@ -220,8 +219,6 @@ Pipeline::Pipeline(const VideoConfig &config)
     gdkpixbufsink_ = gst_element_factory_make("gdkpixbufsink", "gdkpixbufsink0");
     g_assert(gdkpixbufsink_);
     gst_caps_unref(outcaps);
-
-    // add elements
 
     // add elements
     gst_bin_add(GST_BIN(pipeline_), videosrc_); // capture
@@ -284,14 +281,14 @@ Pipeline::Pipeline(const VideoConfig &config)
     {
         g_print ("Failed to start up pipeline!\n");
         /* check if there is an error message with details on the bus */
-        GstMessage* msg = gst_bus_poll (bus, GST_MESSAGE_ERROR, 0);
+        GstMessage* msg = gst_bus_poll(bus, GST_MESSAGE_ERROR, 0);
         if (msg)
         {
           GError *err = NULL;
-          gst_message_parse_error (msg, &err, NULL);
-          g_print ("ERROR: %s\n", err->message);
-          g_error_free (err);
-          gst_message_unref (msg);
+          gst_message_parse_error(msg, &err, NULL);
+          g_print("ERROR: %s\n", err->message);
+          g_error_free(err);
+          gst_message_unref(msg);
         }
         exit(1);
     }
@@ -311,6 +308,8 @@ int Pipeline::get_numframes()
 */
 void reshapeCallback(GLuint width, GLuint height, gpointer data)
 {
+    // XXX: Pipeline* context = static_cast<Pipeline*>(data);
+    // XXX: std::cout << "Hello: " << context->get_numframes() << std::endl;
     glViewport(0, 0, width, height);
     // if >= 4/3:
     float w = float(width) / float(height);
@@ -345,6 +344,7 @@ void reshapeCallback(GLuint width, GLuint height, gpointer data)
  */
 gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer data)
 {
+    //Pipeline* context = static_cast<Pipeline*>(data);
     static GTimeVal current_time;
     static glong last_sec = current_time.tv_sec;
     static gint nbFrames = 0;
