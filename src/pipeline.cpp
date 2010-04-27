@@ -47,7 +47,6 @@ std::string to_string(T t, std::ios_base & (*f)(std::ios_base&))
     return oss.str();
 }
 
-
 /**
  * GST bus signal watch callback 
  */
@@ -116,8 +115,14 @@ void Pipeline::grab_frame()
 
     int image_number = Application::get_instance().get_current_clip()->frame_add();
     std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl; 
+    // TODO: use path to toonloop_home/project_name from config.
     std::string file_name = std::string("/tmp/toon-") + to_string<int>(current_clip_id, std::dec) + "-" + to_string<int>(image_number, std::dec) + std::string(".jpg"); 
     std::cout << "File name: " << file_name << std::endl;
+    // FIXME: We should not store the pixel data in RAM once we don't need it anymore.
+    // We need 3 textures: 
+    //  * the onionskin of the last frame grabbed. (or at the writehead position)
+    //  * the frame at the playhead position
+    //  * the current live input. (GST gives us this one)
     Image *thisimage = Application::get_instance().get_current_clip()->get_image(image_number);
     thisimage->allocate_image(w * h * nchannels);
     numframes++;
@@ -317,7 +322,7 @@ void reshapeCallback(GLuint width, GLuint height, gpointer data)
         h = (float(height) / float(width)) * 1.333333f;
         w = 1.3333333333f; // constant width
     }
-    std::cout << "Resized window to " << width << "x" << height << ". Ratio is " << w << "x" << h << std::endl; 
+    //std::cout << "Resized window to " << width << "x" << height << ". Ratio is " << w << "x" << h << std::endl; 
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -379,14 +384,16 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     draw::draw_vertically_flipped_textured_square(width, height);
     glPopMatrix();
     
-    if(Application::get_instance().get_pipeline().get_numframes() >= 0) {     
+    if(Application::get_instance().get_pipeline().get_numframes() >= 0) 
+    {     
+        // FIXME: we don't need to create a texture on every frame!!
         Clip *thisclip = Application::get_instance().get_current_clip();
         double spf = (1 / Application::get_instance().get_current_clip()->get_playhead_fps());
         if (move_playhead)
-               thisclip->iterate_playhead();
+            thisclip->iterate_playhead();
         int image_number = thisclip->get_playhead();
         Image *thisimage = Application::get_instance().get_current_clip()->get_image(image_number);
-
+        
         /*FIXME: we may not need this dimension update in general. But I get a weirdly cropped frame, for the right side rendering grabbed frame. It seems
         the grabbed frame dimensions don't match with the width, height passed from glimasesink to the draw callback*/
         // XXX: yes, I think we should always check the size of the images. (especially when we will read them from the disk)
@@ -395,22 +402,23 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         char *buf = thisimage->get_rawdata();
         // Storing image data in RAM is nice when we don't have too many images, but it doesn't scale very well.
         // Let's read them from the disk.
-
+        
         glEnable(GL_TEXTURE_RECTANGLE_ARB);
-        glBindTexture (GL_TEXTURE_RECTANGLE_ARB, frametexture);
+        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, frametexture);
         glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
         // TODO: simplify those parameters
         glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        // Right image
+        glPushMatrix();
+        glTranslatef(0.6666666f, 0.0f, 0.0f);
+        glScalef(0.6666666f, 0.5f, 1.0f);
+        draw::draw_vertically_flipped_textured_square(width, height);
+        glPopMatrix();
     }
-    // Right image
-    glPushMatrix();
-    glTranslatef(0.6666666f, 0.0f, 0.0f);
-    glScalef(0.6666666f, 0.5f, 1.0f);
-    draw::draw_vertically_flipped_textured_square(width, height);
-    glPopMatrix();
 
 #if 0
     // DRAW LINES
@@ -459,9 +467,9 @@ static GstBusSyncReply create_window(GstBus* bus, GstMessage* message, GtkWidget
 // TODO: we don't need this. Make it simpler.
 void Pipeline::set_drawing_area(GtkWidget* drawing_area)
 {
-    GstBus* bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline_));
+    GstBus* bus = gst_pipeline_get_bus(GST_PIPELINE (pipeline_));
     gst_bus_set_sync_handler(bus, (GstBusSyncHandler)create_window, drawing_area);
-    gst_object_unref (bus);
+    gst_object_unref(bus);
 }
 
 // Desctructor. TODO: do we need to free anything?
