@@ -21,6 +21,10 @@
 
 #include "image.h"
 
+/** 
+ * This Image class is just a container for a single integer value.
+ * We use this number to determine the file name for the image saved as JPEG.
+ */
 Image::Image(int number)
 {
     number_ = number;

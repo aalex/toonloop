@@ -22,6 +22,9 @@
 #include "clip.h"
 #include "image.h"
 
+/**
+ * A clip is a list of images.
+ */
 Clip::Clip(int id)
 {
     // FIXME: How to use a 2-int vector?

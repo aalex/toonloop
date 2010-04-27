@@ -43,7 +43,6 @@ Application::Application()
 {
     for (int i = 0; i < 10; i++)
     {
-
         clips_[i] = new Clip(i);
     }
     selected_clip_ = 0;
@@ -191,8 +190,6 @@ Application& Application::get_instance()
     return *instance_;
 }
 
-
-
 // delete the instance
 // FIXME: not sure how safe this is
 void Application::reset()
@@ -208,3 +205,4 @@ void Application::quit()
     get_pipeline().stop();
     gtk_main_quit();
 }
+
