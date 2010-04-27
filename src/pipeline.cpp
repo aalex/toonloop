@@ -136,9 +136,6 @@ void Pipeline::grab_frame()
     size_t buf_size = w * h * nchannels;
     char *buf = thisimage->get_rawdata();
     /* copy gdkpixbuf raw data to Image's buffer. Will be used for the texture of the grabbed frames */
-    Texture texture = Application::get_instance().get_pipeline().onionskin_texture_;
-    memcpy(texture.get_rawdata(), gdk_pixbuf_get_pixels(pixbuf), w * h * nchannels);
-    texture.has_new_data_ = true;
     memcpy(buf, gdk_pixbuf_get_pixels(pixbuf), w * h * nchannels);
     g_object_unref(pixbuf);
 }
@@ -356,7 +353,6 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     static gint nbFrames = 0;
     GLuint frametexture;
     bool move_playhead = false;
-    Clip *thisclip = Application::get_instance().get_current_clip();
 
     g_get_current_time (&current_time);
     nbFrames++ ;
@@ -391,40 +387,10 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     draw::draw_vertically_flipped_textured_square(width, height);
     glPopMatrix();
     
-    
-    Texture onionskin_texture_ = Application::get_instance().get_pipeline().onionskin_texture_;
-    
-    if (onionskin_texture_.has_new_data_)
-    {
-        onionskin_texture_.has_new_data_ = false;
-        onionskin_texture_.has_some_data_ = true;
-        width = thisclip->get_width();
-        height = thisclip->get_height();
-        char *buf = onionskin_texture_.get_rawdata();
-        
-        // glEnable(GL_TEXTURE_RECTANGLE_ARB);
-        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, onionskin_texture_.number_);
-        glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
-        glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    }
-    if (onionskin_texture_.has_some_data_)
-    {
-        glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
-        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, onionskin_texture_.number_);
-        // Over the left image
-        glPushMatrix();
-        glTranslatef(-0.6666666f, 0.0f, 0.0f);
-        glScalef(0.6666666f, 0.5f, 1.0f);
-        draw::draw_vertically_flipped_textured_square(width, height);
-        glPopMatrix();
-    }
-        
     if(Application::get_instance().get_pipeline().get_numframes() >= 0) 
     {     
         // FIXME: we don't need to create a texture on every frame!!
+        Clip *thisclip = Application::get_instance().get_current_clip();
         double spf = (1 / Application::get_instance().get_current_clip()->get_playhead_fps());
         if (move_playhead)
             thisclip->iterate_playhead();
@@ -440,7 +406,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         // Storing image data in RAM is nice when we don't have too many images, but it doesn't scale very well.
         // Let's read them from the disk.
         
-        //glEnable(GL_TEXTURE_RECTANGLE_ARB);
+        glEnable(GL_TEXTURE_RECTANGLE_ARB);
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, frametexture);
         glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
         // TODO: simplify those parameters
@@ -450,7 +416,6 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
         // Right image
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         glPushMatrix();
         glTranslatef(0.6666666f, 0.0f, 0.0f);
         glScalef(0.6666666f, 0.5f, 1.0f);
