@@ -73,7 +73,7 @@ void Application::run(int argc, char *argv[])
         ("intervalometer-interval,I", po::value<double>()->default_value(5.0), "Sets the intervalometer rate in seconds")
         ("project-name,p", po::value<std::string>()->default_value("default"), "Sets the name of the project for image saving")
         ("display,D", po::value<std::string>()->default_value(std::getenv("DISPLAY")), "Sets the X11 display name")
-        ("rendering-fps", po::value<int>()->default_value(30), "Rendering frame rate") // FIXME: can we get a FPS different for the rendering?
+        //("rendering-fps", po::value<int>()->default_value(30), "Rendering frame rate") // FIXME: can we get a FPS different for the rendering?
         ("capture-fps,r", po::value<int>()->default_value(30), "Rendering frame rate")
         ("playhead-fps", po::value<int>()->default_value(12), "Playback rate of Clip Sequence, to be controlled by user")
         ("image-width,w", po::value<int>()->default_value(640), "Width of the images grabbed from the camera. Default is 640")
