@@ -158,23 +158,6 @@ void Application::run(int argc, char *argv[])
     // Stores the options in the VideoConfig class.
     VideoConfig config(options);
 
-    // check for shaders support
-    GLenum err = glewInit(); // FIXME: we need an OpenGL context to call this succesfully
-    if (GLEW_OK != err)
-    {
-        /* Problem: glewInit failed, something is seriously wrong. */
-        std::cerr << "Error calling glewInit: " << glewGetErrorString(err) << std::endl;
-        config.disable_shaders();
-    } else {
-        std::cout << "Status: Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
-    }
-    if (glewGetExtension("GL_ARB_fragment_program"))
-    {
-        std::cout << "Status: Looks like ARB_fragment_program is supported." << std::endl;
-    } else {
-        config.disable_shaders();
-    }
-
     // Init GTK:
     gtk_init(&argc, &argv);
     // Init GST:

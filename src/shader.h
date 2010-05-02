@@ -16,4 +16,5 @@ class Shader
 
 };
 
+bool check_if_shaders_are_supported();
 

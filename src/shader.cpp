@@ -82,4 +82,3 @@ GLuint Shader::get_program_object()
     return program_object_;
 } 
 
-

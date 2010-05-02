@@ -21,6 +21,7 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
+#include <GL/glew.h>
 #include "gui.h"
 #include "pipeline.h"
 #include "clip.h"

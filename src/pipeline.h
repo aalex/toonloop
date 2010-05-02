@@ -21,6 +21,7 @@
 #ifndef __PIPELINE_H__
 #define __PIPELINE_H__
 
+#include <GL/glew.h>
 #include "shader.h"
 #include <gst/gst.h>
 #include <gtk/gtk.h>
@@ -39,6 +40,8 @@ class Pipeline
         int get_numframes();
         Texture playback_texture_;
         Texture onionskin_texture_;
+        Shader* get_shader();
+        bool check_if_shaders_are_supported();
     private:
         GstElement* videosrc_;
         GstElement* videosink_;
@@ -48,6 +51,8 @@ class Pipeline
         int numframes;
         static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);
         Shader* myshader;
+        bool checked_for_shaders_; // FIXME: avoid public attributes
+        bool shaders_are_supported_;
 };
 
 static GstBusSyncReply create_window(GstBus* bus, GstMessage* message, GtkWidget* widget);

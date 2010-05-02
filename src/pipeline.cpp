@@ -49,6 +49,36 @@ std::string to_string(T t, std::ios_base & (*f)(std::ios_base&))
 }
 
 /**
+ * You need to create an OpenGL contect prior to use this.
+ */
+bool Pipeline::check_if_shaders_are_supported()
+{
+    if (checked_for_shaders_ == true) // why is this always false?
+    {
+        return shaders_are_supported_;
+    } else {
+        // check for shaders support
+        GLenum err = glewInit(); // FIXME: we need an OpenGL context to call this succesfully
+        if (GLEW_OK != err)
+        {
+            /* Problem: glewInit failed, something is seriously wrong. */
+            std::cerr << "Error calling glewInit: " << glewGetErrorString(err) << std::endl;
+            shaders_are_supported_ = false;
+        } else {
+            std::cout << "Status: Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
+        }
+        if (glewGetExtension("GL_ARB_fragment_program"))
+        {
+            std::cout << "Status: Looks like ARB_fragment_program is supported." << std::endl;
+            shaders_are_supported_ = true;
+        } else {
+            shaders_are_supported_ = false;
+        }
+        checked_for_shaders_ = true;
+    }
+}
+
+/**
  * GST bus signal watch callback 
  */
 void Pipeline::end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipeline)
@@ -157,6 +187,9 @@ void Pipeline::stop()
  */
 Pipeline::Pipeline(const VideoConfig &config)
 {
+    checked_for_shaders_ = false;
+    shaders_are_supported_ = false;
+
     onionskin_texture_ = Texture();
     playback_texture_ = Texture();
     
@@ -297,8 +330,12 @@ Pipeline::Pipeline(const VideoConfig &config)
         exit(1);
     }
 
+#if 0
+    // FIXME: this causes a segfault
+    std::cout << "Compiling the shader" << std::endl;
     myshader = new Shader(); // FIXME: should we use a shared_pointer ?
     myshader->compile_link();
+#endif
 }
 
 Shader* Pipeline::get_shader()
@@ -375,9 +412,22 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         nbFrames = 0;
         last_sec = current_time.tv_sec;
     }
+    
+#if 0
+    Pipeline pipeline = Application::get_instance().get_pipeline();
+    if (pipeline.check_if_shaders_are_supported())
+    {
+        std::cout << "yes!" << std::endl;
+    }
+#endif
+
+    // FIXME: this is broken.
+#if 0
+    std::cout << "using the shader" << std::endl;
     // Enable shader
     Shader *myshader = Application::get_instance().get_pipeline().get_shader();
     glUseProgram(myshader->get_program_object());
+#endif 
 
     glEnable(GL_TEXTURE_RECTANGLE_ARB);
     glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
@@ -434,9 +484,10 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         draw::draw_vertically_flipped_textured_square(width, height);
         glPopMatrix();
     }
-
+#if 0
     //disable shader
     glUseProgram(0); 
+#endif
 
 #if 0
     // DRAW LINES
