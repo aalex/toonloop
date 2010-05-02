@@ -18,6 +18,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <GL/glew.h>
 #include <gtk/gtk.h>
 #include <GL/gl.h>
 #include <GL/glx.h>

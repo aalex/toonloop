@@ -10,5 +10,11 @@ VideoConfig::VideoConfig(const boost::program_options::variables_map &options)
     video_source_ = options["video-source"].as<std::string>();
     display_ = options["display"].as<std::string>();
     fullscreen_ = options["fullscreen"].as<bool>();
+    shaders_enabled_ = true;
+}
+
+void VideoConfig::disable_shaders()
+{
+    shaders_enabled_ = false;
 }
 
