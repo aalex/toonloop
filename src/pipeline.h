@@ -21,6 +21,7 @@
 #ifndef __PIPELINE_H__
 #define __PIPELINE_H__
 
+#include "shader.h"
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <GL/glx.h>
@@ -46,6 +47,7 @@ class Pipeline
         GstState state_;
         int numframes;
         static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);
+        Shader* myshader;
 };
 
 static GstBusSyncReply create_window(GstBus* bus, GstMessage* message, GtkWidget* widget);

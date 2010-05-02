@@ -295,6 +295,14 @@ Pipeline::Pipeline(const VideoConfig &config)
         }
         exit(1);
     }
+
+    myshader = new Shader(); // FIXME: should we use a shared_pointer ?
+    myshader->compile_link();
+}
+
+Shader* Pipeline::get_shader()
+{
+    return myshader;
 }
 
 int Pipeline::get_numframes()
@@ -366,6 +374,9 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         nbFrames = 0;
         last_sec = current_time.tv_sec;
     }
+    // Enable shader
+    Shader *myshader = Application::get_instance().get_pipeline().get_shader();
+    glUseProgram(myshader->get_program_object());
 
     glEnable(GL_TEXTURE_RECTANGLE_ARB);
     glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
@@ -422,6 +433,9 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         draw::draw_vertically_flipped_textured_square(width, height);
         glPopMatrix();
     }
+
+    //disable shader
+    glUseProgram(0); 
 
 #if 0
     // DRAW LINES
