@@ -14,7 +14,6 @@ class VideoConfig
         std::string videoSource() const { return video_source_; }
         std::string display() const { return display_; }
         bool fullscreen() const { return fullscreen_; }
-        void disable_shaders();
     private:
         int capture_frame_rate_;
         int rendering_frame_rate_;
@@ -22,7 +21,6 @@ class VideoConfig
         std::string video_source_;
         std::string display_;
         bool fullscreen_;
-        bool shaders_enabled_;
 };
 #endif // __VIDEO_CONFIG_H__
 
