@@ -18,6 +18,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <GL/glew.h>
 #include "application.h"
 #include "gui.h"
 #include "pipeline.h"
@@ -155,7 +156,19 @@ void Application::run(int argc, char *argv[])
     }
     
     VideoConfig config(options);
-    
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+    {
+          /* Problem: glewInit failed, something is seriously wrong. */
+        std::cerr << "Error: " << glewGetErrorString(err) << std::endl;
+    } else {
+        std::cout << "Status: Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
+    }
+    if (glewGetExtension("GL_ARB_fragment_program"))
+    {
+          std::cout << "Status: Looks like ARB_fragment_program is supported." << std::endl;
+    }
+
     // Init GTK:
     gtk_init(&argc, &argv);
     // Init GST:
