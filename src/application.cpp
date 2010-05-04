@@ -60,7 +60,7 @@ Clip* Application::get_current_clip()
 void Application::run(int argc, char *argv[])
 {
     std::string video_source = "/dev/video0";
-    std::string toonloop_home = std::string(std::getenv("HOME")) + "/Documents/toonloop";
+    std::string toonloop_home = "~/Documents/toonloop";
     if (! fs::exists(video_source))
         video_source = "videotestsrc";
     po::options_description desc("Toonloop options");
@@ -70,17 +70,17 @@ void Application::run(int argc, char *argv[])
         ("toonloop-home,H", po::value<std::string>()->default_value(toonloop_home), "Path to the saved files")
         ("version", "Show program's version number and exit")
         ("verbose,v", po::bool_switch(), "Enables a verbose output")
-        ("intervalometer-on,i", po::bool_switch(), "Enables the intervalometer to create time lapse animations")
-        ("intervalometer-interval,I", po::value<double>()->default_value(5.0), "Sets the intervalometer rate in seconds")
+        //("intervalometer-on,i", po::bool_switch(), "Enables the intervalometer to create time lapse animations")
+        //("intervalometer-interval,I", po::value<double>()->default_value(5.0), "Sets the intervalometer rate in seconds")
         ("project-name,p", po::value<std::string>()->default_value("default"), "Sets the name of the project for image saving")
         ("display,D", po::value<std::string>()->default_value(std::getenv("DISPLAY")), "Sets the X11 display name")
         //("rendering-fps", po::value<int>()->default_value(30), "Rendering frame rate") // FIXME: can we get a FPS different for the rendering?
-        ("capture-fps,r", po::value<int>()->default_value(30), "Rendering frame rate")
+        //("capture-fps,r", po::value<int>()->default_value(30), "Rendering frame rate")
         ("playhead-fps", po::value<int>()->default_value(12), "Playback rate of Clip Sequence, to be controlled by user")
-        ("image-width,w", po::value<int>()->default_value(640), "Width of the images grabbed from the camera. Default is 640")
-        ("image-height,y", po::value<int>()->default_value(480), "Height of the images grabbed from the camera. Default is 480")
+        //("image-width,w", po::value<int>()->default_value(640), "Width of the images grabbed from the camera. Default is 640")
+        //("image-height,y", po::value<int>()->default_value(480), "Height of the images grabbed from the camera. Default is 480")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode.")
-        ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device");
+        ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device. Use \"test\" for color bars.");
     po::variables_map options;
     po::store(po::parse_command_line(argc, argv, desc), options);
     po::notify(options);
@@ -97,7 +97,7 @@ void Application::run(int argc, char *argv[])
     if (options.count("video-source"))
     {
         video_source = options["video-source"].as<std::string>();
-        if (video_source != "videotestsrc")
+        if (video_source != "test")
         {
             if (! fs::exists(video_source))
             {
@@ -110,6 +110,8 @@ void Application::run(int argc, char *argv[])
     if (options.count("toonloop-home"))
     {
         toonloop_home = options["toonloop-home"].as<std::string>();
+        if (toonloop_home == "~/Documents/toonloop")
+            toonloop_home = std::string(std::getenv("HOME")) + "/Documents/toonloop";
         std::cout << "toonloop-home is set to " << toonloop_home << std::endl;
         if (! fs::exists(toonloop_home))
         {
@@ -130,10 +132,12 @@ void Application::run(int argc, char *argv[])
     }
     // FIXME: From there, the options are set in videoconfig.cpp
     // TODO: We should do this in only one place. 
+#if 0
     if (options["intervalometer-on"].as<bool>())
         std::cout << "Intervalometer is on. (but not yet implemented)" << std::endl;
     if (options.count("intervalometer-interval"))
         std::cout << "The rate of the intervalometer is set to " << options["intervalometer-interval"].as<double>() << std::endl; 
+#endif
     if (options.count("project-name"))
     {
         // TODO
@@ -157,6 +161,7 @@ void Application::run(int argc, char *argv[])
     
     // Stores the options in the VideoConfig class.
     VideoConfig config(options);
+    config.set_toonloop_home(toonloop_home);
 
     // Init GTK:
     gtk_init(&argc, &argv);

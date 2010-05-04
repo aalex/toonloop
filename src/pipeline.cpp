@@ -201,7 +201,7 @@ Pipeline::Pipeline(const VideoConfig &config)
     GstElement* glupload0;
     
     // Video source element
-    if (config.videoSource() == std::string("videotestsrc")) 
+    if (config.videoSource() == std::string("test")) 
     {
         videosrc_  = gst_element_factory_make("videotestsrc", "videosrc0");
     } else {
@@ -215,16 +215,18 @@ Pipeline::Pipeline(const VideoConfig &config)
         // 30/1
     GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
     // capsfilter0, for the capture FPS and size
+    
     // TODO: we should use the capture_frame_rate, not the rendering frame rate!
     // There are 3 FPS values to consider.
-    GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv", // TODO: rgb ?
-                                        "width", G_TYPE_INT, 640, // TODO: make configurable!
-                                        "height", G_TYPE_INT, 480,
-                                        "framerate", GST_TYPE_FRACTION, config.get_capture_fps() * 1000, 1001,
-                                        NULL); 
-    std::cout << "Video capture caps: " << 640 << "x" << 480 << " @ " << config.get_capture_fps() << std::endl;
-    g_object_set(capsfilter0, "caps", caps, NULL);
-    gst_caps_unref(caps);
+    //GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv", // TODO: rgb ?
+    //                                    "width", G_TYPE_INT, 640, // TODO: make configurable!
+    //                                    "height", G_TYPE_INT, 480,
+    //                                    "framerate", GST_TYPE_FRACTION, config.get_capture_fps() * 1000, 1001,
+    //                                    NULL); 
+    //std::cout << "Video capture caps: " << 640 << "x" << 480 << " @ " << config.get_capture_fps() << std::endl;
+    //g_object_set(capsfilter0, "caps", caps, NULL);
+    //gst_caps_unref(caps);
+
     // ffmpegcolorspace0 element
     GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
     g_assert(ffmpegcolorspace0);
@@ -274,6 +276,20 @@ Pipeline::Pipeline(const VideoConfig &config)
     gboolean is_linked = NULL;
     bool source_is_linked = false;
     int frame_rate_index = 0;
+    if (config.videoSource() == std::string("test")) {
+        g_object_set(capsfilter0, "caps", gst_caps_from_string(
+            std::string("video/x-raw-yuv, width=" 
+                "640" 
+                ", height="
+                "480" 
+                ", framerate="
+                "30/1").c_str()
+            ));
+        is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
+        if (!is_linked) { g_print("Could not link %s to %s.\n", "videotestsrc", "capfilter0"); exit(1); }
+        source_is_linked = true;
+    }
+
     while (not source_is_linked)
     {
         g_object_set(capsfilter0, "caps", gst_caps_from_string(guess_source_caps(frame_rate_index).c_str()));
