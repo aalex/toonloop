@@ -1,0 +1,47 @@
+[DESCRIPTION]
+The Toonloop Live Stop Motion Tool. 
+
+Toonloop is a live stop motion animation software. It aims to show the creation process the the audience as well as the result of the creation. The frame by frame animation is made by adding frames one by one to a clip made of many frames. Clips are displayed in a never ending loop. 
+
+Toonloop is a great tool for teaching new medias to children. It can also be used as a professionnal software for movie creators, though it is mainly intended to be used in a live kiosk of show. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop.
+
+[SYNOPSIS]
+toonloop [options]
+
+[EXAMPLES]
+More examples to come. 
+
+Note that if Toonloop crashes at startup, you should verify that your camera /dev/video0 is really a V4L2 camera, and that it is present. You can use tools such as ivtv-utils, gst-launch or xawtv for that kind of work under GNU/Linux.
+
+[INTERACTIVE USAGE]
+
+Toonloop is an interactive software. While it runs, or can control it using keyboard keys. Here is a list of keystrokes to control Toonloop.
+
+Toonloop interactive keyboard controls :
+ - Press the SPACE bar to grab a frame.
+
+[AUTHOR]
+Alexandre Quessy. Thanks to Tristan Matthews, Arjan Scherpenisse and the Society for Arts and Technology for their help. 
+
+Toonloop is an original idea of Alexandre Quessy, and is his research project for his master at UQAM. It is much similar in scope to the live animation work of Pierre Hebert. Toonloop is released under the GNU GPL. 
+
+[REPORTING BUGS]
+http://www.toonloop.com
+
+[COPYRIGHT]
+Copyright 2010 Alexandre Quessy
+<alexandre@quessy.net>
+
+Toonloop is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Toonloop is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the gnu general public license
+along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
+

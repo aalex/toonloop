@@ -63,6 +63,17 @@ AC_CHECK_LIB([GLEW], [glewInit],[AC_SUBST([GLEW_LIBS],["-lGLEW"])])
 AC_CHECK_LIB([asound],[snd_seq_open],[AC_SUBST([ASOUND_CXXFLAGS],["-lasound"])])
 AC_CHECK_LIB([portmidi],[Pm_Initialize],[AC_SUBST([PORTMIDI_CXXFLAGS],["-lportmidi -lporttime"])],[echo "Could not find portmidi !"], ["-lporttime"])
 
+# GNU help2man creates man pages from --help output; in many cases, this
+# is sufficient, and obviates the need to maintain man pages separately.
+# However, this means invoking executables, which we generally cannot do
+# when cross-compiling, so we test to avoid that (the variable
+# "cross_compiling" is set by AC_PROG_CC).
+if test $cross_compiling = no; then
+    AM_MISSING_PROG(HELP2MAN, help2man)
+else
+    HELP2MAN=:
+fi
+
 # external tools
 AC_CHECK_PROG(MENCODER, mencoder, yes, no)
 if test "$MENCODER" = no ; then
@@ -72,6 +83,7 @@ fi
 AC_CONFIG_FILES([
     Makefile
     src/Makefile
+    man/Makefile
     tests/Makefile
     ])
 AC_OUTPUT
