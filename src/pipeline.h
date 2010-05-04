@@ -50,6 +50,7 @@ class Pipeline
         GstState state_;
         int numframes;
         static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);
+        std::string guess_source_caps(unsigned int framerateIndex) const;
         Shader* myshader;
         bool checked_for_shaders_; // FIXME: avoid public attributes
         bool shaders_are_supported_;

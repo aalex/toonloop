@@ -34,6 +34,7 @@
 #include "gui.h"
 #include <stdlib.h> // for itoa()
 #include "videoconfig.h"
+#include "log.h" // TODO: make it async and implement THROW_ERROR
 
 // --------------------------- formats int to string:
 // TODO: use boost/lexical_cast.hpp
@@ -245,7 +246,7 @@ Pipeline::Pipeline(const VideoConfig &config)
     GstCaps *outcaps = gst_caps_new_simple("video/x-raw-gl",
                                         "width", G_TYPE_INT, 800,
                                         "height", G_TYPE_INT, 600,
-                                        "framerate", GST_TYPE_FRACTION, config.get_rendering_fps() * 1000, 1001,
+                                        //"framerate", GST_TYPE_FRACTION, config.get_rendering_fps() * 1000, 1001,
                                         NULL) ;
     g_object_set(capsfilter1, "caps", outcaps, NULL);
 
@@ -271,8 +272,25 @@ Pipeline::Pipeline(const VideoConfig &config)
 
     // link pads:
     gboolean is_linked = NULL;
-    is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
-    if (!is_linked) { g_print("Could not link %s to %s.\n", "videosrc0", "capsfilter0"); exit(1); }
+    bool source_is_linked = false;
+    int frame_rate_index = 0;
+    while (not source_is_linked)
+    {
+        g_object_set(capsfilter0, "caps", gst_caps_from_string(guess_source_caps(frame_rate_index).c_str()));
+        is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
+        if (!is_linked) 
+        { 
+            std::cout << "Failed to link video source. Trying an other framerate." << std::endl;
+            ++frame_rate_index;
+            if (frame_rate_index >= 10) 
+            {
+                std::cout << "Giving up after 10 tries." << std::endl;
+            }
+        } else {
+            std::cout << "Success." << std::endl;
+            source_is_linked = true;
+        }
+    }
     is_linked = gst_element_link_pads(capsfilter0, "src", ffmpegcolorspace0, "sink");
     if (!is_linked) { g_print("Could not link %s to %s.\n", "capsfilter0", "ffmpegcolorspace0"); exit(1); }
     is_linked = gst_element_link_pads(ffmpegcolorspace0, "src", tee0, "sink");
@@ -543,4 +561,65 @@ void Pipeline::set_drawing_area(GtkWidget* drawing_area)
 
 // Desctructor. TODO: do we need to free anything?
 Pipeline::~Pipeline() {}
+
+std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
+{
+    std::ostringstream capsStr;
+    GstStateChangeReturn ret = gst_element_set_state(videosrc_, GST_STATE_READY);
+    if (ret not_eq GST_STATE_CHANGE_SUCCESS)
+        THROW_ERROR("Could not change v4l2src state to READY");
+    GstPad *srcPad = gst_element_get_static_pad(videosrc_, "src");
+    GstCaps *caps = gst_pad_get_caps(srcPad);
+    GstStructure *structure = gst_caps_get_structure(caps, 0);
+    const GValue *val = gst_structure_get_value(structure, "framerate");
+    LOG_DEBUG("Caps structure from v4l2src srcpad: " << gst_structure_to_string(structure));
+    gint framerate_numerator, framerate_denominator; 
+    if (GST_VALUE_HOLDS_LIST(val))
+    {
+        // trying another one
+        if (framerateIndex >= gst_value_list_get_size(val))
+            THROW_ERROR("Framerate index out of range");
+        framerate_numerator = gst_value_get_fraction_numerator((gst_value_list_get_value(val, framerateIndex)));
+        framerate_denominator = gst_value_get_fraction_denominator((gst_value_list_get_value(val, framerateIndex)));
+    }
+    else
+    {
+        // FIXME: this is really bad, we should be iterating over framerates and resolutions until we find a good one
+        if (framerateIndex > 0)
+            LOG_ERROR("Caps parameters haven't been changed and have failed before");
+        framerate_numerator = gst_value_get_fraction_numerator(val);
+        framerate_denominator = gst_value_get_fraction_denominator(val);
+    }
+
+    gst_caps_unref(caps);
+    gst_object_unref(srcPad);
+
+    // use default from gst
+    std::string capsSuffix = boost::lexical_cast<std::string>(framerate_numerator);
+    capsSuffix += "/";
+    capsSuffix += boost::lexical_cast<std::string>(framerate_denominator);
+
+    // TODO: 
+    //if (v4l2util::isInterlaced(deviceStr()))
+    //    capsSuffix +=", interlaced=true";
+
+    // TODO:
+    //capsSuffix += ", pixel-aspect-ratio=";
+    //capsSuffix += config_.pixelAspectRatio();
+    //capsSuffix += "4:3";
+
+    
+    capsStr << "video/x-raw-yuv, width=" 
+        << "640" //<< config_.captureWidth() 
+        << ", height="
+        << "480" //<< config_.captureHeight()
+        << ", framerate="
+        << capsSuffix;
+    LOG_DEBUG("V4l2src caps are " << capsStr.str());
+    ret = gst_element_set_state(videosrc_, GST_STATE_NULL);
+    if (ret not_eq GST_STATE_CHANGE_SUCCESS)
+        THROW_ERROR("Could not change v4l2src state to NULL");
+
+    return capsStr.str();
+}
 
