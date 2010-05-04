@@ -67,4 +67,5 @@ tests/check_classes
 tests/check_commands
 tests/check_looper
 tests/check_threads
+tests/check_bool
 
