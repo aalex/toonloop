@@ -12,8 +12,8 @@ VideoConfig::VideoConfig(const boost::program_options::variables_map &options)
     fullscreen_ = options["fullscreen"].as<bool>();
 }
 
-void VideoConfig::set_toonloop_home(std::string toonloop_home)
+void VideoConfig::set_project_home(std::string project_home)
 {
-    toonloop_home_ = toonloop_home;
+    project_home_ = project_home;
 }
 

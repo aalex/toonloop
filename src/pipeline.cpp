@@ -186,8 +186,9 @@ void Pipeline::stop()
  * Constructor which create the Gstreamer pipeline.
  * This pipeline grabs the video and render the OpenGL.
  */
-Pipeline::Pipeline(const VideoConfig &config)
+Pipeline::Pipeline()
 {
+    VideoConfig config = Application::get_instance().get_configuration();
     checked_for_shaders_ = false;
     shaders_are_supported_ = false;
 

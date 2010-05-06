@@ -60,19 +60,17 @@ Clip* Application::get_current_clip()
 void Application::run(int argc, char *argv[])
 {
     std::string video_source = "/dev/video0";
-    std::string toonloop_home = "~/Documents/toonloop";
-    if (! fs::exists(video_source))
-        video_source = "videotestsrc";
+    std::string project_home = "~/Documents/toonloop/default";
     po::options_description desc("Toonloop options");
-    std::cout << "adding options" << std::endl;
+    // std::cout << "adding options" << std::endl;
     desc.add_options()
         ("help,h", "Show this help message and exit")
-        ("toonloop-home,H", po::value<std::string>()->default_value(toonloop_home), "Path to the saved files")
+        ("project-home,H", po::value<std::string>()->default_value(project_home), "Path to the saved files")
         ("version", "Show program's version number and exit")
         ("verbose,v", po::bool_switch(), "Enables a verbose output")
         //("intervalometer-on,i", po::bool_switch(), "Enables the intervalometer to create time lapse animations")
         //("intervalometer-interval,I", po::value<double>()->default_value(5.0), "Sets the intervalometer rate in seconds")
-        ("project-name,p", po::value<std::string>()->default_value("default"), "Sets the name of the project for image saving")
+        //("project-name,p", po::value<std::string>()->default_value("default"), "Sets the name of the project for image saving")
         ("display,D", po::value<std::string>()->default_value(std::getenv("DISPLAY")), "Sets the X11 display name")
         //("rendering-fps", po::value<int>()->default_value(30), "Rendering frame rate") // FIXME: can we get a FPS different for the rendering?
         //("capture-fps,r", po::value<int>()->default_value(30), "Rendering frame rate")
@@ -101,31 +99,34 @@ void Application::run(int argc, char *argv[])
         {
             if (! fs::exists(video_source))
             {
-                std::cout << "No such device file: " << video_source << std::endl;
-                exit(1); // exit with error
+                std::cout << "Could not find device " << video_source << "." << std::endl;
+                std::cout << "Using the test source." << std::endl;
+                video_source = "test";
+                // exit(1); // exit with error
             }
         }
         std::cout << "video-source is set to " << video_source << std::endl;
     }
-    if (options.count("toonloop-home"))
+    if (options.count("project-home")) // of course it will be there.
     {
-        toonloop_home = options["toonloop-home"].as<std::string>();
-        if (toonloop_home == "~/Documents/toonloop")
-            toonloop_home = std::string(std::getenv("HOME")) + "/Documents/toonloop";
-        std::cout << "toonloop-home is set to " << toonloop_home << std::endl;
-        if (! fs::exists(toonloop_home))
+        project_home = options["project-home"].as<std::string>();
+        if (project_home == "~/Documents/toonloop/default") // replace ~ by $HOME
+            project_home = std::string(std::getenv("HOME")) + "/Documents/toonloop/default";
+        std::cout << "toonloop-home is set to " << project_home << std::endl;
+        if (! fs::exists(project_home))
         {
             try 
             {
-                fs::create_directories(toonloop_home); // TODO: check if it returns true
-            } catch(const std::exception& e) {
+                fs::create_directories(project_home); // TODO: check if it returns true
+            } catch(const std::exception& e) 
+            {
                 // TODO: be more specific to fs::basic_filesystem_error<Path> 
                 std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
             }
         } else {
-            if (! fs::is_directory(toonloop_home))
+            if (! fs::is_directory(project_home))
             {
-                std::cout << "Error: " << toonloop_home << " is not a directory." << std::endl;
+                std::cout << "Error: " << project_home << " is not a directory." << std::endl;
                 exit(1);
             }
         }
@@ -138,12 +139,6 @@ void Application::run(int argc, char *argv[])
     if (options.count("intervalometer-interval"))
         std::cout << "The rate of the intervalometer is set to " << options["intervalometer-interval"].as<double>() << std::endl; 
 #endif
-    if (options.count("project-name"))
-    {
-        // TODO
-        std::cout << "The project name is set to " << options["project-name"].as<std::string>() << std::endl;
-    }
-    
     if (options.count("playhead-fps"))
     { 
         std::cout << "The initial frame rate for clip playhead is set to " << options["playhead-fps"].as<int>() << std::endl;
@@ -160,8 +155,9 @@ void Application::run(int argc, char *argv[])
     }
     
     // Stores the options in the VideoConfig class.
-    VideoConfig config(options);
-    config.set_toonloop_home(toonloop_home);
+    //VideoConfig config(options);
+    config_ = std::tr1::shared_ptr<VideoConfig>(new VideoConfig(options));
+    config_->set_project_home(project_home);
 
     // Init GTK:
     gtk_init(&argc, &argv);
@@ -172,7 +168,7 @@ void Application::run(int argc, char *argv[])
     gui_ = std::tr1::shared_ptr<Gui>(new Gui());
     // start Pipeline
     std::cout << "Starting pipeline." << std::endl;
-    pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline(config));
+    pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline());
     // set drawing area TODO: simplify this
     get_pipeline().set_drawing_area(get_gui().get_drawing_area());
     std::cout << "Running toonloop" << std::endl;
@@ -186,6 +182,10 @@ Pipeline& Application::get_pipeline()
 Gui& Application::get_gui() 
 {
     return *gui_;
+}
+VideoConfig& Application::get_configuration() 
+{
+    return *config_;
 }
 
 Application& Application::get_instance()

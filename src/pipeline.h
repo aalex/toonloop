@@ -34,7 +34,7 @@ class Pipeline
     public:
         void stop();
         void set_drawing_area(GtkWidget *drawing_area);
-        Pipeline(const VideoConfig &config);
+        Pipeline(); // const VideoConfig &config);
         ~Pipeline();
         void grab_frame();
         int get_numframes();

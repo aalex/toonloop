@@ -25,6 +25,7 @@
 #include "gui.h"
 #include "pipeline.h"
 #include "clip.h"
+#include "videoconfig.h"
 #include <tr1/memory>
 #include <boost/program_options.hpp>
 
@@ -38,6 +39,7 @@ class Application
         static void reset();
         Gui &get_gui();
         Pipeline &get_pipeline();
+        VideoConfig &get_configuration();
         static Application& get_instance();
         Clip* get_current_clip();
         double get_cfps();
@@ -47,6 +49,7 @@ class Application
         static Application* instance_; // singleton
         std::tr1::shared_ptr<Gui> gui_;
         std::tr1::shared_ptr<Pipeline> pipeline_;
+        std::tr1::shared_ptr<VideoConfig> config_;
         int selected_clip_;
         double cfps_;
         std::tr1::unordered_map<int, Clip*> clips_;
