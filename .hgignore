@@ -68,4 +68,5 @@ tests/check_commands
 tests/check_looper
 tests/check_threads
 tests/check_bool
+tests/check_datetime
 
