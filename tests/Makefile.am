@@ -1,4 +1,4 @@
-TESTS = check_looper check_classes check_commands check_threads check_bool
+TESTS = check_looper check_classes check_commands check_threads check_bool check_datetime
 noinst_PROGRAMS = $(TESTS)
 
 check_looper_SOURCES = check_looper.cpp
@@ -22,3 +22,7 @@ check_threads_CXXFLAGS = $(BOOST_CPPFLAGS)
 check_threads_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB)
 
 check_bool_SOURCES = check_bool.cpp 
+
+check_datetime_SOURCES = check_datetime.cpp 
+check_datetime_CXXFLAGS = $(BOOST_CPPFLAGS) 
+check_datetime_LDADD = $(BOOST_LIBS) 
