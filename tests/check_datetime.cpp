@@ -18,12 +18,10 @@ int main()
   using namespace boost::gregorian;
 
     // Extended ISO format:
-    //%Y-%m-%d %H:%M:%S%F%Q
     date d(2005, Jun, 25);
-    date_facet* facet(new date_facet("%A %B %d, %Y"));
+    date_facet* facet(new date_facet("%Y-%m-%d %H:%M:%S%F%Q"));
     //std::cout.imbue(std::locale(std::cout.getloc(), facet));
     std::cout << d << std::endl;
-    // "Saturday June 25, 2005"
     //
 #if 0
     try {
@@ -81,4 +79,12 @@ int main(int argc, char *argv[])
     // "Saturday June 25, 2005"
     return 0;
 }
+
+std::string to_iso_extended_string(ptime)
+
+    Convert to form YYYY-MM-DDTHH:MM:SS,fffffffff where T is the date-time separator
+
+    2002-01-31T10:00:01,123456789
+
+
 # endif
