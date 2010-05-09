@@ -6,7 +6,7 @@
 #include <string>
 #include <cassert>
 
-#define VERBOSE 0
+#define VERBOSE true
 
 /**
  * Converts the current local time to an ISO string in the form 
