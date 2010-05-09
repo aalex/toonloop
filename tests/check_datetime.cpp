@@ -4,12 +4,15 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include <iostream>
 #include <string>
+#include <cassert>
+
+#define VERBOSE 0
 
 /**
  * Converts the current local time to an ISO string in the form 
  * YYYYMMDDTHHMMSS.fffffffff  where T is the date-time separator
  */
-std::string get_now_as_iso_string()
+std::string get_iso_datetime_for_now()
 {
     using namespace boost::posix_time;
     //get the current time from the clock -- micro second resolution
@@ -17,11 +20,17 @@ std::string get_now_as_iso_string()
     return to_iso_string(now);
 }
 
-int main() 
+int main(int argc, char *argv[]) 
 {
+    std::string current;
+    std::string previous = "";
     for (int i = 0; i < 10; i++)
     {
-        std::cout << "Now = " << get_now_as_iso_string() << std::endl; 
+        current = get_iso_datetime_for_now();
+        if (VERBOSE)
+            std::cout << "Now = " << current << std::endl; 
+        assert(current != previous);
+        previous = current;
     }
     return 0;
 }
