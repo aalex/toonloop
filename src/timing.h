@@ -26,6 +26,7 @@
 namespace timing 
 {
     std::string get_iso_datetime_for_now();
+    long get_timestamp_now();
 }
 #endif // __TIMING_H__
 
