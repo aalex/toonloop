@@ -23,6 +23,6 @@ check_threads_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB)
 
 check_bool_SOURCES = check_bool.cpp 
 
-check_datetime_SOURCES = check_datetime.cpp 
-check_datetime_CXXFLAGS = $(BOOST_CPPFLAGS) 
+check_datetime_SOURCES = check_datetime.cpp ../src/timing.cpp
+check_datetime_CXXFLAGS = $(BOOST_CPPFLAGS) -I ../src/
 check_datetime_LDADD = $(BOOST_LIBS) 
