@@ -26,7 +26,7 @@
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <GL/glx.h>
-#include "videoconfig.h"
+#include "configuration.h"
 #include "texture.h"
 #include <string>
 #include "image.h"

@@ -33,7 +33,7 @@
 #include <gtk/gtk.h>
 #include <gst/gst.h>
 #include "clip.h"
-#include "videoconfig.h"
+#include "configuration.h"
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -131,7 +131,7 @@ void Application::run(int argc, char *argv[])
             }
         }
     }
-    // FIXME: From there, the options are set in videoconfig.cpp
+    // FIXME: From there, the options are set in configuration.cpp
     // TODO: We should do this in only one place. 
 #if 0
     if (options["intervalometer-on"].as<bool>())

@@ -33,7 +33,7 @@
 #include "application.h"
 #include "gui.h"
 #include <stdlib.h> // for itoa()
-#include "videoconfig.h"
+#include "configuration.h"
 #include "log.h" // TODO: make it async and implement THROW_ERROR
 #include <boost/filesystem.hpp>
 

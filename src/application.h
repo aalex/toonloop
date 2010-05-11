@@ -25,7 +25,7 @@
 #include "gui.h"
 #include "pipeline.h"
 #include "clip.h"
-#include "videoconfig.h"
+#include "configuration.h"
 #include <tr1/memory>
 #include <boost/program_options.hpp>
 

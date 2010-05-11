@@ -1,6 +1,6 @@
 #include <string>
 #include <boost/program_options.hpp>
-#include "videoconfig.h"
+#include "configuration.h"
 
 Configuration::Configuration(const boost::program_options::variables_map &options)
 {
