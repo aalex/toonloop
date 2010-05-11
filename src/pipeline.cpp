@@ -37,9 +37,6 @@
 #include "log.h" // TODO: make it async and implement THROW_ERROR
 #include <boost/filesystem.hpp>
 
-//#define LOAD_IMAGES_TO_RAM true
-#define LOAD_IMAGES_TO_RAM false
-
 namespace fs = boost::filesystem;
 
 // --------------------------- formats int to string:
@@ -174,7 +171,7 @@ void Pipeline::grab_frame()
     }
     else
         g_print("Image %s saved\n", file_name.c_str());
-    if (LOAD_IMAGES_TO_RAM)
+    if (Application::get_instance().get_configuration().get_images_in_ram())
     {
         size_t buf_size = w * h * nchannels;
         thisimage->allocate_image(w * h * nchannels);
@@ -513,7 +510,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
 
         if (thisimage->is_ready())
         {
-            if (LOAD_IMAGES_TO_RAM)
+            if (Application::get_instance().get_configuration().get_images_in_ram())
             {
                 buf = thisimage->get_rawdata();
                 pixels_are_loaded = true;

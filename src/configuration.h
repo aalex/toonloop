@@ -15,6 +15,7 @@ class Configuration
         std::string display() const { return display_; }
         std::string get_project_home() const { return project_home_; }
         bool fullscreen() const { return fullscreen_; }
+        bool get_images_in_ram() const { return images_in_ram_; }
         void set_project_home(std::string project_home);
     private:
         //int capture_frame_rate_;
@@ -24,6 +25,7 @@ class Configuration
         std::string display_;
         std::string project_home_;
         bool fullscreen_;
+        bool images_in_ram_;
 };
 #endif // __VIDEO_CONFIG_H__
 
