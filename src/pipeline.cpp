@@ -26,7 +26,7 @@
 #include <gdk/gdk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <iostream>
-#include <cstring>
+#include <cstring> // for memcopy
 #include "gstgtk.h"
 #include "pipeline.h"
 #include "draw.h"
@@ -36,6 +36,9 @@
 #include "videoconfig.h"
 #include "log.h" // TODO: make it async and implement THROW_ERROR
 #include <boost/filesystem.hpp>
+
+//#define LOAD_IMAGES_TO_RAM true
+#define LOAD_IMAGES_TO_RAM false
 
 namespace fs = boost::filesystem;
 
@@ -164,7 +167,6 @@ void Pipeline::grab_frame()
     //  * the onionskin of the last frame grabbed. (or at the writehead position)
     //  * the frame at the playhead position
     //  * the current live input. (GST gives us this one)
-    //thisimage->allocate_image(w * h * nchannels);
     numframes++;
 
     if (!gdk_pixbuf_save(pixbuf, file_name.c_str(), "jpeg", NULL, "quality", "100", NULL))
@@ -175,10 +177,17 @@ void Pipeline::grab_frame()
     else
         g_print("Image %s saved\n", file_name.c_str());
     // TODO: no need anymore this:
-    //size_t buf_size = w * h * nchannels;
-    //char *buf = thisimage->get_rawdata();
-    /* copy gdkpixbuf raw data to Image's buffer. Will be used for the texture of the grabbed frames */
-    //memcpy(buf, gdk_pixbuf_get_pixels(pixbuf), w * h * nchannels);
+    if (LOAD_IMAGES_TO_RAM)
+    {
+        std::cout << "memcopy" << std::endl;
+        size_t buf_size = w * h * nchannels;
+        thisimage->allocate_image(w * h * nchannels);
+        char *buf = thisimage->get_rawdata();
+        /* copy gdkpixbuf raw data to Image's buffer. Will be used for the texture of the grabbed frames */
+        memcpy(buf, gdk_pixbuf_get_pixels(pixbuf), w * h * nchannels);
+        std::cout << "memcopy ok" << std::endl;
+    }
+    thisimage->set_ready(true);
     g_object_unref(pixbuf);
 }
 /**
@@ -504,19 +513,37 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         width = thisclip->get_width();
         height = thisclip->get_height();
 
-        std::string image_full_path = Application::get_instance().get_pipeline().get_image_full_path(thisimage);
-        // TODO: validate this path
-        GdkPixbuf *pixbuf;
-        GError *error = NULL;
-        
-        pixbuf = gdk_pixbuf_new_from_file(image_full_path.c_str(), &error);
-        if (!pixbuf)
+        bool pixels_are_loaded = false;
+        char *buf;
+
+        if (thisimage->is_ready())
         {
-            std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
-            g_error_free(error);
-        } else {
-            guchar *buf = gdk_pixbuf_get_pixels(pixbuf);
-            //char *buf = thisimage->get_rawdata();
+            if (LOAD_IMAGES_TO_RAM)
+            {
+                std::cout << "get pixels from ram" << std::endl; 
+                buf = thisimage->get_rawdata();
+                pixels_are_loaded = true;
+            } else {
+                std::string image_full_path = Application::get_instance().get_pipeline().get_image_full_path(thisimage);
+                // TODO: validate this path
+                GdkPixbuf *pixbuf;
+                GError *error = NULL;
+                
+                pixbuf = gdk_pixbuf_new_from_file(image_full_path.c_str(), &error);
+                if (!pixbuf)
+                {
+                    std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
+                    g_error_free(error);
+                } else {
+                    std::cout << "get pixels from file" << std::endl; 
+                    buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
+                    pixels_are_loaded = true;
+                }
+            }
+        }
+        if (pixels_are_loaded)
+        {
+
             // Storing image data in RAM is nice when we don't have too many images, but it doesn't scale very well.
             // Let's read them from the disk.
             

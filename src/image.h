@@ -26,10 +26,16 @@
 class Image 
 {
     private:
+        char *rawdata_;
         std::string name_;
+        bool ready_;
     public: 
         Image(std::string name);
         std::string get_name();
+        char* get_rawdata();
+        int allocate_image(int bufsize);
+        bool is_ready();
+        void set_ready(bool ready);
 };
 
 #endif // __IMAGE_H__

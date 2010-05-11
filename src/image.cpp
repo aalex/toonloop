@@ -29,9 +29,31 @@
 Image::Image(std::string name)
 {
     name_ = name;
+    ready_ = false;
+}
+
+int Image::allocate_image(int bufsize)
+{
+    rawdata_ = new char[bufsize];
 }
 
 std::string Image::get_name()
 {
     return name_;
 }
+
+char* Image::get_rawdata()
+{
+    return rawdata_;
+}
+
+bool Image::is_ready()
+{
+    return ready_;
+}
+
+void Image::set_ready(bool ready)
+{
+    ready_ = ready;
+}
+
