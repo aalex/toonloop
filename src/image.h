@@ -21,14 +21,16 @@
 #ifndef __IMAGE_H__
 #define __IMAGE_H__
 
+#include <string>
+
 class Image 
 {
     private:
-        int number_;
+        std::string name_;
         char *rawdata_;
     public: 
-        Image(int number);
-        int get_number();
+        Image(std::string name);
+        std::string get_name();
         char* get_rawdata();
         int allocate_image(int bufsize);
 };

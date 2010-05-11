@@ -20,14 +20,15 @@
  */
 
 #include "image.h"
+#include <string>
 
 /** 
  * This Image class is just a container for a single integer value.
  * We use this number to determine the file name for the image saved as JPEG.
  */
-Image::Image(int number)
+Image::Image(std::string name)
 {
-    number_ = number;
+    name_ = name;
 }
 
 int Image::allocate_image(int bufsize)
@@ -35,12 +36,13 @@ int Image::allocate_image(int bufsize)
     rawdata_ = new char[bufsize];
 }
 
-int Image::get_number()
+std::string Image::get_name()
 {
-    return number_;
+    return name_;
 }
 
 char* Image::get_rawdata()
 {
     return rawdata_;
 }
+

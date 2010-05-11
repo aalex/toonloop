@@ -48,7 +48,6 @@ class Clip
         std::vector<int> intervalometer_rate_;
         std::vector<int> fps_;
         std::tr1::unordered_map<int, Image*> images_;
-        int number_allocator_; // forever growing unique number TODO: use long int?
         int playhead_fps_;
     public:
         Clip(int id);

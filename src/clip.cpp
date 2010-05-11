@@ -21,6 +21,9 @@
 
 #include "clip.h"
 #include "image.h"
+#include "timing.h"
+#include <string>
+#include <iostream>
 
 /**
  * A clip is a list of images.
@@ -69,12 +72,15 @@ void Clip::set_height(int height)
 {
     height_ = height;
 }
-
+/**
+ * Adds an image to the clip.
+ * Returns the its index.
+ */
 int Clip::frame_add()
 {
     int assigned = writehead_;
-    images_[writehead_] = new Image(number_allocator_);
-    number_allocator_ ++;
+    std::string name = timing::get_iso_datetime_for_now();
+    images_[writehead_] = new Image(name);
     writehead_ ++;
     return assigned;
 }
@@ -121,5 +127,8 @@ int Clip::size()
 Image* Clip::get_image(int index)
 {
     // FIXME: will crash if no image at that index
+    if (index > writehead_)
+        std::cout << "ERROR: There is no image at that index in the clip!" << std::endl;
     return images_[index];
 }
+

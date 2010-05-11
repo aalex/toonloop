@@ -35,6 +35,9 @@
 #include <stdlib.h> // for itoa()
 #include "videoconfig.h"
 #include "log.h" // TODO: make it async and implement THROW_ERROR
+#include <boost/filesystem.hpp>
+
+namespace fs = boost::filesystem;
 
 // --------------------------- formats int to string:
 // TODO: use boost/lexical_cast.hpp
@@ -144,16 +147,18 @@ void Pipeline::grab_frame()
     }
 
     int image_number = Application::get_instance().get_current_clip()->frame_add();
-    std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl; 
-    // TODO: use path to toonloop_home/project_name from config.
-    std::string file_name = std::string("/tmp/toon-") + to_string<int>(current_clip_id, std::dec) + "-" + to_string<int>(image_number, std::dec) + std::string(".jpg"); 
+    Image *thisimage = Application::get_instance().get_current_clip()->get_image(image_number);
+    std::string image_name = thisimage->get_name() + ".jpg";
+    std::string project_path = Application::get_instance().get_configuration().get_project_home();
+    std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << " Image name: " << image_name << std::endl;
+    //std::string file_name = fs::path(project_path) / image_name; 
+    std::string file_name = project_path + "/" + image_name; 
     std::cout << "File name: " << file_name << std::endl;
     // FIXME: We should not store the pixel data in RAM once we don't need it anymore.
     // We need 3 textures: 
     //  * the onionskin of the last frame grabbed. (or at the writehead position)
     //  * the frame at the playhead position
     //  * the current live input. (GST gives us this one)
-    Image *thisimage = Application::get_instance().get_current_clip()->get_image(image_number);
     thisimage->allocate_image(w * h * nchannels);
     numframes++;
 
@@ -277,15 +282,9 @@ Pipeline::Pipeline()
     gboolean is_linked = NULL;
     bool source_is_linked = false;
     int frame_rate_index = 0;
-    if (config.videoSource() == std::string("test")) {
-        g_object_set(capsfilter0, "caps", gst_caps_from_string(
-            std::string("video/x-raw-yuv, width=" 
-                "640" 
-                ", height="
-                "480" 
-                ", framerate="
-                "30/1").c_str()
-            ));
+    if (config.videoSource() == std::string("test")) 
+    {
+        g_object_set(capsfilter0, "caps", gst_caps_from_string(std::string("video/x-raw-yuv, width=640, height=480, framerate=30/1").c_str()));
         is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
         if (!is_linked) { g_print("Could not link %s to %s.\n", "videotestsrc", "capfilter0"); exit(1); }
         source_is_linked = true;
