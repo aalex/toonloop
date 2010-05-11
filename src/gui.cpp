@@ -33,6 +33,7 @@
 #include "draw.h"
 #include "gui.h"
 #include "application.h"
+#include "config.h"
 
 
 gboolean Gui::onWindowStateEvent(GtkWidget* widget, GdkEventWindowState *event, gpointer data)
@@ -145,9 +146,9 @@ Gui::Gui() :
     video_xwindow_id_ = 0;
     // Main GTK window
     window_ = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_widget_set_size_request(window_, 640, 480);
-    gtk_window_move(GTK_WINDOW(window_), 300, 10);
-    gtk_window_set_title(GTK_WINDOW(window_), "Toonloop 2.0 experimental");
+    gtk_widget_set_size_request(window_, 640, 480); // TODO: make configurable
+    gtk_window_move(GTK_WINDOW(window_), 300, 10); // TODO: make configurable
+    gtk_window_set_title(GTK_WINDOW(window_), std::string(std::string("Toonloop ") + std::string(PACKAGE_VERSION) + std::string(" experimental")).c_str());
     GdkGeometry geometry;
     geometry.min_width = 1;
     geometry.min_height = 1;
