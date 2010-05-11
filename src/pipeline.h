@@ -28,6 +28,8 @@
 #include <GL/glx.h>
 #include "videoconfig.h"
 #include "texture.h"
+#include <string>
+#include "image.h"
 
 class Pipeline
 {
@@ -42,6 +44,7 @@ class Pipeline
         Texture onionskin_texture_;
         Shader* get_shader();
         bool check_if_shaders_are_supported();
+        std::string get_image_full_path(Image* image);
     private:
         GstElement* videosrc_;
         GstElement* videosink_;

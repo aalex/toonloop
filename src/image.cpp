@@ -31,18 +31,7 @@ Image::Image(std::string name)
     name_ = name;
 }
 
-int Image::allocate_image(int bufsize)
-{
-    rawdata_ = new char[bufsize];
-}
-
 std::string Image::get_name()
 {
     return name_;
 }
-
-char* Image::get_rawdata()
-{
-    return rawdata_;
-}
-

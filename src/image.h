@@ -27,12 +27,9 @@ class Image
 {
     private:
         std::string name_;
-        char *rawdata_;
     public: 
         Image(std::string name);
         std::string get_name();
-        char* get_rawdata();
-        int allocate_image(int bufsize);
 };
 
 #endif // __IMAGE_H__

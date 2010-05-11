@@ -124,6 +124,14 @@ void Pipeline::end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipel
     }
 }
 
+std::string Pipeline::get_image_full_path(Image* image)
+{
+    std::string project_path = Application::get_instance().get_configuration().get_project_home();
+    std::string image_name = image->get_name() + ".jpg";
+    //std::string file_name = fs::path(project_path) / image_name; 
+    return project_path + "/" + image_name; 
+}
+
 /** 
  * Adds an image to the current clip.
  * TODO: should be moved out of here, to application. 
@@ -148,18 +156,15 @@ void Pipeline::grab_frame()
 
     int image_number = Application::get_instance().get_current_clip()->frame_add();
     Image *thisimage = Application::get_instance().get_current_clip()->get_image(image_number);
-    std::string image_name = thisimage->get_name() + ".jpg";
-    std::string project_path = Application::get_instance().get_configuration().get_project_home();
-    std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << " Image name: " << image_name << std::endl;
-    //std::string file_name = fs::path(project_path) / image_name; 
-    std::string file_name = project_path + "/" + image_name; 
+    std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl;
+    std::string file_name = get_image_full_path(thisimage);
     std::cout << "File name: " << file_name << std::endl;
     // FIXME: We should not store the pixel data in RAM once we don't need it anymore.
     // We need 3 textures: 
     //  * the onionskin of the last frame grabbed. (or at the writehead position)
     //  * the frame at the playhead position
     //  * the current live input. (GST gives us this one)
-    thisimage->allocate_image(w * h * nchannels);
+    //thisimage->allocate_image(w * h * nchannels);
     numframes++;
 
     if (!gdk_pixbuf_save(pixbuf, file_name.c_str(), "jpeg", NULL, "quality", "100", NULL))
@@ -169,11 +174,11 @@ void Pipeline::grab_frame()
     }
     else
         g_print("Image %s saved\n", file_name.c_str());
-
-    size_t buf_size = w * h * nchannels;
-    char *buf = thisimage->get_rawdata();
+    // TODO: no need anymore this:
+    //size_t buf_size = w * h * nchannels;
+    //char *buf = thisimage->get_rawdata();
     /* copy gdkpixbuf raw data to Image's buffer. Will be used for the texture of the grabbed frames */
-    memcpy(buf, gdk_pixbuf_get_pixels(pixbuf), w * h * nchannels);
+    //memcpy(buf, gdk_pixbuf_get_pixels(pixbuf), w * h * nchannels);
     g_object_unref(pixbuf);
 }
 /**
@@ -498,7 +503,21 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         // XXX: yes, I think we should always check the size of the images. (especially when we will read them from the disk)
         width = thisclip->get_width();
         height = thisclip->get_height();
-        char *buf = thisimage->get_rawdata();
+
+        std::string image_full_path = Application::get_instance().get_pipeline().get_image_full_path(thisimage);
+        // TODO: validate this path
+        GdkPixbuf *pixbuf;
+        GError *error = NULL;
+        
+        pixbuf = gdk_pixbuf_new_from_file(image_full_path.c_str(), &error);
+        if (!pixbuf)
+        {
+            std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
+            g_error_free(error);
+            exit(1);
+        }
+        guchar *buf = gdk_pixbuf_get_pixels(pixbuf);
+        //char *buf = thisimage->get_rawdata();
         // Storing image data in RAM is nice when we don't have too many images, but it doesn't scale very well.
         // Let's read them from the disk.
         
