@@ -158,7 +158,7 @@ void Pipeline::grab_frame()
     Image *thisimage = Application::get_instance().get_current_clip()->get_image(image_number);
     std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl;
     std::string file_name = get_image_full_path(thisimage);
-    std::cout << "File name: " << file_name << std::endl;
+    std::cout << "Saving to file name: " << file_name << std::endl;
     // FIXME: We should not store the pixel data in RAM once we don't need it anymore.
     // We need 3 textures: 
     //  * the onionskin of the last frame grabbed. (or at the writehead position)
@@ -514,28 +514,28 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         {
             std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
             g_error_free(error);
-            exit(1);
+        } else {
+            guchar *buf = gdk_pixbuf_get_pixels(pixbuf);
+            //char *buf = thisimage->get_rawdata();
+            // Storing image data in RAM is nice when we don't have too many images, but it doesn't scale very well.
+            // Let's read them from the disk.
+            
+            glEnable(GL_TEXTURE_RECTANGLE_ARB);
+            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, frametexture);
+            glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
+            // TODO: simplify those parameters
+            glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            
+            // Right image
+            glPushMatrix();
+            glTranslatef(0.6666666f, 0.0f, 0.0f);
+            glScalef(0.6666666f, 0.5f, 1.0f);
+            draw::draw_vertically_flipped_textured_square(width, height);
+            glPopMatrix();
         }
-        guchar *buf = gdk_pixbuf_get_pixels(pixbuf);
-        //char *buf = thisimage->get_rawdata();
-        // Storing image data in RAM is nice when we don't have too many images, but it doesn't scale very well.
-        // Let's read them from the disk.
-        
-        glEnable(GL_TEXTURE_RECTANGLE_ARB);
-        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, frametexture);
-        glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
-        // TODO: simplify those parameters
-        glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        
-        // Right image
-        glPushMatrix();
-        glTranslatef(0.6666666f, 0.0f, 0.0f);
-        glScalef(0.6666666f, 0.5f, 1.0f);
-        draw::draw_vertically_flipped_textured_square(width, height);
-        glPopMatrix();
     }
 #if 0
     //disable shader
