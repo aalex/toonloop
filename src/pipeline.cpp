@@ -161,7 +161,6 @@ void Pipeline::grab_frame()
     Image *thisimage = Application::get_instance().get_current_clip()->get_image(image_number);
     std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl;
     std::string file_name = get_image_full_path(thisimage);
-    std::cout << "Saving to file name: " << file_name << std::endl;
     // FIXME: We should not store the pixel data in RAM once we don't need it anymore.
     // We need 3 textures: 
     //  * the onionskin of the last frame grabbed. (or at the writehead position)
@@ -172,11 +171,9 @@ void Pipeline::grab_frame()
     if (!gdk_pixbuf_save(pixbuf, file_name.c_str(), "jpeg", NULL, "quality", "100", NULL))
     {
         g_print("Image %s could not be saved. Error\n", file_name.c_str());
-        // TODO : print error message.
     }
     else
         g_print("Image %s saved\n", file_name.c_str());
-    // TODO: no need anymore this:
     if (LOAD_IMAGES_TO_RAM)
     {
         size_t buf_size = w * h * nchannels;
@@ -205,7 +202,7 @@ void Pipeline::stop()
  */
 Pipeline::Pipeline()
 {
-    VideoConfig config = Application::get_instance().get_configuration();
+    Configuration config = Application::get_instance().get_configuration();
     checked_for_shaders_ = false;
     shaders_are_supported_ = false;
 

@@ -4,10 +4,10 @@
 #include <string>
 #include <boost/program_options.hpp>
 
-class VideoConfig
+class Configuration
 {
     public:
-        VideoConfig(const boost::program_options::variables_map &options);
+        Configuration(const boost::program_options::variables_map &options);
         //int get_capture_fps() const { return capture_frame_rate_; }
         //int get_rendering_fps() const { return rendering_frame_rate_; }
         int playheadFps() const { return playhead_fps_; }

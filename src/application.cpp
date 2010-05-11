@@ -154,9 +154,9 @@ void Application::run(int argc, char *argv[])
         std::cout << "Fullscreen mode is on: " << options["fullscreen"].as<bool>() << std::endl;
     }
     
-    // Stores the options in the VideoConfig class.
-    //VideoConfig config(options);
-    config_ = std::tr1::shared_ptr<VideoConfig>(new VideoConfig(options));
+    // Stores the options in the Configuration class.
+    //Configuration config(options);
+    config_ = std::tr1::shared_ptr<Configuration>(new Configuration(options));
     config_->set_project_home(project_home);
 
     // Init GTK:
@@ -183,7 +183,7 @@ Gui& Application::get_gui()
 {
     return *gui_;
 }
-VideoConfig& Application::get_configuration() 
+Configuration& Application::get_configuration() 
 {
     return *config_;
 }

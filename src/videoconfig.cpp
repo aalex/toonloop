@@ -2,7 +2,7 @@
 #include <boost/program_options.hpp>
 #include "videoconfig.h"
 
-VideoConfig::VideoConfig(const boost::program_options::variables_map &options)
+Configuration::Configuration(const boost::program_options::variables_map &options)
 {
     //capture_frame_rate_ = options["capture-fps"].as<int>();
     //rendering_frame_rate_ = capture_frame_rate_; //options["rendering-fps"].as<int>();
@@ -12,7 +12,7 @@ VideoConfig::VideoConfig(const boost::program_options::variables_map &options)
     fullscreen_ = options["fullscreen"].as<bool>();
 }
 
-void VideoConfig::set_project_home(std::string project_home)
+void Configuration::set_project_home(std::string project_home)
 {
     project_home_ = project_home;
 }
