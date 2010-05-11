@@ -179,13 +179,11 @@ void Pipeline::grab_frame()
     // TODO: no need anymore this:
     if (LOAD_IMAGES_TO_RAM)
     {
-        std::cout << "memcopy" << std::endl;
         size_t buf_size = w * h * nchannels;
         thisimage->allocate_image(w * h * nchannels);
         char *buf = thisimage->get_rawdata();
         /* copy gdkpixbuf raw data to Image's buffer. Will be used for the texture of the grabbed frames */
         memcpy(buf, gdk_pixbuf_get_pixels(pixbuf), w * h * nchannels);
-        std::cout << "memcopy ok" << std::endl;
     }
     thisimage->set_ready(true);
     g_object_unref(pixbuf);
@@ -520,7 +518,6 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         {
             if (LOAD_IMAGES_TO_RAM)
             {
-                std::cout << "get pixels from ram" << std::endl; 
                 buf = thisimage->get_rawdata();
                 pixels_are_loaded = true;
             } else {
@@ -535,7 +532,6 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
                     std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
                     g_error_free(error);
                 } else {
-                    std::cout << "get pixels from file" << std::endl; 
                     buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
                     pixels_are_loaded = true;
                 }
@@ -543,7 +539,6 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         }
         if (pixels_are_loaded)
         {
-
             // Storing image data in RAM is nice when we don't have too many images, but it doesn't scale very well.
             // Let's read them from the disk.
             
