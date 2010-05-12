@@ -31,6 +31,7 @@ class Image
         bool ready_;
     public: 
         Image(std::string name);
+        ~Image();
         std::string get_name();
         char* get_rawdata();
         int allocate_image(int bufsize);
