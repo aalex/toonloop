@@ -1,6 +1,29 @@
 This is Toonloop version 2. It is a complete rewrite of the application in 
 C++ with Gstreamer. It is still in an alpha stage. 
 
+The Gstreamer GL plugins
+------------------------
+
+Toonloop needs gst-plugins-gl, which might not be packaged yet for your 
+distribution. Here is how to build and install it:
+
+git clone git://anongit.freedesktop.org/gstreamer/gst-plugins-gl
+cd gst-plugins-gl/
+./autogen.sh && ./configure && make
+sudo make install
+
+If running Debian, gstreamer0.10-plugins-gl can be found in the experimental 
+repository. If you add "deb http://ftp.debian.org/debian experimental main" 
+in your /etc/apt/sources.list and do apt-get update, you should be able to 
+find it. Their names are:
+
+ libgstreamer-plugins-gl0.10-0
+ gstreamer0.10-plugins-gl
+
+
+Other Dependencies
+------------------
+
 Here is the list of Debian package that you will need to build Toonloop 2.x. 
 Some of the packages listed below are not used yet, but we plan to use them 
 soon.
@@ -28,6 +51,7 @@ soon.
  help2man,
  libboost-all-dev,
  libglew1.5-dev,
+ libglib2.0-dev,
  libglu1-mesa-dev,
  libgstreamer0.10-dev (>= 0.10.23),
  libgtk2.0-dev,
@@ -43,4 +67,20 @@ soon.
  python-gtk2-dev,
  python-simplejson,
  python-twisted
+
+
+How to build Toonloop
+---------------------
+
+./autogen.sh
+make
+sudo make install
+
+
+How to run Toonloop
+-------------------
+
+toonloop -d /dev/video0
+
+See the toonloop man(1) page for details.
 
