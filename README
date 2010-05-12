@@ -7,10 +7,10 @@ The Gstreamer GL plugins
 Toonloop needs gst-plugins-gl, which might not be packaged yet for your 
 distribution. Here is how to build and install it:
 
-git clone git://anongit.freedesktop.org/gstreamer/gst-plugins-gl
-cd gst-plugins-gl/
-./autogen.sh && ./configure && make
-sudo make install
+ git clone git://anongit.freedesktop.org/gstreamer/gst-plugins-gl
+ cd gst-plugins-gl/
+ ./autogen.sh && ./configure && make
+ sudo make install
 
 If running Debian, gstreamer0.10-plugins-gl can be found in the experimental 
 repository. If you add "deb http://ftp.debian.org/debian experimental main" 
@@ -29,8 +29,8 @@ Some of the packages listed below are not used yet, but we plan to use them
 soon.
 
  automake,
- bison,
  bash-completion,
+ bison,
  build-essential,
  cdbs,
  debhelper (>= 5.0.38),
@@ -38,11 +38,9 @@ soon.
  ffmpeg,
  flex,
  gettext,
- gstreamer0.10-plugins-bad,
- libasound-dev,
- libgstreamer-plugins-base0.10-dev,
  gstreamer0.10-alsa,
  gstreamer0.10-ffmpeg,
+ gstreamer0.10-plugins-bad,
  gstreamer0.10-plugins-base,
  gstreamer0.10-plugins-good,
  gstreamer0.10-plugins-ugly (>= 0.10.14),
@@ -50,13 +48,16 @@ soon.
  gstreamer0.10-pulseaudio,
  gstreamer0.10-x,
  help2man,
+ libasound-dev,
  libboost-all-dev,
  libglew1.5-dev,
  libglib2.0-dev,
  libglu1-mesa-dev,
+ libgstreamer-plugins-base0.10-dev,
  libgstreamer0.10-dev (>= 0.10.23),
  libgtk2.0-dev,
  liboil0.3-dev,
+ libportmidi-dev,
  libtool,
  libxml2-dev,
  libxv-dev,
@@ -73,9 +74,11 @@ soon.
 How to build Toonloop
 ---------------------
 
-./autogen.sh
-make
-sudo make install
+ ./autogen.sh
+ make
+ sudo make install
+
+There is also the handy ./one_click_build.sh that does it in a single script.
 
 
 How to run Toonloop
@@ -83,5 +86,5 @@ How to run Toonloop
 
 toonloop -d /dev/video0
 
-See the toonloop man(1) page for details.
+See the toonloop(1) man page for details.
 

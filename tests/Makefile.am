@@ -1,4 +1,5 @@
 TESTS = check_looper check_classes check_commands check_threads check_bool check_datetime check_tween 
+#check_symlinks
 noinst_PROGRAMS = $(TESTS)
 
 check_looper_SOURCES = check_looper.cpp
