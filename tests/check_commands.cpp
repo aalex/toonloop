@@ -1,5 +1,5 @@
 #include <string>
-#include "../src/subprocess.h"
+#include "subprocess.h"
 
 int main(int argc, char *argv[])
 {

@@ -60,6 +60,11 @@ if test "x${ax_cv_boost_date_time}" = "xno" ; then
 	AC_MSG_ERROR([missing package: libboost-date-time-dev])
 fi
 
+AX_BOOST_SYSTEM
+if test "x${ax_cv_boost_system}" = "xno" ; then
+	AC_MSG_ERROR([missing package: libboost-system-dev])
+fi
+
 AX_CHECK_GL
 AX_CHECK_GLU
 AC_CHECK_LIB([GLEW], [glewInit],[AC_SUBST([GLEW_LIBS],["-lGLEW"])])

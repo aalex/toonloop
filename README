@@ -39,6 +39,7 @@ soon.
  flex,
  gettext,
  gstreamer0.10-plugins-bad,
+ libasound-dev,
  libgstreamer-plugins-base0.10-dev,
  gstreamer0.10-alsa,
  gstreamer0.10-ffmpeg,
