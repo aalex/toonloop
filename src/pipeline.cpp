@@ -39,19 +39,6 @@
 
 namespace fs = boost::filesystem;
 
-// --------------------------- formats int to string:
-// TODO: use boost/lexical_cast.hpp
-#include <sstream>
-#include <iostream>
-
-template <class T> 
-std::string to_string(T t, std::ios_base & (*f)(std::ios_base&))
-{
-    std::ostringstream oss;
-    oss << f << t;
-    return oss.str();
-}
-
 /**
  * You need to create an OpenGL contect prior to use this.
  */
@@ -62,7 +49,7 @@ bool Pipeline::check_if_shaders_are_supported()
         return shaders_are_supported_;
     } else {
         // check for shaders support
-        GLenum err = glewInit(); // FIXME: we need an OpenGL context to call this succesfully
+        GLenum err = glewInit(); 
         if (GLEW_OK != err)
         {
             /* Problem: glewInit failed, something is seriously wrong. */
@@ -117,13 +104,15 @@ void Pipeline::end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipel
     }
     if (stop_it)
     {
-        g_print("Stopping the stream and quitting.\n");
+        g_print("The stream ended. Let's quit.\n");
         //gst_element_set_state(pipeline, GST_STATE_NULL);
         //gst_object_unref(pipeline);
-        Application::get_instance().quit();
+        //FIXME: causes a segfault
+        //Application::get_instance().quit();
     }
 }
 
+// TODO: make sure the number of consecutive slashes in the path is ok
 std::string Pipeline::get_image_full_path(Image* image)
 {
     std::string project_path = Application::get_instance().get_configuration().get_project_home();
@@ -189,8 +178,10 @@ void Pipeline::grab_frame()
 void Pipeline::stop()
 {
     std::cout << "Stopping the Gstreamer pipeline." << std::endl;
+    // FIXME: a segfault occurs here!
     gst_element_set_state(GST_ELEMENT(pipeline_), GST_STATE_NULL);
-    gst_object_unref(pipeline_);
+    //std::cout << "Deleting the Gstreamer pipeline." << std::endl;
+    //gst_object_unref(pipeline_);
     // gtk main quit?
 }
 /**
@@ -256,6 +247,8 @@ Pipeline::Pipeline()
     g_object_set(G_OBJECT(videosink_), "client-draw-callback", drawCallback, NULL);
     //g_object_set(G_OBJECT(videosink_), "client-draw-callback", G_CALLBACK(drawCallback), gpointer(this));
     // capsfilter element #1, for the OpenGL FPS and size
+    // TODO: Make sure the rendering FPS is constant, and not subordinate to
+    // the FPS of the camera.
     GstElement* capsfilter1 = gst_element_factory_make("capsfilter", NULL);
     GstCaps *outcaps = gst_caps_new_simple("video/x-raw-gl",
                                         "width", G_TYPE_INT, 800,
@@ -267,7 +260,6 @@ Pipeline::Pipeline()
     // GdkPixbuf sink:
     GstElement* queue1 = gst_element_factory_make("queue", "queue1");
     g_assert(queue1);
-    //FIXME: GstElement* 
     gdkpixbufsink_ = gst_element_factory_make("gdkpixbufsink", "gdkpixbufsink0");
     g_assert(gdkpixbufsink_);
     gst_caps_unref(outcaps);
@@ -356,7 +348,8 @@ Pipeline::Pipeline()
     ret = gst_element_set_state(GST_ELEMENT(pipeline_), GST_STATE_PLAYING);
     if (ret == GST_STATE_CHANGE_FAILURE)
     {
-        g_print ("Failed to start up pipeline!\n");
+        g_print("Failed to start the video pipeline!\n");
+        g_print("-----------------------------------\n");
         /* check if there is an error message with details on the bus */
         GstMessage* msg = gst_bus_poll(bus, GST_MESSAGE_ERROR, 0);
         if (msg)
@@ -367,11 +360,13 @@ Pipeline::Pipeline()
           g_error_free(err);
           gst_message_unref(msg);
         }
+        g_print("-----------------------------------\n");
         exit(1);
+        //FIXME: causes a segfault: Application::get_instance().quit();
     }
 
-#if 0
     // FIXME: this causes a segfault
+#if 0
     std::cout << "Compiling the shader" << std::endl;
     myshader = new Shader(); // FIXME: should we use a shared_pointer ?
     myshader->compile_link();
@@ -615,6 +610,8 @@ Pipeline::~Pipeline() {}
 
 std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
 {
+    LOG_DEBUG("Trying to guess source FPS " << framerateIndex);
+
     std::ostringstream capsStr;
     GstStateChangeReturn ret = gst_element_set_state(videosrc_, GST_STATE_READY);
     if (ret not_eq GST_STATE_CHANGE_SUCCESS)
