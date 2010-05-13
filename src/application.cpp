@@ -113,7 +113,7 @@ void Application::run(int argc, char *argv[])
         project_home = options["project-home"].as<std::string>();
         if (project_home == "~/Documents/toonloop/default") // replace ~ by $HOME
             project_home = std::string(std::getenv("HOME")) + "/Documents/toonloop/default";
-        std::cout << "toonloop-home is set to " << project_home << std::endl;
+        std::cout << "project-home is set to " << project_home << std::endl;
         if (! fs::exists(project_home))
         {
             try 
