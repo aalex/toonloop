@@ -8,6 +8,9 @@ class Worker
     public:
         Worker() {}
 
+        /** 
+         * Starts the thread. It's done when this method returns.
+         */
         void operator()()
         {
             boost::posix_time::seconds workTime(1);  

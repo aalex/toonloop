@@ -47,11 +47,17 @@ class Clip
         direction direction_;
         std::vector<int> intervalometer_rate_;
         std::vector<int> fps_;
-        std::tr1::unordered_map<int, Image*> images_;
+        // This is a list of images
+        // I think we should use a std::list<std::tr1::shared_ptr<Image*>>
+        // Their order can change.
+        // Some of them may disappear.
+        // the app is multithread!
+        std::tr1::unordered_map<int, Image*> images_; // FIXME
         int playhead_fps_;
     public:
         Clip(int id);
         int get_id();
+        //TODO: list<int>* get_all_images();
         int frame_add();
         int frame_remove();
         int iterate_playhead();
