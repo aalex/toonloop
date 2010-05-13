@@ -62,11 +62,15 @@ tests/.deps/*
 # --------- specific conmpiled files.
 src/toonloop
 src/prototoonmidi
+tests/check_bool
 tests/check_classes
 tests/check_commands
-tests/check_looper
-tests/check_threads
-tests/check_bool
+tests/check_containers
 tests/check_datetime
+tests/check_looper
+tests/check_moviesaver
+tests/check_ref
+tests/check_symlinks
+tests/check_threads
 tests/check_tween
 
