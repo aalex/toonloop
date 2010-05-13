@@ -78,6 +78,7 @@ void Application::run(int argc, char *argv[])
         //("image-width,w", po::value<int>()->default_value(640), "Width of the images grabbed from the camera. Default is 640")
         //("image-height,y", po::value<int>()->default_value(480), "Height of the images grabbed from the camera. Default is 480")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode.")
+        ("sync", po::bool_switch(), "Enables X11 debug.")
         ("keep-images-in-ram,R", po::bool_switch(), "Keep all the images to the computer RAM and do not load JPEG from the disk.")
         ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device. Use \"test\" for color bars.");
     po::variables_map options;
