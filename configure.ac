@@ -30,12 +30,16 @@ AC_CHECK_LIB([m],[sin],[AC_SUBST([LIBM_CXXFLAGS],["-lm"])])
 AC_CHECK_LIB([lo],[lo_send_internal],[AC_SUBST([LIBLO_CXXFLAGS],["-llo"])])
 
 # GTK and GST
-PKG_CHECK_MODULES([GST], [gstreamer-gl-0.10 >= 0.10.0 gstreamer-0.10 >= 0.10.0   gstreamer-interfaces-0.10 >= 0.10.24 gtk+-2.0 >= 2.12.9 glib-2.0 >= 2.16.6])
-PKG_CHECK_MODULES([GTK], [gtk+-2.0])
-PKG_CHECK_MODULES([GDK], [gdk-2.0])
+PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.12.9 glib-2.0 >= 2.16.6 gdk-2.0])
+PKG_CHECK_MODULES([GST], [gstreamer-0.10 >= 0.10.0 gstreamer-interfaces-0.10 >= 0.10.24])
+PKG_CHECK_MODULES([GSTGL], [gstreamer-gl-0.10 >= 0.10.0])
 
+AC_SUBST([GTK_LIBS])
+AC_SUBST([GTK_CFLAGS])
 AC_SUBST([GST_LIBS])
 AC_SUBST([GST_CFLAGS])
+AC_SUBST([GSTGL_LIBS])
+AC_SUBST([GSTGL_CFLAGS])
 
 # BOOST
 AX_BOOST_BASE([1.35])
