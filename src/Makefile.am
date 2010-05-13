@@ -1,5 +1,4 @@
-bin_PROGRAMS = toonloop 
-#prototoonmidi 
+bin_PROGRAMS = toonloop prototoonmidi 
 
 headers = application.h clip.h config.h draw.h gstgtk.h gui.h image.h log.h pipeline.h shader.h subprocess.h texture.h configuration.h timing.h
 
