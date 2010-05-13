@@ -1,4 +1,5 @@
-TESTS = check_looper check_classes check_commands check_threads check_bool check_datetime check_tween check_moviesaver check_symlinks
+TESTS = check_looper check_classes check_commands check_threads check_bool check_datetime check_tween check_moviesaver check_symlinks check_containers
+
 noinst_PROGRAMS = $(TESTS)
 
 check_looper_SOURCES = check_looper.cpp
@@ -40,3 +41,6 @@ check_moviesaver_SOURCES = check_moviesaver.cpp ../src/clip.cpp  ../src/image.cp
 check_moviesaver_CXXFLAGS = $(BOOST_CPPFLAGS) -I ../src/
 check_moviesaver_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB)
 
+check_containers_SOURCES = check_containers.cpp 
+check_containers_CXXFLAGS = $(BOOST_CPPFLAGS) 
+check_containers_LDADD = $(BOOST_LIBS) 
