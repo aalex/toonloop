@@ -17,6 +17,7 @@ repository. If you add "deb http://ftp.debian.org/debian experimental main"
 in your /etc/apt/sources.list and do apt-get update, you should be able to 
 find it. Their names are:
 
+ libgstreamer-plugins-gl0.10-dev
  libgstreamer-plugins-gl0.10-0
  gstreamer0.10-plugins-gl
 
