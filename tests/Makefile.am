@@ -1,5 +1,4 @@
-TESTS = check_looper check_classes check_commands check_threads check_bool check_datetime check_tween check_moviesaver
-#check_symlinks
+TESTS = check_looper check_classes check_commands check_threads check_bool check_datetime check_tween check_moviesaver check_symlinks
 noinst_PROGRAMS = $(TESTS)
 
 check_looper_SOURCES = check_looper.cpp
@@ -32,9 +31,9 @@ check_tween_SOURCES = check_tween.cpp ../src/tween.cpp
 check_tween_CXXFLAGS = $(BOOST_CPPFLAGS) -I ../src/
 check_tween_LDADD = $(BOOST_LIBS) 
 
-#check_symlinks_SOURCES = check_symlinks.cpp 
-#check_symlinks_CXXFLAGS = $(BOOST_CPPFLAGS) 
-#check_symlinks_LDADD = $(BOOST_LIBS) 
+check_symlinks_SOURCES = check_symlinks.cpp 
+check_symlinks_CXXFLAGS = $(BOOST_CPPFLAGS) 
+check_symlinks_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
 
 
 check_moviesaver_SOURCES = check_moviesaver.cpp ../src/clip.cpp  ../src/image.cpp ../src/timing.cpp ../src/moviesaver.cpp ../src/subprocess.cpp
