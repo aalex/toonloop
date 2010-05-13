@@ -12,7 +12,7 @@
 #define INPUT_BUFFER_SIZE 100
 #define OUTPUT_BUFFER_SIZE 0
 #define DRIVER_INFO NULL
-#define TIME_PROC ((long (*)(void *)) Pt_Time)
+#define TIME_PROC ((PmTimestamp (*)(void *)) Pt_Time)
 #define TIME_INFO NULL
 #define TIME_START Pt_Start(1, 0, 0) /* timer started w/millisecond accuracy */
 
@@ -66,7 +66,7 @@ void main_test_input() {
     while (true) {
         status = Pm_Poll(midi);
         if (status == TRUE) {
-            length = Pm_Read(midi, buffer, 1);
+            length = (PmError) Pm_Read(midi, buffer, 1);
             if (length > 0) {
                 printf("Got message: time %ld, status: %2lx data1: %2lx data2: %2lx\n",
                        buffer[0].timestamp,
