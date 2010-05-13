@@ -1,12 +1,61 @@
 bin_PROGRAMS = toonloop prototoonmidi 
 
-headers = application.h clip.h config.h draw.h gstgtk.h gui.h image.h log.h pipeline.h shader.h subprocess.h texture.h configuration.h timing.h
+headers = \
+	application.h \
+	clip.h \
+	config.h \
+	configuration.h \
+	draw.h \
+	gstgtk.h \
+	gui.h \
+	image.h \
+	log.h \
+	pipeline.h \
+	shader.h \
+	subprocess.h \
+	texture.h \
+	timing.h
 
-toonloop_SOURCES = main.cpp draw.cpp gui.cpp pipeline.cpp gstgtk.cpp application.cpp clip.cpp configuration.cpp image.cpp texture.cpp shader.cpp timing.cpp $(headers)
+toonloop_SOURCES = \
+	application.cpp \
+	clip.cpp \
+	configuration.cpp \
+	draw.cpp \
+	gstgtk.cpp \
+	gui.cpp \
+	image.cpp \
+	main.cpp \
+	pipeline.cpp \
+	shader.cpp \
+	texture.cpp \
+	timing.cpp \
+	$(headers)
 
-toonloop_CXXFLAGS = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS)  $(LIBLO_CXXFLAGS) $(GST_CFLAGS) $(GLEW_CFLAGS) $(BOOST_CPPFLAGS) $(GL_CFLAGS) $(GLU_CFLAGS) $(GTK_CFLAGS) $(GSTGL_CFLAGS)
+toonloop_CXXFLAGS = \
+	$(BOOST_CPPFLAGS) \
+	$(GLEW_CFLAGS) \
+	$(GLU_CFLAGS) \
+	$(GL_CFLAGS) \
+	$(GSTGL_CFLAGS) \
+	$(GST_CFLAGS) \
+	$(GTK_CFLAGS) \
+	$(LIBLO_CXXFLAGS) \
+	$(LIBM_CXXFLAGS) \
+	$(LIBTHREAD_CXXFLAGS)
  
-toonloop_LDADD = $(LIBM_LIBS) $(LIBTHREAD_LIBS) $(LIBLO_LIBS) $(GST_LIBS) $(GLEW_LIBS) $(BOOST_LIBS)  $(BOOST_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LIB) $(BOOST_FILESYSTEM_LIB) $(GL_LIBS) $(GTK_LIBS) $(GSTGL_LIBS)
+toonloop_LDADD = \
+	$(BOOST_FILESYSTEM_LIB) \
+	$(BOOST_LDFLAGS) \
+	$(BOOST_LIBS)  \
+	$(BOOST_PROGRAM_OPTIONS_LIB) \
+	$(GLEW_LIBS) \
+	$(GL_LIBS) \
+	$(GSTGL_LIBS) \
+	$(GST_LIBS) \
+	$(GTK_LIBS) \
+	$(LIBLO_LIBS) \
+	$(LIBM_LIBS) \
+	$(LIBTHREAD_LIBS) 
 
 prototoonmidi_SOURCES = toonmidi.cpp
 prototoonmidi_CXXFLAGS = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS) $(PORTMIDI_CXXFLAGS) $(ASOUND_CXXFLAGS)
