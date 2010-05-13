@@ -124,11 +124,17 @@ int Clip::size()
     return (int) images_.size();
 }
 
+/**
+ * Returns NULL if there is no image at the given index.
+ */
 Image* Clip::get_image(int index)
 {
     // FIXME: will crash if no image at that index
     if (index > writehead_)
+    {
         std::cout << "ERROR: There is no image at that index in the clip!" << std::endl;
+        return NULL;
+    }
     return images_[index];
 }
 
