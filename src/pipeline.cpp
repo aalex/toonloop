@@ -334,7 +334,7 @@ Pipeline::Pipeline()
     gst_object_unref(bus);
 
     //TODO: 
-    if (config.videoSource() != "videotestsrc")
+    if (config.videoSource() != std::string("test"))
     {
         std::string device_name = config.videoSource(); // "/dev/video0";
         g_print("Using camera %s.\n", device_name.c_str());
