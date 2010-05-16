@@ -37,6 +37,7 @@
 #include "log.h" // TODO: make it async and implement THROW_ERROR
 #include <boost/filesystem.hpp>
 
+const bool USE_SHADER = false;
 namespace fs = boost::filesystem;
 
 /**
@@ -453,17 +454,18 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     
 
     Shader *myshader = Application::get_instance().get_pipeline().get_shader();
-    //std::cout << "Compiling the shader" << std::endl;
 
     if(first_draw == true)
     {
-    	myshader->compile_link();
-	first_draw = false;
-    }	
+        std::cout << "Compiling the shader" << std::endl;
+        myshader->compile_link();
+        first_draw = false;
+    }    
 
     //std::cout << "using the shader" << std::endl;
     // Enable shader
-    //glUseProgram(myshader->get_program_object());
+    if (USE_SHADER)
+        glUseProgram(myshader->get_program_object());
     glEnable(GL_TEXTURE_RECTANGLE_ARB);
     glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
     // TODO: simplify those parameters
