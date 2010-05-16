@@ -365,12 +365,14 @@ Pipeline::Pipeline()
         //FIXME: causes a segfault: Application::get_instance().quit();
     }
 
-    // FIXME: this causes a segfault
-#if 0
-    std::cout << "Compiling the shader" << std::endl;
+    if (check_if_shaders_are_supported())
+    {
+        std::cout << "yes!" << std::endl;
+    }
+    
     myshader = new Shader(); // FIXME: should we use a shared_pointer ?
-    myshader->compile_link();
-#endif
+
+
 }
 
 Shader* Pipeline::get_shader()
@@ -432,6 +434,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     static GTimeVal current_time;
     static glong last_sec = current_time.tv_sec;
     static gint nbFrames = 0;
+    static bool first_draw = true;
     GLuint frametexture;
     bool move_playhead = false;
 
@@ -448,22 +451,19 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         last_sec = current_time.tv_sec;
     }
     
-#if 0
-    Pipeline pipeline = Application::get_instance().get_pipeline();
-    if (pipeline.check_if_shaders_are_supported())
-    {
-        std::cout << "yes!" << std::endl;
-    }
-#endif
 
-    // FIXME: this is broken.
-#if 0
-    std::cout << "using the shader" << std::endl;
-    // Enable shader
     Shader *myshader = Application::get_instance().get_pipeline().get_shader();
-    glUseProgram(myshader->get_program_object());
-#endif 
+    //std::cout << "Compiling the shader" << std::endl;
 
+    if(first_draw == true)
+    {
+    	myshader->compile_link();
+	first_draw = false;
+    }	
+
+    //std::cout << "using the shader" << std::endl;
+    // Enable shader
+    //glUseProgram(myshader->get_program_object());
     glEnable(GL_TEXTURE_RECTANGLE_ARB);
     glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
     // TODO: simplify those parameters
