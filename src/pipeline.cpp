@@ -437,6 +437,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     static gint nbFrames = 0;
     static bool first_draw = true;
     GLuint frametexture;
+    GLint texturelocation;
     bool move_playhead = false;
 
     g_get_current_time (&current_time);
@@ -460,14 +461,22 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         std::cout << "Compiling the shader" << std::endl;
         myshader->compile_link();
         first_draw = false;
+        texturelocation = glGetUniformLocation(myshader->get_program_object(), "image");
     }    
 
     //std::cout << "using the shader" << std::endl;
     // Enable shader
     if (USE_SHADER)
+    {
         glUseProgram(myshader->get_program_object());
+    }
     glEnable(GL_TEXTURE_RECTANGLE_ARB);
     glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
+    if (USE_SHADER)
+    {
+        glUniform1i(texturelocation, 0);
+        glActiveTexture(GL_TEXTURE0);
+    }
     // TODO: simplify those parameters
     glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

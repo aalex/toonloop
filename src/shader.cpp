@@ -3,23 +3,32 @@
 #include <iostream>
 #include <cstdlib>
 
-static const char *vertex_source = {
-"void main(){"
-""
-"  vec4 a = gl_Vertex;"
-"  vec4 b = a;"
-""
-"gl_Position = gl_ModelViewProjectionMatrix*b;"
-"}"
-};      
+// a simple vertex shader, identical to tester effect from v1.2
+static const char *vertex_source = "\
+  varying vec2 texcoord0;\
+  varying vec2 texdim0;\
+\
+  void main(void)\
+  {\
+      gl_Position = ftransform();\
+      texcoord0 = vec2(gl_TextureMatrix[0] * gl_MultiTexCoord0);\
+      texdim0 = vec2(abs(gl_TextureMatrix[0][0][0]), abs(gl_TextureMatrix[0][1][1]));\
+  }\
+ ";
+
         
-// a simple fragment shader source
-// this change the fragment's color by yellow color
-static const char *fragment_source = {
-    "void main(void){"
-    "   gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);"
-    "}"
-};
+// a simple fragment shader, identical to tester effect from v1.2
+static const char *fragment_source = "\
+uniform sampler2DRect image;\
+varying vec2 texcoord0;\
+varying vec2 texdim0;\
+void main(void)\
+{   \
+	    vec3 color = texture2DRect(image, texcoord0).rgb;\
+	    float input_alpha = gl_Color.a;\
+	    gl_FragColor = vec4(color, input_alpha);\
+}\
+";
 
 Shader::Shader()
 {
