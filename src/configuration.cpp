@@ -12,6 +12,7 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     display_ = options["display"].as<std::string>();
     fullscreen_ = options["fullscreen"].as<bool>();
     images_in_ram_ = options["keep-images-in-ram"].as<bool>();
+    enable_effects_ = options["enable-effects"].as<bool>();
     if (images_in_ram_)
         std::cout << "Images will be kept into RAM and not loaded from the disk on every frame." << std::endl;
 }

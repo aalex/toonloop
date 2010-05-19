@@ -47,6 +47,7 @@ class Application
     private:
         Application();
         static Application* instance_; // singleton
+        // TODO: change for scoped_ptr
         std::tr1::shared_ptr<Gui> gui_;
         std::tr1::shared_ptr<Pipeline> pipeline_;
         std::tr1::shared_ptr<Configuration> config_;

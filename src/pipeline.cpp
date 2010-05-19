@@ -37,37 +37,33 @@
 #include "log.h" // TODO: make it async and implement THROW_ERROR
 #include <boost/filesystem.hpp>
 
-const bool USE_SHADER = false;
+//const bool USE_SHADER = false;
 namespace fs = boost::filesystem;
 
 /**
  * You need to create an OpenGL contect prior to use this.
  */
-bool Pipeline::check_if_shaders_are_supported()
+bool check_if_shaders_are_supported()
 {
-    if (checked_for_shaders_ == true) // why is this always false?
+    bool shaders_are_supported = false;
+    // check for shaders support
+    GLenum err = glewInit(); 
+    if (GLEW_OK != err)
     {
-        return shaders_are_supported_;
+        /* Problem: glewInit failed, something is seriously wrong. */
+        std::cerr << "Error calling glewInit: " << glewGetErrorString(err) << std::endl;
+        shaders_are_supported = false;
     } else {
-        // check for shaders support
-        GLenum err = glewInit(); 
-        if (GLEW_OK != err)
-        {
-            /* Problem: glewInit failed, something is seriously wrong. */
-            std::cerr << "Error calling glewInit: " << glewGetErrorString(err) << std::endl;
-            shaders_are_supported_ = false;
-        } else {
-            std::cout << "Status: Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
-        }
-        if (glewGetExtension("GL_ARB_fragment_program"))
-        {
-            std::cout << "Status: Looks like ARB_fragment_program is supported." << std::endl;
-            shaders_are_supported_ = true;
-        } else {
-            shaders_are_supported_ = false;
-        }
-        checked_for_shaders_ = true;
+        std::cout << "Status: Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
     }
+    if (glewGetExtension("GL_ARB_fragment_program"))
+    {
+        std::cout << "Status: Looks like ARB_fragment_program is supported." << std::endl;
+        shaders_are_supported = true;
+    } else {
+        shaders_are_supported = false;
+    }
+    return shaders_are_supported;
 }
 
 /**
@@ -192,8 +188,6 @@ void Pipeline::stop()
 Pipeline::Pipeline()
 {
     Configuration config = Application::get_instance().get_configuration();
-    checked_for_shaders_ = false;
-    shaders_are_supported_ = false;
 
     onionskin_texture_ = Texture();
     playback_texture_ = Texture();
@@ -366,19 +360,11 @@ Pipeline::Pipeline()
         //FIXME: causes a segfault: Application::get_instance().quit();
     }
 
-    if (check_if_shaders_are_supported())
-    {
-        std::cout << "yes!" << std::endl;
-    }
-    
-    myshader = new Shader(); // FIXME: should we use a shared_pointer ?
-
-
 }
 
 Shader* Pipeline::get_shader()
 {
-    return myshader;
+    return shader_;
 }
 
 int Pipeline::get_numframes()
@@ -425,6 +411,11 @@ void reshapeCallback(GLuint width, GLuint height, gpointer data)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 }
 
+void Pipeline::set_shader(Shader* shader)
+{
+    shader_ = shader;
+}
+
 /**
  * This is where the OpenGL drawing is done.
  * Client draw callback
@@ -453,18 +444,26 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         last_sec = current_time.tv_sec;
     }
     
-
-    Shader *myshader = Application::get_instance().get_pipeline().get_shader();
-
-    if(first_draw == true)
+    Shader* myshader;
+    bool USE_SHADER = Application::get_instance().get_configuration().get_effects_enabled();
+    if (USE_SHADER)
     {
-        std::cout << "Compiling the shader" << std::endl;
-        myshader->compile_link();
-        first_draw = false;
-        texturelocation = glGetUniformLocation(myshader->get_program_object(), "image");
-    }    
-
-    //std::cout << "using the shader" << std::endl;
+        if(first_draw == true)
+        {
+            if (check_if_shaders_are_supported())
+            {
+                std::cout << "GLSL shaders are supported!" << std::endl;
+                myshader = new Shader(); // FIXME: should we use a scoped_ptr ?
+                Application::get_instance().get_pipeline().set_shader(myshader);
+            }
+            std::cout << "Compiling the shader" << std::endl;
+            myshader->compile_link();
+            first_draw = false;
+            texturelocation = glGetUniformLocation(myshader->get_program_object(), "image");
+        } else {    
+            myshader = Application::get_instance().get_pipeline().get_shader();
+        }
+    }
     // Enable shader
     if (USE_SHADER)
     {

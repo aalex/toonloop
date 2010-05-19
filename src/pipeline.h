@@ -43,8 +43,8 @@ class Pipeline
         Texture playback_texture_;
         Texture onionskin_texture_;
         Shader* get_shader();
-        bool check_if_shaders_are_supported();
         std::string get_image_full_path(Image* image);
+        void set_shader(Shader* shader);
     private:
         GstElement* videosrc_;
         GstElement* videosink_;
@@ -54,14 +54,13 @@ class Pipeline
         int numframes;
         static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);
         std::string guess_source_caps(unsigned int framerateIndex) const;
-        Shader* myshader;
-        bool checked_for_shaders_; // FIXME: avoid public attributes
-        bool shaders_are_supported_;
+        Shader* shader_;
 };
 
 static GstBusSyncReply create_window(GstBus* bus, GstMessage* message, GtkWidget* widget);
 static gboolean on_expose_event(GtkWidget* widget, GdkEventExpose* event, GstElement* videosink);
 void reshapeCallback(GLuint width, GLuint height, gpointer data);
 gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data);
+bool check_if_shaders_are_supported();
 
 #endif // __PIPELINE_H__
