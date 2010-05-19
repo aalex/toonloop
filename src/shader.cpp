@@ -24,7 +24,7 @@ varying vec2 texcoord0;\
 varying vec2 texdim0;\
 void main(void)\
 {   \
-	    vec3 color = texture2DRect(image, texcoord0).rgb;\
+	    vec3 color = texture2DRect(image, texcoord0).bgr;\
 	    float input_alpha = gl_Color.a;\
 	    gl_FragColor = vec4(color, input_alpha);\
 }\
