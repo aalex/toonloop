@@ -52,7 +52,7 @@ class Clip
         // Their order can change.
         // Some of them may disappear.
         // the app is multithread!
-        std::tr1::unordered_map<int, Image*> images_; // FIXME
+        std::tr1::unordered_map<int, Image*> images_; // FIXME: use a list of shared_ptr to *Image
         int playhead_fps_;
     public:
         Clip(int id);

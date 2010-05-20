@@ -122,6 +122,24 @@ std::string Pipeline::get_image_full_path(Image* image)
  * Adds an image to the current clip.
  * TODO: should be moved out of here, to application. 
  */
+void Pipeline::remove_frame()
+{
+    std::cout << "Removing a frame." << std::endl;
+    Clip *thisclip = Application::get_instance().get_current_clip();
+    int current_clip_id = thisclip->get_id();
+    int num_deleted;
+    if (thisclip->size() > 0)
+    {
+        num_deleted = thisclip->frame_remove();
+        std::cout << "Deleted " << num_deleted << " frames in clip " << current_clip_id << std::endl; 
+    } else {
+        std::cout << "No image to delete." << std::endl;
+    }
+}
+/** 
+ * Adds an image to the current clip.
+ * TODO: should be moved out of here, to application. 
+ */
 void Pipeline::grab_frame()
 {
     GdkPixbuf* pixbuf;
@@ -134,22 +152,23 @@ void Pipeline::grab_frame()
     int nchannels = gdk_pixbuf_get_n_channels(pixbuf);
 
     /* if this is the first frame grabbed, set frame properties in clip */
-    if (numframes == -1) 
+    if (! has_recorded_a_frame_) 
     {
+        // TODO: each image should be a different size, if that's what it is.
         thisclip->set_width(w);
         thisclip->set_height(h);
+        has_recorded_a_frame_ = true;
     }
 
-    int image_number = Application::get_instance().get_current_clip()->frame_add();
-    Image *thisimage = Application::get_instance().get_current_clip()->get_image(image_number);
+    int image_number = thisclip->frame_add();
+    Image *thisimage = thisclip->get_image(image_number);
     std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl;
     std::string file_name = get_image_full_path(thisimage);
-    // FIXME: We should not store the pixel data in RAM once we don't need it anymore.
+    // We can store the pixel data in RAM or not.
     // We need 3 textures: 
     //  * the onionskin of the last frame grabbed. (or at the writehead position)
     //  * the frame at the playhead position
     //  * the current live input. (GST gives us this one)
-    numframes++;
 
     if (!gdk_pixbuf_save(pixbuf, file_name.c_str(), "jpeg", NULL, "quality", "100", NULL))
     {
@@ -335,7 +354,7 @@ Pipeline::Pipeline()
         g_print("Using camera %s.\n", device_name.c_str());
         g_object_set(videosrc_, "device", device_name.c_str(), NULL); 
     }
-    numframes = -1;
+    has_recorded_a_frame_ = false;
     // make it play !!
 
     /* run */
@@ -365,11 +384,6 @@ Pipeline::Pipeline()
 Shader* Pipeline::get_shader()
 {
     return shader_;
-}
-
-int Pipeline::get_numframes()
-{
-    return numframes;
 }
 
 /**
@@ -425,16 +439,17 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     //Pipeline* context = static_cast<Pipeline*>(data);
     static GTimeVal current_time;
     static glong last_sec = current_time.tv_sec;
-    static gint nbFrames = 0;
+    static gint nbFrames = 0; // counting FPS
     static bool first_draw = true;
     GLuint frametexture;
     GLint texturelocation;
     bool move_playhead = false;
+    Clip *thisclip = Application::get_instance().get_current_clip();
 
     g_get_current_time (&current_time);
     nbFrames++ ;
 
-    if ((current_time.tv_sec - last_sec) >=  (1 / Application::get_instance().get_current_clip()->get_playhead_fps()))
+    if ((current_time.tv_sec - last_sec) >=  (1 / thisclip->get_playhead_fps()))
         move_playhead = true;
 
     if ((current_time.tv_sec - last_sec) >= 1)
@@ -450,12 +465,14 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     {
         if(first_draw == true)
         {
+            std::cout << "Checking for GLSL shaders support..." << std::endl;
             if (check_if_shaders_are_supported())
             {
                 std::cout << "GLSL shaders are supported!" << std::endl;
                 myshader = new Shader(); // FIXME: should we use a scoped_ptr ?
                 Application::get_instance().get_pipeline().set_shader(myshader);
             }
+            // TODO: else disable effects in config
             std::cout << "Compiling the shader" << std::endl;
             myshader->compile_link();
             first_draw = false;
@@ -494,45 +511,47 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
     draw::draw_vertically_flipped_textured_square(width, height);
     glPopMatrix();
     
-    if(Application::get_instance().get_pipeline().get_numframes() >= 0) 
+    if(thisclip->size() > 0) 
     {     
         // FIXME: we don't need to create a texture on every frame!!
-        Clip *thisclip = Application::get_instance().get_current_clip();
-        double spf = (1 / Application::get_instance().get_current_clip()->get_playhead_fps());
-        if (move_playhead)
-            thisclip->iterate_playhead();
+        double spf = (1 / thisclip->get_playhead_fps());
+        if (move_playhead) // if it's time to move the playhead
+            thisclip->iterate_playhead(); // updates the clip's playhead number
         int image_number = thisclip->get_playhead();
-        Image *thisimage = Application::get_instance().get_current_clip()->get_image(image_number);
-        
-        /*FIXME: we may not need this dimension update in general. But I get a weirdly cropped frame, for the right side rendering grabbed frame. It seems
-        the grabbed frame dimensions don't match with the width, height passed from glimasesink to the draw callback*/
-        // XXX: yes, I think we should always check the size of the images. (especially when we will read them from the disk)
-        width = thisclip->get_width();
-        height = thisclip->get_height();
-
         bool pixels_are_loaded = false;
+        width = thisclip->get_width(); // FIXME: do not override data given by gst-plugins-gl!
+        height = thisclip->get_height();// FIXME: do not override data given by gst-plugins-gl!
         char *buf;
-
-        if (thisimage->is_ready())
+        Image *thisimage = thisclip->get_image(image_number);
+        if (thisimage == NULL)
         {
-            if (Application::get_instance().get_configuration().get_images_in_ram())
+            std::cout << "No image at index" << image_number << "." << std::endl;
+        } else {
+            /*FIXME: we may not need this dimension update in general. But I get a weirdly cropped frame, for the right side rendering grabbed frame. It seems
+            the grabbed frame dimensions don't match with the width, height passed from glimasesink to the draw callback*/
+            // XXX: yes, I think we should always check the size of the images. (especially when we will read them from the disk)
+
+            if (thisimage->is_ready())
             {
-                buf = thisimage->get_rawdata();
-                pixels_are_loaded = true;
-            } else {
-                std::string image_full_path = Application::get_instance().get_pipeline().get_image_full_path(thisimage);
-                // TODO: validate this path
-                GdkPixbuf *pixbuf;
-                GError *error = NULL;
-                
-                pixbuf = gdk_pixbuf_new_from_file(image_full_path.c_str(), &error);
-                if (!pixbuf)
+                if (Application::get_instance().get_configuration().get_images_in_ram())
                 {
-                    std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
-                    g_error_free(error);
-                } else {
-                    buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
+                    buf = thisimage->get_rawdata();
                     pixels_are_loaded = true;
+                } else {
+                    std::string image_full_path = Application::get_instance().get_pipeline().get_image_full_path(thisimage);
+                    // TODO: validate this path
+                    GdkPixbuf *pixbuf;
+                    GError *error = NULL;
+                    
+                    pixbuf = gdk_pixbuf_new_from_file(image_full_path.c_str(), &error);
+                    if (!pixbuf)
+                    {
+                        std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
+                        g_error_free(error);
+                    } else {
+                        buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
+                        pixels_are_loaded = true;
+                    }
                 }
             }
         }

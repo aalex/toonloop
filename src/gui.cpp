@@ -73,6 +73,14 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
     Gui *context = static_cast<Gui*>(data);
     switch (event->keyval)
     {
+        //case GDK_Up:
+        //case GDK_Down:
+        //case GDK_Left:
+        //case GDK_Right:
+        //case GDK_Return:
+        case GDK_BackSpace:
+            Application::get_instance().get_pipeline().remove_frame();
+            break;
         case GDK_Escape:
             context->toggleFullscreen(widget);
             break;

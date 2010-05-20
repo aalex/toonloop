@@ -39,7 +39,7 @@ class Pipeline
         Pipeline(); // const VideoConfig &config);
         ~Pipeline();
         void grab_frame();
-        int get_numframes();
+        void remove_frame();
         Texture playback_texture_;
         Texture onionskin_texture_;
         Shader* get_shader();
@@ -51,7 +51,7 @@ class Pipeline
         GstElement* gdkpixbufsink_;
         GstPipeline* pipeline_;
         GstState state_;
-        int numframes;
+        bool has_recorded_a_frame_; 
         static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);
         std::string guess_source_caps(unsigned int framerateIndex) const;
         Shader* shader_;

@@ -89,13 +89,16 @@ int Clip::frame_add()
  * Delete an image for the clip.
  * Returns how many images it has deleted. (0 or 1)
  */
+// FIXME: this is not thread-safe, isn't it? (we must used shared_ptr)
 int Clip::frame_remove()
 {
     int how_many_deleted = 0;
-    if (writehead_ > 0)
+    //int len = size();
+    int len = writehead_;
+    if (len > 0)
     {
         delete images_[writehead_]; // FIXME: fine tune the image deletion algorithm
-        writehead_ --;
+        writehead_ --; // FIXME
         how_many_deleted = 1;
     }
     return how_many_deleted;
@@ -108,9 +111,13 @@ int Clip::get_playhead()
 
 int Clip::iterate_playhead()
 {
-    int len = (int) images_.size();
+    //int len = size();
+    int len = writehead_;
     // TODO: implement BACK_AND_FORTH and BACKWARD directions
-    if (playhead_ >= len - 1)
+    if (len == 0)
+    {
+        playhead_ = 0;
+    } else if (playhead_ >= len - 1) // >= ?
     {
         playhead_ = 0;
     } else {
@@ -121,7 +128,8 @@ int Clip::iterate_playhead()
 
 int Clip::size()
 {
-    return (int) images_.size();
+    int ret = static_cast<int>(images_.size());
+    return ret;
 }
 
 /**
@@ -130,9 +138,10 @@ int Clip::size()
 Image* Clip::get_image(int index)
 {
     // FIXME: will crash if no image at that index
-    if (index > writehead_)
+    int len = size();
+    if (index > len)
     {
-        std::cout << "ERROR: There is no image at that index in the clip!" << std::endl;
+        std::cout << "ERROR: There is no image at index " << index << " in the clip! Total is " << len << "." << std::endl;
         return NULL;
     }
     return images_[index];
