@@ -73,4 +73,5 @@ tests/check_ref
 tests/check_symlinks
 tests/check_threads
 tests/check_tween
+tests/check_signals
 
