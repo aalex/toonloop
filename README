@@ -90,3 +90,25 @@ toonloop -d /dev/video0
 
 See the toonloop(1) man page for details.
 
+How to use Toonloop
+-------------------
+
+To make it short, press space to capture an image, it will be recorded 
+in your default directory (~/Documents/toonloop/default/) under jpg format.
+
+
+How to transform into a movie
+-----------------------------
+
+There are many ways, depending the video format you need. But if 
+it's just for preview you can use:
+
+cd ~/Documents/toonloop/default/
+mencoder "mf://*.jpg" -mf fps=5 -o test.avi -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=800
+
+
+
+-----
+EOF
+
+
