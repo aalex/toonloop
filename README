@@ -96,6 +96,11 @@ How to use Toonloop
 To make it short, press space to capture an image, it will be recorded 
 in your default directory (~/Documents/toonloop/default/) under jpg format.
 
+space  : capture an image
+delete : remove last captured image
+esc    : switch fullscreen
+ctrl-q : quit
+
 
 How to transform into a movie
 -----------------------------
