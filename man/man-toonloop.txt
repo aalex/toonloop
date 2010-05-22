@@ -21,6 +21,9 @@ Toonloop is an interactive software. While it runs, or can control it using keyb
 
 Toonloop interactive keyboard controls :
  - Press the SPACE bar to grab a frame.
+ - ESC key switches fullscreen mode.
+ - DELETE key erases the last captured frame.
+ - ctrl-q quits
 
 [AUTHOR]
 Alexandre Quessy and others. Contributers include Visilis Liaskovitis, Tristan Matthews, Arjan Scherpenisse and the Society for Arts and Technology.
