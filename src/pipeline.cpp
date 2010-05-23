@@ -522,6 +522,8 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
         width = thisclip->get_width(); // FIXME: do not override data given by gst-plugins-gl!
         height = thisclip->get_height();// FIXME: do not override data given by gst-plugins-gl!
         char *buf;
+        GdkPixbuf *pixbuf;
+        bool loaded_pixbuf = false;
         Image *thisimage = thisclip->get_image(image_number);
         if (thisimage == NULL)
         {
@@ -540,7 +542,6 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
                 } else {
                     std::string image_full_path = Application::get_instance().get_pipeline().get_image_full_path(thisimage);
                     // TODO: validate this path
-                    GdkPixbuf *pixbuf;
                     GError *error = NULL;
                     
                     pixbuf = gdk_pixbuf_new_from_file(image_full_path.c_str(), &error);
@@ -551,6 +552,7 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
                     } else {
                         buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
                         pixels_are_loaded = true;
+                        loaded_pixbuf = true;
                     }
                 }
             }
@@ -575,6 +577,13 @@ gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer dat
             glScalef(0.6666666f, 0.5f, 1.0f);
             draw::draw_vertically_flipped_textured_square(width, height);
             glPopMatrix();
+
+            if (loaded_pixbuf)
+            {
+                //std::cout << "Pixels loaded. Freeing pixels buffer.\n";
+                g_object_unref(pixbuf);
+                //std::cout << "Freed pixels buffer.\n";
+            }
         }
     }
 #if 0
