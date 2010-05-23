@@ -438,36 +438,33 @@ void Pipeline::set_shader(Shader* shader)
 gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data)
 {
     //Pipeline* context = static_cast<Pipeline*>(data);
-    static GTimeVal current_time;
-    static glong last_sec = current_time.tv_sec;
-    static gint nbFrames = 0; // counting FPS
+    static int number_of_frames_in_last_second = 0; // counting FPS
     static bool first_draw = true;
-    static float last_frame_played_time = 0.0;
+    static Timer fps_calculation_timer = Timer();
     static Timer playback_timer = Timer(); // TODO: move to Clip
     GLuint frametexture;
     GLint texturelocation;
     bool move_playhead = false;
     Clip *thisclip = Application::get_instance().get_current_clip();
 
-    g_get_current_time(&current_time);
-    nbFrames++ ;
-    float desired_fps = thisclip->get_playhead_fps() * 1.0;
+    ++ number_of_frames_in_last_second;
     playback_timer.tick();
-    std::cout << "Desired clip FPS: " << desired_fps << " Frame duration: " << (1.0f / desired_fps) <<  " Delta: " << playback_timer.get_elapsed() << std::endl;
+    fps_calculation_timer.tick();
 
-    if ((playback_timer.get_elapsed()) >=  (1.0f / desired_fps) || playback_timer.get_elapsed() < 0.0f)
+    // check if it is time to move the playhead
+    if ((playback_timer.get_elapsed()) >=  (1.0f / thisclip->get_playhead_fps() * 1.0) || playback_timer.get_elapsed() < 0.0f)
     {
         move_playhead = true;
         playback_timer.reset();
     }
-
-    if ((current_time.tv_sec - last_sec) >= 1)
+    // calculate rendering FPS
+    if (fps_calculation_timer.get_elapsed() >= 1.0f)
     {
-        std::cout << "Rendering FPS: " << nbFrames << std::endl;
-        nbFrames = 0;
-        last_sec = current_time.tv_sec;
+        std::cout << "Rendering FPS: " << number_of_frames_in_last_second << std::endl;
+        number_of_frames_in_last_second = 0;
+        fps_calculation_timer.reset();
     }
-    
+    // Use or load shader if enabled and supported
     Shader* myshader;
     bool USE_SHADER = Application::get_instance().get_configuration().get_effects_enabled();
     if (USE_SHADER)
@@ -495,6 +492,7 @@ gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data
     {
         glUseProgram(myshader->get_program_object());
     }
+    // Load the texture
     glEnable(GL_TEXTURE_RECTANGLE_ARB);
     glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
     if (USE_SHADER)
