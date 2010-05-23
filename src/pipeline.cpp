@@ -126,9 +126,12 @@ std::string Pipeline::get_image_full_path(Image* image)
 void Pipeline::remove_frame()
 {
     Clip *thisclip = Application::get_instance().get_current_clip();
+
+    thisclip->lock_mutex();
     //int num_deleted;
     //num_deleted = 
     thisclip->frame_remove();
+    thisclip->unlock_mutex();
     //if (num_deleted > 0)
     //    std::cout << "Deleted " << num_deleted << " frames in clip " << thisclip->get_id() << std::endl; 
 }
@@ -140,6 +143,7 @@ void Pipeline::grab_frame()
 {
     GdkPixbuf* pixbuf;
     Clip *thisclip = Application::get_instance().get_current_clip();
+    thisclip->lock_mutex();
     int current_clip_id = thisclip->get_id();
     g_object_get(G_OBJECT(gdkpixbufsink_), "last-pixbuf", &pixbuf, NULL);
 
@@ -182,6 +186,7 @@ void Pipeline::grab_frame()
     }
     thisimage->set_ready(true);
     g_object_unref(pixbuf);
+    thisclip->unlock_mutex();
 }
 /**
  * Stops the pipeline.
@@ -441,6 +446,7 @@ gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data
     GLint texturelocation;
     bool move_playhead = false;
     Clip *thisclip = Application::get_instance().get_current_clip();
+    thisclip->lock_mutex();
 
     ++ number_of_frames_in_last_second;
     playback_timer.tick();
@@ -610,6 +616,7 @@ gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data
     glColor4f(1.0, 1.0, 1.0, 1.0); // I don't know why, but this is necessary if we want to see the images in the next rendering pass.
 #endif
     //return TRUE causes a postRedisplay
+    thisclip->unlock_mutex();
     return FALSE;
 }
 

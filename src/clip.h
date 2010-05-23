@@ -28,6 +28,7 @@
 #include <tr1/unordered_map>
 #include <tr1/memory>
 #include "image.h"
+#include <boost/thread/mutex.hpp>
 
 using namespace std::tr1; // shared_ptr
 
@@ -59,6 +60,7 @@ class Clip
         // the app is multithread!
         std::vector< shared_ptr<Image> > images_; // FIXME: use a list of shared_ptr to *Image
         int playhead_fps_;
+        boost::mutex mutex_;
     public:
         Clip(int id);
         int get_id();
@@ -77,6 +79,8 @@ class Clip
         void set_playhead_fps(int fps);
         void increase_playhead_fps();
         void decrease_playhead_fps();
+        void lock_mutex();
+        void unlock_mutex();
 };
 
 #endif // __CLIP_H__

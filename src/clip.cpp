@@ -25,6 +25,7 @@
 #include <string>
 #include <iostream>
 #include <tr1/memory>
+#include <boost/thread/mutex.hpp>
 
 using namespace std::tr1; // shared_ptr
 
@@ -41,7 +42,9 @@ Clip::Clip(int id)
     writehead_ = 0;
     playhead_ = 0;
     playhead_fps_ = 12; // some default for now
+    //mutex_;
 }
+
 
 int Clip::get_playhead_fps()
 {
@@ -181,5 +184,15 @@ void Clip::decrease_playhead_fps()
         -- playhead_fps_;
         std::cout << "FPS: " << playhead_fps_ << std::endl;
     }
+}
+
+void Clip::lock_mutex()
+{
+    mutex_.lock();
+}
+
+void Clip::unlock_mutex()
+{
+    mutex_.unlock();
 }
 

@@ -48,6 +48,7 @@ toonloop_LDADD = \
 	$(BOOST_LDFLAGS) \
 	$(BOOST_LIBS)  \
 	$(BOOST_PROGRAM_OPTIONS_LIB) \
+	$(BOOST_THREAD_LIB) \
 	$(GLEW_LIBS) \
 	$(GL_LIBS) \
 	$(GSTGL_LIBS) \
