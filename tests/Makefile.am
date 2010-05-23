@@ -25,8 +25,8 @@ check_threads_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB)
 check_bool_SOURCES = check_bool.cpp 
 
 check_datetime_SOURCES = check_datetime.cpp ../src/timing.cpp
-check_datetime_CXXFLAGS = $(BOOST_CPPFLAGS) -I ../src/
-check_datetime_LDADD = $(BOOST_LIBS) 
+check_datetime_CXXFLAGS = $(BOOST_CPPFLAGS) $(GTK_CFLAGS) -I ../src/
+check_datetime_LDADD = $(BOOST_LIBS) $(GTK_LIBS)
 
 check_tween_SOURCES = check_tween.cpp ../src/tween.cpp
 check_tween_CXXFLAGS = $(BOOST_CPPFLAGS) -I ../src/
@@ -38,8 +38,8 @@ check_symlinks_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB) $(BOOST_FILESYSTEM_LIB)
 
 
 check_moviesaver_SOURCES = check_moviesaver.cpp ../src/clip.cpp  ../src/image.cpp ../src/timing.cpp ../src/moviesaver.cpp ../src/subprocess.cpp
-check_moviesaver_CXXFLAGS = $(BOOST_CPPFLAGS) -I ../src/
-check_moviesaver_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB)
+check_moviesaver_CXXFLAGS = $(BOOST_CPPFLAGS) $(GTK_CFLAGS) -I ../src/
+check_moviesaver_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB) $(GTK_LIBS)
 
 check_containers_SOURCES = check_containers.cpp 
 check_containers_CXXFLAGS = $(BOOST_CPPFLAGS) 

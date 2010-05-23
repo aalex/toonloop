@@ -36,6 +36,7 @@
 #include "configuration.h"
 #include "log.h" // TODO: make it async and implement THROW_ERROR
 #include <boost/filesystem.hpp>
+#include "timing.h"
 
 //const bool USE_SHADER = false;
 namespace fs = boost::filesystem;
@@ -434,27 +435,35 @@ void Pipeline::set_shader(Shader* shader)
  * This is where the OpenGL drawing is done.
  * Client draw callback
  */
-gboolean drawCallback (GLuint texture, GLuint width, GLuint height, gpointer data)
+gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data)
 {
     //Pipeline* context = static_cast<Pipeline*>(data);
     static GTimeVal current_time;
     static glong last_sec = current_time.tv_sec;
     static gint nbFrames = 0; // counting FPS
     static bool first_draw = true;
+    static float last_frame_played_time = 0.0;
+    static Timer playback_timer = Timer(); // TODO: move to Clip
     GLuint frametexture;
     GLint texturelocation;
     bool move_playhead = false;
     Clip *thisclip = Application::get_instance().get_current_clip();
 
-    g_get_current_time (&current_time);
+    g_get_current_time(&current_time);
     nbFrames++ ;
+    float desired_fps = thisclip->get_playhead_fps() * 1.0;
+    playback_timer.tick();
+    std::cout << "Desired clip FPS: " << desired_fps << " Frame duration: " << (1.0f / desired_fps) <<  " Delta: " << playback_timer.get_elapsed() << std::endl;
 
-    if ((current_time.tv_sec - last_sec) >=  (1 / thisclip->get_playhead_fps()))
+    if ((playback_timer.get_elapsed()) >=  (1.0f / desired_fps) || playback_timer.get_elapsed() < 0.0f)
+    {
         move_playhead = true;
+        playback_timer.reset();
+    }
 
     if ((current_time.tv_sec - last_sec) >= 1)
     {
-        std::cout << "GRAPHIC FPS = " << nbFrames << std::endl;
+        std::cout << "Rendering FPS: " << nbFrames << std::endl;
         nbFrames = 0;
         last_sec = current_time.tv_sec;
     }

@@ -27,6 +27,20 @@ namespace timing
 {
     std::string get_iso_datetime_for_now();
     long get_timestamp_now();
+    //float get_time_now();
 }
+
+class Timer
+{
+    private:
+        long now_;
+        long start_time_;
+    public:
+        Timer();
+        void reset();
+        float tick();
+        float get_elapsed();
+};
+
 #endif // __TIMING_H__
 

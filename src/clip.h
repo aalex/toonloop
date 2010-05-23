@@ -31,6 +31,8 @@
 
 using namespace std::tr1; // shared_ptr
 
+const int MAX_FPS = 30;
+
 enum direction 
 {
     FORWARD, 
@@ -73,6 +75,8 @@ class Clip
         int get_height();
         int get_playhead_fps();
         void set_playhead_fps(int fps);
+        void increase_playhead_fps();
+        void decrease_playhead_fps();
 };
 
 #endif // __CLIP_H__

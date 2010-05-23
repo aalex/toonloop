@@ -154,3 +154,21 @@ Image* Clip::get_image(int index)
     return &(*images_[index]); // FIXME: is this OK?
 }
 
+void Clip::increase_playhead_fps()
+{
+    if (playhead_fps_ < MAX_FPS)
+    {
+        ++ playhead_fps_;
+        std::cout << "FPS: " << playhead_fps_ << std::endl;
+    }
+}
+
+void Clip::decrease_playhead_fps()
+{
+    if (playhead_fps_ > 1)
+    {
+        -- playhead_fps_;
+        std::cout << "FPS: " << playhead_fps_ << std::endl;
+    }
+}
+

@@ -71,10 +71,15 @@ void Gui::showCursor()
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
     Gui *context = static_cast<Gui*>(data);
+    Clip *current_clip = Application::get_instance().get_current_clip();
     switch (event->keyval)
     {
-        //case GDK_Up:
-        //case GDK_Down:
+        case GDK_Up:
+            current_clip->increase_playhead_fps();
+            break;
+        case GDK_Down:
+            current_clip->decrease_playhead_fps();
+            break;
         //case GDK_Left:
         //case GDK_Right:
         //case GDK_Return:
