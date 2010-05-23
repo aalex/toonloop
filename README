@@ -90,6 +90,7 @@ toonloop -d /dev/video0
 
 See the toonloop(1) man page for details.
 
+
 How to use Toonloop
 -------------------
 
