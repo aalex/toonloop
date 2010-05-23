@@ -42,7 +42,7 @@ int Image::allocate_image(int bufsize)
 
 Image::~Image()
 {
-    std::cout << "Deleting image " << name_ << std::endl;
+    std::cout << "~Image destructor called for " << name_ << std::endl;
     delete rawdata_;
 }
 

@@ -67,7 +67,7 @@ class Clip
         int frame_remove();
         int iterate_playhead();
         int size();
-        Image* get_image(int index);
+        Image& get_image(int index);
         int get_playhead();
         void set_width(int width);
         void set_height(int height);

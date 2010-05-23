@@ -31,6 +31,7 @@ using namespace std::tr1; // shared_ptr
 /**
  * A clip is a list of images.
  */
+// FIXME: vector is not thread safe. You need to protect it with a mutex or such.
 Clip::Clip(int id)
 {
     // FIXME: How to use a 2-int vector?
@@ -83,7 +84,8 @@ int Clip::frame_add()
 {
     int assigned = writehead_;
     std::string name = timing::get_iso_datetime_for_now();
-    images_.push_back(shared_ptr<Image>(new Image(name)));
+    //images_.push_back(shared_ptr<Image>(new Image(name)));
+    images_.insert(images_.begin() + writehead_, shared_ptr<Image>(new Image(name)));
     //images_[writehead_] = new Image(name);
     writehead_ ++;
     return assigned;
@@ -99,17 +101,22 @@ int Clip::frame_remove()
     int how_many_deleted = 0;
     //int len = size();
     int len = writehead_;
-    if (len > 0) // TODO: ! images_.empty()
+    if (writehead_ == 0) // TODO: ! images_.empty()
     {
-        //Image* image = images_[writehead_];
-        images_.erase(images_.begin() + writehead_);
-        // delete image;
-        //delete images_[writehead_]; // FIXME: fine tune the image deletion algorithm
-        writehead_ --; // FIXME
+        std::cout << "Cannot delete a frame since writehead is at the beginning of the clip." << std::endl;
+    } else if (images_.empty()) {
+        std::cout << "Cannot delete a frame since the clip is empty." << std::endl;
+    } else if (writehead_ > images_.size()) {
+        std::cout << "Cannot delete a frame since the writehead points to a non-existing frame index " << writehead_ << " while the clip has only " << images_.size() << " images." << std::endl;
+    } else {
+        std::cout << "Deleting image at position " << (writehead_ - 1) << "/" << images_.size() << std::endl;
+        images_.erase(images_.begin() + (writehead_ - 1));
+        writehead_ --; 
         how_many_deleted = 1;
     }
     return how_many_deleted;
 }
+
 
 int Clip::get_playhead()
 {
@@ -142,16 +149,20 @@ int Clip::size()
 /**
  * Returns NULL if there is no image at the given index.
  */
-Image* Clip::get_image(int index)
+Image& Clip::get_image(int index)
 {
     // FIXME: will crash if no image at that index
-    int len = size();
-    if (index > len)
-    {
-        std::cout << "ERROR: There is no image at index " << index << " in the clip! Total is " << len << "." << std::endl;
-        return NULL;
-    }
-    return &(*images_[index]); // FIXME: is this OK?
+    //if (images_.empty())
+    //{
+    //    std::cout << "ERROR: There is no image in the clip!"<< std::endl;
+    //    return NULL;
+    //}
+    //else if (index > images_.size())
+    //{
+    //    std::cout << "ERROR: There is no image at index " << index << " in the clip! Total is " << images_.size() << "." << std::endl;
+    //    return NULL;
+    //}
+    return *images_.at(index); // FIXME: is this OK?
 }
 
 void Clip::increase_playhead_fps()

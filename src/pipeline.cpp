@@ -125,17 +125,12 @@ std::string Pipeline::get_image_full_path(Image* image)
  */
 void Pipeline::remove_frame()
 {
-    std::cout << "Removing a frame." << std::endl;
     Clip *thisclip = Application::get_instance().get_current_clip();
-    int current_clip_id = thisclip->get_id();
-    int num_deleted;
-    if (thisclip->size() > 0)
-    {
-        num_deleted = thisclip->frame_remove();
-        std::cout << "Deleted " << num_deleted << " frames in clip " << current_clip_id << std::endl; 
-    } else {
-        std::cout << "No image to delete." << std::endl;
-    }
+    //int num_deleted;
+    //num_deleted = 
+    thisclip->frame_remove();
+    //if (num_deleted > 0)
+    //    std::cout << "Deleted " << num_deleted << " frames in clip " << thisclip->get_id() << std::endl; 
 }
 /** 
  * Adds an image to the current clip.
@@ -162,7 +157,7 @@ void Pipeline::grab_frame()
     }
 
     int image_number = thisclip->frame_add();
-    Image *thisimage = thisclip->get_image(image_number);
+    Image *thisimage = &thisclip->get_image(image_number);
     std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl;
     std::string file_name = get_image_full_path(thisimage);
     // We can store the pixel data in RAM or not.
@@ -531,7 +526,7 @@ gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data
         char *buf;
         GdkPixbuf *pixbuf;
         bool loaded_pixbuf = false;
-        Image *thisimage = thisclip->get_image(image_number);
+        Image* thisimage = &thisclip->get_image(image_number);
         if (thisimage == NULL)
         {
             std::cout << "No image at index" << image_number << "." << std::endl;
