@@ -26,7 +26,10 @@
 #include <string>
 #include <map>
 #include <tr1/unordered_map>
+#include <tr1/memory>
 #include "image.h"
+
+using namespace std::tr1; // shared_ptr
 
 enum direction 
 {
@@ -45,14 +48,14 @@ class Clip
         int height_;
         int nchannels_;
         direction direction_;
-        std::vector<int> intervalometer_rate_;
-        std::vector<int> fps_;
+        //std::vector<int> intervalometer_rate_;
+        //std::vector<int> fps_;
         // This is a list of images
         // I think we should use a std::list<std::tr1::shared_ptr<Image*>>
         // Their order can change.
         // Some of them may disappear.
         // the app is multithread!
-        std::tr1::unordered_map<int, Image*> images_; // FIXME: use a list of shared_ptr to *Image
+        std::vector< shared_ptr<Image> > images_; // FIXME: use a list of shared_ptr to *Image
         int playhead_fps_;
     public:
         Clip(int id);

@@ -21,6 +21,7 @@
 
 #include "image.h"
 #include <string>
+#include <iostream>
 
 /** 
  * This Image class is just a container for a single integer value.
@@ -41,6 +42,7 @@ int Image::allocate_image(int bufsize)
 
 Image::~Image()
 {
+    std::cout << "Deleting image " << name_ << std::endl;
     delete rawdata_;
 }
 

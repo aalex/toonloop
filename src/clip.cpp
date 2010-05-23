@@ -24,6 +24,9 @@
 #include "timing.h"
 #include <string>
 #include <iostream>
+#include <tr1/memory>
+
+using namespace std::tr1; // shared_ptr
 
 /**
  * A clip is a list of images.
@@ -80,7 +83,8 @@ int Clip::frame_add()
 {
     int assigned = writehead_;
     std::string name = timing::get_iso_datetime_for_now();
-    images_[writehead_] = new Image(name);
+    images_.push_back(shared_ptr<Image>(new Image(name)));
+    //images_[writehead_] = new Image(name);
     writehead_ ++;
     return assigned;
 }
@@ -95,9 +99,12 @@ int Clip::frame_remove()
     int how_many_deleted = 0;
     //int len = size();
     int len = writehead_;
-    if (len > 0)
+    if (len > 0) // TODO: ! images_.empty()
     {
-        delete images_[writehead_]; // FIXME: fine tune the image deletion algorithm
+        //Image* image = images_[writehead_];
+        images_.erase(images_.begin() + writehead_);
+        // delete image;
+        //delete images_[writehead_]; // FIXME: fine tune the image deletion algorithm
         writehead_ --; // FIXME
         how_many_deleted = 1;
     }
@@ -144,6 +151,6 @@ Image* Clip::get_image(int index)
         std::cout << "ERROR: There is no image at index " << index << " in the clip! Total is " << len << "." << std::endl;
         return NULL;
     }
-    return images_[index];
+    return &(*images_[index]); // FIXME: is this OK?
 }
 
