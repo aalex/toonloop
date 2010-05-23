@@ -18,4 +18,4 @@ New features:
 Bug fixes: 
     * 51:   Package Boost file_system with autotools 
     * 5:    Resizing the window should resize render area 
-
+    * Memory leak when loading images.

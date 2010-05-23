@@ -1,7 +1,7 @@
 This README.txt file is for developers. The installations instructions are one level higher, in the README file.
 
-List of C++ files in Toonloop 2
--------------------------------
+List of C++ files in Toonloop 2.x
+---------------------------------
 
 Here is a short description of each header file:
 
@@ -23,3 +23,32 @@ Here is a short description of each header file:
  * timing.h : Tools to measure time and format dates.
  * tween.h : Tool to create motion interpolation. (in-betweens)
  * v4l2util.h : Tools to poll V4L2 video devices.
+
+
+Historic
+--------
+
+Let's talk about the choices made in this complete rewrite of Toonloop. This is now the 3rd rewrite of Toonloop, in a third programming language!
+
+Toonloop version 0.x was written in Processing. It is Java. The GNU/Linux version uses some Gstreamer wrapper for video capture. That is very nice and very easy to write for. I did not like how we had to manage the OpenGL coordinates. OpenGL is needed for fullscreen. Also, it seemed like Python was faster than Processing for that kind of task. The 0.x version is still pretty good for a very little amount of code. It offers the possibility to record frame at 30 FPS! That is almost live video editing! For scalability issues, and since I preferred to program in Python at that time, I switched to Python for version 1.x. 
+
+In Python, Toonloop 1.x is relying on the Pygame library for the video capture. Was is most annoying is that Pygame's video capture library is far from complete and the development is slow. Also, Pygame's release process could be improved. The packaging is done faster for Ubuntu than for Debian. I never got to install the 1.9 version on a Mac OS X system. Finally, SDL handles pretty badly the fullscreen mode. After working with Gstreamer for an other project, I decided to use it for the video capture in Toonloop 2.x. 
+
+Gstreamer offers us many means to catpure video. It's currently the best cross-platform video capture library. Vicap might comes second. VLC is pretty good too. I wanted to use OpenGL in order to do nice compositing, like the overlay mode, only possible efficiently with GLSL shaders. C++ is harder than Python and Java, and can lead to errors such as memory leak or segmentation faults, but it is also a lot faster when it's time to load an image's pixels. A lower-level approach gives more control to the developer. 
+
+
+Image number maths
+------------------
+
+Figuring out what how the writehead and playhead in Toonloop work might not be easy. One might forget it from time to time. That's why I note it here. 
+
+The image numbers are in the range [0, n - 1] for the playhead, since it is not possible to play an image that does not exist. For the writehead, the range is [0, n]. That means that when we add a frame, we add it at the position number that was stored in the writehead, and then increment it. When we delete a frame, we delete the image at writehead minus one, unless the writehead is at zero. This behaviour is similar to the STL iterators.  
+
+
+Images storage
+--------------
+
+In versions 0.x and 1.x, the images data was stored in the RAM. In this version, we store the images to disk as 100% JPEG. Anyways, the Linux kernel caches what it reads from the disk. The images still need to be decoded on every rendered frame, but JPEG is an old, lightweight image codec. 
+
+
+
