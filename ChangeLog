@@ -1,0 +1,155 @@
+toonloop 1.2.7
+
+    * Fixed crashes when giving a wrong -o option
+    * Fixed bug with the background image being enabled when pressing B
+
+toonloop 1.2.6
+
+  * Fix in the logic of the writehead. 
+
+toonloop 1.2.5
+
+  * Added help2man as a build-dep
+  * A few bug fixes with the joystick
+
+toonloop 1.2.4
+
+  * Added support for a joystick.
+
+toonloop 1.2.3
+
+  * Fixed a version error with a dependency. Namely, twisted.
+
+toonloop 1.2.1
+
+  * Put icon and man page back into repository.
+
+toonloop 1.2.0
+
+  * New stable branch.
+  * Icon and man page are generated in setup.py
+  * Added error dialogs if occuring at startup.
+  * Added python-gtk2 as a dependency.
+
+toonloop 1.1.11
+
+  * Removed features: bgimage_glob, web/rss server.
+  * Changed quit shortcut to ctrl-Q.
+  * Added icon and makefile to repository. Skipping those steps in debian packaing.
+
+toonloop 1.1.10
+
+  * Many bugfixes. Some critical with OSC and MIDI. Added a build dep.
+
+toonloop 1.1.9
+
+  * Fixed ugly texture problem when blank image.
+
+toonloop 1.1.8
+
+  * Improved texture loading speed.
+  * Ubuntu packaging.
+
+toonloop 1.1.7
+
+  * Fixed debian rules and control files. Removed dh_icons. Added python
+    build-dep
+  * Fixed copyright file with link to GPL 3 on Debian
+
+toonloop 1.1.6
+
+  * Added copyright file
+  * Added rule to install copyright file 
+
+toonloop 1.1.5
+
+  * Fixed dimension of the video textures when data from camera is not as
+    expected.
+  * Text line height is now more accurate.
+  * Changed maintainer name.
+  * Fixed a few errors in Debian package than lintian pointed out.
+
+toonloop 1.1.4
+
+  * Implemented the head-up display, which writes statistics and help.
+  * Updated documentation a little.
+
+toonloop 1.1.3
+
+  * Fixed a crash when video1 is present, but no video0
+  * Updated debian description and man page text.
+
+toonloop 1.1.2
+
+  * Added the --disable-effects option.
+
+toonloop 1.1.1
+
+  * Rehabilitated ~/.toonloop.json state saving file.
+  * Rendering order configured in themes.
+  * Created the PlaybackPictureInPicture theme.
+  * Updated the toon/data/toonloop.fx.pd patch to be able to change the color in leavecolor fx.
+  * Fixed image_flip_horizontal
+  * Making sure not to draw onion skin if no image in clip.
+
+toonloop 1.1.0
+
+  * Made the icon background transparent
+  * Added groups of options. One for each effect.
+  * Unified interface to effects.
+  * Added simplechroma, lumakey, leavecolor and brcosa effects.
+  * Background image is one taken using a special key stroke.
+  * Able to add or delete frames anywhere in a clip.
+  * Playback direction : forward, backward, back&forth.
+  * Display a progress bar when saving a clip.
+  * Shift-Q to quit, and not ESC anymore.
+
+toonloop 1.0.9
+
+  * Fixing version number in python files.
+  * Added progress bar when saving a clip.
+  * Improved the glslang-run script.
+  * ESC now toggles fullscreen instead of quitting. Use shift-Q to quit. 
+  * fixed typo in man page 
+  * Trying to catch error when GLSL is not available on the system at launch
+    time.
+
+toonloop 1.0.8
+  
+  * Onion skinning texture is now updated when deleting frames or moving writehead.
+  * Added styles. The picture_in_picture style looks OK.
+  * Added yoyo and backwards playback directions.
+  * rats.render now handles errors gracefully. No longer stuck in fullscreen with an exception making controls inactive.
+  * Added --fullscreen flag.
+  * Changed default selected clip to #1.
+ 
+toonloop 1.0.7
+  
+  * Creating a PNG icon at install time.
+ 
+toonloop 1.0.6
+  
+  * SVG icon now goes to the right place, and not into a directory with its
+    name.
+  * Fixed crash when deleting a frame. Dangerous in fullscreen mode.  
+ 
+toonloop 1.0.5
+  
+  * General clean up done. This deserves a version number increment :
+  * Improved error handling
+  * Debian packaging seems ok.
+  * Signals in the GTK way work.
+  * Man page improved a lot.
+  * Added mouse support.
+  * Forcing garbage collection on every frame...
+  * .desktop file corrected.
+ 
+
+toonloop 1.0.4
+  
+  * fixed more error with .desktop file.
+  * fixed error with .desktop file.
+  * Completed the writehead feature. 
+  * Cleaned up globals
+  * Renamed desktop file and icon to lowercase.
+
