@@ -74,4 +74,5 @@ tests/check_symlinks
 tests/check_threads
 tests/check_tween
 tests/check_signals
+tests/check_statesaving
 

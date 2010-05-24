@@ -10,6 +10,7 @@ headers = \
 	gui.h \
 	image.h \
 	log.h \
+    oscreceiver.h \
 	pipeline.h \
 	shader.h \
 	subprocess.h \
@@ -25,6 +26,7 @@ toonloop_SOURCES = \
 	gui.cpp \
 	image.cpp \
 	main.cpp \
+    oscreceiver.cpp \
 	pipeline.cpp \
 	shader.cpp \
 	texture.cpp \
@@ -39,7 +41,7 @@ toonloop_CXXFLAGS = \
 	$(GSTGL_CFLAGS) \
 	$(GST_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(LIBLO_CXXFLAGS) \
+	$(LIBLO_CFLAGS) \
 	$(LIBM_CXXFLAGS) \
 	$(LIBTHREAD_CXXFLAGS)
  

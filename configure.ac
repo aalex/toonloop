@@ -27,7 +27,6 @@ AC_CHECK_FUNCS([inet_ntoa memset socket])
 
 AC_CHECK_LIB([pthread],[pthread_exit],[AC_SUBST([LIBTHREAD_CXXFLAGS],["-lpthread"])])
 AC_CHECK_LIB([m],[sin],[AC_SUBST([LIBM_CXXFLAGS],["-lm"])])
-AC_CHECK_LIB([lo],[lo_send_internal],[AC_SUBST([LIBLO_CXXFLAGS],["-llo"])])
 
 # GTK and GST
 PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.12.9 glib-2.0 >= 2.16.6 gdk-2.0])
@@ -40,6 +39,13 @@ AC_SUBST([GST_LIBS])
 AC_SUBST([GST_CFLAGS])
 AC_SUBST([GSTGL_LIBS])
 AC_SUBST([GSTGL_CFLAGS])
+
+#Set LIBLO with pkg-config
+PKG_CHECK_MODULES(LIBLO, liblo, have_liblo=true, have_liblo=false)
+if test "x${have_liblo}" = "xfalse" ; then
+    AC_MSG_ERROR([Missing liblo])
+fi
+#AC_CHECK_LIB([lo],[lo_send_internal],[AC_SUBST([LIBLO_CXXFLAGS],["-llo"])])
 
 # libxml++-1.0
 #PKG_CHECK_MODULES([XMLPLUSPLUS], [libxml++-2.6 >= 2.10.0])

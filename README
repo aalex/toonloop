@@ -51,6 +51,7 @@ soon.
  help2man,
  libasound-dev,
  libboost-all-dev,
+ liblo-dev,
  libglew1.5-dev,
  libglib2.0-dev,
  libglu1-mesa-dev,
