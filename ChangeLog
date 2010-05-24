@@ -1,7 +1,7 @@
 toonloop 1.2.7
 
-    * Fixed crashes when giving a wrong -o option
-    * Fixed bug with the background image being enabled when pressing B
+  * Fixed crashes when giving a wrong -o option
+  * Fixed bug with the background image being enabled when pressing B
 
 toonloop 1.2.6
 
@@ -115,26 +115,26 @@ toonloop 1.0.9
     time.
 
 toonloop 1.0.8
-  
+
   * Onion skinning texture is now updated when deleting frames or moving writehead.
   * Added styles. The picture_in_picture style looks OK.
   * Added yoyo and backwards playback directions.
   * rats.render now handles errors gracefully. No longer stuck in fullscreen with an exception making controls inactive.
   * Added --fullscreen flag.
   * Changed default selected clip to #1.
- 
+
 toonloop 1.0.7
-  
+
   * Creating a PNG icon at install time.
- 
+
 toonloop 1.0.6
-  
+
   * SVG icon now goes to the right place, and not into a directory with its
     name.
   * Fixed crash when deleting a frame. Dangerous in fullscreen mode.  
- 
+
 toonloop 1.0.5
-  
+
   * General clean up done. This deserves a version number increment :
   * Improved error handling
   * Debian packaging seems ok.
@@ -143,10 +143,9 @@ toonloop 1.0.5
   * Added mouse support.
   * Forcing garbage collection on every frame...
   * .desktop file corrected.
- 
 
 toonloop 1.0.4
-  
+
   * fixed more error with .desktop file.
   * fixed error with .desktop file.
   * Completed the writehead feature. 
