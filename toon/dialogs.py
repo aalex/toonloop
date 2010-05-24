@@ -93,6 +93,7 @@ class ErrorDialog(object):
 
     def terminate(self, dialog):
         dialog.destroy()
+        print("Error message has been destroyed.")
         self.deferredResult.callback(True)
 
 class YesNoDialog(object):

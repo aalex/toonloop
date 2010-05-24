@@ -54,15 +54,14 @@ def exit_with_error(message):
     If possible, shows a GTK error dialog.
     @rettype: L{Deferred}
     """
+    ret = None
     print(message)
     if GTK_LOADED:
         from toon import dialogs
-        d = dialogs.ErrorDialog.create(message)
-        if not reactor.running:
-            reactor.run()
-        return d
+        ret = dialogs.ErrorDialog.create(message)
     else:
-        return defer.succeed(None)
+        ret = defer.succeed(None)
+    return ret
 
 def run():
     """
@@ -163,6 +162,8 @@ def run():
             except KeyError, e:
                 d = exit_with_error("Error. No such Toonloop option : %s" % (e.message))
                 d.addCallback(_exit_with_error_cb)
+                if not reactor.running:
+                    reactor.run()
                 return
     try:
         toonloop = core.Toonloop(config)
@@ -171,6 +172,8 @@ def run():
     except core.ToonloopError, e:
         d = exit_with_error("Exiting toonloop with error: %s" % (e))
         d.addCallback(_exit_with_error_cb)
+        if not reactor.running:
+            reactor.run()
         return
     else:
         print("Congratulations ! Toonloop started gracefully.")
@@ -191,3 +194,4 @@ def run():
         pass # will exit on ctrl-c
     print("Exiting toonloop")
     sys.exit(0)
+
