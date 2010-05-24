@@ -31,7 +31,6 @@ python-build-stamp-*
 *.o
 # autoconf generated
 COPYING
-ChangeLog
 INSTALL
 *Makefile.in*
 *Makefile*
