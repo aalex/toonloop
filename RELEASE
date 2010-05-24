@@ -3,12 +3,16 @@ Release notes for Toonloop 1.9
 This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series.
 
 New features:
-    * DONE: Choose whether to use SDL, GTK, GTKglext, wxWidgets, or the generic one in the gst-plugins-gl/tests/examples. (We chose GTK)
-    * DONE: Get the pipeline that takes snapshots with gtkpixbufsink done. (it works, just need to save to a proper file name)
-    * DONE: prototype: Load images in a gdkpixbuf to create an OpenGL texture and display it.
+    * DONE: Choose whether to use SDL, GTK, GTKglext, wxWidgets, or the generic
+        one in the gst-plugins-gl/tests/examples. (We chose GTK)
+    * DONE: Get the pipeline that takes snapshots with gtkpixbufsink done. 
+        (it works, just need to save to a proper file name)
+    * DONE: prototype: Load images in a gdkpixbuf to create an OpenGL texture 
+        and display it.
     * DONE: creates directories (using boost::filesystem)
     * DONE: Use boost::program_options in a similar way to Toonloop 1.x.
-    * DONE: Be able to choose the camera input, or the test source. We had to detect the supported FPS by the camera.
+    * DONE: Be able to choose the camera input, or the test source. We had to 
+        detect the supported FPS by the camera.
     * DONE: Encapsulate the pipeline and the OpenGL rendering in a class.
     * DONE: Resize render area when window is resized.
     * DONE: Use GLEW to check for the OpenGL extensions needed to use shaders.
@@ -19,3 +23,4 @@ Bug fixes:
     * 51:   Package Boost file_system with autotools 
     * 5:    Resizing the window should resize render area 
     * Memory leak when loading images.
+
