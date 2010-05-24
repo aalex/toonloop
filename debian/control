@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Alexandre Quessy <alexandre@quessy.net>
 Build-Depends: cdbs, debhelper (>= 5.0.38), python (>= 2.4), python-central (>= 0.6.0), python-opengl, python-pygame (>=1.9.0), python-twisted, imagemagick, python-setuptools, python-gtk2, mencoder, help2man
 XS-Python-Version: >= 2.4
-Standards-Version: 3.8.0
+Standards-Version: 3.8.4
 Homepage: http://www.toonloop.com/
 
 Package: toonloop
