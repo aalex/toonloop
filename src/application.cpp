@@ -81,7 +81,7 @@ void Application::run(int argc, char *argv[])
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode.")
         ("sync", po::bool_switch(), "Enables X11 debug.")
         ("keep-images-in-ram,R", po::bool_switch(), "Keep all the images to the computer RAM and do not load JPEG from the disk.")
-        ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device. Use \"test\" for color bars.");
+        ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device. Use \"test\" for color bars. Use \"x\" to capture the screen.");
     po::variables_map options;
     po::store(po::parse_command_line(argc, argv, desc), options);
     po::notify(options);
@@ -98,7 +98,7 @@ void Application::run(int argc, char *argv[])
     if (options.count("video-source"))
     {
         video_source = options["video-source"].as<std::string>();
-        if (video_source != "test")
+        if (video_source != "test" && video_source != "x")
         {
             if (! fs::exists(video_source))
             {

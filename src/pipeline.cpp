@@ -411,10 +411,17 @@ Pipeline::Pipeline()
     if (config.videoSource() == std::string("test")) 
     {
         videosrc_  = gst_element_factory_make("videotestsrc", "videosrc0");
-    } else {
+    } 
+    else if (config.videoSource() == std::string("x")) 
+    {
+        videosrc_  = gst_element_factory_make("ximagesrc", "videosrc0");
+    } 
+    else 
+    {
         videosrc_  = gst_element_factory_make("v4l2src", "videosrc0"); // TODO: add more like in Ekiga
     }
     g_assert(videosrc_); // TODO: use something else than g_assert to see if we could create the elements.
+    
     // capsfilter element #0
         // Possible values for the capture FPS:
         // 25/1 
@@ -484,29 +491,37 @@ Pipeline::Pipeline()
     gboolean is_linked = NULL;
     bool source_is_linked = false;
     int frame_rate_index = 0;
-    if (config.videoSource() == std::string("test")) 
+    if (config.videoSource() == std::string("test") || config.videoSource() == std::string("x")) 
     {
-        g_object_set(capsfilter0, "caps", gst_caps_from_string(std::string("video/x-raw-yuv, width=640, height=480, framerate=30/1").c_str()));
+        if (config.videoSource() == std::string("x")) 
+        {
+            g_object_set(G_OBJECT(videosrc_), "endx", 640, NULL);
+            g_object_set(G_OBJECT(videosrc_), "endy", 480, NULL);
+            g_object_set(capsfilter0, "caps", gst_caps_from_string(std::string("video/x-raw-rgb, framerate=30/1").c_str()));
+        } else {
+            g_object_set(capsfilter0, "caps", gst_caps_from_string(std::string("video/x-raw-yuv, width=640, height=480, framerate=30/1").c_str()));
+        }
         is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
         if (!is_linked) { g_print("Could not link %s to %s.\n", "videotestsrc", "capfilter0"); exit(1); }
         source_is_linked = true;
-    }
-
-    while (not source_is_linked)
-    {
-        g_object_set(capsfilter0, "caps", gst_caps_from_string(guess_source_caps(frame_rate_index).c_str()));
-        is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
-        if (!is_linked) 
-        { 
-            std::cout << "Failed to link video source. Trying an other framerate." << std::endl;
-            ++frame_rate_index;
-            if (frame_rate_index >= 10) 
-            {
-                std::cout << "Giving up after 10 tries." << std::endl;
+    } else {
+        // Guess the right FPS to use with the video capture device
+        while (not source_is_linked)
+        {
+            g_object_set(capsfilter0, "caps", gst_caps_from_string(guess_source_caps(frame_rate_index).c_str()));
+            is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
+            if (!is_linked) 
+            { 
+                std::cout << "Failed to link video source. Trying an other framerate." << std::endl;
+                ++frame_rate_index;
+                if (frame_rate_index >= 10) 
+                {
+                    std::cout << "Giving up after 10 tries." << std::endl;
+                }
+            } else {
+                std::cout << "Success." << std::endl;
+                source_is_linked = true;
             }
-        } else {
-            std::cout << "Success." << std::endl;
-            source_is_linked = true;
         }
     }
     is_linked = gst_element_link_pads(capsfilter0, "src", ffmpegcolorspace0, "sink");
@@ -538,7 +553,7 @@ Pipeline::Pipeline()
     gst_object_unref(bus);
 
     //TODO: 
-    if (config.videoSource() != std::string("test"))
+    if (config.videoSource() != std::string("test") && config.videoSource() != std::string("x"))
     {
         std::string device_name = config.videoSource(); // "/dev/video0";
         g_print("Using camera %s.\n", device_name.c_str());
@@ -710,7 +725,7 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
         << "480" //<< config_.captureHeight()
         << ", framerate="
         << capsSuffix;
-    LOG_DEBUG("V4l2src caps are " << capsStr.str());
+    LOG_DEBUG("Video source caps are " << capsStr.str());
     ret = gst_element_set_state(videosrc_, GST_STATE_NULL);
     if (ret not_eq GST_STATE_CHANGE_SUCCESS)
         THROW_ERROR("Could not change v4l2src state to NULL");
