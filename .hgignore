@@ -30,8 +30,6 @@ python-build-stamp-*
 #---------- cpp files
 *.o
 # autoconf generated
-COPYING
-INSTALL
 *Makefile.in*
 *Makefile*
 NEWS
