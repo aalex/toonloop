@@ -28,6 +28,7 @@
 #include "configuration.h"
 #include <tr1/memory>
 #include <boost/program_options.hpp>
+#include "oscinterface.h"
 
 namespace po = boost::program_options;
 
@@ -49,6 +50,7 @@ class Application
         static Application* instance_; // singleton
         // TODO: change for scoped_ptr
         std::tr1::shared_ptr<Gui> gui_;
+        std::tr1::shared_ptr<OscInterface> osc_;
         std::tr1::shared_ptr<Pipeline> pipeline_;
         std::tr1::shared_ptr<Configuration> config_;
         int selected_clip_;

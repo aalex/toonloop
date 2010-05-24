@@ -161,6 +161,8 @@ void Application::run(int argc, char *argv[])
     //Configuration config(options);
     config_ = std::tr1::shared_ptr<Configuration>(new Configuration(options));
     config_->set_project_home(project_home);
+    osc_ = std::tr1::shared_ptr<OscInterface>(new OscInterface("11337"));
+    osc_->start();
 
     // Init GTK:
     gtk_init(&argc, &argv);
