@@ -12,6 +12,7 @@ headers = \
 	log.h \
     oscinterface.h \
     oscreceiver.h \
+    oscsender.h \
 	pipeline.h \
 	shader.h \
 	subprocess.h \
@@ -29,6 +30,7 @@ toonloop_SOURCES = \
 	main.cpp \
     oscinterface.cpp \
     oscreceiver.cpp \
+    oscsender.cpp \
 	pipeline.cpp \
 	shader.cpp \
 	texture.cpp \
