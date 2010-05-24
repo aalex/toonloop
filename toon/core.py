@@ -672,19 +672,19 @@ class Toonloop(render.Game):
         """
         Makes the current image from the camera to be the background image.
         """
-        if self.config.verbose:
-            print("Taking a snapshot for background image.")
-        try:
-            if self.is_mac:
-                self.background_image = self.most_recent_image.copy()
+        if self.config.bgimage_enabled:
+            if self.config.verbose:
+                print("Taking a snapshot for background image.")
+            try:
+                if self.is_mac:
+                    self.background_image = self.most_recent_image.copy()
+                else:
+                    self.background_image = self.most_recent_image
+            except MemoryError, e:
+                print("CRITICAL ERROR : No more memory !!! %s" % (e.message))
             else:
-                self.background_image = self.most_recent_image
-        except MemoryError, e:
-            print("CRITICAL ERROR : No more memory !!! %s" % (e.message))
-        else:
-            self.config.bgimage_enabled = True
-            # Create an OpenGL texture
-            draw.texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self.background_image)
+                # Create an OpenGL texture
+                draw.texture_from_image(self.textures[self.TEXTURE_BACKGROUND], self.background_image)
 
     def print_stats(self):
         """
