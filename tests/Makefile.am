@@ -1,4 +1,4 @@
-TESTS = check_looper check_classes check_commands check_threads check_bool check_datetime check_tween check_moviesaver check_symlinks check_containers
+TESTS = check_looper check_classes check_commands check_threads check_bool check_datetime check_tween check_moviesaver check_symlinks check_containers check_statesaving
 
 noinst_PROGRAMS = $(TESTS)
 
@@ -44,3 +44,8 @@ check_moviesaver_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB) $(GTK_LIBS)
 check_containers_SOURCES = check_containers.cpp 
 check_containers_CXXFLAGS = $(BOOST_CPPFLAGS) 
 check_containers_LDADD = $(BOOST_LIBS) 
+
+
+check_statesaving_SOURCES = check_statesaving.cpp 
+check_statesaving_CXXFLAGS = $(BOOST_CPPFLAGS) 
+check_statesaving_LDADD = $(BOOST_LIBS) 

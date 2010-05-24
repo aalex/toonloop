@@ -61,6 +61,8 @@ soon.
  libportmidi-dev,
  libtool,
  libxml2-dev,
+ libxml++2.6-2,
+ libxml++2.6-dev,
  libxv-dev,
  mencoder,
  python (>= 2.4),
