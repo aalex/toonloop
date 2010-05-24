@@ -473,6 +473,7 @@ class Toonloop(render.Game):
         self.optgroups = {}
         self._setup_effects()
         self.background_image = None
+        self.bgimage_snap() # copy self.most_recent_image's pixels
         self._setup_background()
         self._clear_playback_view()
         self._clear_onion_peal()

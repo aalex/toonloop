@@ -41,6 +41,7 @@ except Exception, e:
     print("Could not load GTK: %s" % (e))
 from twisted.internet import reactor
 from twisted.internet import error
+from twisted.internet import defer
 
 # the core: 
 from rats import render
@@ -51,20 +52,17 @@ def exit_with_error(message):
     """
     Exits with error.
     If possible, shows a GTK error dialog.
+    @rettype: L{Deferred}
     """
     print(message)
     if GTK_LOADED:
         from toon import dialogs
         d = dialogs.ErrorDialog.create(message)
-        def _cb(result):
-            if reactor.running:
-                reactor.stop()
-            sys.exit(1)
-        d.addCallback(_cb)
         if not reactor.running:
             reactor.run()
+        return d
     else:
-        sys.exit(1)
+        return defer.succeed(None)
 
 def run():
     """
@@ -148,6 +146,10 @@ def run():
     print("Using video device %d" % options.device)
     print("Press h for usage and instructions.")
     print("Press i for informations and statistics.")
+    def _exit_with_error_cb(result):
+        print("An error occurred. Exiting.")
+        if reactor.running:
+            reactor.stop()
     if config_dict['verbose']:
         print("Started in verbose mode.")
     if options.option:
@@ -159,16 +161,16 @@ def run():
                 if config.verbose:
                     print("OPTION \"%s\" : %s       %s" % (k, v, kind))
             except KeyError, e:
-                exit_with_error("Error. No such Toonloop option : %s" % (e.message))
-            except Exception, e:
-                print(sys.exc_info())
-                exit_with_error('Error with Toonloop option :', e.message)
+                d = exit_with_error("Error. No such Toonloop option : %s" % (e.message))
+                d.addCallback(_exit_with_error_cb)
+                return
     try:
         toonloop = core.Toonloop(config)
         if options.verbose:
             toonloop.print_help()
     except core.ToonloopError, e:
-        exit_with_error("Exiting toonloop with error: %s" % (e))
+        d = exit_with_error("Exiting toonloop with error: %s" % (e))
+        d.addCallback(_exit_with_error_cb)
         return
     else:
         print("Congratulations ! Toonloop started gracefully.")
