@@ -50,9 +50,10 @@ gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data
     //Pipeline* context = static_cast<Pipeline*>(data);
     static int number_of_frames_in_last_second = 0; // counting FPS
     static bool first_draw = true;
+    static int prev_image_number = -1;
     static Timer fps_calculation_timer = Timer();
     static Timer playback_timer = Timer(); // TODO: move to Clip
-    GLuint frametexture;
+    static GLuint frametexture;
     GLint texturelocation;
     bool move_playhead = false;
     Clip *thisclip = Application::get_instance().get_current_clip();
@@ -155,7 +156,8 @@ gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data
             {
                 if (Application::get_instance().get_configuration().get_images_in_ram())
                 {
-                    buf = thisimage->get_rawdata();
+                    if (image_number != prev_image_number)
+                        buf = thisimage->get_rawdata();
                     pixels_are_loaded = true;
                 } else {
                     std::string image_full_path = Application::get_instance().get_pipeline().get_image_full_path(thisimage);
@@ -181,8 +183,13 @@ gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data
             // Let's read them from the disk.
             
             glEnable(GL_TEXTURE_RECTANGLE_ARB);
+            if (image_number != prev_image_number) {
+                glGenTextures(1, &frametexture);
+            }
             glBindTexture(GL_TEXTURE_RECTANGLE_ARB, frametexture);
-            glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
+            if (image_number != prev_image_number) {
+                glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
+            }   
             // TODO: simplify those parameters
             glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -203,6 +210,7 @@ gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data
                 //std::cout << "Freed pixels buffer.\n";
             }
         }
+        prev_image_number = image_number;
     }
 #if 0
     //disable shader
