@@ -30,11 +30,8 @@ python-build-stamp-*
 #---------- cpp files
 *.o
 # autoconf generated
-COPYING
-INSTALL
 *Makefile.in*
 *Makefile*
-NEWS
 aclocal.m4
 autom4te.cache/*
 config.guess
