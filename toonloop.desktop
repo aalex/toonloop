@@ -7,5 +7,5 @@ Name=Toonloop Live Animation System
 Name[fr]=Système d'animation en direct Toonloop
 Comment=The Toonloop Live Stop Motion Animation System
 Comment[fr]=Système d'animation image par image en direct Toonloop
-Categories=AudioVideo;
+Categories=AudioVideo;Video;AudioVideoEditing;
 Icon=toonloop.png
