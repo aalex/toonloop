@@ -1,3 +1,7 @@
+toonloop 1.2.8
+
+  * Removed debian directory from the project!
+
 toonloop 1.2.7
 
   * Fixed crashes when giving a wrong -o option
