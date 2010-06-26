@@ -29,6 +29,7 @@
 #include <tr1/memory>
 #include <boost/program_options.hpp>
 #include "oscinterface.h"
+#define MAX_CLIPS 10
 
 namespace po = boost::program_options;
 
@@ -43,6 +44,8 @@ class Application
         Configuration &get_configuration();
         static Application& get_instance();
         Clip* get_current_clip();
+        int get_current_clip_number();
+        void set_current_clip_number(int clipnumber);
         double get_cfps();
 
     private:

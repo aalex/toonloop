@@ -60,6 +60,7 @@ class Clip
         // the app is multithread!
         std::vector< shared_ptr<Image> > images_; // FIXME: use a list of shared_ptr to *Image
         int playhead_fps_;
+        bool has_recorded_a_frame_;
         boost::mutex mutex_;
     public:
         Clip(int id);
@@ -81,6 +82,8 @@ class Clip
         void decrease_playhead_fps();
         void lock_mutex();
         void unlock_mutex();
+        void set_has_recorded_frame();
+        bool get_has_recorded_frame();
 };
 
 #endif // __CLIP_H__

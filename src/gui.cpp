@@ -72,6 +72,8 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
 {
     Gui *context = static_cast<Gui*>(data);
     Clip *current_clip = Application::get_instance().get_current_clip();
+    int clip;
+
     switch (event->keyval)
     {
         case GDK_Up:
@@ -91,6 +93,18 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
             break;
         case GDK_space:
             Application::get_instance().get_pipeline().grab_frame();
+            break;
+        case GDK_Page_Up:
+            clip = Application::get_instance().get_current_clip_number();
+            if (clip < MAX_CLIPS - 1)
+                Application::get_instance().set_current_clip_number(clip + 1);
+            current_clip = Application::get_instance().get_current_clip();
+            break;
+        case GDK_Page_Down:
+            clip = Application::get_instance().get_current_clip_number();
+            if (clip > 0)
+                Application::get_instance().set_current_clip_number(clip - 1);
+            current_clip = Application::get_instance().get_current_clip();
             break;
         case GDK_q:
             // Quit application on ctrl-q, this quits the main loop

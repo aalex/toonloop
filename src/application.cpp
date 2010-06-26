@@ -42,7 +42,7 @@ Application* Application::instance_ = 0;
 
 Application::Application() 
 {
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < MAX_CLIPS; i++)
     {
         clips_[i] = new Clip(i);
     }
@@ -52,6 +52,17 @@ Application::Application()
 Clip* Application::get_current_clip()
 {
     return clips_[selected_clip_];
+}
+
+int Application::get_current_clip_number()
+{
+    return selected_clip_;
+}
+
+void Application::set_current_clip_number(int clipnumber)
+{
+    selected_clip_ = clipnumber;
+    std::cout << "current clip is " << selected_clip_ << std::endl;
 }
 
 /**
@@ -148,6 +159,7 @@ void Application::run(int argc, char *argv[])
         for (int i = 0; i < clips_.size(); i++)
         {
             clips_[i]->set_playhead_fps(options["playhead-fps"].as<int>());
+            std::cout << "The initial frame rate for clip playhead is set to " << options["playhead-fps"].as<int>() << std::endl;
         }
     }
 

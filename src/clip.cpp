@@ -42,6 +42,7 @@ Clip::Clip(int id)
     writehead_ = 0;
     playhead_ = 0;
     playhead_fps_ = 12; // some default for now
+    has_recorded_a_frame_ = false;
     //mutex_;
 }
 
@@ -194,5 +195,15 @@ void Clip::lock_mutex()
 void Clip::unlock_mutex()
 {
     mutex_.unlock();
+}
+
+bool Clip::get_has_recorded_frame()
+{
+    return has_recorded_a_frame_;
+}
+
+void Clip::set_has_recorded_frame()
+{
+    has_recorded_a_frame_ = true;
 }
 

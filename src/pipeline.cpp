@@ -51,12 +51,15 @@ gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data
     static int number_of_frames_in_last_second = 0; // counting FPS
     static bool first_draw = true;
     static int prev_image_number = -1;
+    static Clip *prevclip = NULL;
     static Timer fps_calculation_timer = Timer();
     static Timer playback_timer = Timer(); // TODO: move to Clip
     static GLuint frametexture;
     GLint texturelocation;
     bool move_playhead = false;
     Clip *thisclip = Application::get_instance().get_current_clip();
+    bool need_refresh = false;
+
     thisclip->lock_mutex();
 
     ++ number_of_frames_in_last_second;
@@ -143,7 +146,13 @@ gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data
         char *buf;
         GdkPixbuf *pixbuf;
         bool loaded_pixbuf = false;
-        Image* thisimage = &thisclip->get_image(image_number);
+        Image* thisimage = &(thisclip->get_image(image_number));
+
+        if ( (prevclip != thisclip) || (prev_image_number != image_number) )
+              need_refresh = true;
+        if (prevclip != thisclip) {
+            prevclip = thisclip;
+        }
         if (thisimage == NULL)
         {
             std::cout << "No image at index" << image_number << "." << std::endl;
@@ -156,7 +165,7 @@ gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data
             {
                 if (Application::get_instance().get_configuration().get_images_in_ram())
                 {
-                    if (image_number != prev_image_number)
+                    if ( need_refresh )
                         buf = thisimage->get_rawdata();
                     pixels_are_loaded = true;
                 } else {
@@ -183,11 +192,11 @@ gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data
             // Let's read them from the disk.
             
             glEnable(GL_TEXTURE_RECTANGLE_ARB);
-            if (image_number != prev_image_number) {
+            if (need_refresh) {
                 glGenTextures(1, &frametexture);
             }
             glBindTexture(GL_TEXTURE_RECTANGLE_ARB, frametexture);
-            if (image_number != prev_image_number) {
+            if (need_refresh) {
                 glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
             }   
             // TODO: simplify those parameters
@@ -195,7 +204,7 @@ gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data
             glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            
+
             // Right image
             glPushMatrix();
             glTranslatef(0.6666666f, 0.0f, 0.0f);
@@ -349,12 +358,12 @@ void Pipeline::grab_frame()
     int nchannels = gdk_pixbuf_get_n_channels(pixbuf);
 
     /* if this is the first frame grabbed, set frame properties in clip */
-    if (! has_recorded_a_frame_) 
+    if (! thisclip->get_has_recorded_frame()) 
     {
         // TODO: each image should be a different size, if that's what it is.
         thisclip->set_width(w);
         thisclip->set_height(h);
-        has_recorded_a_frame_ = true;
+        thisclip->set_has_recorded_frame();
     }
 
     int image_number = thisclip->frame_add();
@@ -567,7 +576,6 @@ Pipeline::Pipeline()
         g_print("Using camera %s.\n", device_name.c_str());
         g_object_set(videosrc_, "device", device_name.c_str(), NULL); 
     }
-    has_recorded_a_frame_ = false;
     // make it play !!
 
     /* run */
