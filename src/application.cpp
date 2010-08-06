@@ -18,30 +18,34 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <GL/glew.h>
 #include "application.h"
+#include "clip.h"
+#include "config.h"
+#include "configuration.h"
 #include "gui.h"
 #include "pipeline.h"
-#include "pipeline.h"
+#include <GL/glew.h>
+#include <boost/filesystem.hpp>
+#include <boost/program_options.hpp>
+#include <clutter-gst/clutter-gst.h>
+#include <clutter-gtk/clutter-gtk.h>
+#include <cstdlib> // for getenv
+#include <gst/gst.h>
+#include <gtk/gtk.h>
 #include <iostream>
 #include <string>
-#include <gtk/gtk.h>
-#include <boost/program_options.hpp>
-#include <boost/filesystem.hpp>
-#include <cstdlib> // for getenv
-#include "config.h"
-#include <gtk/gtk.h>
-#include <gst/gst.h>
-#include "clip.h"
-#include "configuration.h"
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
+// TODO:2010-08-05:aalex:Get rid of the singleton pattern
+// We might want many loopers!
 Application* Application::instance_ = 0;
 
 Application::Application() 
 {
+    // FIXME:2010-08-05:aalex:We should not create clips at startup like that.
+    // They should be created on-demand
     for (int i = 0; i < MAX_CLIPS; i++)
     {
         clips_[i] = new Clip(i);
@@ -176,9 +180,9 @@ void Application::run(int argc, char *argv[])
     osc_ = std::tr1::shared_ptr<OscInterface>(new OscInterface("11337"));
     osc_->start();
 
-    // Init GTK:
+    // Init GTK, Clutter and GST:
     gtk_init(&argc, &argv);
-    // Init GST:
+    clutter_init(&argc, &argv);
     gst_init(&argc, &argv);
     // start GUI
     std::cout << "Starting GUI." << std::endl;
