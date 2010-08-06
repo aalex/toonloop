@@ -145,7 +145,6 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
     gtk_window_unfullscreen(GTK_WINDOW(widget));
 }
 
-
 void iterate_playhead()
 {
     Gui gui = Application::get_instance().get_gui();
@@ -185,6 +184,15 @@ void iterate_playhead()
     
     if(thisclip->size() > 0) 
     {     
+        if (! CLUTTER_ACTOR_IS_VISIBLE(gui.playback_texture_))
+            clutter_actor_show_all(CLUTTER_ACTOR(gui.playback_texture_));
+    } else {
+        if (CLUTTER_ACTOR_IS_VISIBLE(gui.playback_texture_))
+            clutter_actor_hide_all(CLUTTER_ACTOR(gui.playback_texture_));
+    }
+    if(thisclip->size() > 0) 
+    {     
+            
         // FIXME: we don't need to create a texture on every frame!!
         //double spf = (1 / thisclip->get_playhead_fps());
         if (move_playhead) // if it's time to move the playhead
@@ -242,7 +250,7 @@ void iterate_playhead()
             }
         }
         prev_image_number = image_number;
-    }
+    } 
 }
 
 /** 
@@ -412,7 +420,7 @@ Gui::Gui() :
      * will call show on the stage.
      */
     clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
-    clutter_actor_show_all(CLUTTER_ACTOR(playback_texture_));
+    //clutter_actor_show_all(CLUTTER_ACTOR(playback_texture_));
 }
 
 ClutterActor* Gui::get_live_input_texture()
