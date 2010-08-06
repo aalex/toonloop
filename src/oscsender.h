@@ -1,7 +1,7 @@
 #ifndef _OSC_SENDER_H_
 #define _OSC_SENDER_H_
 
-#include "lo/lo.h"
+#include <lo/lo.h>
 #include <string>
 
 class OscSender {

@@ -18,24 +18,25 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <GL/glew.h>
-#include <gtk/gtk.h>
 #include <GL/gl.h>
+#include <GL/glew.h>
 #include <GL/glx.h>
-#include <gst/gst.h>
-#include <gdk/gdk.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <iostream>
-#include <cstring> // for memcopy
-#include "gstgtk.h"
-#include "pipeline.h"
-#include "draw.h"
-#include "application.h"
-#include "gui.h"
-#include <stdlib.h> // for itoa()
-#include "configuration.h"
-#include "log.h" // TODO: make it async and implement THROW_ERROR
 #include <boost/filesystem.hpp>
+#include <cstring> // for memcopy
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk/gdk.h>
+#include <gst/gst.h>
+#include <gtk/gtk.h>
+#include <iostream>
+#include <stdlib.h> // for itoa()
+
+#include "application.h"
+#include "configuration.h"
+#include "draw.h"
+#include "gstgtk.h"
+#include "gui.h"
+#include "log.h" // TODO: make it async and implement THROW_ERROR
+#include "pipeline.h"
 #include "timing.h"
 
 //const bool USE_SHADER = false;

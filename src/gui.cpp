@@ -18,23 +18,24 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <GL/glew.h>
-#include <gst/gst.h>
-#include <gtk/gtk.h>
-#include <gdk/gdk.h>
-#include <gdk/gdkx.h>
-#include <iostream>
 #include <GL/gl.h>
+#include <GL/glew.h>
 #include <GL/glu.h>
 #include <GL/glx.h>
+#include <clutter-gst/clutter-gst.h>
+#include <clutter-gtk/clutter-gtk.h>
+#include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
+#include <gdk/gdkx.h>
+#include <gst/gst.h>
+#include <gtk/gtk.h>
+#include <iostream>
 
 #include "pipeline.h"
 #include "draw.h"
 #include "gui.h"
 #include "application.h"
 #include "config.h"
-
 
 gboolean Gui::onWindowStateEvent(GtkWidget* widget, GdkEventWindowState *event, gpointer data)
 {

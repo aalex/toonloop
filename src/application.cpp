@@ -18,12 +18,6 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "application.h"
-#include "clip.h"
-#include "config.h"
-#include "configuration.h"
-#include "gui.h"
-#include "pipeline.h"
 #include <GL/glew.h>
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
@@ -34,6 +28,13 @@
 #include <gtk/gtk.h>
 #include <iostream>
 #include <string>
+
+#include "application.h"
+#include "clip.h"
+#include "config.h"
+#include "configuration.h"
+#include "gui.h"
+#include "pipeline.h"
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;

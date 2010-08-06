@@ -1,7 +1,8 @@
 #include <GL/glew.h>
-#include "shader.h"
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
+
+#include "shader.h"
 
 // a simple vertex shader, identical to tester effect from v1.2
 static const char *vertex_source = "\

@@ -1,5 +1,6 @@
-#include "./oscsender.h"
 #include <iostream>
+
+#include "./oscsender.h"
 
 OscSender::OscSender() :
     host_(""), port_(""), 

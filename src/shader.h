@@ -1,6 +1,6 @@
 #include <GL/glew.h>
-#include <stdio.h>
 #include <GL/glx.h>
+#include <stdio.h>
 
 class Shader 
 {

@@ -21,14 +21,15 @@
 #ifndef __CLIP_H__
 #define __CLIP_H__
 
-#include <iostream>
-#include <vector>
-#include <string>
-#include <map>
-#include <tr1/unordered_map>
-#include <tr1/memory>
-#include "image.h"
 #include <boost/thread/mutex.hpp>
+#include <iostream>
+#include <map>
+#include <string>
+#include <tr1/memory>
+#include <tr1/unordered_map>
+#include <vector>
+
+#include "image.h"
 
 using namespace std::tr1; // shared_ptr
 

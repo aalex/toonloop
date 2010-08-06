@@ -22,8 +22,9 @@
 #define __MOVIESAVER_H__
 
 #include <boost/thread.hpp>  
-#include <vector>
 #include <string>
+#include <vector>
+
 #include "clip.h"
 
 class MovieSaver

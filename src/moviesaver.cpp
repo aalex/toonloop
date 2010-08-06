@@ -18,9 +18,9 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <iostream>
 
 #include "moviesaver.h"
-#include <iostream>
 #include "subprocess.h"
 
 MovieSaver::MovieSaver(Clip &clip) // const Clip &clip?

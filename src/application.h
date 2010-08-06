@@ -22,13 +22,15 @@
 #define __APPLICATION_H__
 
 #include <GL/glew.h>
-#include "gui.h"
-#include "pipeline.h"
+#include <boost/program_options.hpp>
+#include <tr1/memory>
+
 #include "clip.h"
 #include "configuration.h"
-#include <tr1/memory>
-#include <boost/program_options.hpp>
+#include "gui.h"
 #include "oscinterface.h"
+#include "pipeline.h"
+
 #define MAX_CLIPS 10
 
 namespace po = boost::program_options;
