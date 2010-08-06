@@ -177,12 +177,12 @@ void Application::run(int argc, char *argv[])
     //Configuration config(options);
     config_ = std::tr1::shared_ptr<Configuration>(new Configuration(options));
     config_->set_project_home(project_home);
-    osc_ = std::tr1::shared_ptr<OscInterface>(new OscInterface("11337"));
-    osc_->start();
-
     // Init GTK, Clutter and GST:
+    //TODO:We don't need to call all those init
     gtk_init(&argc, &argv);
     clutter_init(&argc, &argv);
+    gtk_clutter_init(&argc, &argv);
+    clutter_gst_init(&argc, &argv);
     gst_init(&argc, &argv);
     // start GUI
     std::cout << "Starting GUI." << std::endl;
@@ -192,6 +192,10 @@ void Application::run(int argc, char *argv[])
     pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline());
     // set drawing area TODO: simplify this
     get_pipeline().set_drawing_area(get_gui().get_drawing_area());
+    // Start OSC
+    //TODO:2010-08-05:aalex:Make the OSC port configurable
+    osc_ = std::tr1::shared_ptr<OscInterface>(new OscInterface("11337"));
+    osc_->start();
     std::cout << "Running toonloop" << std::endl;
     gtk_main();
 }
