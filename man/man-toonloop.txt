@@ -9,9 +9,18 @@ Toonloop is a great tool for teaching new medias to children. It can also be use
 toonloop [options]
 
 [EXAMPLES]
-toonloop -R -d /dev/video0
 
-toonloop -d test
+To use a V4L2 video camera: 
+
+ toonloop -d /dev/video0
+
+To use color bars:
+
+ toonloop -d test
+
+To grab snapshots from X11:
+
+ toonloop -d x
 
 Note that if Toonloop crashes at startup, you should verify that your camera /dev/video0 is really a V4L2 camera, and that it is present. You can use tools such as ivtv-utils, gst-launch or xawtv for that kind of work under GNU/Linux.
 

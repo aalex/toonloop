@@ -1,10 +1,10 @@
 Release notes for Toonloop 1.9.1
 
-This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. Since the 1.2 series, we have done a complete rewrite of the application in C++. In this very specific 1.9.1 release, we drop gst-plugins-gl in favour of Clutter-GST.
+This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. Since the 1.2 series, we have done a complete rewrite of the application in C++. In this very specific 1.9.1 release, we drop gst-plugins-gl in favour of Clutter-GST. We removed the support for the --keep-in-ram option, which is used to keep the image data in RAM instead of writing the images to the disk.
 
 New features:
-    * 
+    * Using Clutter!
 
 Bug fixes: 
-    * 
+    * Fixed a segfault when using the "test" or "x" video device.
 
