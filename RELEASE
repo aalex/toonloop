@@ -1,6 +1,6 @@
 Release notes for Toonloop 1.9.0
 
-This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. Since the 1.2 series, we have done a complete rewrite of the application in C++.
+This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. Since the 1.2 series, we have done a complete rewrite of the application in C++. In this very specific 1.9.0 release, we use gst-plugins-gl.
 
 New features:
     * DONE: Choose whether to use SDL, GTK, GTKglext, wxWidgets, or the generic
