@@ -1,26 +1,6 @@
 This is Toonloop version 1.9.x. It is a complete rewrite of the application in 
 C++ with Gstreamer. It is still in an alpha stage. 
 
-The Gstreamer GL plugins
-------------------------
-
-Toonloop needs gst-plugins-gl, which might not be packaged yet for your 
-distribution. Here is how to build and install it:
-
- git clone git://anongit.freedesktop.org/gstreamer/gst-plugins-gl
- cd gst-plugins-gl/
- ./autogen.sh && ./configure && make
- sudo make install
-
-If running Debian, gstreamer0.10-plugins-gl can be found in the experimental 
-repository. If you add "deb http://ftp.debian.org/debian experimental main" 
-in your /etc/apt/sources.list and do apt-get update, you should be able to 
-find it. Their names are:
-
- libgstreamer-plugins-gl0.10-dev
- libgstreamer-plugins-gl0.10-0
- gstreamer0.10-plugins-gl
-
 
 Other Dependencies
 ------------------
@@ -45,13 +25,15 @@ soon.
  gstreamer0.10-plugins-base,
  gstreamer0.10-plugins-good,
  gstreamer0.10-plugins-ugly (>= 0.10.14),
- gstreamer0.10-plugins-ugly-multiverse,
  gstreamer0.10-pulseaudio,
  gstreamer0.10-x,
  help2man,
  libasound-dev,
  libboost-all-dev,
  liblo-dev,
+ libclutter-0.10-dev,
+ libclutter-gst-0.10-dev,
+ libclutter-gtk-0.10-dev,
  libglew1.5-dev,
  libglib2.0-dev,
  libglu1-mesa-dev,
@@ -65,15 +47,11 @@ soon.
  libxml++2.6-2,
  libxml++2.6-dev,
  libxv-dev,
- mencoder,
+ mencoder
  python (>= 2.4),
- python-dev,
  python-epydoc,
- python-gst0.10 (>= 0.10.17),
  python-gtk2,
- python-gtk2-dev,
- python-simplejson,
- python-twisted
+ python-twisted-core
 
 
 How to build Toonloop
@@ -138,5 +116,4 @@ If you use two displays, you might want to use 2 separate X screens::
 
 -----
 EOF
-
 
