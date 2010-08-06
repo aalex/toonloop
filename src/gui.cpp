@@ -232,6 +232,7 @@ void iterate_playhead()
                         std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
                         g_error_free(error);
                     } else {
+                        // TODO:2010-08-06:aalex:Do not load an image twice in a row
                         std::cout << "Loaded image " <<  image_full_path << std::endl;
                         //buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
                         //pixels_are_loaded = true;
@@ -295,6 +296,14 @@ void Gui::resize_actors() {
     gfloat live_tex_y = (stage_height / 4);
     clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), live_tex_x, live_tex_y);
     clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), live_tex_width, live_tex_height);
+
+    // Set the playback texture size and position:
+    gfloat playback_tex_width = set_width / 2;
+    gfloat playback_tex_height = set_height / 2;
+    gfloat playback_tex_x = (stage_width / 2);
+    gfloat playback_tex_y = (stage_height / 4);
+    clutter_actor_set_position(CLUTTER_ACTOR(playback_texture_), playback_tex_x, playback_tex_y);
+    clutter_actor_set_size(CLUTTER_ACTOR(playback_texture_), playback_tex_width, playback_tex_height);
 }
 /**
  * Called when the size of the input image has changed.
