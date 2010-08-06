@@ -18,12 +18,8 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-//#include <GL/glew.h> // Must include it before GL/gl.h
-//#include <GL/gl.h>
-//#include <GL/glx.h>
 #include <boost/filesystem.hpp>
 #include <clutter-gst/clutter-gst.h>
-//#include <cstring> // for memcopy
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdk.h>
 #include <gst/gst.h>
@@ -33,8 +29,6 @@
 
 #include "application.h"
 #include "configuration.h"
-//#include "draw.h"
-//#include "gstgtk.h"
 #include "gui.h"
 #include "log.h" // TODO: make it async and implement THROW_ERROR
 #include "pipeline.h"
@@ -673,38 +667,6 @@ Pipeline::Pipeline()
 //void Pipeline::set_shader(Shader* shader)
 //{
 //    shader_ = shader;
-//}
-
-// sets the x-window-id 
-// Important !
-//static GstBusSyncReply create_window(GstBus* bus, GstMessage* message, GtkWidget* widget)
-//{
-//    GstXOverlay *xoverlay;
-//    gulong xwindow_id;
-//    // ignore anything but 'prepare-xwindow-id' element messages
-//    if (GST_MESSAGE_TYPE(message) != GST_MESSAGE_ELEMENT)
-//        return GST_BUS_PASS;
-//    if (!gst_structure_has_name(message->structure, "prepare-xwindow-id"))
-//        return GST_BUS_PASS;
-//    g_print("setting xwindow id\n");
-//    xoverlay = GST_X_OVERLAY(GST_MESSAGE_SRC(message));
-//    xwindow_id = Application::get_instance().get_gui().video_xwindow_id_;
-//    if (xwindow_id != 0)
-//    {
-//        gst_x_overlay_set_xwindow_id(xoverlay, xwindow_id);
-//    } else {
-//        g_warning ("Should have obtained video_xwindow id by now! X-related crash may occur");
-//        gst_x_overlay_set_xwindow_id (xoverlay, 0);
-//    }
-//    gst_message_unref(message);
-//    return GST_BUS_DROP;
-//}
-//// TODO: we don't need this. Make it simpler.
-//void Pipeline::set_drawing_area(GtkWidget* drawing_area)
-//{
-//    GstBus* bus = gst_pipeline_get_bus(GST_PIPELINE (pipeline_));
-//    gst_bus_set_sync_handler(bus, (GstBusSyncHandler)create_window, drawing_area);
-//    gst_object_unref(bus);
 //}
 
 // Desctructor. TODO: do we need to free anything?

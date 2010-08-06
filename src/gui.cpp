@@ -18,10 +18,6 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-//#include <GL/glew.h> // Must include it before GL/gl.h
-//#include <GL/gl.h>
-//#include <GL/glu.h>
-//#include <GL/glx.h>
 #include <clutter-gst/clutter-gst.h>
 #include <clutter-gtk/clutter-gtk.h>
 #include <clutter/clutter.h>
@@ -33,7 +29,6 @@
 #include <iostream>
 
 #include "pipeline.h"
-//#include "draw.h"
 #include "gui.h"
 #include "application.h"
 #include "config.h"
@@ -149,24 +144,6 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
     gtk_window_unfullscreen(GTK_WINDOW(widget));
 }
 
-
-//void Gui::video_widget_realize_cb (GtkWidget * widget, gpointer data)
-//{
-//    Gui *context = static_cast<Gui*>(data);
-//#if GTK_CHECK_VERSION(2,18,0)
-//    // This is here just for pedagogical purposes, GDK_WINDOW_XID will call
-//    // it as well in newer Gtk versions
-//    /* if (!gdk_window_ensure_native (widget->window))
-//           g_error ("Couldn't create native window needed for GstXOverlay!");
-//    */       
-//#endif
-//
-//#ifdef GDK_WINDOWING_X11
-//    context->video_xwindow_id_ = GDK_WINDOW_XID(widget->window);
-//    g_print("Drawing area has been realized with xid %lu.\n", (long unsigned int) context->video_xwindow_id_);
-//#endif
-//}
-
 /** 
  * Timeline handler.
  * Called on every frame. 
@@ -264,18 +241,6 @@ Gui::Gui() :
     live_input_texture_ = (ClutterActor *) g_object_new(CLUTTER_TYPE_TEXTURE, "sync-size", FALSE, "disable-slicing", TRUE, NULL);
     g_signal_connect(CLUTTER_TEXTURE(live_input_texture_), "size-change", G_CALLBACK(on_texture_size_changed), this);
 
-    ////area where the video is drawn
-    //drawing_area_ = gtk_drawing_area_new();
-    //gtk_container_add(GTK_CONTAINER(window_), drawing_area_);
-    //g_signal_connect(drawing_area_, "realize", G_CALLBACK(video_widget_realize_cb), this);
-
-    //avoid flickering when resizing or obscuring the main window
-    //gtk_widget_realize(drawing_area_);
-    //gdk_window_set_back_pixmap(drawing_area_->window, NULL, FALSE);
-    //gtk_widget_set_app_paintable(drawing_area_, TRUE);
-    //gtk_widget_set_double_buffered(drawing_area_, FALSE);
-    //
-
     // Background color:
     ClutterColor stage_color = { 0x00, 0x00, 0x00, 0xff };
     clutter_stage_set_color(CLUTTER_STAGE(stage_), &stage_color);
@@ -300,11 +265,6 @@ Gui::Gui() :
      */
     clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
 }
-
-//GtkWidget* Gui::get_drawing_area()
-//{
-//    return drawing_area_;
-//}
 
 ClutterActor* Gui::get_live_input_texture()
 {

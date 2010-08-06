@@ -36,7 +36,6 @@ class Pipeline
 {
     public:
         void stop();
-        //void set_drawing_area(GtkWidget *drawing_area);
         Pipeline(); // const VideoConfig &config);
         ~Pipeline();
         void grab_frame();
@@ -57,7 +56,6 @@ class Pipeline
         //Shader* shader_;
 };
 
-//static GstBusSyncReply create_window(GstBus* bus, GstMessage* message, GtkWidget* widget);
 //static gboolean on_expose_event(GtkWidget* widget, GdkEventExpose* event, GstElement* videosink);
 //void reshapeCallback(GLuint width, GLuint height, gpointer data);
 //gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data);
