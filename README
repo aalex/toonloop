@@ -80,10 +80,11 @@ How to build Toonloop
 ---------------------
 
  ./autogen.sh
+ ./configure
  make
  sudo make install
 
-There is also the handy ./one_click_build.sh that does it in a single script.
+There is also the handy ./one_click_build.sh that does it in a single script. (except the `sudo make install`)
 
 
 How to run Toonloop
@@ -100,10 +101,12 @@ How to use Toonloop
 To make it short, press space to capture an image, it will be recorded 
 in your default directory (~/Documents/toonloop/default/) under jpg format.
 
-space  : capture an image
-delete : remove last captured image
-esc    : switch fullscreen
-ctrl-q : quit
+space     : capture an image
+delete    : remove last captured image
+esc       : switch fullscreen
+ctrl-q    : quit
+Page down : next clip
+Page up   : previous clip
 
 
 How to transform into a movie
@@ -112,8 +115,8 @@ How to transform into a movie
 There are many ways, depending the video format you need. But if 
 it's just for preview you can use:
 
-cd ~/Documents/toonloop/default/
-mencoder "mf://*.jpg" -mf fps=5 -o test.avi -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=800
+ cd ~/Documents/toonloop/default/
+ mencoder "mf://*.jpg" -mf fps=5 -o test.avi -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=800
 
 
 
