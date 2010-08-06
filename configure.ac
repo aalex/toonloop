@@ -31,14 +31,11 @@ AC_CHECK_LIB([m],[sin],[AC_SUBST([LIBM_CXXFLAGS],["-lm"])])
 # GTK and GST
 PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.12.9 glib-2.0 >= 2.16.6 gdk-2.0])
 PKG_CHECK_MODULES([GST], [gstreamer-0.10 >= 0.10.0 gstreamer-interfaces-0.10 >= 0.10.24])
-PKG_CHECK_MODULES([GSTGL], [gstreamer-gl-0.10 >= 0.10.0])
 
 AC_SUBST([GTK_LIBS])
 AC_SUBST([GTK_CFLAGS])
 AC_SUBST([GST_LIBS])
 AC_SUBST([GST_CFLAGS])
-AC_SUBST([GSTGL_LIBS])
-AC_SUBST([GSTGL_CFLAGS])
 
 #Set LIBLO with pkg-config
 PKG_CHECK_MODULES(LIBLO, liblo, have_liblo=true, have_liblo=false)
@@ -104,7 +101,7 @@ AC_SUBST([CLUTTERGST_CFLAGS])
 
 AX_CHECK_GL
 AX_CHECK_GLU
-AC_CHECK_LIB([GLEW], [glewInit],[AC_SUBST([GLEW_LIBS],["-lGLEW"])])
+# AC_CHECK_LIB([GLEW], [glewInit],[AC_SUBST([GLEW_LIBS],["-lGLEW"])])
 
 # PORTMIDI
 AC_CHECK_LIB([asound],[snd_seq_open],[AC_SUBST([ASOUND_CXXFLAGS],["-lasound"])])

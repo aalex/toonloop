@@ -1,9 +1,6 @@
 bin_PROGRAMS = toonloop
 noinst_PROGRAMS = prototoonmidi 
 
-toonloop_CPPFLAGS = -Wall 
-# -Werror
-
 headers = \
 	application.h \
 	clip.h \
@@ -48,15 +45,13 @@ toonloop_SOURCES = \
     oscsender.cpp \
 	$(headers)
 
-toonloop_CXXFLAGS = \
+toonloop_CXXFLAGS = -Wall \
 	$(BOOST_CPPFLAGS) \
 	$(CLUTTERGST_CFLAGS) \
 	$(CLUTTERGTK_CFLAGS) \
 	$(CLUTTER_CFLAGS) \
-	$(GLEW_CFLAGS) \
 	$(GLU_CFLAGS) \
 	$(GL_CFLAGS) \
-	$(GSTGL_CFLAGS) \
 	$(GST_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(LIBLO_CFLAGS) \
@@ -72,9 +67,7 @@ toonloop_LDADD = \
 	$(CLUTTERGST_LIBS) \
 	$(CLUTTERGTK_LIBS) \
 	$(CLUTTER_LIBS) \
-	$(GLEW_LIBS) \
 	$(GL_LIBS) \
-	$(GSTGL_LIBS) \
 	$(GST_LIBS) \
 	$(GTK_LIBS) \
 	$(LIBLO_LIBS) \
