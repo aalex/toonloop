@@ -233,7 +233,7 @@ void iterate_playhead()
                         g_error_free(error);
                     } else {
                         // TODO:2010-08-06:aalex:Do not load an image twice in a row
-                        std::cout << "Loaded image " <<  image_full_path << std::endl;
+                        //std::cout << "Loaded image " <<  image_full_path << std::endl;
                         //buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
                         //pixels_are_loaded = true;
                         //loaded_pixbuf = true;
