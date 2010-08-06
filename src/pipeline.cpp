@@ -522,24 +522,33 @@ Pipeline::Pipeline()
         {
             g_object_set(G_OBJECT(videosrc_), "endx", 640, NULL);
             g_object_set(G_OBJECT(videosrc_), "endy", 480, NULL);
-            g_object_set(capsfilter0, "caps", gst_caps_from_string("video/x-raw-rgb, framerate=30/1"));
+            //std::cout << "Calling gst_caps_from_string" << std::endl;
+            GstCaps *the_caps = gst_caps_from_string("video/x-raw-rgb, framerate=30/1");
+            g_object_set(capsfilter0, "caps", the_caps, NULL);
+            gst_caps_unref(the_caps);
+            
         } else {
-            std::cout << "Using 640x480 @ 30 FPS for the videotestsrc." << std::endl;
-            g_object_set(capsfilter0, "caps", gst_caps_from_string("video/x-raw-yuv, width=640, height=480, framerate=30/1"));
-            std::cout << "set the caps for the testsrc" << std::endl;
+            //std::cout << "Using 640x480 @ 30 FPS for the videotestsrc." << std::endl;
+            //g_object_set(capsfilter0, "caps", gst_caps_from_string("video/x-raw-yuv, width=640, height=480, framerate=30/1"));
+            //std::cout << "Calling gst_caps_from_string" << std::endl;
+            GstCaps *the_caps = gst_caps_from_string("video/x-raw-yuv, width=640, height=480, framerate=30/1");
+            //std::cout << "Calling g_object_set on the caps." << std::endl;
+            g_object_set(capsfilter0, "caps", the_caps, NULL);
+            gst_caps_unref(the_caps);
+            //std::cout << "set the caps for the testsrc" << std::endl;
         }
         is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
         if (!is_linked) {
             g_print("Could not link %s to %s.\n", "videosrc_", "capfilter0"); 
             exit(1); 
         }
-        std::cout << "videosrc is linked" << std::endl;
+        //std::cout << "videosrc is linked" << std::endl;
         source_is_linked = true;
     } else {
         // Guess the right FPS to use with the video capture device
         while (not source_is_linked)
         {
-            g_object_set(capsfilter0, "caps", gst_caps_from_string(guess_source_caps(frame_rate_index).c_str()));
+            g_object_set(capsfilter0, "caps", gst_caps_from_string(guess_source_caps(frame_rate_index).c_str()), NULL);
             is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
             if (!is_linked) 
             { 
@@ -555,8 +564,8 @@ Pipeline::Pipeline()
             }
         }
     }
-    std::cout << "Figured out the caps of the video source." << std::endl;
-    std::cout << "Will now link capfilter0--ffmpegcolorspace0--tee." << std::endl;
+    //std::cout << "Figured out the caps of the video source." << std::endl;
+    //std::cout << "Will now link capfilter0--ffmpegcolorspace0--tee." << std::endl;
     is_linked = gst_element_link_pads(capsfilter0, "src", ffmpegcolorspace0, "sink");
     if (!is_linked) {
         g_print("Could not link %s to %s.\n", "capsfilter0", "ffmpegcolorspace0"); 
@@ -567,7 +576,7 @@ Pipeline::Pipeline()
         g_print("Could not link %s to %s.\n", "ffmpegcolorspace0", "tee0"); 
         exit(1);
     }
-    std::cout << "Will now link tee--queue--videosink." << std::endl;
+    //std::cout << "Will now link tee--queue--videosink." << std::endl;
     is_linked = gst_element_link_pads(tee0, "src0", queue0, "sink");
     if (!is_linked) {
         g_print("Could not link %s to %s.\n", "tee0", "sink"); 
@@ -586,7 +595,7 @@ Pipeline::Pipeline()
     //if (!is_linked) { g_print("Could not link %s to %s.\n", "capsfilter1", "videosink0"); exit(1); }
 
     // output 1: the GdkPixbuf sink
-    std::cout << "Will now link tee--queue--pixbufsink." << std::endl;
+    //std::cout << "Will now link tee--queue--pixbufsink." << std::endl;
     is_linked = gst_element_link_pads(tee0, "src1", queue1, "sink");
     if (!is_linked) { 
         g_print("Could not link %s to %s.\n", "tee0", "queue1"); 
