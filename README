@@ -1,4 +1,4 @@
-This is Toonloop version 2. It is a complete rewrite of the application in 
+This is Toonloop version 1.9.x. It is a complete rewrite of the application in 
 C++ with Gstreamer. It is still in an alpha stage. 
 
 The Gstreamer GL plugins
@@ -118,6 +118,22 @@ it's just for preview you can use:
  cd ~/Documents/toonloop/default/
  mencoder "mf://*.jpg" -mf fps=5 -o test.avi -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=800
 
+
+Additional Configuration Notes
+------------------------------
+
+You might need to properly configure your V4L2 video device::
+
+  sudo apt-get install ivtv-utils
+  v4l2-ctl --set-input=1
+  v4l2-ctl --set-standard=ntsc
+  v4l2-ctl --set-fmt-video=width=768,height=480
+  v4l2-ctl --set-ctrl=saturation=65535,contrast=32768
+
+If you use two displays, you might want to use 2 separate X screens::
+
+  sudo nvidia-settings
+  DISPLAY=:0.1 ./toonloop.py
 
 
 -----
