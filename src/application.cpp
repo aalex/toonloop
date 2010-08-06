@@ -164,7 +164,7 @@ void Application::run(int argc, char *argv[])
         for (int i = 0; i < clips_.size(); i++)
         {
             clips_[i]->set_playhead_fps(options["playhead-fps"].as<int>());
-            std::cout << "The initial frame rate for clip playhead is set to " << options["playhead-fps"].as<int>() << std::endl;
+            //std::cout << "The initial frame rate for clip playhead is set to " << options["playhead-fps"].as<int>() << std::endl;
         }
     }
 
@@ -202,6 +202,7 @@ void Application::run(int argc, char *argv[])
     //get_pipeline().set_drawing_area(get_gui().get_drawing_area());
     // Start OSC
     //TODO:2010-08-05:aalex:Make the OSC port configurable
+    std::cout << "Starting OSC receiver." << std::endl;
     osc_ = std::tr1::shared_ptr<OscInterface>(new OscInterface("11337"));
     osc_->start();
     std::cout << "Running toonloop" << std::endl;
