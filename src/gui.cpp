@@ -211,7 +211,7 @@ void iterate_playhead()
             the grabbed frame dimensions don't match with the width, height passed from glimasesink to the draw callback*/
             // XXX: yes, I think we should always check the size of the images. (especially when we will read them from the disk)
 
-            if (thisimage->is_ready())
+            if (thisimage->is_ready() and need_refresh)
             {
                 if (Application::get_instance().get_configuration().get_images_in_ram())
                 {   
