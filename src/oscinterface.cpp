@@ -13,13 +13,14 @@
  *  $Id$
  */
 
-#include "oscinterface.h"
-#include <cstdio>
-#include <tr1/memory>
-#include <iostream>
-#include <boost/thread.hpp>
 #include <boost/bind.hpp>
+#include <boost/thread.hpp>
+#include <cstdio>
+#include <iostream>
+#include <tr1/memory>
+
 #include "lo/lo.h"
+#include "oscinterface.h"
 
 OscInterface::OscInterface(
         const std::string &listen_port)//,
