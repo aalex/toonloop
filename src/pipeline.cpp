@@ -386,6 +386,7 @@ void Pipeline::grab_frame()
         /* copy gdkpixbuf raw data to Image's buffer. Will be used for the texture of the grabbed frames */
         memcpy(buf, gdk_pixbuf_get_pixels(pixbuf), w * h * nchannels);
     }
+    // TODO:2010-08-06:aalex:Deprecate Image::set_ready() and Image::is_ready()
     thisimage->set_ready(true);
     g_object_unref(pixbuf);
     thisclip->unlock_mutex();

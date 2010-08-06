@@ -32,6 +32,7 @@
 #include "gui.h"
 #include "application.h"
 #include "config.h"
+#include "timing.h"
 
 gboolean Gui::onWindowStateEvent(GtkWidget* widget, GdkEventWindowState *event, gpointer data)
 {
@@ -121,7 +122,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
 
 void Gui::on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data)
 {
-    Gui *context = static_cast<Gui*>(data);
+    //Gui *context = static_cast<Gui*>(data);
     g_print("Window has been deleted.\n");
     Application::get_instance().quit();
 }
@@ -144,15 +145,116 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
     gtk_window_unfullscreen(GTK_WINDOW(widget));
 }
 
+
+void iterate_playhead()
+{
+    Gui gui = Application::get_instance().get_gui();
+    Pipeline pipeline = Application::get_instance().get_pipeline();
+    
+    static int number_of_frames_in_last_second = 0; // counting FPS
+    static bool first_draw = true;
+    static int prev_image_number = -1;
+    static Clip *prevclip = NULL;
+    static Timer fps_calculation_timer = Timer();
+    static Timer playback_timer = Timer(); // TODO: move to Clip
+//    static GLuint frametexture;
+//    GLint texturelocation;
+    bool move_playhead = false;
+    Clip *thisclip = Application::get_instance().get_current_clip();
+    bool need_refresh = false;
+//
+//    thisclip->lock_mutex();
+//
+    ++ number_of_frames_in_last_second;
+    playback_timer.tick();
+    fps_calculation_timer.tick();
+
+    // check if it is time to move the playhead
+    if ((playback_timer.get_elapsed()) >=  (1.0f / thisclip->get_playhead_fps() * 1.0) || playback_timer.get_elapsed() < 0.0f)
+    {
+        move_playhead = true;
+        playback_timer.reset();
+    }
+    // calculate rendering FPS
+    if (fps_calculation_timer.get_elapsed() >= 1.0f)
+    {
+        std::cout << "Rendering FPS: " << number_of_frames_in_last_second << std::endl;
+        number_of_frames_in_last_second = 0;
+        fps_calculation_timer.reset();
+    }
+    
+    if(thisclip->size() > 0) 
+    {     
+        // FIXME: we don't need to create a texture on every frame!!
+        //double spf = (1 / thisclip->get_playhead_fps());
+        if (move_playhead) // if it's time to move the playhead
+            thisclip->iterate_playhead(); // updates the clip's playhead number
+        int image_number = thisclip->get_playhead();
+        //bool pixels_are_loaded = false;
+        //width = thisclip->get_width(); // FIXME: do not override data given by gst-plugins-gl!
+        //height = thisclip->get_height();// FIXME: do not override data given by gst-plugins-gl!
+        char *buf;
+        //GdkPixbuf *pixbuf;
+        //bool loaded_pixbuf = false;
+        Image* thisimage = &(thisclip->get_image(image_number));
+
+        if ( (prevclip != thisclip) || (prev_image_number != image_number) )
+              need_refresh = true;
+        if (prevclip != thisclip) {
+            prevclip = thisclip;
+        }
+        if (thisimage == NULL)
+        {
+            std::cout << "No image at index" << image_number << "." << std::endl;
+        } else {
+            /*FIXME: we may not need this dimension update in general. But I get a weirdly cropped frame, for the right side rendering grabbed frame. It seems
+            the grabbed frame dimensions don't match with the width, height passed from glimasesink to the draw callback*/
+            // XXX: yes, I think we should always check the size of the images. (especially when we will read them from the disk)
+
+            if (thisimage->is_ready())
+            {
+                if (Application::get_instance().get_configuration().get_images_in_ram())
+                {   
+                    std::cerr << "Loading in RAM is disabled for now." << std::endl; 
+                    //if ( need_refresh )
+                    //    buf = thisimage->get_rawdata();
+                    //pixels_are_loaded = true;
+                } else {
+                    std::string image_full_path = Application::get_instance().get_pipeline().get_image_full_path(thisimage);
+                    GError *error = NULL;
+                    gboolean success;
+                    success = clutter_texture_set_from_file(CLUTTER_TEXTURE(gui.playback_texture_), image_full_path.c_str(), &error);
+                    // TODO: validate this path
+                    
+                    //pixbuf = gdk_pixbuf_new_from_file(image_full_path.c_str(), &error);
+                    if (!success)
+                    {
+                        std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
+                        g_error_free(error);
+                    } else {
+                        std::cout << "Loaded image " <<  image_full_path << std::endl;
+                        //buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
+                        //pixels_are_loaded = true;
+                        //loaded_pixbuf = true;
+                    }
+                }
+            }
+        }
+        prev_image_number = image_number;
+    }
+}
+
 /** 
  * Timeline handler.
  * Called on every frame. 
  */
 void on_new_frame(ClutterTimeline *timeline, gint msecs, gpointer data)
 {
-//    std::cout << "on_new_frame" << std::endl; 
+    //std::cout << "on_new_frame" << std::endl; 
 //     Gui *gui = (Gui*)data;
+    iterate_playhead();
 }
+
 /**
  * Called when the stage size has changed.
  */
@@ -167,10 +269,13 @@ void on_stage_allocation_changed(ClutterActor *stage, ClutterActorBox *box, Clut
  * Either the window has been resized, or the input image size has changed.
  */
 void Gui::resize_actors() {
+    // We could override the paint method of the stage
+    // Or put everything in a container which has an apply_transform()
     gfloat set_x, set_y, set_width, set_height;
     gfloat stage_width, stage_height;
 
     clutter_actor_get_size(stage_, &stage_width, &stage_height);
+    
     set_height = (video_input_height_ * stage_width) / video_input_width_;
     if (set_height <= stage_height) {
         set_width = stage_width;
@@ -182,20 +287,37 @@ void Gui::resize_actors() {
         set_x = (stage_width - set_width) / 2;
         set_y = 0;
     }
-    clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), set_x, set_y);
-    clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), set_width, set_height);
+    // Now that we know the ratio of stuff, 
+    // Set the live texture size and position:
+    gfloat live_tex_width = set_width / 2;
+    gfloat live_tex_height = set_height / 2;
+    gfloat live_tex_x = set_x;
+    gfloat live_tex_y = (stage_height / 4);
+    clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), live_tex_x, live_tex_y);
+    clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), live_tex_width, live_tex_height);
 }
 /**
  * Called when the size of the input image has changed.
  */
-void on_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data) {
-    //g_print("on_texture_size_changed\n");
+void on_live_input_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data) {
+    //g_print("on_live_input_texture_size_changed\n");
     Gui *gui = static_cast<Gui*>(user_data);
     gui->video_input_width_ = (float) width;
     gui->video_input_height_ = (float) height;
 
     ClutterActor *stage;
   
+    stage = clutter_actor_get_stage(CLUTTER_ACTOR(texture));
+    if (stage == NULL)
+        return;
+    gui->resize_actors();
+}
+
+void on_playback_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data) {
+    //g_print("on_playback_texture_size_changed\n");
+    // TODO:2010-08-06:aalex:Take into account size and ratio of the playback texture
+    Gui *gui = static_cast<Gui*>(user_data);
+    ClutterActor *stage;
     stage = clutter_actor_get_stage(CLUTTER_ACTOR(texture));
     if (stage == NULL)
         return;
@@ -230,14 +352,13 @@ Gui::Gui() :
     g_signal_connect(G_OBJECT(window_), "window-state-event", G_CALLBACK(onWindowStateEvent), this);
 
     // vbox:
-    vbox_ = gtk_vbox_new(FALSE, 6); // homogeneous, spacing
+    vbox_ = gtk_vbox_new(FALSE, 0); // args: homogeneous, spacing
     gtk_container_add(GTK_CONTAINER(window_), vbox_);
     // Clutter widget:
     clutter_widget_ = gtk_clutter_embed_new();
     gtk_widget_set_size_request(clutter_widget_, WINWIDTH, WINHEIGHT);
     gtk_container_add(GTK_CONTAINER(vbox_), clutter_widget_);
     stage_ = gtk_clutter_embed_get_stage(GTK_CLUTTER_EMBED(clutter_widget_));
-
 
     clutter_stage_set_user_resizable(CLUTTER_STAGE(stage_), TRUE);
     g_signal_connect(stage_, "allocation-changed", G_CALLBACK(on_stage_allocation_changed), this);
@@ -246,8 +367,17 @@ Gui::Gui() :
     /* We need to set certain props on the target texture currently for
      * efficient/corrent playback onto the texture (which sucks a bit)  
     */
-    live_input_texture_ = (ClutterActor *) g_object_new(CLUTTER_TYPE_TEXTURE, "sync-size", FALSE, "disable-slicing", TRUE, NULL);
-    g_signal_connect(CLUTTER_TEXTURE(live_input_texture_), "size-change", G_CALLBACK(on_texture_size_changed), this);
+    live_input_texture_ = (ClutterActor *) g_object_new(CLUTTER_TYPE_TEXTURE, 
+        "sync-size", FALSE, 
+        "disable-slicing", TRUE, 
+        NULL);
+    g_signal_connect(CLUTTER_TEXTURE(live_input_texture_), "size-change", G_CALLBACK(on_live_input_texture_size_changed), this);
+
+    playback_texture_ = (ClutterActor *) g_object_new(CLUTTER_TYPE_TEXTURE, 
+        "sync-size", FALSE, 
+        "disable-slicing", TRUE, 
+        NULL);
+    g_signal_connect(CLUTTER_TEXTURE(playback_texture_), "size-change", G_CALLBACK(on_playback_texture_size_changed), this);
 
     // Background color:
     ClutterColor stage_color = { 0x00, 0x00, 0x00, 0xff };

@@ -40,6 +40,7 @@ class Gui
         ClutterActor *stage_;
         //FIXME:2010-08-06:aalex:live_input_texture_ should not be public?
         ClutterActor *live_input_texture_;
+        ClutterActor *playback_texture_;
         ClutterTimeline *timeline_;
         void resize_actors();
         float video_input_width_;

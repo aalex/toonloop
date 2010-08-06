@@ -16,7 +16,6 @@ headers = \
     oscreceiver.h \
     oscsender.h \
 	pipeline.h \
-	shader.h \
 	subprocess.h \
 	texture.h \
 	timing.h \
@@ -34,7 +33,6 @@ toonloop_SOURCES = \
 	main.cpp \
 	moviesaver.cpp \
 	pipeline.cpp \
-	shader.cpp \
 	subprocess.cpp \
 	texture.cpp \
 	timing.cpp \
