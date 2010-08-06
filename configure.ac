@@ -80,6 +80,28 @@ if test "x${ax_cv_boost_system}" = "xno" ; then
 	AC_MSG_ERROR([missing package: libboost-system-dev])
 fi
 
+# GST appsink 
+PKG_CHECK_MODULES(GSTAPP, gstreamer-app-0.10, have_gstreamer_app=true, have_gstreamer_app=false)
+if test "x${have_gstreamer_app}" = "xfalse" ; then
+    AC_MSG_ERROR([missing package:  libgstreamer-plugins-base0.10-dev  ])
+fi
+AC_SUBST([GSTAPP_LIBS])
+
+# Clutter
+PKG_CHECK_MODULES([CLUTTER], [clutter-1.0 >= 1.0])
+AC_SUBST([CLUTTER_LIBS])
+AC_SUBST([CLUTTER_CFLAGS])
+
+# Clutter-GTK
+PKG_CHECK_MODULES([CLUTTERGTK], [clutter-gtk-0.10 >= 0.10])
+AC_SUBST([CLUTTERGTK_LIBS])
+AC_SUBST([CLUTTERGTK_CFLAGS])
+
+# Clutter-GST
+PKG_CHECK_MODULES([CLUTTERGST], [clutter-gst-0.10 >= 0.10])
+AC_SUBST([CLUTTERGST_LIBS])
+AC_SUBST([CLUTTERGST_CFLAGS])
+
 AX_CHECK_GL
 AX_CHECK_GLU
 AC_CHECK_LIB([GLEW], [glewInit],[AC_SUBST([GLEW_LIBS],["-lGLEW"])])
