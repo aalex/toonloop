@@ -403,6 +403,7 @@ Gui::Gui() :
     /* of course, we need to show the texture in the stage. */
 
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_));
+    clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_texture_));
   
     gtk_widget_show_all(window_);
 
@@ -411,6 +412,7 @@ Gui::Gui() :
      * will call show on the stage.
      */
     clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
+    clutter_actor_show_all(CLUTTER_ACTOR(playback_texture_));
 }
 
 ClutterActor* Gui::get_live_input_texture()
