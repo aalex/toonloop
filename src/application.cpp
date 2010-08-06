@@ -180,11 +180,18 @@ void Application::run(int argc, char *argv[])
     config_->set_project_home(project_home);
     // Init GTK, Clutter and GST:
     //TODO:We don't need to call all those init
-    gtk_init(&argc, &argv);
-    clutter_init(&argc, &argv);
+    //gtk_init(&argc, &argv);
+    //clutter_init(&argc, &argv);
+    //gtk_clutter_init(&argc, &argv);
+    //
+    GError *error;
+    error = NULL;
     gtk_clutter_init(&argc, &argv);
+    //gtk_clutter_init_with_args (&argc, &argv, NULL, NULL, NULL, &error);
+    if (error)
+        g_error ("Unable to initialize Clutter: %s", error->message);
     clutter_gst_init(&argc, &argv);
-    gst_init(&argc, &argv);
+    //gst_init(&argc, &argv);
     // start GUI
     std::cout << "Starting GUI." << std::endl;
     gui_ = std::tr1::shared_ptr<Gui>(new Gui());
@@ -192,7 +199,7 @@ void Application::run(int argc, char *argv[])
     std::cout << "Starting pipeline." << std::endl;
     pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline());
     // set drawing area TODO: simplify this
-    get_pipeline().set_drawing_area(get_gui().get_drawing_area());
+    //get_pipeline().set_drawing_area(get_gui().get_drawing_area());
     // Start OSC
     //TODO:2010-08-05:aalex:Make the OSC port configurable
     osc_ = std::tr1::shared_ptr<OscInterface>(new OscInterface("11337"));

@@ -21,21 +21,22 @@
 #ifndef __PIPELINE_H__
 #define __PIPELINE_H__
 
-#include <GL/glew.h>
-#include "shader.h"
+#include <GL/glew.h> // Must include it before GL/gl.h
+#include <GL/glx.h>
 #include <gst/gst.h>
 #include <gtk/gtk.h>
-#include <GL/glx.h>
-#include "configuration.h"
-#include "texture.h"
 #include <string>
+
+#include "configuration.h"
 #include "image.h"
+#include "shader.h"
+#include "texture.h"
 
 class Pipeline
 {
     public:
         void stop();
-        void set_drawing_area(GtkWidget *drawing_area);
+        //void set_drawing_area(GtkWidget *drawing_area);
         Pipeline(); // const VideoConfig &config);
         ~Pipeline();
         void grab_frame();
@@ -56,10 +57,10 @@ class Pipeline
         Shader* shader_;
 };
 
-static GstBusSyncReply create_window(GstBus* bus, GstMessage* message, GtkWidget* widget);
-static gboolean on_expose_event(GtkWidget* widget, GdkEventExpose* event, GstElement* videosink);
-void reshapeCallback(GLuint width, GLuint height, gpointer data);
-gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data);
-bool check_if_shaders_are_supported();
+//static GstBusSyncReply create_window(GstBus* bus, GstMessage* message, GtkWidget* widget);
+//static gboolean on_expose_event(GtkWidget* widget, GdkEventExpose* event, GstElement* videosink);
+//void reshapeCallback(GLuint width, GLuint height, gpointer data);
+//gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data);
+//bool check_if_shaders_are_supported();
 
 #endif // __PIPELINE_H__

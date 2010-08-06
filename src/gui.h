@@ -21,24 +21,36 @@
 #ifndef __GUI_H__
 #define __GUI_H__
 
-#include <gtk/gtk.h>
-#include <gdk/gdk.h>
 #include <GL/glx.h>
+#include <clutter-gtk/clutter-gtk.h>
+#include <clutter/clutter.h>
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
+
+const int WINWIDTH = 640;
+const int WINHEIGHT = 480;
 
 class Gui
 {
     public:
-        GtkWidget* get_drawing_area();
+        //GtkWidget* get_drawing_area();
+        ClutterActor* get_live_input_texture();
+        //FIXME:2010-08-06:aalex:live_input_image_ should not be public?
+        //ClutterActor *live_input_image_; // actually a ClutterTexture
         Gui(); 
         ~Gui() {};
         void toggleFullscreen() { toggleFullscreen(window_); } // no argument version of the same method below.
-        gulong video_xwindow_id_;
-
+        //gulong video_xwindow_id_;
+        ClutterActor *stage_;
+        ClutterActor *live_input_texture_;
+        ClutterTimeline *timeline_;
     private:
-        GtkWidget *drawing_area_;
+        //GtkWidget *drawing_area_;
         GtkWidget *window_;
+        GtkWidget *clutter_widget_;
+        GtkWidget *vbox_;
         GLXContext glx_context_;
-        static void video_widget_realize_cb (GtkWidget * widget, gpointer data);
+        //static void video_widget_realize_cb (GtkWidget * widget, gpointer data);
         static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data);
         static gboolean key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
