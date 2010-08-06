@@ -104,7 +104,7 @@ int Clip::frame_remove()
 {
     int how_many_deleted = 0;
     //int len = size();
-    int len = writehead_;
+    //unsigned int len = writehead_;
     if (writehead_ == 0) // TODO: ! images_.empty()
     {
         std::cout << "Cannot delete a frame since writehead is at the beginning of the clip." << std::endl;
@@ -132,8 +132,7 @@ int Clip::iterate_playhead()
     //int len = size();
     int len = writehead_;
     // TODO: implement BACK_AND_FORTH and BACKWARD directions
-    if (len == 0)
-    {
+    if (len == 0) {
         playhead_ = 0;
     } else if (playhead_ >= len - 1) // >= ?
     {

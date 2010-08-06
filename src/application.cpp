@@ -161,7 +161,7 @@ void Application::run(int argc, char *argv[])
     if (options.count("playhead-fps"))
     { 
         std::cout << "The initial frame rate for clip playhead is set to " << options["playhead-fps"].as<int>() << std::endl;
-        for (int i = 0; i < clips_.size(); i++)
+        for (unsigned int i = 0; i < clips_.size(); i++)
         {
             clips_[i]->set_playhead_fps(options["playhead-fps"].as<int>());
             //std::cout << "The initial frame rate for clip playhead is set to " << options["playhead-fps"].as<int>() << std::endl;

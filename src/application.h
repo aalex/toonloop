@@ -21,7 +21,7 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
-#include <GL/glew.h>
+//#include <GL/glew.h>
 #include <boost/program_options.hpp>
 #include <tr1/memory>
 

@@ -18,12 +18,12 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <GL/glew.h> // Must include it before GL/gl.h
-#include <GL/gl.h>
-#include <GL/glx.h>
+//#include <GL/glew.h> // Must include it before GL/gl.h
+//#include <GL/gl.h>
+//#include <GL/glx.h>
 #include <boost/filesystem.hpp>
 #include <clutter-gst/clutter-gst.h>
-#include <cstring> // for memcopy
+//#include <cstring> // for memcopy
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdk.h>
 #include <gst/gst.h>
@@ -33,8 +33,8 @@
 
 #include "application.h"
 #include "configuration.h"
-#include "draw.h"
-#include "gstgtk.h"
+//#include "draw.h"
+//#include "gstgtk.h"
 #include "gui.h"
 #include "log.h" // TODO: make it async and implement THROW_ERROR
 #include "pipeline.h"
@@ -423,8 +423,6 @@ Pipeline::Pipeline()
     pipeline_ = NULL;
     
     pipeline_ = GST_PIPELINE(gst_pipeline_new("pipeline"));
-    //state_ = 0;
-    GstElement* glupload0;
     
     // Video source element
     if (config.videoSource() == std::string("test")) 
@@ -473,25 +471,9 @@ Pipeline::Pipeline()
     GstElement* queue0 = gst_element_factory_make("queue", "queue0");
     g_assert(queue0);
 
-    // glupload element
-    //glupload0  = gst_element_factory_make ("glupload", "glupload0");
-    // glimagesink
-    //videosink_ = gst_element_factory_make("glimagesink", "glimagesink0");
     videosink_ = clutter_gst_video_sink_new(CLUTTER_TEXTURE(Application::get_instance().get_gui().get_live_input_texture()));
-    //g_object_set(videosink_, "sync", FALSE, NULL);
-    //g_object_set(G_OBJECT(videosink_), "client-reshape-callback", G_CALLBACK(reshapeCallback), NULL); // gpointer(this)
-    //g_object_set(G_OBJECT(videosink_), "client-draw-callback", drawCallback, NULL);
-    //g_object_set(G_OBJECT(videosink_), "client-draw-callback", G_CALLBACK(drawCallback), gpointer(this));
-    // capsfilter element #1, for the OpenGL FPS and size
     // TODO: Make sure the rendering FPS is constant, and not subordinate to
     // the FPS of the camera.
-    //GstElement* capsfilter1 = gst_element_factory_make("capsfilter", NULL);
-    //GstCaps *outcaps = gst_caps_new_simple("video/x-raw-gl",
-    //                                    "width", G_TYPE_INT, 800,
-    //                                    "height", G_TYPE_INT, 600,
-                                        //"framerate", GST_TYPE_FRACTION, config.get_rendering_fps() * 1000, 1001,
-    //                                    NULL) ;
-    //g_object_set(capsfilter1, "caps", outcaps, NULL);
 
     // GdkPixbuf sink:
     GstElement* queue1 = gst_element_factory_make("queue", "queue1");
@@ -506,7 +488,6 @@ Pipeline::Pipeline()
     gst_bin_add(GST_BIN(pipeline_), ffmpegcolorspace0);
     gst_bin_add(GST_BIN(pipeline_), tee0);
     gst_bin_add(GST_BIN(pipeline_), queue0); // branch #0: videosink
-    //gst_bin_add(GST_BIN(pipeline_), glupload0);
     //gst_bin_add(GST_BIN(pipeline_), capsfilter1);
     gst_bin_add(GST_BIN(pipeline_), videosink_);
     gst_bin_add(GST_BIN(pipeline_), queue1); // branch #1: gdkpixbufsink
@@ -589,10 +570,6 @@ Pipeline::Pipeline()
         g_print("Could not link %s to %s.\n", "queue0", "cluttervideosink0");
         exit(1); 
     }
-    //is_linked = gst_element_link_pads(glupload0, "src", capsfilter1, "sink");
-    //if (!is_linked) { g_print("Could not link %s to %s.\n", "glupload0", "capsfilter1"); exit(1); }
-    //is_linked = gst_element_link_pads(capsfilter1, "src", videosink_, "sink");
-    //if (!is_linked) { g_print("Could not link %s to %s.\n", "capsfilter1", "videosink0"); exit(1); }
 
     // output 1: the GdkPixbuf sink
     //std::cout << "Will now link tee--queue--pixbufsink." << std::endl;
@@ -649,10 +626,10 @@ Pipeline::Pipeline()
 
 }
 
-Shader* Pipeline::get_shader()
-{
-    return shader_;
-}
+//Shader* Pipeline::get_shader()
+//{
+//    return shader_;
+//}
 
 /**
  * Client reshape callback

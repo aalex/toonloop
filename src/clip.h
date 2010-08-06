@@ -45,12 +45,12 @@ enum direction
 class Clip 
 {
     private:
-        int id_;
-        int playhead_;
-        int writehead_;
-        int width_;
-        int height_;
-        int nchannels_;
+        unsigned int id_;
+        unsigned int playhead_;
+        unsigned int writehead_;
+        unsigned int width_;
+        unsigned int height_;
+        unsigned int nchannels_;
         direction direction_;
         //std::vector<int> intervalometer_rate_;
         //std::vector<int> fps_;

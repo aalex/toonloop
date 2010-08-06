@@ -44,6 +44,9 @@ class Gui
         ClutterActor *stage_;
         ClutterActor *live_input_texture_;
         ClutterTimeline *timeline_;
+        void resize_actors();
+        float video_input_width_;
+        float video_input_height_;
     private:
         //GtkWidget *drawing_area_;
         GtkWidget *window_;

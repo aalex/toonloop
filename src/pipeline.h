@@ -21,15 +21,15 @@
 #ifndef __PIPELINE_H__
 #define __PIPELINE_H__
 
-#include <GL/glew.h> // Must include it before GL/gl.h
-#include <GL/glx.h>
+//#include <GL/glew.h> // Must include it before GL/gl.h
+//#include <GL/glx.h>
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <string>
 
 #include "configuration.h"
 #include "image.h"
-#include "shader.h"
+//#include "shader.h"
 #include "texture.h"
 
 class Pipeline
@@ -43,9 +43,9 @@ class Pipeline
         void remove_frame();
         Texture playback_texture_;
         Texture onionskin_texture_;
-        Shader* get_shader();
+        //Shader* get_shader();
         std::string get_image_full_path(Image* image);
-        void set_shader(Shader* shader);
+        //void set_shader(Shader* shader);
     private:
         GstElement* videosrc_;
         GstElement* videosink_;
@@ -54,7 +54,7 @@ class Pipeline
         GstState state_;
         static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);
         std::string guess_source_caps(unsigned int framerateIndex) const;
-        Shader* shader_;
+        //Shader* shader_;
 };
 
 //static GstBusSyncReply create_window(GstBus* bus, GstMessage* message, GtkWidget* widget);

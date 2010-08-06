@@ -18,10 +18,10 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <GL/glew.h> // Must include it before GL/gl.h
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glx.h>
+//#include <GL/glew.h> // Must include it before GL/gl.h
+//#include <GL/gl.h>
+//#include <GL/glu.h>
+//#include <GL/glx.h>
 #include <clutter-gst/clutter-gst.h>
 #include <clutter-gtk/clutter-gtk.h>
 #include <clutter/clutter.h>
@@ -33,7 +33,7 @@
 #include <iostream>
 
 #include "pipeline.h"
-#include "draw.h"
+//#include "draw.h"
 #include "gui.h"
 #include "application.h"
 #include "config.h"
@@ -178,36 +178,50 @@ void on_new_frame(ClutterTimeline *timeline, gint msecs, gpointer data)
 }
 
 void on_stage_allocation_changed(ClutterActor *stage, ClutterActorBox *box, ClutterAllocationFlags *flags, gpointer user_data) {
-    g_print("on_stage_allocation_changed\n");
+    //g_print("on_stage_allocation_changed\n");
+    Gui *gui = static_cast<Gui*>(user_data);
+    gui->resize_actors();
 }
 
-void on_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data) {
-    ClutterActor *stage;
+void Gui::resize_actors() {
     gfloat set_x, set_y, set_width, set_height;
     gfloat stage_width, stage_height;
-  
-    stage = clutter_actor_get_stage(CLUTTER_ACTOR(texture));
-    if (stage == NULL)
-        return;
-    clutter_actor_get_size(stage, &stage_width, &stage_height);
-    set_height = (height * stage_width) / width;
+
+    clutter_actor_get_size(stage_, &stage_width, &stage_height);
+    set_height = (video_input_height_ * stage_width) / video_input_width_;
     if (set_height <= stage_height) {
         set_width = stage_width;
         set_x = 0;
         set_y = (stage_height - set_height) / 2;
     } else {
-        set_width  = (width * stage_height) / height;
+        set_width  = (video_input_width_ * stage_height) / video_input_height_;
         set_height = stage_height;
         set_x = (stage_width - set_width) / 2;
         set_y = 0;
     }
-    clutter_actor_set_position(CLUTTER_ACTOR(texture), set_x, set_y);
-    clutter_actor_set_size(CLUTTER_ACTOR(texture), set_width, set_height);
+    clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), set_x, set_y);
+    clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), set_width, set_height);
+}
+
+void on_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data) {
+    //g_print("on_texture_size_changed\n");
+    Gui *gui = static_cast<Gui*>(user_data);
+    gui->video_input_width_ = (float) width;
+    gui->video_input_height_ = (float) height;
+
+    ClutterActor *stage;
+  
+    stage = clutter_actor_get_stage(CLUTTER_ACTOR(texture));
+    if (stage == NULL)
+        return;
+    gui->resize_actors();
 }
 /**
  * Exits the application if OpenGL needs are not met.
  */
 Gui::Gui() :
+    video_input_height_(1),
+    video_input_width_(1),
     isFullscreen_(false)
 {
     //video_xwindow_id_ = 0;
@@ -241,14 +255,14 @@ Gui::Gui() :
 
 
     clutter_stage_set_user_resizable(CLUTTER_STAGE(stage_), TRUE);
-    g_signal_connect(stage_, "allocation-changed", G_CALLBACK(on_stage_allocation_changed), NULL);
+    g_signal_connect(stage_, "allocation-changed", G_CALLBACK(on_stage_allocation_changed), this);
     clutter_stage_set_minimum_size(CLUTTER_STAGE(stage_), 320, 240);
 
     /* We need to set certain props on the target texture currently for
      * efficient/corrent playback onto the texture (which sucks a bit)  
     */
     live_input_texture_ = (ClutterActor *) g_object_new(CLUTTER_TYPE_TEXTURE, "sync-size", FALSE, "disable-slicing", TRUE, NULL);
-    g_signal_connect(CLUTTER_TEXTURE(live_input_texture_), "size-change", G_CALLBACK(on_texture_size_changed), NULL);
+    g_signal_connect(CLUTTER_TEXTURE(live_input_texture_), "size-change", G_CALLBACK(on_texture_size_changed), this);
 
     ////area where the video is drawn
     //drawing_area_ = gtk_drawing_area_new();

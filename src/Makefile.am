@@ -1,6 +1,9 @@
 bin_PROGRAMS = toonloop
 noinst_PROGRAMS = prototoonmidi 
 
+toonloop_CPPFLAGS = -Wall 
+# -Werror
+
 headers = \
 	application.h \
 	clip.h \
