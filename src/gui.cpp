@@ -153,13 +153,19 @@ void on_new_frame(ClutterTimeline *timeline, gint msecs, gpointer data)
 //    std::cout << "on_new_frame" << std::endl; 
 //     Gui *gui = (Gui*)data;
 }
-
+/**
+ * Called when the stage size has changed.
+ */
 void on_stage_allocation_changed(ClutterActor *stage, ClutterActorBox *box, ClutterAllocationFlags *flags, gpointer user_data) {
     //g_print("on_stage_allocation_changed\n");
     Gui *gui = static_cast<Gui*>(user_data);
     gui->resize_actors();
 }
-
+/**
+ * Called when it's time to resize the textures in the stage.
+ *
+ * Either the window has been resized, or the input image size has changed.
+ */
 void Gui::resize_actors() {
     gfloat set_x, set_y, set_width, set_height;
     gfloat stage_width, stage_height;
@@ -179,7 +185,9 @@ void Gui::resize_actors() {
     clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), set_x, set_y);
     clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), set_width, set_height);
 }
-
+/**
+ * Called when the size of the input image has changed.
+ */
 void on_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data) {
     //g_print("on_texture_size_changed\n");
     Gui *gui = static_cast<Gui*>(user_data);
