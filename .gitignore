@@ -64,4 +64,4 @@ tests/check_signals
 tests/check_statesaving
 # TODO:2010-08-05:aalex:How can we avoid automake to create make INSTALL a symlink?
 INSTALL
-
+*.tar.gz

@@ -1,2 +1,4598 @@
+commit 415021a3de9d8ba1360c5b2b289f8f7ff14280dd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 06:29:09 2010 -0400
 
+    updated RELEASE
 
+commit 7251d8d02167b90fc4d07912aad18553bf04dd08
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 06:27:16 2010 -0400
+
+    Updated README, RELEASE and the man page
+
+commit 910eb9533183316b54e78378cea0897e6c081fcd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 5 22:38:10 2010 -0400
+
+    updated RELEASE notes
+
+commit b988e54a19cb957ed93d702e08ff7d0504441896
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 5 22:35:18 2010 -0400
+
+    updated instructions in the README
+
+commit fc52f5eb5c60f70d0c2c781753be27c6d747f25f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 5 22:29:39 2010 -0400
+
+    Removed INSTALL, since automake makes it a symlink
+
+commit 70e36f588902d794b90c66ad9f2b7ce52f046817
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 5 22:21:36 2010 -0400
+
+    modified the .gitignore
+
+commit 686eafe3cdc75cd46597a4a2d8bb7a70394acb2f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 5 22:20:44 2010 -0400
+
+    moved .hgignore to .gitignore
+
+commit 1d8fe3401bd130eb508f4afaadb6343fb15584ee
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jul 19 06:19:14 2010 -0400
+
+    added mose to AUTHORS list
+
+commit 297f57ff8b58c1e4c5458eaa61875aa59a208065
+Author: Vasilis Liaskovitis <vliaskov@gmail.com>
+Date:   Sat Jun 26 12:49:27 2010 -0500
+
+    added support for multiple clips. CHanging between clips with PageUp, PageDown
+
+commit 198245fff82b4a8e4f6783b878f758d82f43c13b
+Merge: 3b2db2a 6274047
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 25 23:36:03 2010 -0400
+
+    merged
+
+commit 3b2db2a30ce29e9b586ff0f822e8dd3ebd296ac9
+Author: Vasilis Liaskovitis <vliaskov@gmail.com>
+Date:   Tue May 25 02:21:02 2010 -0500
+
+    Generate new texture for grabbed frame only when playhead changes, and not on every draw callback
+
+commit 6274047b86544dfad535018c76aa71a07ed0e72d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon May 24 18:06:49 2010 -0400
+
+    added NEWS
+
+commit 43ec90e442942df52b1587de974ff395fcda15b9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon May 24 18:05:12 2010 -0400
+
+    added COPYING and INSTALL
+
+commit 8d1541679f2d186941e4639c9c5dea9bbcbc72e8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon May 24 15:12:22 2010 -0400
+
+    adding oscsender.cpp, but not using it yet.
+
+commit e64f7fe224f4b4d26b3f3b80e032731861a2ce80
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon May 24 15:07:09 2010 -0400
+
+    removed ChangeLog from hg ignored files.
+
+commit 098fcc997c016f03762cc795753b5bdea6700274
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon May 24 15:06:41 2010 -0400
+
+    adding an empty ChangeLog file
+
+commit becea50e04920ea475318db14f29c54080f42d29
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon May 24 15:05:01 2010 -0400
+
+    updated formatting in RELEASE
+
+commit 53d2fcefde695da897637132c3537ab01b159ad5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon May 24 09:28:04 2010 -0400
+
+    Added xvideosrc support!
+    This is more a toy than a tool since the FPS is so low. It could be useful, though.
+
+commit 61a4c1e8e3fdd0e27a166e2c6c7381ebde0b386d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 23 23:38:43 2010 -0400
+
+    can now receive a /ping OSC message
+
+commit 30d9aeff53cb553c345b834fa9d7c7747f663874
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 23 23:09:05 2010 -0400
+
+    first steps in adding OSC support
+
+commit f54aff7b2bd03fbb1cea065f9b1b718356b06f2e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 23 22:52:25 2010 -0400
+
+    consideting an XML library for state saving. JSON would be more lightweight, maybe.
+
+commit 95a3feacf49feae1a3765247dd738293c1ac874d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 23 13:43:09 2010 -0400
+
+    moved the drawCallback up
+
+commit 6576b40070af2b26bcb2d24f7cc9eb1cb31d2882
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 23 13:42:00 2010 -0400
+
+    trying to use a mutex for the clip class.
+
+commit c4c9692839e6d57cd0e9ca6e0a8bb18c9d1d62d2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 23 12:42:09 2010 -0400
+
+    trying to fix the image deletion crash...
+
+commit f6d8a3c33e487a12c9dfb3d3c7a230ada0198185
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 23 11:16:44 2010 -0400
+
+    cleanup in timing within the draw callback.
+
+commit eccff53d7ad3b0379597f78022324ca578639819
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 23 10:57:56 2010 -0400
+
+    Can now control the playback's FPS with up/down arrows.
+    Created the Timer class.
+
+commit 81d091b0ab9075c5da86597f63e1847c48febd28
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 23 09:32:13 2010 -0400
+
+    Using a shared_ptr for the images.
+    Should fix the crash that sometimes happens when deleting an image.
+
+commit 4bee88d740edf97fd0d74cb25da33534b7f5dcd2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 23 08:12:37 2010 -0400
+
+    adding a stupid space
+
+commit 46c64b56933c9bb8f7fbc6b2431994864e851997
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 23 08:11:59 2010 -0400
+
+    updated src/README.txt
+
+commit ffad7cc097207e4cde0f41d8b8bb9c2729f26107
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 23 06:26:04 2010 -0400
+
+    Fixed memory leak when loading images with GdkPixBuf !
+
+commit 9ef6227f71546fc2ebfa27129eedf885e99d888b
+Author: mose <mose@mose.tw>
+Date:   Sat May 22 15:20:59 2010 +0800
+
+    reported some interactive keys on manpage
+
+commit 12c7e7dfedc4f8b297eb10d53b2a557d5785dc5f
+Author: mose <mose@mose.tw>
+Date:   Sat May 22 15:09:21 2010 +0800
+
+    added summary of commands
+
+commit aa1c03a5122daa98a342368636a31fc8aac4c5d5
+Author: mose <mose@mose.tw>
+Date:   Sat May 22 13:15:52 2010 +0800
+
+    added some more details
+
+commit a7c839a4c5fabb541817509c921aaa321d736fdb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 20 09:50:23 2010 -0400
+
+    can now delete images.
+    There is still one minimum left though.
+
+commit 99c232a86347d910c5d48de803def382cb53ee71
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 20 08:45:04 2010 -0400
+
+    added check_signals.cpp, but not compiling in it, since we might be better using boost/signals2 instead of signals1 since the version 2 is thread-safe.
+
+commit 6cfdf57f01bb4948b8f5598dbcf897f81e40be00
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed May 19 05:28:07 2010 -0400
+
+    moved around the colours in the shader so that we can see it's running
+
+commit 65028564b620d3a4debb219c4ec010495fbeb693
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed May 19 05:26:17 2010 -0400
+
+    added the command line option --enable-effects
+
+commit 8033277238ac3d082998c67e1b65eaef0c443218
+Author: Vasilis Liaskovitis <vliaskov@gmail.com>
+Date:   Mon May 17 01:21:04 2010 -0500
+
+    replaced dummy shader with tester shader from v1.2
+
+commit 55de67ae4497c9740ca05357bfdb05ed681f4078
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 16 10:28:35 2010 -0400
+
+    removed tabs and added a constant to enable/disable GLSL effect.
+
+commit 0372febaf087bb8c9858891221c6f3ce00fe3e6e
+Author: Vasilis Liaskovitis <vliaskov@gmail.com>
+Date:   Sat May 15 21:13:34 2010 -0500
+
+    fix shader crashing by moving shader compilation to drawCallback
+
+commit af5c207e0e1133a9486d4becd243b2cbb52be52c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 14:26:00 2010 -0400
+
+    added --sync option. Used by GTK
+
+commit 093f010966c74b7b95dac473e1416c36e310c93f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 13:13:51 2010 -0400
+
+    fixed a potential critical typo. It's "test", not "videotestsrc" anymore.
+
+commit 38d85180b98c34d4c7614408cf63f5d10ffc4a8b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 13:08:12 2010 -0400
+
+    fixed typo
+
+commit b008a5bfc16bb9bdceeb1324dae276c315e3e0d1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 13:07:16 2010 -0400
+
+    little cleanup in Makefile.am
+
+commit 455c09fefaecb07ece3a5bef1a227e34bc9489ac
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 13:00:01 2010 -0400
+
+    added one more missing package in the list.
+
+commit 6bca6fdb5d862217957daf93e8215f3cd8ccc088
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 12:56:14 2010 -0400
+
+    added a missing package in the list
+
+commit c6c365356445cf236ebf1d68da14981caec00096
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 12:51:59 2010 -0400
+
+    Got rid of a segfault when negociating the caps failed.
+    THere is still a segfault when we call Pipeline::stop(), though.
+
+commit 75bcab609768a2175bd7f7cf6fb197fb6a831a5f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 12:27:30 2010 -0400
+
+    separated the check for GST and GTK in the autotools build system.
+
+commit fb09477799d09a69f1162e610ef5d37cf073c65b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 03:10:08 2010 -0400
+
+    fixed makefile.am so that it builds the midi prototype.
+
+commit 1a72d0cd847a838490ac6830c2e0a382bbfff4de
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 02:58:06 2010 -0400
+
+    added ignored files.
+
+commit 638d0d73d892866a931023bbbe510bf22c84d6c1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 02:53:35 2010 -0400
+
+    adding check_containers.cpp, proto for a shared list of objects
+
+commit 33fb53ad3997be0a01a9a94e2cdcdc9955afa513
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 02:10:49 2010 -0400
+
+    added README.txt in src/
+
+commit 45ca49a054267a2a37eff112912d6cedf91ae188
+Merge: eeff259 fcdd0fb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 01:56:44 2010 -0400
+
+    merged
+
+commit eeff259e31bbcc9dc9003034978b2a07757af3be
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 01:55:20 2010 -0400
+
+    towards a better clip class.
+
+commit fcdd0fbaf5a887399f5cb1fdd08d776354391c7b
+Author: Vasilis Liaskovitis <vliaskov@gmail.com>
+Date:   Thu May 13 00:51:58 2010 -0500
+
+    fix type conversions in toonmidi.cpp
+
+commit 12376bb10a50ca794fd082295dd47b160c59a490
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 01:45:34 2010 -0400
+
+    almost re-enabled toonmidi proto
+
+commit e96f9bf23e8ca9cbcbc591cbf14969a23d71f1d7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 01:35:39 2010 -0400
+
+    Figured out that I needed to link the check_symlinks with the boost::filesystem libraries explicitely.
+
+commit 5274c1ccf320215618029d79de9248315a56936c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 01:14:09 2010 -0400
+
+    adding moviesaver.cpp and a test for it.
+
+commit 27e4cf65c213d54ca6f5a4fb73d9d52e69049f54
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 13 00:10:39 2010 -0400
+
+    made reading the output of check_tween easier
+
+commit c4aed25085980d71f785f3293100daa5654c2a76
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed May 12 23:59:42 2010 -0400
+
+    made waiting time for thread to be done to 0
+
+commit 79078e7c3fec252d98ff12767226f0b40f1f6299
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed May 12 01:51:39 2010 -0400
+
+    still trying to make the symlink work.
+
+commit 9bb1b20e7f89021fa75b3594f257c3ad9c295074
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed May 12 01:19:52 2010 -0400
+
+    Tried to make check_symlinks work, but it's not working yet.
+
+commit e1eb1f29d4e5eb58975ff8c98534cecbeeaf7bf0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed May 12 00:45:55 2010 -0400
+
+    added a destructor to the Image class.
+
+commit 358f1866f5a25ace6f86b7bee0e68d663cd9a188
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed May 12 00:41:21 2010 -0400
+
+    progress in README.
+
+commit 35bb88fc3da8cdd871ba20280739cf197ab7d355
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed May 12 00:28:32 2010 -0400
+
+    adding package list in README
+
+commit 0e1018fc22fd66b51db3447c549c0092a9c6c0a1
+Merge: 357259b a5527a4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 14:22:52 2010 -0400
+
+    merged
+
+commit a5527a47aa0bb46763ab26cb2c2f5423da91ce09
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 13:27:39 2010 -0400
+
+    added destructor.cpp
+
+commit 357259b07f2d7437268c665e908afb1c5de084d0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 02:49:49 2010 -0400
+
+    updated the RELEASE notes
+
+commit c319a0089f293b1414345ab27038665eb162b787
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 02:16:39 2010 -0400
+
+    modified ignored files
+
+commit 28a8b66fc7a525e72041c90e43d64e5646d08451
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 02:12:41 2010 -0400
+
+    updated man page credits
+
+commit 97549477171ea7930040de562efaac8cc702abdd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 02:10:06 2010 -0400
+
+    adding RELEASE
+
+commit 68800625e591030016e7a34e037f015e75e89d9b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 02:07:49 2010 -0400
+
+    adding README
+
+commit 4bf6a81c213b30247d25cdec0e8b95e53127a4f6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 01:58:25 2010 -0400
+
+    added an option to keep images in RAM, not loading from the disk.
+
+commit 24dafe09bf548b3a92eabbd4e9c74b6b54462734
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 01:51:19 2010 -0400
+
+    renamed videoconfig.{h|cpp} to configuration.{h|cpp}
+
+commit 00c8dad4a22899726d341c0b7d3ff0958be6ad79
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 01:46:15 2010 -0400
+
+    renamed the VideoConfig class to Configuration
+
+commit 38aff0ccf4995a042c2d97d7da0a472f057cd746
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 01:41:33 2010 -0400
+
+    less verbose
+
+commit 90f134a1d52cfc6fb014e38a8ddee8376159577d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 01:39:52 2010 -0400
+
+    made loading image to RAM possible with a constant (for now)
+
+commit d8e3f50bd318826b0fbd7478b81bf8123075a478
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 01:19:12 2010 -0400
+
+    fixed crash that occured in case of write/read race condition.
+
+commit 1d2a213c32646e432043fc655d9012d92a10e51b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 01:13:20 2010 -0400
+
+    changed the title
+
+commit b0cef2ae82b0b7b11b568c8da1d2dfc8a4140c44
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 00:52:54 2010 -0400
+
+    Saving and loading constantly the images to/from the disk.
+
+commit 338c4b7abea6127e0568828031130a6cdf7f4645
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 11 00:19:19 2010 -0400
+
+    Using timestamp as file names for images.
+
+commit 914dfc70cce3129a04e43d8c7264c270309c5e58
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon May 10 02:18:44 2010 -0400
+
+    more hg-ignored file
+
+commit c13ee5fd5ba094b8de45b6ed4e4eb82d4dbeae65
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon May 10 02:18:16 2010 -0400
+
+    Ported tween.cpp to a C++ class, not plain C anymore.
+
+commit 2124c37a60413e0482a0cd8d13565db9ea41b096
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon May 10 01:36:51 2010 -0400
+
+    moved get_timestamp_now() to timing.cpp
+
+commit 325da9fddb005aee580ac8303e36f56c30391db5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon May 10 01:13:51 2010 -0400
+
+    adding get_timestamp_now(), likely to be renamed.
+
+commit 0d6dc58a641807f9eb9223411bf65e5ec4120e57
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon May 10 00:08:46 2010 -0400
+
+    created timing.cpp and moved the get_datetime_iso_for_now() there.
+
+commit b80744875a3503377159bc9c5af245750b4c8da7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 9 11:55:10 2010 -0400
+
+    making the test verbose again
+
+commit f85eb169f17de8e9fb5a9bf829fb9fcdf11973c7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 9 11:23:09 2010 -0400
+
+    Making sure no two timestamps are the same in check_datetime
+
+commit e5863bd8d1b5ec04897d35eb86d79b59950ce1f0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat May 8 15:30:11 2010 -0400
+
+    Done printing the ISO date and time.
+
+commit 1652ee8b8a7335072056005b6aeb0affc0a7543f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat May 8 11:17:42 2010 -0400
+
+    added notes about boost::posix_time to_iso_extended_string
+
+commit bd01c1d08eabb10516d91a8e5948a65282376014
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat May 8 11:11:38 2010 -0400
+
+    modif ignores
+
+commit 0d4fbbb0eee23be1036915628a55c22a3acaaee4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat May 8 11:10:17 2010 -0400
+
+    using Boost::date_time
+
+commit 6c846846925919a7bdde930eccb4bcc0b955cebb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu May 6 09:07:18 2010 -0400
+
+    Merged two options into one: project-home.
+    Configuration is now a shared pointer belonging to the application singleton.
+
+commit cdf0aefbc88e85f14d34e03751894e3468f2aef6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 4 01:48:10 2010 -0400
+
+    added header files to the toonloop_SOURCES, so that it's in make dist.
+
+commit 0e282b55164680e7424eaf84fd8646bb13f87382
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 4 01:42:47 2010 -0400
+
+    had forgotten to add the man subdir
+
+commit 1dde10e702f876ef4a5cdcc72aa839f5fab3450e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 4 01:41:18 2010 -0400
+
+    progress in credits and man page
+
+commit 5153a4edcc50e0dd4aa95452643784c8615a2e63
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 4 01:37:41 2010 -0400
+
+    Had forgotten to add Makefile.am
+
+commit b1f30f5edf4eda82861cd7f4228ef58942dd51cb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 4 01:34:19 2010 -0400
+
+    creating a man page.
+
+commit 1ef684ad8c1b7c4ac544a7d5a50e625108a313b7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 4 01:24:07 2010 -0400
+
+    Fixed FPS with videotestsrc.
+    Removed some useless options.
+    Changed videotestsrc option to test.
+
+commit 1fd8ab5ddae05b22abb8e3a7e2a69e807588da73
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 4 00:27:11 2010 -0400
+
+    added v4l2util even if not used yet. Will have to modify it a bit.
+
+commit e64670a4ee62efac1b1fc585c1462c4502f7e596
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue May 4 00:25:26 2010 -0400
+
+    Can now detect the device frame rate
+
+commit 6230cf159c0f4a30d04cf4cac00f2923a89c8a30
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 2 12:33:58 2010 -0400
+
+    some cleanup and a new test.
+
+commit f2c2538f83cf10accb6691cff6008210fd282e13
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 2 11:36:00 2010 -0400
+
+    disabled every kind of shading
+
+commit 22d46402ad90ec8800bda1c0946969ab85bae337
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 2 10:59:46 2010 -0400
+
+    Still not working. Checking glew and storing a value in the VideoConfig class.
+
+commit de22e451a7f597bbefb8692e6d9bad051c5a5a8e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 2 10:50:16 2010 -0400
+
+    Using shader. Big traceback. :(
+
+commit 1cc962a35d75dce339d9d4cb639a2a852e55810f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 2 10:40:07 2010 -0400
+
+    reformat a bit
+
+commit 9027148e59f9069d547295d1c849d793c7871659
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 2 00:43:41 2010 -0400
+
+    added shader.cpp
+
+commit 79ce29d6f726f88a9ca525a00e7a7def105ddcc7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 2 00:36:59 2010 -0400
+
+    checking for shaders support with glew in application
+
+commit d0e75de0f1a7e1ade2d3baa4e6eedb33ea2db8ad
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Apr 30 23:38:24 2010 -0400
+
+    changed version number to 1.9, since it's an experimental branch.
+
+commit 4c0d45280b36056fba0107cac8577297ab07b2c2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Apr 28 06:28:10 2010 -0400
+
+    commented rendering fps. Now using the same as capture_fps
+
+commit 93ea465cde86f457830a14a91ab97847c783dd36
+Merge: 0ac40f0 1e112a4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Apr 27 10:20:13 2010 -0400
+
+    merged
+
+commit 1e112a483330d60e1fbdae6176c6813e265ce5b7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Apr 27 10:20:02 2010 -0400
+
+    separated capture-fps and rendering-fps in the command line options
+
+commit 0ac40f0e82712c0d7a3fcceb8cc20303a019935c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Apr 27 00:11:08 2010 -0400
+
+    Revert back to revision 683:941ab8761167 since it was not working.
+
+commit 1189c18b67bf68948480f35d2631d267dc6d0aa1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Apr 27 00:08:24 2010 -0400
+
+    This revision is not working. I wanted to load the texture data later, in the draw callback.
+
+commit 90b1dfd4e3d268dbaca5aa6dc14c5438c9ff56d8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 23:43:04 2010 -0400
+
+    towards using the Texture class.
+
+commit e2fe7cbce48f3e3052f5aad0c3649e08dc62898e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 23:20:54 2010 -0400
+
+    toward a new texture class
+
+commit f239671c360fedc09f6e04cb3b02272bdb9887c6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 23:20:16 2010 -0400
+
+    tried to pass this to the callbacks, but better not do it this way
+
+commit 74ba6a8ffeede4e47702a1ebe5e48b091d24e9a4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 23:06:45 2010 -0400
+
+    minor changes
+
+commit 71be46bfb893f6c36d667b54ff80437dae26e401
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 21:07:06 2010 -0400
+
+    Made the right image black when there is none to show.
+
+commit 4930286316b54b18afb0e629ad5a1a86ebad8d73
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 17:04:55 2010 -0400
+
+    removed some buggy autoconf instruction in hardy
+
+commit e7fcd11338a47035bfaad2966ce7d3bd5a38653e
+Merge: 710660e eb7e6e0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 12:51:07 2010 -0400
+
+    merged
+
+commit eb7e6e0eb203d7a2e5b34479d90577d0247c1d11
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 12:50:54 2010 -0400
+
+    adding comment
+
+commit 710660e29fea8cf2e74f24b8966477c8ebbbefdc
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 11:21:45 2010 -0400
+
+    added a comment
+
+commit 63cb1c87905d5393aac551c7e00b13820778f675
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 10:43:08 2010 -0400
+
+    Splitting clip.h into image.h
+
+commit fe3a7fd8eb644bdfb031dc9a43d657511ff8cda1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 10:38:16 2010 -0400
+
+    Renamed option to plyhead_fps and moved it to the Clip class.
+
+commit 24246424b49fc7d792d64062af31fb250df9bdbf
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 10:12:07 2010 -0400
+
+    fixed conflicting short option in the command line.
+
+commit 216ad995e4b8e7c592f8b9293132e3ec92510cf7
+Author: Vasilis Liaskovitis <vliaskov@gmail.com>
+Date:   Mon Apr 26 01:31:41 2010 -0500
+
+    Added code to playback all captured frames with iterate_playhead. Added command line option cfps to control clip playback speed (not tested yet)
+
+commit e9ca6c4080ba5e35eb126e1fc3ae50254a993820
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 00:32:32 2010 -0400
+
+    remove useless comments
+
+commit 12b3eb4bcba1f5f61161e8af4bc1cea3601d3cbe
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 00:22:46 2010 -0400
+
+    progress in video options
+
+commit 04d25e8cea475a5a24a81248570a8475a4017579
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 26 00:02:37 2010 -0400
+
+    Encapsulated configuration in the VideoConfig class.
+     * Able to specify FPS and video source.
+
+commit 19c861b9ac4cc8014551a5bb2462d032ed813674
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Apr 25 23:24:59 2010 -0400
+
+    can now launch it with --video-source videotestsrc
+
+commit c326827bdf4f0c100cc3da3d8aba665619675b05
+Author: Vasilis Liaskovitis <vliaskov@gmail.com>
+Date:   Sun Apr 25 15:41:28 2010 -0500
+
+    Initial code for rendering the first grabbed frame.
+
+commit ec2f12559543791f854f772645ca5da159b06850
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Apr 25 13:47:37 2010 -0400
+
+    Modernized the way the image name string is created.
+
+commit 3ab0e4580ce64a9b69a5f1411e88c9d0716f32cf
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Apr 25 13:06:33 2010 -0400
+
+    Added Clip::get_id and getting the frame number from the pipeline.
+
+commit efae796ff997dc621f56211f544e166981c65c56
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Apr 25 11:01:55 2010 -0400
+
+    I think I've got the right formulae for the aspect ratio
+
+commit 6c108da20712b63db0f4fea8e22eb6a9a4cd1cfb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Apr 25 10:41:04 2010 -0400
+
+    compiling with clip.cpp
+
+commit 1b61652d77a2adc89fc9392fc43119c8fdcc4d4f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Apr 25 10:24:28 2010 -0400
+
+    adding clip.cpp. Added the AUTHORS file with acknoledgements.
+
+commit 8c6f925bb0fc5acf4418035d33bcd8829a64d2b9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Apr 24 20:47:51 2010 -0400
+
+    transparency works, but there is a strange diagonal line. Trying to adapt ratio of coordinates.
+
+commit bdad410c7720865f038f9a147118ae7853f374af
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Apr 24 20:32:09 2010 -0400
+
+    Got rid of all the GtkGlExt. Showing two textured rectangles.
+
+commit 0f757bd8300f88a8fd8f1860189fd6551304509e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Apr 24 20:15:13 2010 -0400
+
+    got rid of the rotation
+
+commit e0ff160557bd7b12f04d4ea6b59447d7b84bdca1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Apr 24 20:13:18 2010 -0400
+
+    helping debugging crashes due to boost::filesystem
+
+commit 5b5448b0e290cadb662a8e510b50f12d49ac8ad9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Apr 24 20:10:45 2010 -0400
+
+    Removed GtkGlExt and SDL from autotools build system.
+
+commit 12dccec9e22f44f2705490714b2eee30c0a31593
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Apr 24 20:08:02 2010 -0400
+
+    Removed prototypes: dummy gtkshare sdlshare
+    Also renamed the toonmidi prototype to prototoonmidi
+
+commit 154bcc02bba7f214cdd6aa827a7d77c893fd1e43
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Apr 24 20:03:07 2010 -0400
+
+    updated hgignores
+
+commit 00bb2d1d019491f4e2b1ed62fdc1acb8f32d55ca
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Apr 23 10:59:01 2010 -0400
+
+    parsing --toonloop-home and creating the directories if they don't exist
+
+commit c9cb192532e45a6c56affe28df190b2e776b9046
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Apr 23 10:38:39 2010 -0400
+
+    implemented the --video-source option.
+
+commit b8b3c8f494e62457026cd480fbbabe944a00c539
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Apr 23 10:23:50 2010 -0400
+
+    fixed program options
+
+commit 72b32ec670f1e8a9c5fe963f40882c037a138046
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Apr 23 08:13:28 2010 -0400
+
+    added comments
+
+commit 3c5b0e3caedc504d2a89c8cda70b95f49b6c8dec
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Apr 23 08:11:17 2010 -0400
+
+    Flipped image.
+
+commit 4732b1d57229d86a42a3b604078b1ca4934fd4aa
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Apr 23 08:04:48 2010 -0400
+
+    removed runner.cpp
+
+commit da11a407b1a24b5c5c7868fc367dc1f6edfd5332
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Apr 23 08:03:25 2010 -0400
+
+    ported the boost::program_options prototype to the main application.cpp. Don't know why it doesn't work.
+
+commit 40c133cbc77d395347f23d85b756211d326ae046
+Author: Vasilis Liaskovitis <vliaskov@gmail.com>
+Date:   Thu Apr 22 23:02:02 2010 -0500
+
+    added Pipeline::grab_frame to add a frame with the SPACE key. Frames are currently stored under /tmp/toon-gdkpixbuf*jpg
+
+commit 75cf5622f7bbbd7ba06911a0b2ccf857a6d51753
+Merge: af2c627 9907c23
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Apr 22 21:38:53 2010 -0400
+
+    merged
+
+commit af2c6273d838e484ac999415b9d1c0d89fbb7330
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Apr 22 20:54:25 2010 -0400
+
+    progress with program options
+
+commit 9907c23ea3f797ce033b0cea479621a0bac443be
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Apr 22 10:40:27 2010 -0400
+
+    implemented the v4l2src, the tee and the gdkpixbufsink
+
+commit fc4cea36829837473f4de533c875edaed5c55f9f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Apr 22 10:23:10 2010 -0400
+
+    added license text all over - might change in the future, though.
+
+commit a9d3fb1a6d91039559791f224f4071608d75a973
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Apr 22 00:30:45 2010 -0400
+
+    It seems like I've applied the XID patch successfully to the main prototype.
+
+commit fd36322781ff9ad4dba59f779784591d831faade
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Apr 22 00:14:37 2010 -0400
+
+    progress towards porting the xid fix to the main prototype
+
+commit 9dd440e35065f3b759f39140d260dfeb77dbf436
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Apr 21 11:32:53 2010 -0400
+
+    progress in the doc/gst-pipeline.odg drawing
+
+commit 7c6679a8b81a3f335016d7795b5c8864695a0534
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Apr 21 11:21:47 2010 -0400
+
+    renamed window to Toonloop 2.0 experimental.
+
+commit 780772c37c188586c322c862f49240a10a3aa34e
+Author: Vasilis Liaskovitis <vliaskov@gmail.com>
+Date:   Tue Apr 20 23:24:23 2010 -0500
+
+    Fix xwindow id crash in gtk dummy.cpp
+
+commit e64e7cd43408a0e860383f3acf11b552476c0126
+Merge: d191ffb d3bc3cf
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 12 02:42:03 2010 -0400
+
+    merged
+
+commit d3bc3cfae1143c520c6d25ac2cf35d964db7e0b4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 23 11:39:31 2010 -0400
+
+    done purging python stuff from branch 2
+
+commit 92a0e317e176a4d4ec139b3ee5bfa5b2a50f07d3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 23 11:38:19 2010 -0400
+
+    removed python stuff from that branch
+
+commit d191ffb1ec0f3d86096d375e1bb379c919e6cf50
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Mar 18 10:01:01 2010 -0400
+
+    moved toondirwatch, toonget and toonweb scripts to the frigo project
+
+commit 6d37ab6732206db421e68c0939f7e27b0617b379
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Mar 14 17:22:44 2010 -0400
+
+    trying to fix the error which hangs when exiting
+
+commit 49cca99bcbc0d864ca859df56ae59d96bb473827
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 9 01:54:28 2010 -0500
+
+    spaces
+
+commit e60e8743d3e873b234897d59268345cde9fda800
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 9 01:35:29 2010 -0500
+
+    more padding.
+
+commit 8bb676600afe030e92b73c437995b167223895bb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 9 01:30:20 2010 -0500
+
+    more padding
+
+commit 7c19822ddf61d08ecd98f8f9e66041d844a97b07
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 9 01:10:12 2010 -0500
+
+    starting to put the rendering stuff in a class.
+
+commit d98e5121c6a6b7b7d2cfc2700fc8ad576caa131b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 9 00:56:18 2010 -0500
+
+    fixed indentation
+
+commit a13f16482c41c461882228d80485ea18141c487b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 9 00:47:18 2010 -0500
+
+    moved draw functions out of sdlshare.cpp
+
+commit f7b33fb7e6bd8b7a38fb75c493934d0d0346e42e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 9 00:38:47 2010 -0500
+
+    minor cosmetic moves.
+
+commit 49d4a61804f1623cf9343e00b42b4c2b4b58e4b2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 9 00:25:23 2010 -0500
+
+    defining the PACKAGE_URL autoconf var.
+
+commit f7d58f51155904d5c177c0c5588676c1adaecd60
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 9 00:15:29 2010 -0500
+
+    adding runner.cpp program_options prototype.
+
+commit d8492f5216082d42bbfd776b03ab24151f95dc43
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 8 23:44:09 2010 -0500
+
+    Using timed_join instead of join to wait for thread to complete.
+
+commit c45e351363434700f91415376dfc3c504017a001
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 8 20:46:41 2010 -0500
+
+    fixed errors in the ./autogen.sh
+
+commit 65658d8b91c6221ce4bf3bb045f5a975dcac8285
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 8 20:42:32 2010 -0500
+
+    checking for boost thread
+
+commit 9ba8b1a9c2d083d5dc92f8b869cfb8bd67eb04af
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 8 20:38:06 2010 -0500
+
+    using a functor for the thread prototype.
+
+commit 332b593df77097ed15d2e66eac847e515e893350
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 8 20:33:50 2010 -0500
+
+    adding a thread prototype
+
+commit 25173f80de1838ee21a29ae8ff2cda0fa04fa708
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 8 20:01:31 2010 -0500
+
+    correctly checking for mencoder.
+
+commit 25e80a0e835a2a96bff158eba962a907338a9bcd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 8 19:44:29 2010 -0500
+
+    checking for boost filesystem
+
+commit c96d556f6c8791e53491a22673bce1a19b75590a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 8 00:52:03 2010 -0500
+
+    updated doc more
+
+commit 10484ad94e885088db8c59478b0c1b9a2f56c883
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 8 00:46:00 2010 -0500
+
+    updated doc to match the progress done in sdlshare.cpp
+
+commit 59bb7186d684a6ca287bb51324c2ce87f7decdb2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 8 00:13:10 2010 -0500
+
+    added a test for the subprocess/commands tools.
+
+commit ccf2d7d49e35c3d350288fa3684bbdaf2c5b0c6d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Mar 7 20:55:20 2010 -0500
+
+    trying to add unit tests for the commands.
+
+commit a4b248f61e11378c26769de4122760f958e75d87
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Mar 7 20:44:47 2010 -0500
+
+    added command.cpp
+
+commit 447ec3ef0d6c3e26644a61b64b9344b5aa13b205
+Merge: c67e72c 0dad02f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Mar 4 15:28:19 2010 -0500
+
+    merged
+
+commit 0dad02ffd73c4589c71f4d38a91a2f9aacce9e3b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Mar 3 23:22:12 2010 -0500
+
+    saving a pixbuf when pressing space bar !!
+
+commit 89501f19c055314fb75b9d28be16f95347417a68
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Mar 3 22:30:36 2010 -0500
+
+    added the gdkpixbufsink
+
+commit 144cb6d5c1b91be5ef9fab2b51dbc2926886bc87
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Mar 3 22:26:56 2010 -0500
+
+    added a tee with only one output
+
+commit c67e72c462366cbb18656d8d6e7f6030de4fa523
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Mar 3 12:28:18 2010 -0500
+
+    added a themes proto
+
+commit 598fe67bbbd3b3078df29ae61464ef6162316348
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Mar 3 08:37:13 2010 -0500
+
+    added more credits
+
+commit 926cca2cf15d8632c4689b5f805c87e788d07359
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 2 11:45:45 2010 -0500
+
+    sync to FALSE. Let see if the FPS is going to raise.
+
+commit 7e8858dc50d6ced05cc431846dbcfab7e43cf198
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 2 03:09:37 2010 -0500
+
+    added doc/cpp_projects.txt : some source for inspiration
+
+commit c61ce3b5360cbf5d867ce84525bf14f065050a40
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 2 03:04:26 2010 -0500
+
+    small cleanup
+
+commit 23401d0ac5d5c60fe3a2d003d081ea796d83e0d3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 2 02:49:28 2010 -0500
+
+    added the midithread prototype
+
+commit 317a16b1182f6b8af0a380391351a68fe5c5b68f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 2 02:35:20 2010 -0500
+
+    added toonmidi prototype to the build process.
+
+commit 603e2f76901c716679fe2f139f855499bb92ee9e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Mar 2 02:03:49 2010 -0500
+
+    added toonmidi.cpp, a midi input prototype.
+
+commit 3b0849cf6160d8911f0448c1400134cf4df6d128
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 1 18:37:03 2010 -0500
+
+    detecting the default DISPLAY dimension
+
+commit e3ef49e4bf38bed51a0560ad608058ede46b4acd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 1 02:57:05 2010 -0500
+
+    drawing two rectangle in orthographic view. Hiding the cursor in fullscreen mode.
+
+commit 5bd1c72deed0552b1dc1e68ac2489f595ced837b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 1 01:52:37 2010 -0500
+
+    ctrl-Q to quit
+
+commit f118062262fc7af8b35b67b980be7592f0a233bc
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 1 01:50:09 2010 -0500
+
+    Some V4L2 video in GL!
+
+commit 8d775e4505757ae8f60da3d7068cd7dc0e5402cc
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 1 01:28:51 2010 -0500
+
+    some cleanup
+
+commit f0e56c8d1eae508def7be3bab1d6ace06fb10c6a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 1 01:03:26 2010 -0500
+
+    linking each element separately.
+
+commit 77607cb6969ffd12a9ea11ac6adeb0b497002f7a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 1 00:51:39 2010 -0500
+
+    Using correct caps and colorspace.
+
+commit 35841481d6bdf15d94cb2c00a83a5b99f3164d50
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Mar 1 00:34:43 2010 -0500
+
+    creating the gst elements separately
+
+commit 23f03575a4e8e105448aea20a8f86a0f42214a59
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Feb 28 21:13:16 2010 -0500
+
+    Resizing render area when in fullscreen mode !
+    Still need to make sure it's the X11 right screen number we detect.
+
+commit 1674b81f24752830f306c18e366bd5f161fdbee6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Feb 27 12:33:11 2010 -0500
+
+    Trying to make the rendering area the size of the screen when in fullscreen.
+    Still need to set the viewport.
+
+commit 50053c780cb0c2e6c300e1b071668d6ccb70c91f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Feb 27 05:08:06 2010 -0500
+
+    printing DISPLAY
+
+commit 90b634e378d13ed0e4d565750852ee6c272ce118
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Feb 27 05:03:44 2010 -0500
+
+    printing X11 screen dimensions
+
+commit 8e39361a5cc81849906647bf3abc1ffee5f3b240
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Feb 26 08:35:17 2010 -0500
+
+    making sure we always use the default bit depth of the display
+
+commit 71012af8311e84572474e1dd166c911e1cf3557a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Feb 26 08:30:49 2010 -0500
+
+    SDL: can now resize the window and make it fullscreen.
+
+commit 25a675626f663e716a196183b4833369c4e3ac56
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 25 21:56:01 2010 -0500
+
+    towards a gtkglext + gst prototype.
+
+commit 2663bc039126466fd60ee81365dc3cda24211568
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 25 21:31:20 2010 -0500
+
+    towards a gtkglext shared example.
+
+commit c4cc92e65ed7e8f9d7e287a18e50f98239a8c42b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 25 00:40:59 2010 -0500
+
+    added sdlshare.cpp proto. Needs the latest bleeding edge git version of gst-plugins-gl.
+
+commit eb639bb32282e71ab8f0edf0e0fd1d75ea8c6b7c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 24 11:48:15 2010 -0500
+
+    added a non-working pipeline proto
+
+commit 9ccf1734482e769e1601487ee3052c981c07e269
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 24 11:21:22 2010 -0500
+
+    added a prototype of a pipeline
+
+commit e270c94f3e4bbf1650b517da0fe9819620df98df
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 24 10:53:47 2010 -0500
+
+    using capsfilter.
+    Increase video size to 640x480
+
+commit 0f4c6bbb88c9f604f4fd6c21cd5b549173fca350
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 24 10:30:05 2010 -0500
+
+    using the Application::quit() method to quit.
+
+commit b6fed00c8dfef2a29d4249ec53e7b3c89d4e0b4c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 24 10:21:54 2010 -0500
+
+    ported the dummy prototype to the main app
+
+commit 8bd0b10645f5b0a9d294757650888f00b4f7dc0d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 24 10:01:23 2010 -0500
+
+    added Gui::get_drawing_area()
+
+commit 17bb310f50a6f0841d22dca0ac5f702690df1a61
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 24 09:23:41 2010 -0500
+
+    added an application.cpp
+
+commit a86654bf31aa7b7171e74f149c6a7803f6e6a9dc
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 24 08:27:16 2010 -0500
+
+    tried to add a boost_filesystem prototype but failed.
+
+commit 0d0bd821dfd0282b5cff52eaefcd2e6335446ce3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 23 10:52:03 2010 -0500
+
+    smoothing doesnt quite work
+
+commit d9be522b9da9587544941c329941035af25e1768
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 23 10:29:43 2010 -0500
+
+    The framerate is now smooth and tristan fixed some bugs.
+    removed queue.
+
+commit 11c2a77342f3454ee1a0fad48d2a9d12687bc401
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 23 09:50:46 2010 -0500
+
+    printing error messages as well as warnings
+
+commit 3841a1b07455364a2ff741a80925d3c784ecc111
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 23 09:42:55 2010 -0500
+
+    added a queue
+
+commit 70823667dc2d6f1699a508276b8cc6975bc1e812
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 23 09:35:58 2010 -0500
+
+    making a nicer 2d scene
+
+commit f91e8e6e57b6f531898875a6bb51b602951dd437
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 23 09:28:13 2010 -0500
+
+    no need to die for a warning
+
+commit c59da2e55063e88e8ab5e9b5bda80bdcac63c2b6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 23 09:21:33 2010 -0500
+
+    parsing the warning that cna stop the stream
+
+commit 36c03e7d5f2339d6d4bca78a74df499129b3ade7
+Merge: fcdd722 f4b99cd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 23 09:09:36 2010 -0500
+
+    merged
+
+commit fcdd7224168bb46dd35a0caf7af86b1fd9b39f2a
+Merge: 4acef20 7f72ffb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 23 09:05:14 2010 -0500
+
+    merged
+
+commit 4acef20db5f903a70b814af57ce3cb1480aa4111
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 23 09:03:54 2010 -0500
+
+    decreased  neeeded version of gtk, gst and glib to be able to compile on hardy.
+
+commit 7f72ffb077a2c156d152532868bff4947a6eb517
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 23 08:29:56 2010 -0500
+
+    adding a dummy prototype that finally renders GL in a GTK area !
+
+commit c906e35dd735784525a35c85d5a79996cb1029eb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Feb 22 22:24:45 2010 -0500
+
+    towards a glimagesink
+
+commit 71ebef372699083f4bbb58a5ef5f4ad30da305d2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Feb 21 20:27:18 2010 -0500
+
+    a file was made executable but should not
+
+commit 5f4e5c0c8a9a5334e31c5ac6314aa8cb2080e540
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Feb 19 12:05:09 2010 -0500
+
+    added the work-in-progress texture sharing pipeline
+
+commit ceb6469040d6ab3f9e282c91f0d365d639323ccb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Feb 19 10:55:37 2010 -0500
+
+    Can toggle fullscreen
+
+commit ee09cd8fa6d364cf61e6164d2ffd4c16e565ffe8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Feb 19 10:39:17 2010 -0500
+
+    made the gui into a class
+
+commit 11554615dbf8f92a1c49eb2b54df5047836ba4c0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Feb 19 10:09:20 2010 -0500
+
+    split the gui into an other file.
+
+commit f4d5db2b7641bcde7df009b5b0b173e60a782b44
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Feb 19 10:01:40 2010 -0500
+
+    ratio is consitant when resizing the window
+
+commit d65d67e8c194de59c820933dd050cb5df9196249
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Feb 19 09:46:16 2010 -0500
+
+    Orthographic projection works
+
+commit c28b1966e94b47995afedab1ba0a55f3e1a11312
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Feb 19 09:24:51 2010 -0500
+
+    splitting the custom gtkglext info functions to an other file.
+
+commit 00611b1b1d2cf4aaad0e8cdfdf5a2791fac2ce96
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Feb 19 09:00:11 2010 -0500
+
+    Switched to GtkGlExt for more stability
+
+commit 9aa2d20b56d5f079cd533b311a79fa06981e23f3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 18 04:12:12 2010 -0500
+
+    more infos
+
+commit 61e6a392f38606209067bdd8e039099618dd3bb0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 18 04:02:09 2010 -0500
+
+    something is working with the image numbers
+
+commit a204d2966eb13c2542408911d8d82ef66a2b6620
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 18 03:28:25 2010 -0500
+
+    towards a clip class
+
+commit 5e049e02bfebdf8b3caf44024b44ab24c2256bdf
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 18 03:11:21 2010 -0500
+
+    Much progress in the classes diagram. Made into a C++-like style.
+
+commit bc0a0d53d808ee5e3bfe48035be02494a3924378
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 18 02:27:48 2010 -0500
+
+    added old dia classes diagram
+
+commit 993ac8045c173d0c861642ac0d228e83754c5d85
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 17 22:46:27 2010 -0500
+
+    added an other glade proto
+
+commit 45c5efabcd3008dda889822fcec0e0c7155c5372
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 17 22:29:39 2010 -0500
+
+    added gl callbacks, but not using them
+
+commit 79cbc2ffeb6c1aa91d9fb9afdda71cacac78de72
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 17 21:20:14 2010 -0500
+
+    updated .hgignores
+
+commit f4b99cd855bf8dc16c321e957ea471b3f2520282
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 17 12:15:19 2010 -0500
+
+    merged
+
+commit 576b8e3ddffe089c8a56cca7c686dd710da3d16f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 17 02:44:25 2010 -0500
+
+    added a simple unit test
+
+commit 0ae83a0c3ca2515c1bdc461108982c5e6c01a5b2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 17 02:11:30 2010 -0500
+
+    added m4 macros
+
+commit a5d74dcc224ff69ebfe4c247bd3ddd4323783aa7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 16 09:06:57 2010 -0500
+
+    renamed *c to *cpp
+
+commit c43c4bd7be820ba2169e7f82e47fe3600ac1992d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 16 09:05:17 2010 -0500
+
+    added Makefile.am in the root
+
+commit c06e6be6af958a2a572fe41528cf4450cffbec72
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 16 09:03:34 2010 -0500
+
+    added C++ project skeleton with a GTK GST example.
+
+commit 55ccba37dcae9a319ace9b87ae656a0b9ae3d236
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 16 08:57:27 2010 -0500
+
+    added a non-working glade proto in C++
+
+commit f95c558665d1f014a27f370a84d8aff0d066acbe
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Feb 15 01:45:51 2010 -0500
+
+    tried to set glimagesink's client-draw-callback property, but it fails.
+    See question 1834990 on stackoverflow.com.
+
+commit c73edd328c30caae67230c2c3ed6237ba20ad982
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Feb 15 01:05:16 2010 -0500
+
+    made mode +x
+
+commit 118fd6e865574e49bc8f81c047ccc78613980fcd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Feb 15 00:58:54 2010 -0500
+
+    gstl gl should work better if the drawing area has proper opengl capabilities.
+
+commit e19952f68bc3f21236d288504ef192a16e070b5f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Feb 15 00:39:26 2010 -0500
+
+    added comment
+
+commit c15e88c25c9ed639f7cd37277116cbe2f8e04173
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Feb 14 23:46:53 2010 -0500
+
+    added toondirwatch: an integration of inotify and Twisted.
+
+commit 714d5404a7799904bfbaed03bd5be8c18fff282c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Feb 14 23:01:33 2010 -0500
+
+    added a HTTP downloader
+
+commit 35ea89d84320fab1ec2c717b703c7d4c3190d122
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Feb 14 20:00:50 2010 -0500
+
+    added toonweb
+
+commit 68d80dfd412d528d304256b6ce51c76e77d9309f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Feb 13 17:39:11 2010 -0500
+
+    added a comment where there's an error
+
+commit 23ce021220d36cf6799a8abf81bf6c58a49338ed
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Feb 13 03:01:37 2010 -0500
+
+    made arg possible (no option, just an arg) and fixed the color of the line. (disable texture)
+
+commit 5f13aa721eda22da8e60048550edf7405c4e91b8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Feb 13 02:51:30 2010 -0500
+
+    Looping images is super fast.
+
+commit d510a98fcaf8fa0262314fb1572d29e41a25de54
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Feb 13 02:11:33 2010 -0500
+
+    added pil_looping prototype
+
+commit 497e53895deaf111a4ed760ae50d06ff7e51773c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Feb 13 01:47:27 2010 -0500
+
+    mv proto_gst.py proto/gst_pixbuf.py
+
+commit 6990fb40c7a50f09a99c39a18788c3faa3f788c0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Feb 13 01:45:53 2010 -0500
+
+    moved proto-gui to proto
+
+commit 5c07ddc1757053ffc619914dbc1dc8ab269e561c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Feb 13 01:45:32 2010 -0500
+
+    added gstgltest
+
+commit 3c2a075e9d5333c99059611c5b6b14c362ae9a70
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 10 16:31:31 2010 -0500
+
+    test commit
+
+commit 28b72a645d272a19030e07a937b334f4a525e71d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Feb 7 12:51:03 2010 -0500
+
+    moved around tabs in glade proto gui
+
+commit d93f6f47f295fafb16c12b0d2bd10fc8556bd616
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Feb 7 10:40:53 2010 -0500
+
+    added gst pipeline diagram
+
+commit b3aeebcbbcb546968bc6d4742cd04423c6e4ea09
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Feb 7 10:27:14 2010 -0500
+
+    Glade: moved clip params to an other tab.
+
+commit a88d674988da75a0b15d205c66848c06e95d683d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Feb 6 01:21:26 2010 -0500
+
+    seems like the image appears in the right orientation
+
+commit 87e67da621d33e40c37f01444b9a3d277efcb723
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Feb 6 01:09:10 2010 -0500
+
+    video input with v4l2, plus colorspace and size caps.
+
+commit 183d29bb3d32daed911d97d51afd0a7688e2c7b2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Feb 6 00:30:56 2010 -0500
+
+    added a prototype of the new gui - in glade.
+
+commit 611b5c8d8eb5e5dc653cbae987a3069c8accce7a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Feb 5 00:48:43 2010 -0500
+
+    now actually rendering on every frame. I had started from a bad example.
+
+commit 66da1c33c8daa6eae23480824ee932daee76d7a1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 23:51:36 2010 -0500
+
+    added q to quit
+
+commit bc93eba9931380a42e9915b9a6b96fc3244111f9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 23:48:26 2010 -0500
+
+    removed older proto
+
+commit 006b17feb4e993c5d8e4ec41dcaaeb9d565daf0a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 23:46:38 2010 -0500
+
+    added proto_gst in the right branch
+
+commit 6108db0c4620e5de688d9419dd9105474a7a183a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 23:42:49 2010 -0500
+
+    did I change anything?
+
+commit 6d7ed012e7eea8ef8469eec52a9e59abdcb06433
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 23:29:48 2010 -0500
+
+    added proto_gtk.py
+
+commit c6b5826c1757762280fb82950118e4beaabc1c4a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 23:24:48 2010 -0500
+
+    Added tag 1.2.0 for changeset b1ab5ac37f0e
+
+commit 2e0f63f4dbae89a787f23215eff57010339c1012
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 23:15:48 2010 -0500
+
+    updated changelog
+
+commit f03537fd724ea088f040b66d63b040ac9b7757c6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 23:13:36 2010 -0500
+
+    icon and man page are generated in the setup.py
+
+commit 3a6271d2f64fc0f425d1388c4a4927b49e7633a3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 23:04:54 2010 -0500
+
+    Fixed bug with error dialog at startup. Update version to 1.2
+
+commit 3bbb019b9815a5c1fc16192b00804766bfa2a24b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 22:51:40 2010 -0500
+
+    added gtk to deps
+
+commit 6039d927a8e3dba0e26e553cf017e362a472141f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 22:50:17 2010 -0500
+
+    added error dialogs in the runner
+
+commit dc84e7f8a18917ab353bd4adecdc7fd917dd0b4c
+Merge: 77f6712 9dd06a7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 22:42:16 2010 -0500
+
+    merged again
+
+commit 9dd06a789643045cd38ffb8fd31d0738e2a9f5eb
+Merge: 506ab09 df2ead1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 22:41:40 2010 -0500
+
+    merged
+
+commit 506ab090aa6a5adc62f9cab645c516d620bf24e1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Feb 4 22:35:01 2010 -0500
+
+    improved error dialogs. Using it in toonloop at startup
+
+commit 77f67127ea96b0fe2b742b67bcb2227610d38a22
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 3 22:34:59 2010 -0500
+
+    Added tag 1.1.11 for changeset 269db1362674
+
+commit df2ead127f4763a31cf27ef721656f41d8c7ddcf
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 3 22:32:46 2010 -0500
+
+    removed convert and help2man in packaging.
+
+commit 2161446440b98bbcd43a82b343e48993dcfbf451
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 3 22:00:16 2010 -0500
+
+    Made the -l flag behave as before.
+
+commit 5c2fbd7dc90fd9943fa609d04f25be7e33953dc8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 3 21:53:13 2010 -0500
+
+    changed shortcut to quit to CTRL_Q.
+
+commit 3be76e3a388f93f06f22e75be91642fe5489299c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 3 21:49:31 2010 -0500
+
+    fixed a critical error.
+
+commit a7b1696ef9060d6d16bf0493d59bc3c023f74ff9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 3 21:47:40 2010 -0500
+
+    fixed critical error
+
+commit e1cc563026205864e660888c83eb1f84bd09da93
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 3 21:44:54 2010 -0500
+
+    updated debian files a little
+
+commit b0d69f1bd5a34ddea2845e486adc0fd6bb431e37
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 3 21:43:43 2010 -0500
+
+    updated doc a little
+
+commit 6b64867a9d7ffc7b13d8fbb46eb57da6b1c5c2cf
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 3 21:41:38 2010 -0500
+
+    changed options a little
+
+commit 154dc8b327b9bd011f558e4ed33f1f87b8c40666
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 3 21:39:52 2010 -0500
+
+    updated man page a little
+
+commit bbdfe9e3f525055d85408071868e291942aee267
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 3 21:28:04 2010 -0500
+
+    removed web, rss, rst and bgimage_glob.
+
+commit 9179f2bcfec0c2589d65a714226b2493540cff20
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Feb 1 21:42:22 2010 -0500
+
+    Added tag 1.1.10 for changeset 74692bba2622
+
+commit 4a97e6147f044fae838ba3549278ff25e61793d7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Feb 1 21:37:44 2010 -0500
+
+    updated version to 1.1.10
+
+commit 23c44f079a29609129be9dee377df027c1e569f8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Feb 1 21:35:19 2010 -0500
+
+    added python-setuptools as build dep
+
+commit 3a66613833fb4b62629766256a543386a6b19d3c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Feb 1 21:04:36 2010 -0500
+
+    more fixes
+
+commit af45bc41bc85bb5f8383825565bc4581e164e03a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Feb 1 21:01:24 2010 -0500
+
+    fixed critical bug with osc
+
+commit be68c015e8adc667bf0173dd4d3c776f6c74d140
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 30 22:34:47 2010 -0500
+
+    printing as the user is changing the color
+
+commit 81a8f7e53a1257e6d8c75dae6328577db4ec4e73
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 30 22:30:59 2010 -0500
+
+    adding colorpicker.py
+
+commit 72cc3d93ef9421a065ad76b279d5b2ca6dbf2bc1
+Merge: 6f7b445 04bb44b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 28 09:48:49 2010 -0500
+
+    merged
+
+commit 6f7b4450d871ceea6b2a14c236aaebcdb5dcabb1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 28 01:02:08 2010 -0500
+
+    Added tag 1.1.9 for changeset ef6921c9c891
+
+commit a28bbd5feef06555e2078edcac75e8a5d135a7c4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 28 00:58:59 2010 -0500
+
+    updated version to 1.1.9
+
+commit 249cb0062b30eee10bca55f4f5db12bd4f4a7b72
+Merge: cf71846 dc30e63
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 28 00:54:59 2010 -0500
+
+    merged branches
+
+commit cf71846e02098d3dd891e0b7f4a3a0fd85411bcb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 28 00:54:24 2010 -0500
+
+    Fixed uglyness with empty frame. Was due to the next exotic texture upload whennot in 24 bit.
+
+commit 04bb44bf0750d7bdc3cce6e3755def0628397d8c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 25 00:14:22 2010 -0500
+
+    added yesno dialog
+
+commit 41621aef89cd5af30da8b62ac93a4e142b5b8f02
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 21 03:12:06 2010 -0500
+
+    fix in error dialog
+
+commit dc30e63824942c8c8cf03a1b128dee469e2e8218
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 19 01:14:57 2010 -0500
+
+    An other dummy change.
+
+commit 9824a7f877bfb222b786196b20da37e2fcf8a5d9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 19 01:13:09 2010 -0500
+
+    Dummy change.
+
+commit 79d4cc305b05f04c1a556be797ebfe6c025aca35
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 19 01:12:09 2010 -0500
+
+    changing tags again
+
+commit cea27f3758b8a029c33eb184b1650efcdbd6749b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 19 01:11:36 2010 -0500
+
+    Added tag 1.1.8.1 for changeset 9b87b9266981
+
+commit b93bba5f4bcda512feea17653c9390ffc5a5aba5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 19 01:11:30 2010 -0500
+
+    Added tag 1.1.8 for changeset a4aaa3aece10
+
+commit c8ecc2d2c8a9752225440d011ebfeebddeee75e9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 19 01:11:13 2010 -0500
+
+    Changing tag 1.1.8 to new version
+
+commit 864851d0fdb019ce032456f5d95bb8c06ae89fab
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 19 01:10:12 2010 -0500
+
+    Remove png in make clean.
+
+commit 619667d071cd645fde4591c609badc817bd29e29
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 19 00:57:59 2010 -0500
+
+    Packaging for Ubuntu Lucid.
+
+commit 70ca6f0c163641211b80d4ea8d9a878feda0c188
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 19 00:42:07 2010 -0500
+
+    Added tag 1.1.8 for changeset 697a257fce84
+
+commit 4d9f5c0cbcd4724b3d3a862c3c69b4b7b690534e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 19 00:40:47 2010 -0500
+
+    Updated version number to 1.1.8.
+    Got rid of version number in desktop file.
+    Moved copyright to debian/copyright.
+
+commit 7e9054bfb0c7a6f6e8989dc39789a010aa33d602
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 14 01:03:05 2010 -0500
+
+    Added a GTK error dialog.
+
+commit 63fe04017884bd26af4b710a289ee7fdfcdf026e
+Merge: b2e0c27 0179442
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 11 03:18:26 2010 -0500
+
+    Merging texture speedup with --enable-effects change.
+
+commit 0179442768c0068fd9b2504214116a55b5a7492a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 11 03:12:57 2010 -0500
+
+    added function call that is not used, but might be, when we'll use surfarray instead of a copy to string.
+
+commit 653e51205fd59df046d9dc3a952bfa65803fa89c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 11 03:09:13 2010 -0500
+
+    Improving speed by 33% when loading texture in RGB, not RGBA !
+
+commit b2e0c27e1dc947a632953008082cab13599e17ae
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 10 11:42:07 2010 -0500
+
+    Defaults to GLSL effects disabled for more portability.
+    Ignoring deprecation warnings. (mostly for nevow)
+
+commit 8f12c1b18efc0b44c4e37f7163d4e1df7a88a38d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 7 23:52:25 2010 -0500
+
+    Added tag 1.1.7 for changeset d73db8b8e90d
+
+commit dd74111068fa6886b6a896658253cca91010098b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 7 23:36:18 2010 -0500
+
+    udpdated changelog to 1.1.7-2
+
+commit 91064b4f88386987bd3df13248d482e51b6cf17d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 7 23:35:06 2010 -0500
+
+    Fixing debian files: not using dh_icons, specifyin python build-dep
+
+commit 8b270c4f970d38ce1e1bc24ac486ac715ece54ef
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 7 23:22:33 2010 -0500
+
+    updated changelog again
+
+commit 63f44ac332c453595ea77d0e1dc9466a5f13e659
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 7 23:21:36 2010 -0500
+
+    added link to GPL3 in Debian
+
+commit 4b2913b5545d2c7307ba9188b82e494283cf83a9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 7 23:13:20 2010 -0500
+
+    changelog version 1.1.6
+
+commit 0d44ecf1b1f1ea8d3b72f1dacb2ba867591ce5bf
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 7 23:12:03 2010 -0500
+
+    Added rule to install doc in deb package.
+
+commit 078872af58b7cd9fc0a1a9900ee4b8fb3723e9a6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 7 23:05:13 2010 -0500
+
+    added copyright file for debian packaging.
+
+commit caebfce10d8755a6a97b74f16680c99feefef704
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 7 22:59:00 2010 -0500
+
+    Modified category of the app.
+    Updated changelog and short desc of package.
+
+commit 573b72e97300ccf4c2f2861bf1873376c9af54d3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 7 05:58:39 2010 -0500
+
+    Fixed badly formatted trailing lines in debian/changelog.
+
+commit e466fabb73cfad7341a2cff0eb32905b3f192923
+Merge: aa0fba3 998d7eb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 7 05:36:29 2010 -0500
+
+    merged with tip
+
+commit 998d7eb9b0ddc13a7a316d43ab28cd52527e4ea8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 4 22:16:59 2010 -0500
+
+    updated text in hud
+
+commit 91319883589bf1bc430d8ac4390038dd908c23c7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 4 22:15:50 2010 -0500
+
+    Fixed  a bug : was assuming to get the expected image size from the camera, even when not getting it.
+
+commit 99d1dcfe20200e23dc5b8e5c100375214059b3f9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 3 01:07:49 2010 -0500
+
+    Text line height is now scientifically 100%.
+
+commit 3ac2d82f5b5ef46c45b5c2cf28ecd2dddbc2b8eb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 3 00:40:31 2010 -0500
+
+    Added tag 1.1.4 for changeset ba9b1410995d
+
+commit 1c02625054655cdd442b064131ac28e7519d857e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 3 00:40:25 2010 -0500
+
+    Updated version number to 1.1.4. Adding HUD.
+     * Updated doc
+     * Updated Debian files a little.
+    The HUD allows one to view the statistics and help in the rendering window.
+
+commit 2d745e76277050f82c6e3b73263460d7e29dc6bd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 3 00:32:18 2010 -0500
+
+    Update man page and help. Removed some of the options that are not so much helpful.
+
+commit 85a77db5e8f9d252dbbbf81c8e6b7413c6bf3b8b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 3 00:26:15 2010 -0500
+
+    Added a title to the HUD...
+
+commit 43873d7f6f68772ed5142a262f380e8441bfd92d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 3 00:23:53 2010 -0500
+
+    Also displaying help text to screen when "i" is pressed.
+
+commit 992c0ac83345efc9fdebaaac313e6c16518221d8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 3 00:12:22 2010 -0500
+
+    Added text ! Implemented _draw_hud. Using GLUT.
+
+commit 22567f768c2cb5926a5f6e89d1d21d094ec40348
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 31 16:05:12 2009 -0500
+
+    updated deb
+
+commit a58dca6e4748c4282dcba2f068a66705abdfb209
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 31 16:05:02 2009 -0500
+
+    Added tag 1.1.3 for changeset 6961c1470865
+
+commit bd9e7087ed83448d7404c303a83579274d5b5ab2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 31 16:00:39 2009 -0500
+
+    At startup, if camera 0 does not exist, using camera 1 if present.
+
+commit f06bf0bb6076c861198fcf849291aec54825523c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 31 15:40:43 2009 -0500
+
+    Small changes in fx
+
+commit 5e9c63878167151684ed232f4e9ef901eca61105
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 31 14:18:15 2009 -0500
+
+    Updated convolution with the laplacian operator.
+
+commit 3bdfebf66a36733fb5caf3b6670e7b039c14e5f3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 31 13:42:18 2009 -0500
+
+    added effect convolution
+
+commit f176326dee0c7bfa0125f6cf1e7c5374acd2d2c6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 31 13:04:50 2009 -0500
+
+    removed convolution.py
+
+commit 6906b466bab3c2c010161cad0c40513394c4b187
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 31 13:03:44 2009 -0500
+
+    Added a way to disable an effect.
+    disabled the tester effect.
+
+commit 39ffd7453424204b80899d2f088d1ddcd993bd3e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 31 12:58:12 2009 -0500
+
+    added effect cinelike
+
+commit 21a399a20184523ffbd8c6d5f5b80b39664a4be3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 31 12:37:15 2009 -0500
+
+    Updated man page and debian description
+
+commit 52ae626adf836601733663bcccd608860e711e36
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Dec 30 21:12:35 2009 -0500
+
+    Added tag 1.1.2 for changeset 33c130ea1a83
+
+commit 13e7fb6f59e6c6f16e3bcb561f7310b32a3e88bd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Dec 30 21:09:48 2009 -0500
+
+    Updated version to 1.1.2. Added doc in man page about if toonloop crashes at startup.
+
+commit 0a1d4eae423a9889f8aa68bfd60c6255e8b0ed02
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Dec 30 21:00:54 2009 -0500
+
+    changed to --disable-effects
+
+commit 2c3def1dd9c0e9bd87249c57ff037b770096a099
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Dec 30 21:00:16 2009 -0500
+
+    Added the --no-effect option
+
+commit 3b989137bdea02d8db5f96fcb950b28f621f05e4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Dec 30 19:57:02 2009 -0500
+
+    added rats/glue.py, using glew
+
+commit 1ab16f1869f296f3d1e50ac49c10e901239d4b4b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Dec 30 19:09:05 2009 -0500
+
+    Started to fix the texture unit thing in the core. Added a tester effect to see if alpha is possible with glsl.
+
+commit f8c21b052ab20cf41a809bca0ae0ac693adefc02
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Dec 30 15:16:16 2009 -0500
+
+    Added alpha * input_alpha in some shaders.
+    Added opacity in brcosa shader, to reinject some of the original img in the modified one.
+
+commit 2c41845c24f872510f110f94f4808262ae0d5e73
+Author: aalex@ding <aalex@ding>
+Date:   Tue Dec 29 13:07:59 2009 -0500
+
+    Fixed error in make html.
+
+commit 7a97bc61e2e28e0c2e4d001185ec6654548a54bf
+Author: aalex@ding <aalex@ding>
+Date:   Tue Dec 29 13:02:32 2009 -0500
+
+    Added epydoc tools and a GTK save dialog prototype.
+     * Added make html command.
+     * Added toon/dialogs.py
+
+commit fad89d8b27c90a6d494454cbcb96fb163711d751
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Mon Dec 28 09:10:03 2009 -0500
+
+    Added tag 1.1.1 for changeset a5992b643886
+
+commit 4e4443f8ef2f75cbda8054f23d9bc8dfa1ef9229
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Mon Dec 28 09:10:00 2009 -0500
+
+    Progress in themes, state saving and pd controls.
+      * Rehabilitated ~/.toonloop.json state saving file.
+      * Rendering order configured in themes.
+      * Created the PlaybackPictureInPicture theme.
+      * Updated the toon/data/toonloop.fx.pd patch to be able to change the color in leavecolor fx.
+      * Fixed image_flip_horizontal
+      * Making sure not to draw onion skin if no image in clip.
+
+commit f7c1315750b89a9bab2b13275dc275c8d921fa8b
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Mon Dec 28 08:13:59 2009 -0500
+
+    Created the PlaybackPictureInPicture theme.
+
+commit af1ee81919941d334e8d023e02c0fc5109518a61
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Mon Dec 28 08:05:32 2009 -0500
+
+    Rendering order configured in themes.
+
+commit c8ff57cc60f376258555ed697a9daf030992a58d
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Mon Dec 28 07:37:33 2009 -0500
+
+    Rehabilitated ~/.toonloop.json state saving file.
+
+commit effd3d0d446e5b7e9cc2bf5216d3564312c2df80
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 23:18:43 2009 -0500
+
+    Updated the pd patch to be able to change the color in leavecolor fx.
+
+commit ba2d6ca8c55bac7c2659f6a5e6d12ee62e3498aa
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 22:32:51 2009 -0500
+
+    Added tag 1.1.0 for changeset 729cd2df8a1e
+
+commit d21962c30b7f40fda7926232b1ad6c78333e81e6
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 22:27:51 2009 -0500
+
+    Packaged version 1.1.0.
+     * Fixed the icon that didn't have a transparent background
+
+commit e5c6ad5cd1bedc415a41fdc40909934347bbc7dd
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 21:50:26 2009 -0500
+
+    Updated man page and interactive help. Added 'b' key
+
+commit 047abc7d1092f3965ead0f3e20fe41039d83167e
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 21:48:09 2009 -0500
+
+    Now able to take a photo as the background image.
+     * Implemented the bgimage_snap method.
+     * Removed a lot of ugly background images.
+
+commit 10e89aaa1f36f8abf48c20db987822eaa8084486
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 21:28:56 2009 -0500
+
+    Towards a unified interface to effects.
+     * Added effects to toonloop : lumakey, brcosa, leavecolor, simplechroma
+     * Got rid of chromakey options (now an optgroup)
+     * Added the load_effects function
+     * Added groups of options for each effect.
+
+commit 5727f48dce8bfd2ad48d437ee1a05d565f7ea4c0
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 20:11:42 2009 -0500
+
+    Updated the man page to explain how to use the Pure Data interface.
+
+commit 0c965b7b5b7bbd70aa35fe3d115128ea9820b912
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 17:34:50 2009 -0500
+
+    Effect groups work as expected. Tested with the puredata interface.
+    Added pd patch to control effects.
+
+commit bc42d84340558eee4290c2bd7647bca2434fa34d
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 16:55:55 2009 -0500
+
+    Renamed style for theme.
+
+commit fca24fe0f0750a593dfee8bc790f3a56a065565b
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 16:49:30 2009 -0500
+
+    Added set_option_in_group method.
+    Added noeffect
+
+commit e51db91ad2a44fe893aa2170bbe19b58cb074513
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 16:28:09 2009 -0500
+
+    optgroups printed at toonloop startup
+
+commit 078fd2c3858049d8b9cc239eda75ca563a57b357
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 15:34:04 2009 -0500
+
+    Adding lumakey effect !
+    Updated glslang-run to be able to change bgcolor with the b command
+
+commit 9f1e96a9fb13d31aca21cb2d246fdedb48e63a90
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 14:27:42 2009 -0500
+
+    little cleanup in effects
+
+commit 17ccb19f3369eea337851f345c16c9158e59df9b
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 14:22:03 2009 -0500
+
+    removed glslang-run from installed scripts, since not quite in a finished state
+
+commit d1b7efb4e0a331f3c2172152208817465ffee4a8
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 14:21:17 2009 -0500
+
+    leavecolor effect works like a charm in glslang-run
+
+commit 47db2f70c3161da71bd3025679236e3905c8a6dc
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sun Dec 27 11:52:58 2009 -0500
+
+    renamed colorpass for leavecolor
+
+commit 1d96a37eeafbc3153aa2b73c605f021ad59970af
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 26 20:03:09 2009 -0500
+
+    added background color in glslang-run
+
+commit 5786d7ed3f9c67f7332534581214e2a4b4dd03b8
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 26 18:30:20 2009 -0500
+
+    Updated simplechroma fx to use the new options system. Works with glslang-run too.
+
+commit ce9623bfc2344c18f8973092e100f7b9b9892b91
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 26 18:20:50 2009 -0500
+
+    Now able to change brcosa options using telnet with glslang-run
+
+commit 6885dcc1a2ff70e97e33d255d2b97a2d454f8be2
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 26 17:38:11 2009 -0500
+
+    Added a unit test for optgroups.py
+
+commit fd2b1399f46968c3e78471897ad401d427d4da1d
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 26 17:16:46 2009 -0500
+
+    Towards formal optionsgroups in fx.
+     * Create the OptionsGroup class.
+     * TelnetController now parses lines with shlex. Ready to send it to optgroups
+
+commit 86d7e5bf2cc46ce768fbf605f4f91071bf5ffb28
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Fri Dec 25 22:04:51 2009 -0500
+
+    Added an experimental telnet server to glslang-run
+
+commit b7d2737b2e1d1728221306fb3402f61a62c5a537
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Fri Dec 25 21:55:13 2009 -0500
+
+    Ported glslang-run to twisted.
+    Fixed a bug in rats.render.Game. Had forgotten the running attribute.
+
+commit 8d6b3ecd03325b272619f29dc348038c76c9295e
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 24 12:37:54 2009 -0500
+
+    Added tag 1.0.9 for changeset d44778e55cbf
+
+commit a76a5b3eedd47e3c518ed0c8728afde3f7a5bf39
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 24 12:37:49 2009 -0500
+
+    added optgroup.py
+
+commit 74aea7fafc785f0612e3dd3019311d92e096f14a
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 24 12:28:30 2009 -0500
+
+    Created debian package 1.0.9-2
+
+commit 5cdbdeb91d896c63fb527043536000b83b1d6d55
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 24 12:18:23 2009 -0500
+
+    Updated version to 1.0.9 in all files.
+    Removed __version__ from toon/__init__.py
+
+commit 6b967ca1ac5f8d42774f8717dd07bf246fa64d0b
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 24 12:10:08 2009 -0500
+
+    Debian packaking for recent changes
+
+commit 9cdddc53d668001fc935351f29a42ecdc97c9735
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 24 11:48:22 2009 -0500
+
+    Renamed shader-tester to glslang-run
+
+commit d0ca2e906006c7aa515251c631e95561abdcd287
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 24 11:44:22 2009 -0500
+
+    shadertester: added usage in doc. Changed caption
+
+commit 46e138b45a6739152d891f9ba5e5c5d38a019fc2
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 24 11:38:03 2009 -0500
+
+    Progress in shadertester.
+     * removed unused old code
+     * added device CLI option
+
+commit 4171afe5ad1c5671702f79e8a063a004d9bdf76b
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 24 03:17:51 2009 -0500
+
+    updated doc: adding shift-q to quit.
+
+commit 2028047b6b7367cb009f74bc20940bbc58f37d61
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 24 03:14:43 2009 -0500
+
+    ESC now toggles fullscreen instead of quitting. Use shift-Q to quit.
+
+commit f777e58361ad9f5b9476d9c53b9c29b0f9136e96
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 24 03:05:26 2009 -0500
+
+    brcosa effect does give a visible result now. yahou !
+
+commit a62d205218a9354093c563adf8914b445acbbdb9
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 24 03:02:31 2009 -0500
+
+    added effect brcosa to shadertester.
+    DOes not yet quite give a visible result, though.
+
+commit 4be475e8c1b6bd79e14962e48030a93271a09ed8
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 24 02:25:03 2009 -0500
+
+    Fixed an error with the start position of the progress bar.
+    Added a line around it.
+
+commit e66efd7cde51e9f7200c4adc1c9234431c9d01ac
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Wed Dec 23 23:43:03 2009 -0500
+
+    Put style of the progress bar in styles.
+
+commit 696f7a4dee85103aaed16c9ca9573e6c383e1908
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Wed Dec 23 23:40:34 2009 -0500
+
+    Showing more detailed progress when saving.
+    Improved the way the progress bar looks.
+
+commit a3d1a43e2ca14be9e011c096bfaaa0954561ac1e
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Wed Dec 23 23:36:11 2009 -0500
+
+    Drawing a progress bar when saving a clip.
+
+commit df0dc7a3ac371eec53e583f8ca60e1d28de1a5f9
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Mon Dec 21 23:04:29 2009 -0500
+
+    fixed typo in man page
+
+commit 24ee0803e4c3440832b7d07bcb15e7e8cdd3bfe8
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 19 13:03:23 2009 -0500
+
+    html fix
+
+commit de851cb40f792b10f8baad6fbed03ccd783dc6ec
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 19 13:02:58 2009 -0500
+
+    rename to html
+
+commit 5e98dc566b0d8dda9bee872a9e0afb79a1029a5e
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 19 13:02:45 2009 -0500
+
+    updated how-to
+
+commit fe281d97482be27907d4a147d6fe5b1109dab053
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 19 12:20:43 2009 -0500
+
+    added how-to
+
+commit aa0fba3bc929d0117c2b7bee9b3c961619e6c90b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 1 00:00:00 1970 +0000
+
+    changed debian package maintainer to Alexandre Quessy.
+
+commit 6e77d2607975ee5d6711b7cf9a9236ef26b5637f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 1 00:00:00 1970 +0000
+
+    Fixed a typo. NullFunctionError, not exception !
+
+commit 1866497efbc33e978f7c8426637d9c979075595b
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Fri Dec 18 09:27:56 2009 -0500
+
+    Making sure GLSL program objects can be created.
+
+commit 48990d758643ff4acc01f80cfb0faf59052b2597
+Merge: 3911286 5899339
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Wed Dec 16 08:29:13 2009 -0500
+
+    merged with branch from bitbucket
+
+commit 5899339c790a77a43c1e03dcc3089995adb319af
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Wed Dec 16 08:28:47 2009 -0500
+
+    added toonloop.png to hgignore
+
+commit 39112868aab5fcbf892bcde7d4e3d7f5d5ea164d
+Author: aalex@ding <aalex@ding>
+Date:   Sun Dec 13 16:35:19 2009 -0500
+
+    Added tag 1.0.8 for changeset 310843e31fc9
+
+commit 1a55f1fb1609cfeed845470397a91b00b5a8b9fc
+Author: aalex@ding <aalex@ding>
+Date:   Sun Dec 13 16:34:08 2009 -0500
+
+    Updating to version 1.0.8
+      * Onion skinning texture is now updated when deleting frames or moving writehead.
+      * Added styles. The picture_in_picture style looks OK.
+      * Added yoyo and backwards playback directions.
+      * rats.render now handles errors gracefully. No longer stuck in fullscreen with an exception making controls inactive.
+      * Added --fullscreen flag.
+      * Changed default selected clip to #1.
+
+commit 425824d1643d29aef5fed7967f5a2c760ffa97e5
+Author: aalex@ding <aalex@ding>
+Date:   Sun Dec 13 16:23:35 2009 -0500
+
+    Polished display_style CLI option.
+
+commit c6669872103e4ad19841eef59b3431a77da87c54
+Author: aalex@ding <aalex@ding>
+Date:   Sun Dec 13 16:15:01 2009 -0500
+
+    Added styles. It is no possible to switch to picture-in-picture style with the period key.
+    Onion skinning texture is now updated when moving the writehead or deleting frames.
+
+commit a41c9e1f550699d1599a5eee933456706d6adfdd
+Author: aalex@ding <aalex@ding>
+Date:   Sun Dec 13 15:18:26 2009 -0500
+
+    made sure the toon/effects package is included in the dist.
+
+commit 0f4d2ecacf4f89d990b15eafc27330198196f9c6
+Author: aalex@ding <aalex@ding>
+Date:   Sun Dec 13 15:13:55 2009 -0500
+
+    changed default selected clip to #1
+
+commit f995ce544aab500f151e98a9628b23321ad9eac5
+Author: aalex@ding <aalex@ding>
+Date:   Sun Dec 13 15:12:00 2009 -0500
+
+    Implemented DIRECTION_YOYO, which is playhead hat goes back and forth.
+
+commit 132f47df6671669e2900c2c279d17d485b47a8cd
+Author: aalex@ding <aalex@ding>
+Date:   Sun Dec 13 14:49:43 2009 -0500
+
+    made chromakey effect quieter at startup
+
+commit 568fd8dd06fcf0aba161e79317688a7bf2058260
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 12 20:17:15 2009 -0500
+
+    removed args in _resize_window
+
+commit 3fe24fd087633c6ecdc9473ad0893824b42010db
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 12 13:50:09 2009 -0500
+
+    added --fullscreen flag
+
+commit 7bbaf81e00e13fb1e342215869f105ddaf093972
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 12 13:41:43 2009 -0500
+
+    rats.render now handles events errors gracefully.
+
+commit 6c19cf9ecb3ad42bc41996d270118c53b42356dc
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 12 13:18:11 2009 -0500
+
+    updated INSTALL.txt
+
+commit 5897d36bedb28b4535e9aadc58e459f364d4f42c
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 12 13:04:05 2009 -0500
+
+    updated man page with the new tab key to change playback direction.
+
+commit 4465d25b90f83bbe110c8fcc20a701bbbd5bd835
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 12 13:03:05 2009 -0500
+
+    implemented direction_change
+
+commit 76e9044d6ef317115ff6c98ca53c2f5d6208000a
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 12 12:46:38 2009 -0500
+
+    Added tag 1.0.7 for changeset 0456a7ccaece
+
+commit 62b82ac52a5add15ba4946b4db190d8f5697d640
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 12 12:39:29 2009 -0500
+
+    Had forgotten to change version number in desktop file.
+
+commit 955b5d4aae1930bc60d31d52354180f454800223
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 12 12:36:49 2009 -0500
+
+    Creating png icon on the fly at install time
+
+commit e91089f3e97ad17668b8c4e5eb413a40ef148fd4
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Dec 12 10:00:50 2009 -0500
+
+    Fixed a Bug which used to put the icon in the wrong path in the deb package.
+    toonloop.desktop now has an icon
+
+commit 1584a04c0d6fccf6f39b8b272d407d9a3e51238e
+Merge: 92aec2b f417be3
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 10 09:28:48 2009 -0500
+
+    merged with most recent fixes in tag 1.0.5
+
+commit 92aec2b127497a98b155196f9e9bf1b59f99c457
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Thu Dec 10 09:28:06 2009 -0500
+
+    Detecting which modifier key is being pressed.
+    Now, we can add more features.
+
+commit f417be3d93f449490b584716dfa811b8b68f5b99
+Author: aalex@ding <aalex@ding>
+Date:   Mon Dec 7 23:31:31 2009 -0500
+
+    Added tag 1.0.6 for changeset 74902bab675f
+
+commit 6c80189a480971535ef696a57823684f997562b9
+Author: aalex@ding <aalex@ding>
+Date:   Mon Dec 7 23:25:23 2009 -0500
+
+    updated version to 1.0.6
+
+commit 75926c8b82f5ed03ef6fdc05192928242a8c05db
+Author: aalex@ding <aalex@ding>
+Date:   Mon Dec 7 23:19:38 2009 -0500
+
+    Fixed a very bad bug. It was crashing when calling frame_remove
+
+commit a5bc4d93df91f4f039f8b0ef67c822e9014437b8
+Author: aalex@buzz.local <aalex@buzz.local>
+Date:   Sat Dec 5 14:04:43 2009 -0500
+
+    Few fixes, since I am trying it on Mac.
+     * fixed a few print calls.
+     * catching error when Could not load icon : File is not a Windows BMP file
+     * t.error.ReactorNotRunning is deprecated in later twisted version.
+
+commit 34df03b77a0ac1f7ddd432f4972fa1e440a00882
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Nov 28 10:55:09 2009 -0500
+
+    Added tag 1.0.5 for changeset 5ba5a47ed7c0
+
+commit 249908da8b278b03597470073b3306d30ef42b25
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Nov 28 10:52:43 2009 -0500
+
+    imcrement version umber to 1.0.5
+
+commit d58efbc9b27d3e042811a833b32ddd7ab858b090
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Nov 28 10:40:18 2009 -0500
+
+    added more deps in debian/control
+
+commit 422fc73103cee43fb2733eedccff55195c7f6975
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Nov 28 10:36:52 2009 -0500
+
+    and again
+
+commit d6b1e3d9f0d14a8d930b64a636485abb40dd70ef
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Nov 28 10:36:36 2009 -0500
+
+    updated changelog again
+
+commit c6ff178076bed9e5b920d34604b09b55f26ea167
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Sat Nov 28 10:25:53 2009 -0500
+
+    updated .desktop version as well.
+    Added debian stuff to hgignore
+
+commit e7fbf3d8410fc9f77c29658970e83bc881f4eeda
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 1 00:00:00 1970 +0000
+
+    updated deb changelog
+
+commit 0073f33ea68abbfc4137d96a009b1376d21943ec
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jan 1 00:00:00 1970 +0000
+
+    fixed error in .desktop
+
+commit 8cd2f80c690bf91fdc8ba560a1b23c28258e0cd5
+Author: Alexandre Quessy on plouf <alexandre@quessy.net>
+Date:   Fri Nov 27 10:14:03 2009 -0500
+
+    added .hgignore again
+
+commit 526656bc8585c31b88c95f51745403d3da305586
+Author: quessy <devnull@localhost>
+Date:   Fri Nov 27 09:50:22 2009 -0500
+
+    [svn r525] From most recent to oldest : (using mercurial on the plane)
+     * done first stage of chromakey porting to new effect plugin system
+     * updated chromakey to use the new Effect plugin system
+     * improved man page. removed epilog from --help
+     * changed default clip id to 1
+     * added more nice hgignores
+     * shadertester now uses toon/effects/simplechroma
+     * shadertester is evolving
+     * renamed to Toonloop without camelcase in main executable
+     * added scripts/shadertester (todo)
+     * added to-be-done effects/colorpass.py
+     * added fx.py. Trying to formalize the video effects.
+     * updated version number to 1.0.4
+     * fixed a bug which caused the last frame to be displayed twice.
+     * implemented writehead_goto and writehead_move
+     * got rid of the pygame and gl globals in toon/core.py
+     * added _trial_temp to .hgignore
+     * added make deb to makefile
+     * renamed desktop file to lowercase.
+     * added debian files
+     * added mouse controls
+     * changed default intervalometer duration to 10s
+     * added .hgignore
+     * removed dep for rats.observer.
+     * adding try/catch when loading bgimage.
+     * renamed Toonloop.svg to toonloop.svg
+     * added all files from svn rev 524 (trunk/py)
+
+commit 9646d88f628b3255806310e649792fe3c30bfa3d
+Author: quessy <devnull@localhost>
+Date:   Wed Nov 18 13:39:37 2009 -0500
+
+    [svn r524] updated sampler (removed signals)
+    CHanged default midi notes for sampler control
+
+commit 5fbe4407108006b9f3a6a41fb1892ee9afc5d2e1
+Author: quessy <devnull@localhost>
+Date:   Tue Nov 17 11:26:45 2009 -0500
+
+    [svn r522] now does not broadcast frame number when there is no frame in the clip.
+
+commit fa26dabe4df0d29b05f63b5b61c45d701d3534bf
+Author: quessy <devnull@localhost>
+Date:   Mon Nov 16 19:31:25 2009 -0500
+
+    [svn r521] updating INSTALL.txt for pygame release 1.9
+
+commit e05b88db0b4bdf061644e652d47d4c8c1dcbef30
+Author: quessy <devnull@localhost>
+Date:   Mon Nov 16 00:15:30 2009 -0500
+
+    [svn r520] changed default num of sound buffers.
+
+commit 606bc1d9f27e1eec9390bc6b3b03c1499eb6ef9b
+Author: quessy <devnull@localhost>
+Date:   Sun Nov 15 22:00:52 2009 -0500
+
+    [svn r519] updated sampler. now works pretty well.
+
+commit 8cf3c25dbaab94abed6fe3703c6856fa5450b7a7
+Author: quessy <devnull@localhost>
+Date:   Sun Nov 15 17:04:09 2009 -0500
+
+    [svn r518] Sampler maps sounds correctly.
+    ./toonloop -o osc_enabled 1 -o osc_verbose 1 -o osc_sampler_enabled 1 -v
+
+commit 24160bc241fc7bb1b12585d06e38f35ef0a7a530
+Author: quessy <devnull@localhost>
+Date:   Sun Nov 15 16:17:44 2009 -0500
+
+    [svn r517] disabled clear when recording.
+
+commit 0276f9eef7f0020f2b4024fc6de7f1ddbf34751e
+Author: quessy <devnull@localhost>
+Date:   Sun Nov 15 16:15:34 2009 -0500
+
+    [svn r516] sampler now has a Mapper, that wraps the allocator.
+
+commit 4495b15f3feac65dcbaa1f9e7ab29913e9be219c
+Author: quessy <devnull@localhost>
+Date:   Sun Nov 15 15:23:01 2009 -0500
+
+    [svn r515] added sampler and its Allocator test.
+
+commit ee0dee6ba9079e397b8a961c0854523fa08352c6
+Author: quessy <devnull@localhost>
+Date:   Sun Nov 15 15:06:28 2009 -0500
+
+    [svn r514] added signal/slots in toonloop with osc
+
+commit 2743747b488aa27325e7c4edd924f6ed0bad28af
+Author: quessy <devnull@localhost>
+Date:   Sun Nov 15 14:12:32 2009 -0500
+
+    [svn r513] forcing garbage collection on every frame
+
+commit cb62e833248e4fc57a7c702260d78715bf894535
+Author: quessy <devnull@localhost>
+Date:   Sun Nov 15 14:06:11 2009 -0500
+
+    [svn r512] added rats/sig.py and its test
+
+commit 7c053ed744ac027fe7fb57de881c8510a4690d4a
+Author: quessy <devnull@localhost>
+Date:   Sun Nov 15 12:55:04 2009 -0500
+
+    [svn r510] updated osc methods in man
+
+commit 0bffe01b474b07dbc885b5c31d6c1fb2ab9c9887
+Author: quessy <devnull@localhost>
+Date:   Sat Nov 14 20:54:37 2009 -0500
+
+    [svn r509] added midi infos in man page
+
+commit fd4ea7e7f9ae2c1e03e8aed245e39a17db5b918f
+Author: quessy <devnull@localhost>
+Date:   Sat Nov 14 20:11:50 2009 -0500
+
+    [svn r508] added toon/test/test_rss.py
+
+commit bec48124cd3f670e7f797b47d084b0e840e7a1ff
+Author: quessy <devnull@localhost>
+Date:   Sat Nov 14 20:05:08 2009 -0500
+
+    [svn r507] added test_statesaving
+
+commit 1f622cdedcbb0db359059fb91d5372713b35c40a
+Author: quessy <devnull@localhost>
+Date:   Sat Nov 14 19:55:13 2009 -0500
+
+    [svn r506] renamed manpage_inc.txt for man_toonloop.txt
+
+commit da6dc38f24bb02ae0320d3888e0c99830385a8d4
+Author: quessy <devnull@localhost>
+Date:   Sat Nov 14 19:54:29 2009 -0500
+
+    [svn r505] renamed ToonLoop for Toonloop. Updated heavily man page.
+
+commit a4ac4620789058dd89292b8a97b27a770f6b04f6
+Author: quessy <devnull@localhost>
+Date:   Sat Nov 14 15:20:12 2009 -0500
+
+    [svn r504] improved man page and -l option output.
+
+commit bdb03103f5d6fa611d79c7142990ef8f2dad678b
+Author: quessy <devnull@localhost>
+Date:   Sat Nov 14 14:54:03 2009 -0500
+
+    [svn r503] added statesaving with config
+
+commit 1379701e73cfec69f5f1ad9a350eeb3f8453e807
+Author: quessy <devnull@localhost>
+Date:   Sat Nov 14 13:58:54 2009 -0500
+
+    [svn r502] * Added many OSC callbacks
+     * Renamed for Toonloop, small caps ell.
+     * Cleaned up runner a bit.
+     * FIXME: Introduced weird hang bug at quit time.
+
+commit 2e1c40aa829e3cfd8ebc9c5722b61e3541f4420e
+Author: quessy <devnull@localhost>
+Date:   Sat Nov 14 10:12:45 2009 -0500
+
+    [svn r501] remove old prototypes from trunk/py/scripts. Moved to inhouse/tuner and inhouse/the_item
+
+commit 59d9745b13a1c2c3e496a208f37df3f94220729e
+Author: quessy <devnull@localhost>
+Date:   Sat Nov 14 00:36:49 2009 -0500
+
+    [svn r500] slowing down osc server to 10 ms, not 1 ms.
+
+commit 405bf93d45209d236ff22b366819e6b4839a825e
+Author: quessy <devnull@localhost>
+Date:   Sat Nov 14 00:33:49 2009 -0500
+
+    [svn r499] test commit
+
+commit 548d6d0a2236830da396355f6a7d66003d0a71ee
+Author: quessy <devnull@localhost>
+Date:   Wed Nov 11 10:23:14 2009 -0500
+
+    [svn r498] pep8-fied
+
+commit 31a1e4bb971af04e1e40eaf17cda30b568c1713b
+Author: quessy <devnull@localhost>
+Date:   Sat Nov 7 13:05:39 2009 -0500
+
+    [svn r496] adding wget to deps
+
+commit 3cd76601d5226b25a5de3f9aae967b888d0096f6
+Author: quessy <devnull@localhost>
+Date:   Thu Nov 5 15:39:27 2009 -0500
+
+    [svn r495] added portmidi as a dep
+
+commit fdf3b8e7cc8312ebbc5def06f620566d97ea7791
+Author: quessy <devnull@localhost>
+Date:   Thu Nov 5 14:14:07 2009 -0500
+
+    [svn r494] more deps in INSTALL
+
+commit 91c8f35f2470501e3a3344c6af821751db41d97a
+Author: quessy <devnull@localhost>
+Date:   Thu Nov 5 14:10:17 2009 -0500
+
+    [svn r493] creating man dir in makefile
+
+commit 6ebc742a2a9feb851f7833536f9cf8c74f88b73a
+Author: quessy <devnull@localhost>
+Date:   Thu Nov 5 14:03:44 2009 -0500
+
+    [svn r492] added build-essential to INSTALL.txt
+
+commit ca4db890aea44f671d6b029bb2b7b7421c9d2aa3
+Author: quessy <devnull@localhost>
+Date:   Thu Nov 5 09:05:22 2009 -0500
+
+    [svn r491] increased a bit midi verbosity
+
+commit a8a69fe99dffda6f9da897a2eb7c76d80f67227e
+Author: quessy <devnull@localhost>
+Date:   Thu Nov 5 09:04:47 2009 -0500
+
+    [svn r490] midi_verbose option implemented
+
+commit 78073ed77d03e7bc134780db9baaa2f6b022eaa3
+Author: quessy <devnull@localhost>
+Date:   Mon Nov 2 12:13:35 2009 -0500
+
+    [svn r489] improved flatcofnig test
+
+commit 3c26d216f304184578dba3fec5d3abef98d3ed14
+Author: quessy <devnull@localhost>
+Date:   Fri Oct 30 05:22:27 2009 -0400
+
+    [svn r487] remove package_data_path from config options
+
+commit 804bf2e037264e933e97697ce9c43f83b4e8e886
+Author: quessy <devnull@localhost>
+Date:   Fri Oct 30 05:19:23 2009 -0400
+
+    [svn r486] adding comment
+
+commit 4e210fc05de41cd61d63f36a602de76fa18de1c1
+Author: quessy <devnull@localhost>
+Date:   Fri Oct 30 05:15:29 2009 -0400
+
+    [svn r485] moved config options to the top of the file.
+
+commit b7cd5fb0376b8a5084212a1e17aec041d1ebf8c3
+Author: quessy <devnull@localhost>
+Date:   Fri Oct 30 05:11:01 2009 -0400
+
+    [svn r484] moved ClipSaver to toon/save.py
+
+commit b42b20ade12f85e9622e86c65fc04981d9d0407e
+Author: quessy <devnull@localhost>
+Date:   Fri Oct 30 05:02:26 2009 -0400
+
+    [svn r483] save less verbose
+
+commit a02690fc38ca83a5ebe4d6ec70959578fce52cb0
+Author: quessy <devnull@localhost>
+Date:   Fri Oct 30 04:58:11 2009 -0400
+
+    [svn r482] moved clip_save operations in an external class
+
+commit cdb746b401236127c20e3a6243a3255f8b9de7d0
+Author: quessy <devnull@localhost>
+Date:   Fri Oct 30 04:49:21 2009 -0400
+
+    [svn r481] relative executable when using help2man
+
+commit 42cd7755e3050605189f94ceda5cd9ed2c9c3fad
+Author: quessy <devnull@localhost>
+Date:   Thu Oct 29 10:19:27 2009 -0400
+
+    [svn r477] changed version from 1.0.1 to 1.0.2
+
+commit 1017c7137bcc7864cf8d0a9f0135578bb7b2e6e6
+Author: quessy <devnull@localhost>
+Date:   Thu Oct 29 10:15:50 2009 -0400
+
+    [svn r476] added some text in INSTALL.txt
+
+commit 18564e1c2c093b57c12845a8c814981d2ed8370a
+Author: quessy <devnull@localhost>
+Date:   Thu Oct 29 10:00:19 2009 -0400
+
+    [svn r475] changed default window size to 640x480.
+    Fixed minor printf error.
+    CHanged a bit how print_stats prints stats.
+
+commit e228c01c77e7ab3ed0449562f6a09f8f563d8d32
+Author: quessy <devnull@localhost>
+Date:   Wed Oct 28 10:14:36 2009 -0400
+
+    [svn r474] fixed print() small bug. Fixed alpha that was not at 100% !!
+
+commit 43f84645e2228b5704332d0afd3f5e3908412338
+Author: quessy <devnull@localhost>
+Date:   Wed Oct 28 10:11:41 2009 -0400
+
+    [svn r473] changed print for print() in core
+
+commit f1888c761652ef0279bd200113b08fce22d2e294
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 22:12:18 2009 -0400
+
+    [svn r472] added osc sends for sampler/play and record
+
+commit 3820a2f54fe7579d48aa966767aeaa2c871f29cc
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 19:01:07 2009 -0400
+
+    [svn r471] osc: check if module is loaded
+
+commit 21298d0f4b7677c456969374053242af2aea09b8
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 18:57:43 2009 -0400
+
+    [svn r470] basic osc support
+
+commit 173648277b71409182a93d1c89e8be92ff268734
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 18:40:26 2009 -0400
+
+    [svn r469] changed default playback rate to 1:1. Strange it is so slow using my webcam.
+
+commit 59ddc88ed17fd812b3de8d758e3944eb4de261df
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 17:45:43 2009 -0400
+
+    [svn r468] improved error msg when invalid CLI option
+
+commit 4cf944b1ddb7f8c60d25091ef0da7dfcb4c78d80
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 17:28:09 2009 -0400
+
+    [svn r467] added MIDI support !
+
+commit 4b85d6bc794494aca3bdaa2afabe6fdf491838e9
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 16:41:25 2009 -0400
+
+    [svn r466] Added FileNotFoundError in flatconfig
+
+commit 7d79062d2a0fc5cfba182f79c85a3b4afda65277
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 16:30:43 2009 -0400
+
+    [svn r465] moved web_server to web
+
+commit b3ed9fe828782152acf0d3bd03e543747565e282
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 16:28:15 2009 -0400
+
+    [svn r464] cleanup in core.
+
+commit a5e03ff2c8753cffbbfbae38f7ec63ce2118f0d1
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 13:14:55 2009 -0400
+
+    [svn r463] adding toon/midi.py (not yet fully working)
+
+commit 174612f828b13507efd9b3f742347cb665bc6944
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 12:18:26 2009 -0400
+
+    [svn r461] improved manpage a bit
+
+commit c41bf843863c3ef73a03daefec6540f3a282a3fb
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 12:13:16 2009 -0400
+
+    [svn r460] improved cli opts messages
+
+commit 9bd3a5e20d54026328b0bf0c462a1acb51246f62
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 12:08:03 2009 -0400
+
+    [svn r459] removed purity
+
+commit 955d949e5428d548428cf63f07d524e6d9cce85f
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 12:00:23 2009 -0400
+
+    [svn r458] done renaming tests for flatconfig
+
+commit c6f3a39414f1a3e77b109011cc7e4338d51cdeaa
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 11:59:41 2009 -0400
+
+    [svn r457] renamed parser to flatconfig
+
+commit a6a84c22bba0d6273925bc736aa32a52f55ec5fb
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 11:57:23 2009 -0400
+
+    [svn r456] progress in config parser
+
+commit 93118daf138ad92e59bf22dfd14441808a1b166c
+Author: quessy <devnull@localhost>
+Date:   Tue Oct 27 11:39:06 2009 -0400
+
+    [svn r455] mucho progress in the config parser.
+
+commit 2d8eddfc2258d7e3b29740521362309180ad54fe
+Author: quessy <devnull@localhost>
+Date:   Mon Oct 26 09:07:44 2009 -0400
+
+    [svn r454] steps towards a ConfigParser-compatible options parser.
+
+commit c0e81d4615d70f6e6a676e808af5491da5c96efa
+Author: quessy <devnull@localhost>
+Date:   Mon Oct 26 08:44:21 2009 -0400
+
+    [svn r453] improved serialize a bit
+
+commit 3d5479097e3d8c64f61c97204b90732defe13632
+Author: quessy <devnull@localhost>
+Date:   Mon Oct 26 08:34:34 2009 -0400
+
+    [svn r452] added make check. Clean up in tests.
+
+commit e63623c94a9c2c2e3ab68a62eb0572723ed5fb20
+Author: quessy <devnull@localhost>
+Date:   Mon Oct 26 08:24:19 2009 -0400
+
+    [svn r451] moved main to toon.runner.
+
+commit 20d813ac6bfad4dcd7296063a2da04fa1bdc9052
+Author: quessy <devnull@localhost>
+Date:   Mon Oct 26 08:21:58 2009 -0400
+
+    [svn r450] renaming in main executable
+
+commit 4f7dec5822a632fd6ecd230c798ed3144ce4ff85
+Author: quessy <devnull@localhost>
+Date:   Mon Oct 26 08:18:18 2009 -0400
+
+    [svn r449] moved itoonloop to core
+
+commit e43499d9e0f67b942c75d759547ddfdf357e0203
+Author: quessy <devnull@localhost>
+Date:   Mon Oct 26 08:14:03 2009 -0400
+
+    [svn r448] added test for parser. Updated parser to strip quotes.
+
+commit 75277f7f3f74e05ddc4169323c6d77d0d88b4b35
+Author: quessy <devnull@localhost>
+Date:   Mon Oct 26 07:50:33 2009 -0400
+
+    [svn r447] added parser to rats.
+
+commit 34304572f1933991f51eb3043aade35983762f7f
+Author: quessy <devnull@localhost>
+Date:   Sun Oct 25 23:28:44 2009 -0400
+
+    [svn r446] added make clean.
+
+commit e235245786cd945ead1d43c6e0960a8be38fd63a
+Author: quessy <devnull@localhost>
+Date:   Sun Oct 25 23:20:48 2009 -0400
+
+    [svn r445] updated version as well in the *.desktop
+
+commit 39dfab481cb7a388da17754a2738477a49be7f7b
+Author: quessy <devnull@localhost>
+Date:   Sun Oct 25 23:13:14 2009 -0400
+
+    [svn r444] There are 2 places we need to change the version number : setup.py and the toonloop script.
+
+commit 591603aa3b6669a803fcef33ad66157863230353
+Author: quessy <devnull@localhost>
+Date:   Sun Oct 25 21:18:55 2009 -0400
+
+    [svn r443] minor improvements in mencoder.py
+
+commit 8f67532db90a3ceb7b59f0064c7905b056044a64
+Author: quessy <devnull@localhost>
+Date:   Sun Oct 25 21:14:18 2009 -0400
+
+    [svn r442] minor changes in main fil
+
+commit ca38283bc540d4edb29d6db3d915e14aafb1462e
+Author: quessy <devnull@localhost>
+Date:   Mon Oct 12 13:45:36 2009 -0400
+
+    [svn r429] improved comment in osc.py
+
+commit 07e01666235ddd8a6d3a8272d8f247b9ca5e52df
+Author: quessy <devnull@localhost>
+Date:   Fri Sep 25 22:07:08 2009 -0400
+
+    [svn r428] toonloop 1.0 tag. Moved away purity script. sdit package.
+
+commit 4aa768a55d7fc005ee3708b9cb4c2de591b3a53f
+Author: quessy <devnull@localhost>
+Date:   Wed Sep 16 08:59:13 2009 -0400
+
+    [svn r422] Purity: more comments, added notes. Renamed stuff.
+
+commit 0c290c80da15cd27acb6ca7602a6a82209b98470
+Author: quessy <devnull@localhost>
+Date:   Tue Sep 15 09:59:10 2009 -0400
+
+    [svn r419] hiding useless pd objects. Removed opensoundcontrol.py from deps.
+
+commit ec0b6c63595d1a27e9b2e18cd9ee7571afa77b1d
+Author: quessy <devnull@localhost>
+Date:   Tue Sep 15 08:47:28 2009 -0400
+
+    [svn r418] lots of bug fixes in purity
+
+commit 03b207cb847ba5b5e1c2d4f52839380c95f56e70
+Author: quessy <devnull@localhost>
+Date:   Tue Sep 15 08:03:38 2009 -0400
+
+    [svn r417] moving scripts to a scripts directory
+
+commit 076aa701e29e9b6b496caa4cec2cb02522277313
+Author: quessy <devnull@localhost>
+Date:   Mon Sep 14 23:50:43 2009 -0400
+
+    [svn r416] improved purity simplest client
+
+commit 2f3dcf2cf5d1c9cf19706069b51ae8c2d340edfa
+Author: quessy <devnull@localhost>
+Date:   Mon Sep 14 21:04:02 2009 -0400
+
+    [svn r415] improvements in purity
+
+commit 34fd82b03159824e838ef7c92d96e15019459f80
+Author: quessy <devnull@localhost>
+Date:   Mon Sep 7 16:29:24 2009 -0400
+
+    [svn r410] oops. fixing setup.py
+
+commit e070a29f01bdb7dd2d33878231be01ee4ac04031
+Author: quessy <devnull@localhost>
+Date:   Mon Sep 7 16:13:43 2009 -0400
+
+    [svn r409] improved random position
+
+commit 1d5ecae8b75f8e66fd90d2fdf9359146a996acf9
+Author: quessy <devnull@localhost>
+Date:   Mon Sep 7 15:55:37 2009 -0400
+
+    [svn r408] purity-client now starts pd
+
+commit 376e9f7223d7a20367d4a8c898d43117ac8a8bdf
+Author: quessy <devnull@localhost>
+Date:   Mon Sep 7 15:40:18 2009 -0400
+
+    [svn r407] updated purity. put server and client modules in purity
+
+commit eb230dd68f29b3119d70cebdf4ec12921dd0f3b6
+Author: quessy <devnull@localhost>
+Date:   Mon Sep 7 15:08:28 2009 -0400
+
+    [svn r406] updating purity with a working audio example
+
+commit 63466cd9250583673bb2d9e9b3074063b40bbacd
+Author: quessy <devnull@localhost>
+Date:   Mon Sep 7 12:49:15 2009 -0400
+
+    [svn r403] renamed purepy to purity
+
+commit b3078ff7e67e9db9ff6c7e15bbc6e176282047ef
+Author: quessy <devnull@localhost>
+Date:   Sat Sep 5 08:47:59 2009 -0400
+
+    [svn r402] oops
+
+commit fdb641b4c25bf748f4109ba6222ee0af83f36ce4
+Author: quessy <devnull@localhost>
+Date:   Fri Sep 4 23:17:56 2009 -0400
+
+    [svn r401] modif
+
+commit d9108a44431e429bfdbdcd9da0845c0c8b545561
+Author: quessy <devnull@localhost>
+Date:   Thu Sep 3 09:01:21 2009 -0400
+
+    [svn r400] updated theitem : mouse motion.
+
+commit 6fd9347ac70d6c1ed2b0865f9528dff19b755689
+Author: quessy <devnull@localhost>
+Date:   Thu Sep 3 08:35:00 2009 -0400
+
+    [svn r399] the item now works ! Adding placeholder images.
+
+commit 993395f1ced85e7c45e6aa722feca62dabd84899
+Author: quessy <devnull@localhost>
+Date:   Wed Sep 2 21:51:49 2009 -0400
+
+    [svn r398] adding the item
+
+commit d5b8ac25a2718a736cf174bafadb417712b1c7f8
+Author: quessy <devnull@localhost>
+Date:   Wed Aug 26 17:41:34 2009 -0400
+
+    [svn r392] hehe random patch !
+
+commit 43456723afd0b795b8b56465e737cd737903b7c3
+Author: quessy <devnull@localhost>
+Date:   Wed Aug 26 09:38:37 2009 -0400
+
+    [svn r391] lots if improvements in pure py
+
+commit 683540e2f8321057d454c35f009ba0ebfba76612
+Author: quessy <devnull@localhost>
+Date:   Tue Aug 25 23:52:46 2009 -0400
+
+    [svn r390] fixed bug with purepy/puremess
+
+commit e9491b8b31f776a3f52a0c40213bc8f8f435c317
+Author: quessy <devnull@localhost>
+Date:   Tue Aug 25 09:09:44 2009 -0400
+
+    [svn r389] improved pure mess
+
+commit 6190f1449d201b481b80d806d9800af1fcf49ae4
+Author: quessy <devnull@localhost>
+Date:   Tue Aug 25 08:23:35 2009 -0400
+
+    [svn r388] adding purepy/obj
+
+commit 32e170fd0e6f50d67aca6e8e7d5f8387ebb9889a
+Author: quessy <devnull@localhost>
+Date:   Tue Aug 25 01:23:42 2009 -0400
+
+    [svn r387] adding obj
+
+commit 915b98643af3291741b14ae35378840f98440df4
+Author: quessy <devnull@localhost>
+Date:   Mon Aug 24 22:30:17 2009 -0400
+
+    [svn r386] purepy works !
+
+commit 98e2a78cde5616a498522b078b156dc4c31bdc79
+Author: quessy <devnull@localhost>
+Date:   Mon Aug 24 21:45:44 2009 -0400
+
+    [svn r385] adding purepy
+
+commit a34792a7f9b9b5a1fcf6664f3f38667d675fa287
+Author: quessy <devnull@localhost>
+Date:   Mon Aug 17 08:44:08 2009 -0400
+
+    [svn r384] lots of changes in toonloop. they where uncommitted since ages
+
+commit 33267189ddefb05fb3814b8e906220c7757bb690
+Author: quessy <devnull@localhost>
+Date:   Mon Aug 10 09:16:42 2009 -0400
+
+    [svn r381] tried to do UDP broadcasting
+
+commit 3296edbc65a8bc9961a40e2f043f8398d506e431
+Author: quessy <devnull@localhost>
+Date:   Mon Aug 10 03:57:29 2009 -0400
+
+    [svn r380] modif on osc. sender was wrong. (could not specify hostname)
+
+commit cebb67ac6f16e49fba55f3d2f224152a7c55a703
+Author: quessy <devnull@localhost>
+Date:   Tue Aug 4 16:48:56 2009 -0400
+
+    [svn r377] changed INSTALL to remove https
+
+commit 3e4bb80f1f6090f885d4823746df1f975bb951eb
+Author: quessy <devnull@localhost>
+Date:   Tue Aug 4 10:11:03 2009 -0400
+
+    [svn r376] osc: order of methods is respected.
+
+commit 74ebe7ba3f50a0e326abb100924ac2ba14a2999a
+Author: quessy <devnull@localhost>
+Date:   Sun Aug 2 21:16:49 2009 -0400
+
+    [svn r375] set_port fix
+
+commit 9b1f885945972bc88964c2a26d9e732294f7cc15
+Author: quessy <devnull@localhost>
+Date:   Sun Aug 2 20:33:47 2009 -0400
+
+    [svn r374] added license info to rats/osc.py
+
+commit b2cceab09b9e5b0be919bee13bbc56c68d4b35ac
+Author: quessy <devnull@localhost>
+Date:   Sun Aug 2 20:30:35 2009 -0400
+
+    [svn r373] adding osc.py to rats
+
+commit 2f2f62e7cd810a40e28d426df95bb46caeda39c1
+Author: quessy <devnull@localhost>
+Date:   Thu Jul 30 01:10:22 2009 -0400
+
+    [svn r363] fixed icon
+
+commit f934cb61b986b9efea85f102a4528ca36e64d0ef
+Author: quessy <devnull@localhost>
+Date:   Tue Jul 28 01:39:07 2009 -0400
+
+    [svn r362] Adding gnome icon and a man page.
+
+commit 4580aa97471358b9a5a754cb807b7090503e7c07
+Author: quessy <devnull@localhost>
+Date:   Sun May 24 14:45:05 2009 -0400
+
+    [svn r337] moved fudi in rats.
+
+commit 5f41378ea3e3c443f786e43a703ab2583f904a47
+Author: quessy <devnull@localhost>
+Date:   Sun May 24 14:42:27 2009 -0400
+
+    [svn r336] updated toon/fudi.py license
+
+commit 933536176c782bc57b7365f2a71628ae6e1921b3
+Author: quessy <devnull@localhost>
+Date:   Wed May 20 07:23:37 2009 -0400
+
+    [svn r330] fixed attribute error that might occur
+
+commit 56fce52de26fe1c3f64b7d3ae668dec10e108465
+Author: quessy <devnull@localhost>
+Date:   Tue May 19 00:48:34 2009 -0400
+
+    [svn r329] adding ituner prototype
+
+commit d09d3916c96bc38de42de3a40f52f0cd2de6d1f1
+Author: quessy <devnull@localhost>
+Date:   Mon May 11 16:15:06 2009 -0400
+
+    [svn r326] remix pd patch and bash script update
+
+commit 99057513dd6dd65be699629bbbc0f119a5e873d9
+Author: quessy <devnull@localhost>
+Date:   Thu May 7 18:12:08 2009 -0400
+
+    [svn r324] added clip number in saved movies.
+    fixed glob bgimage name to use toonloop_home and project_name
+
+commit 6b6e045e863278ceb8c40d1c6d8bcd83c7c6d3ef
+Author: quessy <devnull@localhost>
+Date:   Thu May 7 13:51:12 2009 -0400
+
+    [svn r323] small cosmetic/options changes
+
+commit 0c70fe1ac38511fa69381a5074459c2416eddd9d
+Author: quessy <devnull@localhost>
+Date:   Thu May 7 02:16:50 2009 -0400
+
+    [svn r322] fixed sorted order of project JPG files.
+
+commit 62691e7488d36640f016e3df2818d249c22cff5b
+Author: quessy <devnull@localhost>
+Date:   Thu May 7 01:31:15 2009 -0400
+
+    [svn r321] Added bgimage_glob_next method. Allows reuse of JPG images from the same project.
+
+commit c96f6655bc22807006902a03003708034764c915
+Author: quessy <devnull@localhost>
+Date:   Tue May 5 18:20:44 2009 -0400
+
+    [svn r320] updated remix script and dir
+
+commit 84d6d25f6b3efc251a8dcaa78c1b339fb12875b8
+Author: quessy <devnull@localhost>
+Date:   Tue May 5 12:43:26 2009 -0400
+
+    [svn r318] updated remix_start script and pd patch
+
+commit 5d0d032b3d1a978dec4c989247bc111be5399398
+Author: quessy <devnull@localhost>
+Date:   Tue May 5 04:05:07 2009 -0400
+
+    [svn r314] changed default image
+
+commit 8653ac3f246cfc497e23f56059030494cd95a09e
+Author: quessy <devnull@localhost>
+Date:   Tue May 5 03:55:21 2009 -0400
+
+    [svn r313] improved cli args/fudi mess
+
+commit 360b87d7b23a9b29f5914585abb8b88f5174a7e0
+Author: quessy <devnull@localhost>
+Date:   Tue May 5 03:30:57 2009 -0400
+
+    [svn r312] Added effect_select(i) method and improved Pd UI.
+
+commit 7dffa00818858d38ca83a43b09e182dac2765a88
+Author: quessy <devnull@localhost>
+Date:   Mon May 4 17:10:48 2009 -0400
+
+    [svn r311] trying to do a few fixes for the FOC
+
+commit 89fcfad6aa0203d560bfb475376f3f312c74c3fb
+Author: quessy <devnull@localhost>
+Date:   Mon May 4 09:50:06 2009 -0400
+
+    [svn r310] added autosave
+
+commit e5f4076f6956cd57bd85f4bb51ac439d785502c3
+Author: quessy <devnull@localhost>
+Date:   Fri May 1 13:23:13 2009 -0400
+
+    [svn r308] fixed crashy bug
+
+commit e382f3862347b6ce09bccf860a20ac2878b866d3
+Author: quessy <devnull@localhost>
+Date:   Fri May 1 03:39:04 2009 -0400
+
+    [svn r304] added a few example background images. From mediawiki commons.
+
+commit 64955c3b6ef37bdae4807a873e9e7cc515fd8046
+Author: quessy <devnull@localhost>
+Date:   Fri May 1 02:48:12 2009 -0400
+
+    [svn r303] added support for background images
+
+commit 9ae61d487589038a1f1818a90cbabd9d6fd36f34
+Author: quessy <devnull@localhost>
+Date:   Fri May 1 01:56:01 2009 -0400
+
+    [svn r302] More verbose options
+
+commit 7a73ad62f6d70f679ef3475c6f00ec3959859713
+Author: le.businessman <devnull@localhost>
+Date:   Fri May 1 00:44:35 2009 -0400
+
+    [svn r296] magic number cleanup
+
+commit 18e6291b5101ef14086182bef21eea7edca6d707
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 30 08:37:13 2009 -0400
+
+    [svn r295] improved chromakey formula. (maxthresh = srqt(3))
+
+commit 080039f0573b570905fc7b4692ac79dd3b0fe5fc
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 29 13:24:07 2009 -0400
+
+    [svn r294] some more doc
+
+commit 21a7a75b1a186694033f576bda680d3a7ee1fd5c
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 29 02:17:08 2009 -0400
+
+    [svn r293] better chromakey.
+    File renaming.
+
+commit d1c92e7ce2eeb49be2511547c38edd221bba534a
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 29 01:56:53 2009 -0400
+
+    [svn r292] New GLSL formula for chroma keying. Better in theory, but not as nice.
+    Renamed shot for clip. Clean up.
+
+commit 155583bdc88a6d17c300668afe51e24df8b2c559
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 27 22:29:40 2009 -0400
+
+    [svn r291] some more config properly set
+
+commit 8ffdc5c47f58e81fe9d65a3ad8a9e8c6e8fc4dc7
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 24 04:00:17 2009 -0400
+
+    [svn r281] congratulations ! We have reached a new step with shader controls in pd and more.
+
+commit 40edaf5f6df604f9529d3b3707b883e6878fd5e2
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 24 03:32:09 2009 -0400
+
+    [svn r280] chromakey improved
+
+commit b5d3c9bae125e55657ee4074520dfd809c20eca3
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 24 03:04:38 2009 -0400
+
+    [svn r279] onion skin improved
+
+commit 303d7394b4503a6a5237fdbae0e520c5ceb7d30a
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 24 02:54:18 2009 -0400
+
+    [svn r278] moved stuff to main
+
+commit 7b1b2b886f01639ff0022d51e555865d280f6003
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 24 02:45:50 2009 -0400
+
+    [svn r277] chroma key works !!!
+
+commit 7e93dfdb3ee697f6234d4fcb213669b340c86b10
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 24 02:14:18 2009 -0400
+
+    [svn r276] in the way to integrate toon/chromakey.py
+
+commit 945c5494a5d6c7fdd4e9b5163bb267c36a2b044a
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 24 01:24:53 2009 -0400
+
+    [svn r273] few modifs
+
+commit 781433b517c8541c3c647800358b176853debe3f
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 24 01:05:06 2009 -0400
+
+    [svn r271] update INSTALL.txt
+
+commit d795b7af29e49da3b542f685160c9f4079f9f705
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 24 00:41:23 2009 -0400
+
+    [svn r270] update install file
+
+commit dab95c3c9d18673d1e2bda72fda9ff039f7553a0
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 24 00:30:00 2009 -0400
+
+    [svn r268] fixed rss mov
+
+commit 9b22f03f04ee438b512f9ecce096f249f66c9442
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 24 00:23:51 2009 -0400
+
+    [svn r267] updated web data
+
+commit 07b56494523eca0ac6a51cdf6a4a4f094dc3c231
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 24 00:13:33 2009 -0400
+
+    [svn r265] improving web server doc
+
+commit e33d530eccbbf72a193687d9eea7b50c999b1d2c
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 23 23:47:21 2009 -0400
+
+    [svn r264] moving data to toon/data
+
+commit 2764e7439288ec423762418d878b9bf0dcf222d6
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 23 23:41:22 2009 -0400
+
+    [svn r263] fudi stuff in data
+
+commit 4b9a604907c093e08d6f8c162aa0d280266c3c6a
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 23 23:39:16 2009 -0400
+
+    [svn r262] FUDI: added catch all method "call".
+
+commit 415ce688085fb9e84a1ce81f1af1d1faa3d92346
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 23 22:37:19 2009 -0400
+
+    [svn r261] Fixed RSS enclosures path. Add -o flag for any config option.
+
+commit 7c71a0763d99f5cb5faf1c66ce166b0974ec4433
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 22 16:54:51 2009 -0400
+
+    [svn r260] modified setup.py to remove deps
+
+commit c3b4adaba27bc420ee1b767956b4b71beb463f87
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 21 01:54:52 2009 -0400
+
+    [svn r259] spreading INSTALL.txt all over
+
+commit ade8f1854168e92f02dfed9a8fb20efec759f0c9
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 21 01:33:06 2009 -0400
+
+    [svn r256] slight modifs in the main/core
+
+commit 85e4236c78452ada45915e566a77a672499252ab
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 21 00:40:21 2009 -0400
+
+    [svn r255] separating the main and the core, names itoonloop.
+
+commit ed43b771786703cfb39a3913b2f7d3133c127284
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 21 00:08:21 2009 -0400
+
+    [svn r254] moved configuration in the __main__.
+
+commit 7b3e4352ae019f621d83188f5d038bfa97ab83dc
+Author: quessy <devnull@localhost>
+Date:   Sat Apr 18 19:32:47 2009 -0400
+
+    [svn r253] communication with puredata succesfull. Starting integration soon
+
+commit d2d0cfa607f67f1da7e9ecf63f9a3f6c0ec2bba2
+Author: quessy <devnull@localhost>
+Date:   Sat Apr 18 19:07:12 2009 -0400
+
+    [svn r252] fudi doesn't stop reactor when not able to connect sender
+
+commit 7cdf9f0a8dc692346bd0efe0e49f4c2fff17a932
+Author: quessy <devnull@localhost>
+Date:   Sat Apr 18 17:30:22 2009 -0400
+
+    [svn r251] FUDI for Pd now fully works. Ready for client_server class and intergration to toonloop
+
+commit 087b121942ca4fa1dea39e059174c3cab3c37e89
+Author: quessy <devnull@localhost>
+Date:   Sat Apr 18 16:39:42 2009 -0400
+
+    [svn r250] progress in fudi. see prototypes/fudi/
+
+commit 7098228ad5494e3618c0c2a45c7ef6afd41c026b
+Author: quessy <devnull@localhost>
+Date:   Sat Apr 18 16:02:15 2009 -0400
+
+    [svn r249] fudi protocol implemented
+
+commit b6777ab25234f948761ba472b8e3d50365512bb6
+Author: quessy <devnull@localhost>
+Date:   Sat Apr 18 15:20:32 2009 -0400
+
+    [svn r248] adding toon/fudi
+
+commit 3058b30a2c0cbb0da02cd940ea28e74fcc7a44ac
+Author: quessy <devnull@localhost>
+Date:   Sat Apr 18 15:01:58 2009 -0400
+
+    [svn r246] adding a window icon
+
+commit ead2561e8d8e58154494d11d94a954c90ea0f8a1
+Author: quessy <devnull@localhost>
+Date:   Sat Apr 18 12:19:52 2009 -0400
+
+    [svn r244] should now install and web would work. adding a thread example
+
+commit 5a67b2dcfbddcc09406cda7831dd8c89e79f92e5
+Author: quessy <devnull@localhost>
+Date:   Sat Apr 18 11:02:26 2009 -0400
+
+    [svn r243] improved serialize class
+
+commit d95dcd156b52b6466faca36f46660fcae3fd24b4
+Author: quessy <devnull@localhost>
+Date:   Sat Apr 18 00:03:01 2009 -0400
+
+    [svn r242] renamed toonloop.py to toonloop
+
+commit 2f6a6ec85cbba3214458bcfac5793b269ddae63a
+Author: quessy <devnull@localhost>
+Date:   Sat Apr 18 00:02:03 2009 -0400
+
+    [svn r241] comment in setup.py
+
+commit 745c657036d887a9dfc76cbdd880b87e1291bc6e
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 17 23:56:44 2009 -0400
+
+    [svn r238] modif on setup.py. cleanup stuff
+
+commit dcedb5ab59ef6cce7bc8458831fe609291429fbd
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 17 23:15:50 2009 -0400
+
+    [svn r237] massive clean up
+
+commit 072d39eebad0c28090cf4319461c73308dd7c69c
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 17 23:08:04 2009 -0400
+
+    [svn r236] fixed mencoder command to properly convert movie to .mov mjpeg
+
+commit 53f2a06919475d52c590c6e3da58540334424bc1
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 17 17:19:25 2009 -0400
+
+    [svn r235] changed to a mov. the command is not working right now but i gotta go
+
+commit 59b6a52d57550c6cf5c7462d1835c91e3ff51404
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 17 15:50:35 2009 -0400
+
+    [svn r234] added option to change image width and height
+
+commit 525a8f9c7ef74e64aa8402ac06dd0b718932e0c2
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 17 15:45:38 2009 -0400
+
+    [svn r233] onion skin toggle enables. improved command-line parsing. add CLI option toonloop-home. Works with web as well.
+
+commit 286b32e704ee2e5d5695300063c4211fa3d2555c
+Author: le.businessman <devnull@localhost>
+Date:   Fri Apr 17 10:06:51 2009 -0400
+
+    [svn r232] plus lisible
+
+commit c0c7ee19d9300613e301391f5ee61b9a77305e25
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 17 08:06:07 2009 -0400
+
+    [svn r231] updated to work with latest svn version
+
+commit e7dcf2b47db0609135eb5639e40e5840f59288c9
+Author: le.businessman <devnull@localhost>
+Date:   Fri Apr 17 01:27:08 2009 -0400
+
+    [svn r230] first text musings, made test_glsl_camera.py work on my mac
+
+commit 6b6f22cc0412102c2b78d40fd8408fa512779a6e
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 16 23:04:06 2009 -0400
+
+    [svn r229] trying to debug the image color that is messed up
+
+commit b0b5d294c7b1acf845442dfd4508ef8090003b0a
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 16 21:57:08 2009 -0400
+
+    [svn r228] updated rest documentation. Now with relative links
+
+commit f8ad8045b6ea1a2e14a82f849b0ee63940a583e8
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 16 21:07:45 2009 -0400
+
+    [svn r225] fixed the order of jpeg file names in mencoder conversion
+
+commit 1f711d7b50ab050c7eb1b168256759fcfb551aa1
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 16 14:04:52 2009 -0400
+
+    [svn r224] bugfixes
+
+commit 0512bd0ef2fd6a9b99166293a4f6fcfada36edaa
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 16 11:27:38 2009 -0400
+
+    [svn r221] updated RSS page to provide correct absolute link to movies.
+    now using nevow.rend.Page and not LivePage
+
+commit c139987165efb922ea05dec4b0fdb17272e21bb4
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 16 01:20:49 2009 -0400
+
+    [svn r220] using texcoords in the range of the image itself, it works.
+
+commit b1b81bb771b6c489e7b49e3b019263392552a0c3
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 15 11:34:56 2009 -0400
+
+    [svn r219] a little effect...
+
+commit e7f2865b202d09fc2d5d85b212ef489c9d122142
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 15 11:31:28 2009 -0400
+
+    [svn r218] Il faut utiliser GL_TEXTURE_RECTANGLE_ARB et appeler  glActiveTexture(GL_TEXTURE0).  le uniform qu'on passe au shader pour le # de texture est le numéro de texture unit (0) et non le ID de la texture
+
+commit 241b10ebfb83645a357b86032bf40188d91191e2
+Author: le.businessman <devnull@localhost>
+Date:   Tue Apr 14 20:02:17 2009 -0400
+
+    [svn r217] test_glsl_camera doesnt work with textureid 1, does work when texture id is 0
+
+commit 4223bbce71bf151671025ebaa36ce9e9303d1460
+Author: le.businessman <devnull@localhost>
+Date:   Tue Apr 14 19:12:26 2009 -0400
+
+    [svn r216] fixed toonloop for mac
+
+commit daf23d0f05549d284b0d98cfe26aed00a000b035
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 14 09:04:17 2009 -0400
+
+    [svn r214] added a picture in picture for the test_glsl_camera
+
+commit e28859658ca0528ba34735a7d61b8ca9897c5fb1
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 14 08:43:46 2009 -0400
+
+    [svn r213] broke test_glsl_camera with my keying shader
+
+commit cf6aed685382f217786cc3595663a14fbe5239fe
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 14 08:15:07 2009 -0400
+
+    [svn r212] glsl uniform now work !
+
+commit cec2883d0900f940cc709658a93df5e0fdbf68ae
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 14 07:37:58 2009 -0400
+
+    [svn r211] few renames
+
+commit 99c3b24cb36c1eb386630ba91ff26f327c99da56
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 13 17:05:52 2009 -0400
+
+    [svn r210] modif todo
+
+commit 7137518a94147db43561f9b67a64f9242b857572
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 13 16:56:11 2009 -0400
+
+    [svn r209] todo modified
+
+commit cc9da08d94c2750e86fed2ce40be3f18a410005f
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 13 16:41:06 2009 -0400
+
+    [svn r208] create TODO.rst
+
+commit 87659be4e19a034fe09ae89574d28eac5226d508
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 13 15:47:24 2009 -0400
+
+    [svn r207] updated rss.
+
+commit 09ff64a3c072bb314f8bb765f24d4468ca3df97f
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 13 15:03:46 2009 -0400
+
+    [svn r206] rss works
+
+commit e2387e4cb9e671d52aae2d8b945080e541b1fee6
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 13 14:34:29 2009 -0400
+
+    [svn r205] remove saved jpeg. rename movie name.
+
+commit d920e5f20207a4ff9c8d4a994e34d053319c1c9c
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 13 14:25:47 2009 -0400
+
+    [svn r204] added web server
+
+commit 99463363e6f8dfd7e8922dc080d975e2151ca2cb
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 13 12:54:55 2009 -0400
+
+    [svn r203] removed old web.py
+
+commit ed92ef8535f7f5b5265dcf9f053a28b277dad1f1
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 13 05:55:44 2009 -0400
+
+    [svn r202] Multiple shots implemented.
+    No mouse.
+    Little cleanup.
+    Added glsl_shader.py
+
+commit e8ea64ff51f994df7c76a43e10a77c81558b7c13
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 13 02:55:55 2009 -0400
+
+    [svn r201] Now with multiple shots
+
+commit 448b92ff69f0731e60765e84ec269352b8992732
+Author: quessy <devnull@localhost>
+Date:   Sun Apr 12 17:40:12 2009 -0400
+
+    [svn r200] incremented version from alpha to beta.
+
+commit 819847a42a87617fef9663dd4a940ac063dd46f0
+Author: quessy <devnull@localhost>
+Date:   Sun Apr 12 17:35:24 2009 -0400
+
+    [svn r199] had forgotten a few things, such as the infos could not be displayed.
+
+commit cd9e1df6effcae25a74abd47411e5647d7a601ea
+Author: quessy <devnull@localhost>
+Date:   Sun Apr 12 17:23:41 2009 -0400
+
+    [svn r198] toonloop.py ported to OpenGL
+
+commit 53f454df5e5248ee89c1e5172f96e8a542edd499
+Author: quessy <devnull@localhost>
+Date:   Sun Apr 12 15:10:04 2009 -0400
+
+    [svn r197] renamed methods
+
+commit 770e6abb81db703bebee8702a5957cc1914e2e74
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 10 14:02:51 2009 -0400
+
+    [svn r195] gl_cam_shader example now support one uniform float var... (not three yet)
+
+commit 0b68b65babaf168e9a459969497b8d71e2994b9f
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 8 17:45:38 2009 -0400
+
+    [svn r193] trying to get chroma_keying.py to work, but failed to use glUniform3f
+
+commit c0d5526643c5f5c74b3c5f245a36328ab156d080
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 8 17:19:26 2009 -0400
+
+    [svn r192] gl_cam_shader and rats/glsl separated
+
+commit 754b71417cdbb8582bec19acb3677d49a08d49b0
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 8 16:35:20 2009 -0400
+
+    [svn r191] comments in glsl shader
+
+commit 53d0d670aae2051c697c9a60b9cbb1b33225b14a
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 8 02:06:45 2009 -0400
+
+    [svn r189] adding gl_font.py
+
+commit c78fa2f1c6d005e7d0d3e515e0f1ee1a1947745e
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 7 13:55:01 2009 -0400
+
+    [svn r188] had forgotten to add opensoundcontrol.py
+
+commit 4e53cdd15aec98ac9b20e7dcd7801b1d96022f26
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 7 02:13:20 2009 -0400
+
+    [svn r186] heavily changed variable names and so on
+
+commit 6cc69b195964706295c3c927afc48d0a539f0c14
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 7 01:37:43 2009 -0400
+
+    [svn r185] added config and more to toonloop - NOT IMPLEMENTED YET
+
+commit d42168d9fd37b696f58a523960480e817872d048
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 7 01:13:46 2009 -0400
+
+    [svn r184] moved serialize to rats. wrote a unit test
+
+commit ff9cb51fe5f4e4c1df62974b84b35638800aef7d
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 7 01:02:55 2009 -0400
+
+    [svn r183] fixed observer.py to match miville's style again
+
+commit 2239a8509b261438d6e271e23edd5c87822b6c9f
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 7 00:58:41 2009 -0400
+
+    [svn r182] mv observer to rats
+
+commit 94baf7b7f0a7224675e012f5acde188a62893f65
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 7 00:56:27 2009 -0400
+
+    [svn r181] moved osc libs to rats. created toon/opensoundcontrol
+
+commit b42e971e18820fa761979367d93acf4b2a93e562
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 7 00:46:30 2009 -0400
+
+    [svn r180] oups. had forgottent to rename rats.__all__
+
+commit ff7791ba15a3f9181600c257e59022ab5c5b1abf
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 7 00:45:52 2009 -0400
+
+    [svn r179] renamed renderer to render.
+
+commit c97490d951066db34969b97d90f6f05618d65985
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 7 00:42:28 2009 -0400
+
+    [svn r178] moved camLoopOpenCV to prototypes
+
+commit 416b2f905714d69b7e271b646061204ea56fb2eb
+Author: quessy <devnull@localhost>
+Date:   Tue Apr 7 00:41:31 2009 -0400
+
+    [svn r177] adding rats. separating the renderer from toonloop main
+
+commit defa73a2f3ee771ae624518bc63447bb93647125
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 6 23:17:24 2009 -0400
+
+    [svn r176] readme
+
+commit de06c7a64714d03ea2717cf8b61fa705c06c8cde
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 6 23:16:42 2009 -0400
+
+    [svn r175] gl_cam_shader is a working shader with camera
+
+commit 220ad0f2c1b5b443a667b4685b53fe380bf23674
+Author: quessy <devnull@localhost>
+Date:   Mon Apr 6 22:51:23 2009 -0400
+
+    [svn r174] clean up in prototypes
+
+commit efb587ddcedbf69fa2161c78caee357eea2364e9
+Author: quessy <devnull@localhost>
+Date:   Sun Apr 5 21:14:41 2009 -0400
+
+    [svn r173] other shader ex
+
+commit 7efb4a71567398c05f07048f29295086fcc5ce98
+Author: quessy <devnull@localhost>
+Date:   Sun Apr 5 18:28:42 2009 -0400
+
+    [svn r172] gl_cam_shader is a prototype that uses GL ortho projection with a camera.
+
+commit 0286d13f537e117759f588c35b098bcfa2818725
+Author: le.businessman <devnull@localhost>
+Date:   Sun Apr 5 15:53:09 2009 -0400
+
+    [svn r171] pruned branches
+
+commit c25d77fce70034e0ce31860a6400dce81c7fdc26
+Author: le.businessman <devnull@localhost>
+Date:   Sun Apr 5 14:08:18 2009 -0400
+
+    [svn r169] shorter example
+
+commit 7cca4cba03b1f54235939900055a1125d985a8ca
+Author: quessy <devnull@localhost>
+Date:   Sat Apr 4 00:34:00 2009 -0400
+
+    [svn r168] modified toggle_fullscreen.py
+
+commit 55ccef0353a3f824a7f4fa2f30437b9d612fe9f5
+Author: quessy <devnull@localhost>
+Date:   Sat Apr 4 00:30:50 2009 -0400
+
+    [svn r167] working shader with texture simply loaded !
+
+commit 676fb55a9bfd81403564a9d9a152e08eb3ff4199
+Author: quessy <devnull@localhost>
+Date:   Fri Apr 3 19:39:18 2009 -0400
+
+    [svn r166] adding colorsbars for test
+
+commit cc17b36e111b691c70b614bb2edb40a7647064e7
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 2 17:28:06 2009 -0400
+
+    [svn r163] adding proto
+
+commit 919d14d362096e17af004bf9c693298a61a5367d
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 2 16:35:49 2009 -0400
+
+    [svn r162] adding teapot glsl example
+
+commit 2c3e0bd86bbcf4ebc874b3235c2e5f8523a96af5
+Author: quessy <devnull@localhost>
+Date:   Thu Apr 2 08:34:40 2009 -0400
+
+    [svn r161] keying shader works !
+
+commit 4ad0aa86046153b05674abc7b91e603c532eacda
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 1 22:20:27 2009 -0400
+
+    [svn r160] adding a keying GLSL shader. In the way to fully work
+
+commit 5e96b80cdaa6fc2cfcb36dc224455fa29ac9e98b
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 1 19:38:17 2009 -0400
+
+    [svn r157] moving more files
+
+commit 1746637f6e03120d97b524fcd0f9193942fd3a01
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 1 19:33:47 2009 -0400
+
+    [svn r156] renaming
+
+commit 67a4b41865d18427e8dd5869299616016bd0bcec
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 1 19:31:32 2009 -0400
+
+    [svn r155] deep cleanup
+
+commit 6ffa146b2e94a7a298c2cf58d8495e30d2c563e6
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 1 15:25:58 2009 -0400
+
+    [svn r153] serialize test
+
+commit d48ed0f9028644983b1a91bdec8e4e470bad7804
+Author: quessy <devnull@localhost>
+Date:   Wed Apr 1 09:27:08 2009 -0400
+
+    [svn r152] adding lots of python tests
+
+commit 99e912a1047de3640c09c5e6f7fd063d06d8f4c6
+Author: quessy <devnull@localhost>
+Date:   Sun Mar 29 11:59:48 2009 -0400
+
+    [svn r139] adding tween.py for motion tweening
+
+commit 8062c50934ce24570156203878ff72d06f00cf8d
+Author: quessy <devnull@localhost>
+Date:   Sun Mar 29 00:26:51 2009 -0400
+
+    [svn r138] restructured text improvements
+
+commit 47a8678c27dceb78b1eeb34ebb0d9f2a815266fd
+Author: quessy <devnull@localhost>
+Date:   Sat Mar 28 23:20:29 2009 -0400
+
+    [svn r137] serialize.py now using twisted.spread.jelly
+
+commit 621939266ff21cf1d596fd5303943e2d8ac4ddf8
+Author: quessy <devnull@localhost>
+Date:   Sat Mar 28 22:17:40 2009 -0400
+
+    [svn r136] adding /frame/add OSC callback with a send_host.py executable.
+
+commit 9ef2c8e1bfd48df9a6bc4ddbc13cc6b27dfc08fb
+Author: quessy <devnull@localhost>
+Date:   Sat Mar 28 21:03:27 2009 -0400
+
+    [svn r134] mencoder conversion more secure. clean up
+
+commit 880625abe636c18577593ffc2be02da3b09b43eb
+Author: quessy <devnull@localhost>
+Date:   Sat Mar 28 20:45:12 2009 -0400
+
+    [svn r133] adding mencoder conversion to toonloop
+
+commit 3b4e2d3d2c2b0cf35b6a99adb531c243b72aed9a
+Author: quessy <devnull@localhost>
+Date:   Sat Mar 28 20:34:40 2009 -0400
+
+    [svn r132] adding mencoder conversion to motion JPEG
+
+commit 5587ceec89237edefe245feb50b71bff38d5e47f
+Author: quessy <devnull@localhost>
+Date:   Thu Mar 26 23:36:13 2009 -0400
+
+    [svn r131] addig rss and restructured text prototypes
+
+commit fcd5bbcdfbb5a5a9a1221f9a7698496bed7fcd5e
+Author: le.businessman <devnull@localhost>
+Date:   Thu Mar 26 01:13:58 2009 -0400
+
+    [svn r128] created opengl branch from trunk@127
+
+commit 7d69d3323f1a63bc45aa8784b586255dac873f4e
+Author: quessy <devnull@localhost>
+Date:   Wed Mar 25 05:10:01 2009 -0400
+
+    [svn r127] in the way to serialize and observe.
+
+commit ec4bcee5d5aa53d0e6b289e9ffe7aca50f7fa997
+Author: quessy <devnull@localhost>
+Date:   Tue Mar 24 02:23:15 2009 -0400
+
+    [svn r126] adding dia. changed web
+
+commit 2348eaff31886d9127ecce2bf2eb411161d6b7ee
+Author: quessy <devnull@localhost>
+Date:   Sat Mar 14 01:26:14 2009 -0400
+
+    [svn r125] added web form inputs classes
+
+commit 6da4aaff63da11df61d7a485118af0550ee4599c
+Author: quessy <devnull@localhost>
+Date:   Mon Mar 9 23:38:41 2009 -0400
+
+    [svn r122] adding chuck OSC utils
+
+commit 1ef416e723665624ce6fe27382ddd55a33ba9a2a
+Author: quessy <devnull@localhost>
+Date:   Sun Mar 8 18:13:19 2009 -0400
+
+    [svn r121] starting web classes... added some comments
+
+commit 6c7259f632ecda68ec3da06cb02637b7402bd970
+Author: quessy <devnull@localhost>
+Date:   Sat Mar 7 17:35:55 2009 -0500
+
+    [svn r120] slight web changes
+
+commit e816138c9385713d4409fe270ac6278a040f6d13
+Author: quessy <devnull@localhost>
+Date:   Sat Mar 7 16:58:03 2009 -0500
+
+    [svn r119] adding web server prototype.
+
+commit ced5a91b45b511bcacf91fad98881ea2f28d222f
+Author: quessy <devnull@localhost>
+Date:   Sat Mar 7 15:19:46 2009 -0500
+
+    [svn r118] adding osc support for python
+
+commit 9d69449eca36545f78eb07c67e5287295cbc6677
+Author: quessy <devnull@localhost>
+Date:   Sat Mar 7 14:00:46 2009 -0500
+
+    [svn r117] modifs to dia
+
+commit fee4e6d86799c4087dcd4e472bea0eeeead994f3
+Author: quessy <devnull@localhost>
+Date:   Sat Mar 7 06:49:33 2009 -0500
+
+    [svn r114] Adding class diagram for toonloop 1. Added comments
+
+commit f24ed206c82cae4a44722f92b58c58b7504e1817
+Author: quessy <devnull@localhost>
+Date:   Fri Mar 6 09:36:06 2009 -0500
+
+    [svn r112] adding intervalometer options in the command line
+
+commit cda7cd3f3ca048d8ebfc4cc66e4c40b5631b8810
+Author: quessy <devnull@localhost>
+Date:   Fri Mar 6 03:43:16 2009 -0500
+
+    [svn r110] toonloop.py: adding intervalometer
+
+commit fb19eda0d65d260053e4fe1c747e9ac48a21a549
+Author: quessy <devnull@localhost>
+Date:   Fri Mar 6 03:27:28 2009 -0500
+
+    [svn r109] adding simple web server
+
+commit a2e160403403c45105af07f6cc92c32acf52504f
+Author: quessy <devnull@localhost>
+Date:   Fri Mar 6 03:09:55 2009 -0500
+
+    [svn r108] tooloop.py: moved the events routine out of the reader routine to speed it up
+
+commit 85bc82fb88d7ec4ce47bb89eafd0144819765d01
+Author: quessy <devnull@localhost>
+Date:   Fri Mar 6 02:45:13 2009 -0500
+
+    [svn r107] toonloop.py : save in thread, lots of comments
+
+commit 75aa8c095c1b1e4aa0c9f4bdf20edd106171a26c
+Author: quessy <devnull@localhost>
+Date:   Fri Mar 6 02:12:14 2009 -0500
+
+    [svn r106] added jpeg_to_movie
+
+commit 57516a65d7b111da1805bf296517365e79211fcf
+Author: le.businessman <devnull@localhost>
+Date:   Thu Mar 5 23:17:12 2009 -0500
+
+    [svn r105] got rid of extra py
+
+commit ad838becc88fd7aadee58c80074896840f1b6712
+Author: le.businessman <devnull@localhost>
+Date:   Thu Mar 5 23:16:15 2009 -0500
+
+    [svn r104] mac and cheese
+
+commit 2d223605f6757315242fa85a475d81057de07836
+Author: quessy <devnull@localhost>
+Date:   Thu Mar 5 23:11:38 2009 -0500
+
+    [svn r103] toonloop: added a print
+
+commit 655333270ce80f0f6939a7cacd48cf5589b3d6f5
+Author: quessy <devnull@localhost>
+Date:   Thu Mar 5 23:06:18 2009 -0500
+
+    [svn r102] toonloop saves jpeg
+
+commit f50afa8eb39e5a1c787492527ed7bdda2b55bee2
+Author: le.businessman <devnull@localhost>
+Date:   Mon Mar 2 18:51:00 2009 -0500
+
+    [svn r97] up to date toonloop
+
+commit d934d847c154a7d196e5569d288b15728f6d4654
+Author: le.businessman <devnull@localhost>
+Date:   Sun Mar 1 01:47:05 2009 -0500
+
+    [svn r96] up to date with pygame's new camera api
+
+commit ea92d1b0673c7234c15cfda088df8279486e672a
+Author: quessy <devnull@localhost>
+Date:   Sun Jan 18 17:26:50 2009 -0500
+
+    [svn r79] toonloop.py: added CLI options -d /dev/video0 and -v
+
+commit d1296784bab922e7cd73f630921757f3b1806987
+Author: le.businessman <devnull@localhost>
+Date:   Sun Jan 18 17:04:15 2009 -0500
+
+    [svn r78] typo with reset_playback_window call
+
+commit e1e0b0613c51eb2d5be7f973d9de984cd9c5f266
+Author: quessy <devnull@localhost>
+Date:   Sun Jan 18 15:41:11 2009 -0500
+
+    [svn r77] now using twisted in toonloop.py
+
+commit 0ba01ba4775a7dc0bc4ad629ac7f540ec8d38989
+Author: quessy <devnull@localhost>
+Date:   Sun Jan 18 15:24:47 2009 -0500
+
+    [svn r76] added toonloop.py - complies with pep8
+
+commit 92652e7cdf11fd4d25f7977025ce5cb7337d9bcb
+Author: le.businessman <devnull@localhost>
+Date:   Fri Jan 9 01:50:59 2009 -0500
+
+    [svn r72] can pop a frame
+
+commit deb21dc13d97fce705118c64929fb486c585fc02
+Author: le.businessman <devnull@localhost>
+Date:   Tue Jan 6 00:21:11 2009 -0500
+
+    [svn r71] not sure how to release capture
+
+commit 255245fc2a20fb969dd249432f04b099969d5403
+Author: le.businessman <devnull@localhost>
+Date:   Fri Jan 2 15:45:51 2009 -0500
+
+    [svn r70] free resources
+
+commit e34fefe68d55290e25926c106a74fdd72ef53bf7
+Author: le.businessman <devnull@localhost>
+Date:   Fri Jan 2 15:26:13 2009 -0500
+
+    [svn r69] added opencv version, which works
+    on osx
+
+commit a8ebe11117749b4242e7c4a6639fe46dea4c18d9
+Author: le.businessman <devnull@localhost>
+Date:   Tue Dec 23 16:56:02 2008 -0500
+
+    [svn r67] added camLoop.py
+
+commit f4b0b62ed69a1ae9a07a844b0d7fb7dd259b0a17
+Author: quessy <devnull@localhost>
+Date:   Sat Dec 20 17:16:07 2008 -0500
+
+    [svn r66] added py dir

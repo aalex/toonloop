@@ -1,4 +1,5 @@
-bin_PROGRAMS = toonloop prototoonmidi 
+bin_PROGRAMS = toonloop
+noinst_PROGRAMS = prototoonmidi 
 
 headers = \
 	application.h \
@@ -10,6 +11,7 @@ headers = \
 	gui.h \
 	image.h \
 	log.h \
+	moviesaver.h \
     oscinterface.h \
     oscreceiver.h \
     oscsender.h \
@@ -17,7 +19,9 @@ headers = \
 	shader.h \
 	subprocess.h \
 	texture.h \
-	timing.h
+	timing.h \
+	tween.h \
+	v4l2util.h
 
 toonloop_SOURCES = \
 	application.cpp \
@@ -28,13 +32,17 @@ toonloop_SOURCES = \
 	gui.cpp \
 	image.cpp \
 	main.cpp \
+	moviesaver.cpp \
+	pipeline.cpp \
+	shader.cpp \
+	subprocess.cpp \
+	texture.cpp \
+	timing.cpp \
+	tween.cpp \
+	v4l2util.cpp \
     oscinterface.cpp \
     oscreceiver.cpp \
     oscsender.cpp \
-	pipeline.cpp \
-	shader.cpp \
-	texture.cpp \
-	timing.cpp \
 	$(headers)
 
 toonloop_CXXFLAGS = \
@@ -70,7 +78,7 @@ toonloop_LDADD = \
 	$(LIBM_LIBS) \
 	$(LIBTHREAD_LIBS) 
 
-prototoonmidi_SOURCES = toonmidi.cpp
+prototoonmidi_SOURCES = toonmidi.cpp pmutil.h
 prototoonmidi_CXXFLAGS = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS) $(PORTMIDI_CXXFLAGS) $(ASOUND_CXXFLAGS)
 prototoonmidi_LDADD = $(LIBM_LIBS) $(LIBTHREAD_LIBS) $(PORTMIDI_LIBS) $(ASOUND_LIBS)
 
