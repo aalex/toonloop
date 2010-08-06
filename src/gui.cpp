@@ -53,22 +53,22 @@ void Gui::hideCursor()
 {
     // FIXME: this is because gtk doesn't support GDK_BLANK_CURSOR before gtk-2.16
     // FIXME:2010-08-06:aalex:Hiding the cursor is currently broken
-    //char invisible_cursor_bits[] = { 0x0 };
-    //static GdkCursor* cursor = 0;
-    //if (cursor == 0)
-    //{
-    //    static GdkBitmap *empty_bitmap;
-    //    const static GdkColor color = {0, 0, 0, 0};
-    //    empty_bitmap = gdk_bitmap_create_from_data(GDK_WINDOW(drawing_area_->window), invisible_cursor_bits, 1, 1);
-    //    cursor = gdk_cursor_new_from_pixmap(empty_bitmap, empty_bitmap, &color, &color, 0, 0);
-    //}
-    //gdk_window_set_cursor(GDK_WINDOW(drawing_area_->window), cursor);
+    char invisible_cursor_bits[] = { 0x0 };
+    static GdkCursor* cursor = 0;
+    if (cursor == 0)
+    {
+        static GdkBitmap *empty_bitmap;
+        const static GdkColor color = {0, 0, 0, 0};
+        empty_bitmap = gdk_bitmap_create_from_data(GDK_WINDOW(clutter_widget_->window), invisible_cursor_bits, 1, 1);
+        cursor = gdk_cursor_new_from_pixmap(empty_bitmap, empty_bitmap, &color, &color, 0, 0);
+    }
+    gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), cursor);
 }
 
 void Gui::showCursor()
 {
     /// sets to default
-    //gdk_window_set_cursor(GDK_WINDOW(drawing_area_->window), NULL);
+    gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), NULL);
 }
 
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data)
