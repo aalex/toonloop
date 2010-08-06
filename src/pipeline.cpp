@@ -522,10 +522,10 @@ Pipeline::Pipeline()
         {
             g_object_set(G_OBJECT(videosrc_), "endx", 640, NULL);
             g_object_set(G_OBJECT(videosrc_), "endy", 480, NULL);
-            g_object_set(capsfilter0, "caps", gst_caps_from_string(std::string("video/x-raw-rgb, framerate=30/1").c_str()));
+            g_object_set(capsfilter0, "caps", gst_caps_from_string("video/x-raw-rgb, framerate=30/1"));
         } else {
             std::cout << "Using 640x480 @ 30 FPS for the videotestsrc." << std::endl;
-            g_object_set(capsfilter0, "caps", gst_caps_from_string(std::string("video/x-raw-yuv, width=640, height=480, framerate=30/1").c_str()));
+            g_object_set(capsfilter0, "caps", gst_caps_from_string("video/x-raw-yuv, width=640, height=480, framerate=30/1"));
             std::cout << "set the caps for the testsrc" << std::endl;
         }
         is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
