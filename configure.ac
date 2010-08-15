@@ -36,6 +36,7 @@ AX_CHECK_GLU
 # PORTMIDI
 AC_CHECK_LIB([asound],[snd_seq_open],[AC_SUBST([ASOUND_CXXFLAGS],["-lasound"])])
 AC_CHECK_LIB([portmidi],[Pm_Initialize],[AC_SUBST([PORTMIDI_CXXFLAGS],["-lportmidi -lporttime"])],[echo "Could not find portmidi !"], ["-lporttime"])
+# TODO: fail with error if MIDI lib not found
 
 #Set LIBLO with pkg-config
 PKG_CHECK_MODULES(LIBLO, liblo, have_liblo=true, have_liblo=false)
@@ -73,7 +74,7 @@ AC_SUBST([CLUTTER_CFLAGS])
 # Clutter-GTK
 PKG_CHECK_MODULES([CLUTTERGTK], [clutter-gtk-0.10 >= 0.10], have_clutter_gtk=true, have_clutter_gtk=false)
 if test "x${have_clutter_gtk}" = "xfalse" ; then
-    AC_MSG_ERROR([missing package: libclutter-gtk-1.0-dev])
+    AC_MSG_ERROR([missing package: libclutter-gtk-0.10-dev])
 fi
 AC_SUBST([CLUTTERGTK_LIBS])
 AC_SUBST([CLUTTERGTK_CFLAGS])
@@ -81,7 +82,7 @@ AC_SUBST([CLUTTERGTK_CFLAGS])
 # Clutter-GST
 PKG_CHECK_MODULES([CLUTTERGST], [clutter-gst-0.10 >= 0.10], have_clutter_gst=true, have_clutter_gst=false)
 if test "x${have_clutter_gst}" = "xfalse" ; then
-    AC_MSG_ERROR([missing package: libclutter-gst-1.0-dev])
+    AC_MSG_ERROR([missing package: libclutter-gst-0.10-dev])
 fi
 AC_SUBST([CLUTTERGST_LIBS])
 AC_SUBST([CLUTTERGST_CFLAGS])

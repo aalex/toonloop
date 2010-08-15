@@ -8,20 +8,23 @@ This is Toonloop version 1.9.x. It is a complete rewrite of the application in
 C++ with Gstreamer. It is still in an alpha stage. 
 
 
-Other Dependencies
-------------------
+Basic Tools for Compiling
+-------------------------
+
+To build applications such as Toonloop, you should have the following packages installed on your system:
+
+ build-essential
+
+These instructions are for Ubuntu GNU/Linux - and should work on Debian GNU/Linux as well. Toonloop should build on other platforms too. Please help us improving this documentation if you get it to work on other operating systems.
+
+
+Dependencies
+------------
 
 Here is the list of Debian package that you will need to build Toonloop 2.x. 
-Some of the packages listed below are not used yet, but we plan to use them 
-soon.
 
  automake,
- bash-completion,
  bison,
- build-essential,
- cdbs,
- debhelper (>= 5.0.38),
- doxygen,
  ffmpeg,
  flex,
  gettext,
@@ -35,9 +38,13 @@ soon.
  gstreamer0.10-x,
  help2man,
  libasound-dev,
- libboost-all-dev,
+ libboost-program-options-dev,
+ libboost-filesystem-dev,
+ libboost-thread-dev,
+ libboost-date-time-dev,
+ libboost-system-dev,
  liblo-dev,
- libclutter-0.10-dev,
+ libclutter-1.0-dev,
  libclutter-gst-0.10-dev,
  libclutter-gtk-0.10-dev,
  libglew1.5-dev,
@@ -46,19 +53,18 @@ soon.
  libgstreamer-plugins-base0.10-dev,
  libgstreamer0.10-dev (>= 0.10.23),
  libgtk2.0-dev,
- liboil0.3-dev,
  libportmidi-dev,
  libtool,
  libxml2-dev,
- libxml++2.6-2,
- libxml++2.6-dev,
  libxv-dev,
  mencoder
- python (>= 2.4),
- python-epydoc,
- python-gtk2,
- python-twisted-core
 
+The packages listed below are not used yet, but we plan to use them 
+soon.
+
+ doxygen,
+ libxml++2.6-2,
+ libxml++2.6-dev,
 
 How to build Toonloop
 ---------------------
@@ -118,8 +124,4 @@ If you use two displays, you might want to use 2 separate X screens::
 
   sudo nvidia-settings
   DISPLAY=:0.1 ./toonloop.py
-
-
------
-EOF
 
