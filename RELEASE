@@ -3,8 +3,11 @@ Release notes for Toonloop 1.9.2
 This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. Since the 1.2 series, we have done a complete rewrite of the application in C++. 
 
 New features:
-    * 
+    * Updated README with info about GLX and test src
 
 Bug fixes: 
-    * 
+    * Fixed how the video-input option is parsed
+    * corrections in dependencies
+    * Made missing deps more explicit
+    * lowered required version of gst-interface
 
