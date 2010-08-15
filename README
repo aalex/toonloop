@@ -80,7 +80,16 @@ There is also the handy ./one_click_build.sh that does it in a single script. (e
 How to run Toonloop
 -------------------
 
-toonloop -d /dev/video0
+Note that you need to have the GLX acceleration set up in order to use Clutter, and therefore Toonloop. 
+
+Here is how to lauch Toonloop using the default V4L2 video input: 
+
+ toonloop -d /dev/video0
+
+You can also try the "test" and "x" video sources:
+
+ toonloop -d test
+ toonloop -d x
 
 See the toonloop(1) man page for details.
 
