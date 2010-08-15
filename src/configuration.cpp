@@ -8,7 +8,7 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     //capture_frame_rate_ = options["capture-fps"].as<int>();
     //rendering_frame_rate_ = capture_frame_rate_; //options["rendering-fps"].as<int>();
     //playhead_fps_ = options["playhead-fps"].as<int>();
-    video_source_ = options["video-source"].as<std::string>();
+    // video_source_ = options["video-source"].as<std::string>();
     display_ = options["display"].as<std::string>();
     fullscreen_ = options["fullscreen"].as<bool>();
     //images_in_ram_ = options["keep-images-in-ram"].as<bool>();
@@ -23,3 +23,7 @@ void Configuration::set_project_home(std::string project_home)
     project_home_ = project_home;
 }
 
+void Configuration::set_video_source(std::string video_source)
+{
+    video_source_ = video_source;
+}

@@ -19,6 +19,7 @@ class Configuration
         bool get_effects_enabled() const { return enable_effects_; }
         void set_effects_enabled(bool enabled) { enable_effects_ = enabled; }
         void set_project_home(std::string project_home);
+        void set_video_source(std::string video_source);
     private:
         //int capture_frame_rate_;
         //int rendering_frame_rate_;

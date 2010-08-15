@@ -178,6 +178,7 @@ void Application::run(int argc, char *argv[])
     //Configuration config(options);
     config_ = std::tr1::shared_ptr<Configuration>(new Configuration(options));
     config_->set_project_home(project_home);
+    config_->set_video_source(video_source);
     // Init GTK, Clutter and GST:
     //TODO:We don't need to call all those init
     //gtk_init(&argc, &argv);
