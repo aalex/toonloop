@@ -17,6 +17,12 @@ class OscInterface {
         static int pingCb(const char *path, 
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
+        static int pongCb(const char *path, 
+                const char *types, lo_arg **argv, 
+                int argc, void *data, void *user_data);
+        static int quitCb(const char *path, 
+                const char *types, lo_arg **argv, 
+                int argc, void *data, void *user_data);
     public:
             OscInterface(const std::string &listen_port); //,
                     //const std::string &send_host, 
