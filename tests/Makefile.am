@@ -24,7 +24,7 @@ check_threads_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB)
 
 check_bool_SOURCES = check_bool.cpp 
 
-check_datetime_SOURCES = check_datetime.cpp ../src/timing.cpp
+check_datetime_SOURCES = check_datetime.cpp ../src/timing.cpp ../src/timer.cpp
 check_datetime_CXXFLAGS = $(BOOST_CPPFLAGS) $(GTK_CFLAGS) -I ../src/
 check_datetime_LDADD = $(BOOST_LIBS) $(GTK_LIBS)
 
