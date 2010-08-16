@@ -177,7 +177,8 @@ void iterate_playhead()
     // calculate rendering FPS
     if (fps_calculation_timer.get_elapsed() >= 1.0f)
     {
-        std::cout << "Rendering FPS: " << number_of_frames_in_last_second << std::endl;
+        //if (Application::get_instance().get_configuration().get_verbose())
+        //    std::cout << "Rendering FPS: " << number_of_frames_in_last_second << std::endl;
         number_of_frames_in_last_second = 0;
         fps_calculation_timer.reset();
     }
