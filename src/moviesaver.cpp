@@ -19,22 +19,68 @@
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <iostream>
-
+#include <boost/thread.hpp>  
+#include <boost/date_time.hpp>  
 #include "moviesaver.h"
 #include "subprocess.h"
 
-MovieSaver::MovieSaver(Clip &clip) // const Clip &clip?
+MovieSaver::MovieSaver(Clip &clip) : // const Clip &clip?
+    is_done_(false),
+    is_saving_(false)
 {
     // TODO: load image names
+    // TODO: create symlinks
     clip_id_ = clip.get_id();
-    std::cout << "Clip ID is " << clip_id_ << std::endl;  
+    std::cout << "MovieSaver Clip ID is " << clip_id_ << std::endl;  
+    worker_(*this);
 }
-
-void MovieSaver::operator()()
+SaverWorker::SaverWorker(MovieSaver *owner) {
+    owner_(owner);
+}
+void SaverWorker::operator()()
 {
     std::string command = "sleep 1"; // TODO
-    std::cout << "Lauching the command..." << std::endl;  
+    std::cout << "Lauching $ " << command << std::endl;  
     bool ret_val = run_command(command); // blocking call
-    std::cout << "MovieSaver: done saving clip" << std::endl;  
+    //std::cout << "MovieSaver: done saving clip" << std::endl;  
+    std::cout << "Done with $ " << command << std::endl;
+    std::cout << "Its return value is " << ret_val << std::endl;
+}
+
+bool MovieSaver::start_saving()
+{
+    if (is_saving_) {
+        std::cout << "The MovieSaver has already started saving!" << std::endl;
+        assert(false); // TODO: raise an exception
+    }
+    is_saving_ = true;
+    is_done_ = false;
+
+    worker_(*this); // will call operator()() in a thread 
+    return true;
+}
+
+bool MovieSaver::is_saving()
+{
+    return is_saving_;
+}
+/**
+ * Checks if the thread is done.
+ */
+//TODO: call a signal when done
+bool MovieSaver::is_done()
+{
+    if (! is_saving_) {
+        std::cout << "The MovieSaver has not started saving!" << std::endl;
+        assert(false); // TODO: raise an exception
+    } else if (is_done_) {
+        return true;
+    } else {
+        boost::posix_time::millisec wait_time(0);
+        bool returned(false);
+        returned = worker_thread_.timed_join(wait_time);
+        is_done_ = returned;
+        return returned;
+    }
 }
 

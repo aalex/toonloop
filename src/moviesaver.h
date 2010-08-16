@@ -24,21 +24,39 @@
 #include <boost/thread.hpp>  
 #include <string>
 #include <vector>
-
 #include "clip.h"
+
+// forward declarations
+class SaverThread;
+class MovieSaver;
+
+class SaverWorker
+{
+    public:
+        SaverWorker(MovieSaver *owner);
+        void operator()();
+    private:
+        MovieSaver owner_;
+};
 
 class MovieSaver
 {
+    public:
+        MovieSaver(Clip &clip);
+        bool start_saving();
+        bool is_done();
+        bool is_saving();
+        //void save(); // starts the thread
+        // Starts the thread. It's done when this method returns.
     private:
-        // list of path to each images to save.
+        // TODO: list of path to each images to save.
         std::vector<std::string> image_paths_;
         // let's store its ID
         int clip_id_;
-    public:
-        MovieSaver(Clip &clip);
-        //void save(); // starts the thread
-        // Starts the thread. It's done when this method returns.
-        void operator()();
+        bool is_done_;
+        bool is_saving_;
+        SaverThread worker_;
+        boost::thread worker_thread_;
 };
 
 #endif
