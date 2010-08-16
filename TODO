@@ -1,0 +1,1 @@
+ * Read a few bytes from an image to trigger the kernel's read-ahead. 
