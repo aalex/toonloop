@@ -3,7 +3,7 @@
 #include <iostream>
 #include "boost/signals.hpp"
 
-class Hello
+class HelloSlot
 {
     public:
         void operator()() const
@@ -14,9 +14,10 @@ class Hello
 
 int main(int argc, char **argv)
 {
+    HelloSlot slot;
     boost::signal<void ()> sig;
-    Hello hello;
-    sig.connect(hello);
+    sig.connect(slot);
+    std::cout << "Calling the signal." << std::endl;
     sig();
     return 0;
 }
