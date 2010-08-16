@@ -23,6 +23,12 @@ class OscInterface {
         static int quitCb(const char *path, 
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
+        static int addFrameCb(const char *path, 
+                const char *types, lo_arg **argv, 
+                int argc, void *data, void *user_data);
+        static int removeFrameCb(const char *path, 
+                const char *types, lo_arg **argv, 
+                int argc, void *data, void *user_data);
     public:
             OscInterface(const std::string &listen_port); //,
                     //const std::string &send_host, 

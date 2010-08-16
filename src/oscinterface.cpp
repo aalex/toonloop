@@ -36,10 +36,14 @@ OscInterface::OscInterface(
     receiver_.addHandler("/ping", "", pingCb, this);
     receiver_.addHandler("/pong", "", pongCb, this);
     receiver_.addHandler("/toon/quit", "", quitCb, this);
+    receiver_.addHandler("/toon/frame/add", "", addFrameCb, this);
+    receiver_.addHandler("/toon/frame/remove", "", removeFrameCb, this);
     std::cout << "OSC message handlers:" << std::endl;
     std::cout << " * /ping : Answers with /pong" << std::endl;
     std::cout << " * /pong" << std::endl;
     std::cout << " * /toon/quit : Quits" << std::endl;
+    std::cout << " * /toon/frame/add : Grabs a frame" << std::endl;
+    std::cout << " * /toon/frame/remove : Removes a frame" << std::endl;
 }
 
 int OscInterface::pingCb(
@@ -61,6 +65,24 @@ int OscInterface::pongCb(
         int argc, void *data, void *user_data)
 {
     std::cout << "Got /pong" << std::endl;
+    return 0;
+}
+int OscInterface::addFrameCb(
+        const char *path, 
+        const char *types, lo_arg **argv, 
+        int argc, void *data, void *user_data)
+{
+    std::cout << "Got /toon/frame/add" << std::endl;
+    Application::get_instance().get_pipeline().grab_frame();
+    return 0;
+}
+int OscInterface::removeFrameCb(
+        const char *path, 
+        const char *types, lo_arg **argv, 
+        int argc, void *data, void *user_data)
+{
+    std::cout << "Got /toon/frame/remove" << std::endl;
+    Application::get_instance().get_pipeline().remove_frame();
     return 0;
 }
 /**
