@@ -38,238 +38,6 @@
 namespace fs = boost::filesystem;
 
 /**
- * This is where the OpenGL drawing is done.
- * Client draw callback
- */
-//gboolean drawCallback(GLuint texture, GLuint width, GLuint height, gpointer data)
-//{
-//    //Pipeline* context = static_cast<Pipeline*>(data);
-//    static int number_of_frames_in_last_second = 0; // counting FPS
-//    static bool first_draw = true;
-//    static int prev_image_number = -1;
-//    static Clip *prevclip = NULL;
-//    static Timer fps_calculation_timer = Timer();
-//    static Timer playback_timer = Timer(); // TODO: move to Clip
-//    static GLuint frametexture;
-//    GLint texturelocation;
-//    bool move_playhead = false;
-//    Clip *thisclip = Application::get_instance().get_current_clip();
-//    bool need_refresh = false;
-//
-//    thisclip->lock_mutex();
-//
-//    ++ number_of_frames_in_last_second;
-//    playback_timer.tick();
-//    fps_calculation_timer.tick();
-//
-//    // check if it is time to move the playhead
-//    if ((playback_timer.get_elapsed()) >=  (1.0f / thisclip->get_playhead_fps() * 1.0) || playback_timer.get_elapsed() < 0.0f)
-//    {
-//        move_playhead = true;
-//        playback_timer.reset();
-//    }
-//    // calculate rendering FPS
-//    if (fps_calculation_timer.get_elapsed() >= 1.0f)
-//    {
-//        std::cout << "Rendering FPS: " << number_of_frames_in_last_second << std::endl;
-//        number_of_frames_in_last_second = 0;
-//        fps_calculation_timer.reset();
-//    }
-//    // Use or load shader if enabled and supported
-//    //Shader* myshader;
-//    //bool USE_SHADER = Application::get_instance().get_configuration().get_effects_enabled();
-//    //if (USE_SHADER)
-//    //{
-//    //    if(first_draw == true)
-//    //    {
-//    //        std::cout << "Checking for GLSL shaders support..." << std::endl;
-//    //        if (check_if_shaders_are_supported())
-//    //        {
-//    //            std::cout << "GLSL shaders are supported!" << std::endl;
-//    //            myshader = new Shader(); // FIXME: should we use a scoped_ptr ?
-//    //            Application::get_instance().get_pipeline().set_shader(myshader);
-//    //        }
-//    //        // TODO: else disable effects in config
-//    //        std::cout << "Compiling the shader" << std::endl;
-//    //        myshader->compile_link();
-//    //        first_draw = false;
-//    //        texturelocation = glGetUniformLocation(myshader->get_program_object(), "image");
-//    //    } else {    
-//    //        myshader = Application::get_instance().get_pipeline().get_shader();
-//    //    }
-//    //}
-//    //// Enable shader
-//    //if (USE_SHADER)
-//    //{
-//    //    glUseProgram(myshader->get_program_object());
-//    //}
-//    // Load the texture
-//    glEnable(GL_TEXTURE_RECTANGLE_ARB);
-//    glBindTexture (GL_TEXTURE_RECTANGLE_ARB, texture);
-//    if (USE_SHADER)
-//    {
-//        glUniform1i(texturelocation, 0);
-//        glActiveTexture(GL_TEXTURE0);
-//    }
-//    // TODO: simplify those parameters
-//    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//
-//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//    glMatrixMode(GL_MODELVIEW);
-//    glLoadIdentity();
-//    glColor4f(1.0, 1.0, 1.0, 1.0);
-//    
-//    // Left image
-//    glPushMatrix();
-//    glTranslatef(-0.6666666f, 0.0f, 0.0f);
-//    glScalef(0.6666666f, 0.5f, 1.0f);
-//    draw::draw_vertically_flipped_textured_square(width, height);
-//    glPopMatrix();
-//    
-//    if(thisclip->size() > 0) 
-//    {     
-//        // FIXME: we don't need to create a texture on every frame!!
-//        double spf = (1 / thisclip->get_playhead_fps());
-//        if (move_playhead) // if it's time to move the playhead
-//            thisclip->iterate_playhead(); // updates the clip's playhead number
-//        int image_number = thisclip->get_playhead();
-//        bool pixels_are_loaded = false;
-//        width = thisclip->get_width(); // FIXME: do not override data given by gst-plugins-gl!
-//        height = thisclip->get_height();// FIXME: do not override data given by gst-plugins-gl!
-//        char *buf;
-//        GdkPixbuf *pixbuf;
-//        bool loaded_pixbuf = false;
-//        Image* thisimage = &(thisclip->get_image(image_number));
-//
-//        if ( (prevclip != thisclip) || (prev_image_number != image_number) )
-//              need_refresh = true;
-//        if (prevclip != thisclip) {
-//            prevclip = thisclip;
-//        }
-//        if (thisimage == NULL)
-//        {
-//            std::cout << "No image at index" << image_number << "." << std::endl;
-//        } else {
-//            /*FIXME: we may not need this dimension update in general. But I get a weirdly cropped frame, for the right side rendering grabbed frame. It seems
-//            the grabbed frame dimensions don't match with the width, height passed from glimasesink to the draw callback*/
-//            // XXX: yes, I think we should always check the size of the images. (especially when we will read them from the disk)
-//
-//            if (thisimage->is_ready())
-//            {
-//                if (Application::get_instance().get_configuration().get_images_in_ram())
-//                {
-//                    if ( need_refresh )
-//                        buf = thisimage->get_rawdata();
-//                    pixels_are_loaded = true;
-//                } else {
-//                    std::string image_full_path = Application::get_instance().get_pipeline().get_image_full_path(thisimage);
-//                    // TODO: validate this path
-//                    GError *error = NULL;
-//                    
-//                    pixbuf = gdk_pixbuf_new_from_file(image_full_path.c_str(), &error);
-//                    if (!pixbuf)
-//                    {
-//                        std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
-//                        g_error_free(error);
-//                    } else {
-//                        buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
-//                        pixels_are_loaded = true;
-//                        loaded_pixbuf = true;
-//                    }
-//                }
-//            }
-//        }
-//        if (pixels_are_loaded)
-//        {
-//            // Storing image data in RAM is nice when we don't have too many images, but it doesn't scale very well.
-//            // Let's read them from the disk.
-//            
-//            glEnable(GL_TEXTURE_RECTANGLE_ARB);
-//            if (need_refresh) {
-//                glGenTextures(1, &frametexture);
-//            }
-//            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, frametexture);
-//            if (need_refresh) {
-//                glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
-//            }   
-//            // TODO: simplify those parameters
-//            glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//            glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//            glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//            glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//
-//            // Right image
-//            glPushMatrix();
-//            glTranslatef(0.6666666f, 0.0f, 0.0f);
-//            glScalef(0.6666666f, 0.5f, 1.0f);
-//            draw::draw_vertically_flipped_textured_square(width, height);
-//            glPopMatrix();
-//
-//            if (loaded_pixbuf)
-//            {
-//                //std::cout << "Pixels loaded. Freeing pixels buffer.\n";
-//                g_object_unref(pixbuf);
-//                //std::cout << "Freed pixels buffer.\n";
-//            }
-//        }
-//        prev_image_number = image_number;
-//    }
-//#if 0
-//    //disable shader
-//    glUseProgram(0); 
-//#endif
-//
-//#if 0
-//    // DRAW LINES
-//    glDisable(GL_TEXTURE_RECTANGLE_ARB);
-//    glColor4f(1.0, 1.0, 1.0, 0.2);
-//    //glColor4f(0.2, 0.2, 0.2, 1.0);
-//    int num = 64;
-//    float x;
-//    
-//    for (int i = 0; i < num; i++)
-//    {
-//        x = (i / float(num)) * 4 - 2;
-//        draw::draw_line(float(x), -2.0, float(x), 2.0);
-//        draw::draw_line(-2.0, float(x), 2.0, float(x));
-//    }
-//    glColor4f(1.0, 1.0, 1.0, 1.0); // I don't know why, but this is necessary if we want to see the images in the next rendering pass.
-//#endif
-//    //return TRUE causes a postRedisplay
-//    thisclip->unlock_mutex();
-//    return FALSE;
-//}
-
-/**
- * You need to create an OpenGL contect prior to use this.
- */
-//bool check_if_shaders_are_supported()
-//{
-//    bool shaders_are_supported = false;
-//    // check for shaders support
-//    GLenum err = glewInit(); 
-//    if (GLEW_OK != err)
-//    {
-//        /* Problem: glewInit failed, something is seriously wrong. */
-//        std::cerr << "Error calling glewInit: " << glewGetErrorString(err) << std::endl;
-//        shaders_are_supported = false;
-//    } else {
-//        std::cout << "Status: Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
-//    }
-//    if (glewGetExtension("GL_ARB_fragment_program"))
-//    {
-//        std::cout << "Status: Looks like ARB_fragment_program is supported." << std::endl;
-//        shaders_are_supported = true;
-//    } else {
-//        shaders_are_supported = false;
-//    }
-//    return shaders_are_supported;
-//}
-
-/**
  * GST bus signal watch callback 
  */
 void Pipeline::end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipeline)
@@ -391,6 +159,7 @@ void Pipeline::grab_frame()
     g_object_unref(pixbuf);
     thisclip->unlock_mutex();
 }
+
 /**
  * Stops the pipeline.
  * Called from Application::quit()
@@ -404,6 +173,7 @@ void Pipeline::stop()
     //gst_object_unref(pipeline_);
     // gtk main quit?
 }
+
 /**
  * Constructor which create the Gstreamer pipeline.
  * This pipeline grabs the video and render the OpenGL.
@@ -621,55 +391,6 @@ Pipeline::Pipeline()
 
 }
 
-//Shader* Pipeline::get_shader()
-//{
-//    return shader_;
-//}
-
-/**
- * Client reshape callback
- *
- * The OpenGL coordinates of the rendering are in the range [-1, 1] vertically 
- * and something like [-1.333, 1.333] horizontally.
- * It depends on the actual aspect ratio of the window.
-*/
-//void reshapeCallback(GLuint width, GLuint height, gpointer data)
-//{
-//    // XXX: Pipeline* context = static_cast<Pipeline*>(data);
-//    // XXX: std::cout << "Hello: " << context->get_numframes() << std::endl;
-//    glViewport(0, 0, width, height);
-//    // if >= 4/3:
-//    float w = float(width) / float(height);
-//    float h = 1.0; // constant height
-//
-//    // make sure the aspect ratio of the window is not less wide than 4:3
-//    if (w < 4.0f/3.0f)
-//    {
-//        h = (float(height) / float(width)) * 1.333333f;
-//        w = 1.3333333333f; // constant width
-//    }
-//    //std::cout << "Resized window to " << width << "x" << height << ". Ratio is " << w << "x" << h << std::endl; 
-//
-//    glMatrixMode(GL_PROJECTION);
-//    glLoadIdentity();
-//    glOrtho(-w, w, -h, h, -1.0, 1.0);
-//    glMatrixMode(GL_MODELVIEW);
-//
-//    glEnable(GL_POLYGON_SMOOTH);
-//    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-//    //glEnable (GL_LINE_SMOOTH);
-//    //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-//    //
-//    // enables transparency blending:
-//    glEnable(GL_BLEND); 
-//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
-//}
-
-//void Pipeline::set_shader(Shader* shader)
-//{
-//    shader_ = shader;
-//}
-
 // Desctructor. TODO: do we need to free anything?
 Pipeline::~Pipeline() {}
 
@@ -720,7 +441,6 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
     //capsSuffix += ", pixel-aspect-ratio=";
     //capsSuffix += config_.pixelAspectRatio();
     //capsSuffix += "4:3";
-
     
     capsStr << "video/x-raw-yuv, width=" 
         << "640" //<< config_.captureWidth() 
