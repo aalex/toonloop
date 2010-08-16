@@ -12,13 +12,33 @@ class HelloSlot
         }
 };
 
+void print_sum(float x, float y)
+{
+    std::cout << x << " + " << y << " = " << x + y << std::endl;
+}
+
+void test_a()
+{
+
+    HelloSlot slot;
+    boost::signal<void ()> sig_a;
+    sig_a.connect(slot);
+    std::cout << "Calling the signal A." << std::endl;
+    sig_a();
+}
+
+void test_b()
+{
+
+    boost::signal<void (float, float)> sig_b;
+    sig_b.connect(&print_sum);
+    std::cout << "Calling the signal B." << std::endl;
+    sig_b(3.14159, 1.618);
+}
 int main(int argc, char **argv)
 {
-    HelloSlot slot;
-    boost::signal<void ()> sig;
-    sig.connect(slot);
-    std::cout << "Calling the signal." << std::endl;
-    sig();
+    test_a();
+    test_b();
     return 0;
 }
 
