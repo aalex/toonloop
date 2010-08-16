@@ -182,8 +182,8 @@ Pipeline::Pipeline()
 {
     Configuration config = Application::get_instance().get_configuration();
 
-    onionskin_texture_ = Texture();
-    playback_texture_ = Texture();
+    //onionskin_texture_ = Texture();
+    //playback_texture_ = Texture();
     
     pipeline_ = NULL;
     

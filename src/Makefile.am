@@ -6,8 +6,6 @@ headers = \
 	clip.h \
 	config.h \
 	configuration.h \
-	draw.h \
-	gstgtk.h \
 	gui.h \
 	image.h \
 	log.h \
@@ -17,28 +15,22 @@ headers = \
     oscsender.h \
 	pipeline.h \
 	subprocess.h \
-	texture.h \
 	timer.h \
 	timing.h \
-	tween.h \
 	v4l2util.h
 
 toonloop_SOURCES = \
 	application.cpp \
 	clip.cpp \
 	configuration.cpp \
-	draw.cpp \
-	gstgtk.cpp \
 	gui.cpp \
 	image.cpp \
 	main.cpp \
 	moviesaver.cpp \
 	pipeline.cpp \
 	subprocess.cpp \
-	texture.cpp \
 	timer.cpp \
 	timing.cpp \
-	tween.cpp \
 	v4l2util.cpp \
     oscinterface.cpp \
     oscreceiver.cpp \

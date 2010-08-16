@@ -37,8 +37,8 @@ class Pipeline
         ~Pipeline();
         void grab_frame();
         void remove_frame();
-        Texture playback_texture_;
-        Texture onionskin_texture_;
+        //Texture playback_texture_;
+        //Texture onionskin_texture_;
         std::string get_image_full_path(Image* image);
     private:
         GstElement* videosrc_;
