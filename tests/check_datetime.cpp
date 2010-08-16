@@ -4,7 +4,9 @@
 //#include "boost/date_time/posix_time/posix_time.hpp"
 #include <string>
 #include <cassert>
+#include "timer.h"
 #include "timing.h"
+
 //#include <unistd.h> // usleep and sleep
 
 #define VERBOSE true
