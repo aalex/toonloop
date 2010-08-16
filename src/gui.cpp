@@ -32,7 +32,7 @@
 #include "gui.h"
 #include "application.h"
 #include "config.h"
-#include "timing.h"
+#include "timer.h"
 
 gboolean Gui::onWindowStateEvent(GtkWidget* widget, GdkEventWindowState *event, gpointer data)
 {

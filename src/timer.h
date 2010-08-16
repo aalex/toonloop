@@ -18,17 +18,22 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef __TIMING_H__
-#define __TIMING_H__
+#ifndef __TIMER_H__
+#define __TIMER_H__
 
-#include <string>
+#include "timing.h"
 
-namespace timing 
+class Timer
 {
-    std::string get_iso_datetime_for_now();
-    long get_timestamp_now();
-    //float get_time_now();
-}
+    private:
+        long now_;
+        long start_time_;
+    public:
+        Timer();
+        void reset();
+        float tick();
+        float get_elapsed();
+};
 
-#endif // __TIMING_H__
+#endif // __TIMER_H__
 

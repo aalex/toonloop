@@ -18,6 +18,7 @@ headers = \
 	pipeline.h \
 	subprocess.h \
 	texture.h \
+	timer.h \
 	timing.h \
 	tween.h \
 	v4l2util.h
@@ -35,6 +36,7 @@ toonloop_SOURCES = \
 	pipeline.cpp \
 	subprocess.cpp \
 	texture.cpp \
+	timer.cpp \
 	timing.cpp \
 	tween.cpp \
 	v4l2util.cpp \
