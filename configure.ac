@@ -120,6 +120,11 @@ if test "x${ax_cv_boost_system}" = "xno" ; then
 	AC_MSG_ERROR([missing package: libboost-system-dev])
 fi
 
+AX_BOOST_SIGNALS
+if test "x${ax_cv_boost_signals}" = "xno" ; then
+	AC_MSG_ERROR([missing package: libboost-signals-dev])
+fi
+
 # GNU help2man creates man pages from --help output; in many cases, this
 # is sufficient, and obviates the need to maintain man pages separately.
 # However, this means invoking executables, which we generally cannot do

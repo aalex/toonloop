@@ -1,4 +1,4 @@
-TESTS = check_looper check_classes check_commands check_threads check_bool check_datetime check_tween check_moviesaver check_symlinks check_containers check_statesaving
+TESTS = check_looper check_classes check_commands check_threads check_bool check_datetime check_tween check_moviesaver check_symlinks check_containers check_statesaving check_signals
 
 noinst_PROGRAMS = $(TESTS)
 
@@ -49,3 +49,7 @@ check_containers_LDADD = $(BOOST_LIBS)
 check_statesaving_SOURCES = check_statesaving.cpp 
 check_statesaving_CXXFLAGS = $(BOOST_CPPFLAGS) 
 check_statesaving_LDADD = $(BOOST_LIBS) 
+
+check_signals_SOURCES = check_signals.cpp 
+check_signals_CXXFLAGS = $(BOOST_CPPFLAGS) 
+check_signals_LDADD = $(BOOST_LIBS) $(BOOST_SIGNALS_LIB)
