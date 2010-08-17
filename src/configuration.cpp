@@ -11,6 +11,8 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     // video_source_ = options["video-source"].as<std::string>();
     display_ = options["display"].as<std::string>();
     fullscreen_ = options["fullscreen"].as<bool>();
+    verbose_ = options["verbose"].as<bool>();
+    // TODO:2010-08-16:aalex:Either discard keep-image-in-ram option or make it possible again.
     //images_in_ram_ = options["keep-images-in-ram"].as<bool>();
     images_in_ram_ = false;
     enable_effects_ = options["enable-effects"].as<bool>();
