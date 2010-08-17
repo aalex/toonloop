@@ -11,18 +11,18 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * Drop gst-gl-plugins and use GtkGlext or a drawing area with an OpenGL context**
- * Fix the crash due to multiple threads modifying the image data**
- * Use GLEW correctly
- * Renames image files. Creating symbolic links for the mencoder conversion.
- * Get the process manager to call mencoder, create a clip out of images and tell us when it's done.** (merge src/subprocess.cpp in branch 2.x and toon/mencoder.py in branch 1.x)
- * Update textures rather than creating new. Use glTexSubImage2D rather than glTexImage2D after the first.
+ * Switch between clips with the number keys
+ * Creating symbolic links to each image file in a temporary directory for the conversion to a movie.
+ * Get the process manager to call mencoder in a thread, create a clip out of images and tell us when it's done. (see src/subprocess.cpp in branch 2.x and toon/mencoder.py in branch 1.x)
  * Create a MIDI input manager in a thread. see the src/midi.cpp and src/midithread.c files.
- * Support many clips, switching with the number keys.
  * Support the same editing controls as in version 1.x: up, down, left, right, enter
  * Port the shaders from 1.x (See doc/effects.txt)
  * Store option values in some map (?)
  * Read a few bytes from an image to trigger the kernel's read-ahead. 
+ * Create a single-image theme, combining the two image with the overlay blending mode.
+ * Create basic GUI buttons
+ * Hide the GUI buttons when in fullscreen mode.
+
 
 Road map
 --------
@@ -31,24 +31,23 @@ To be done for Version 2.0
 --------------------------
 
 Once those tasks are done, the features to be implemented in branch 2.x are:
- * Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga.
- * one effect per clip
- * Use FPS as a speed unit. Skip frames if needed.
- * display square to represent frames in timeline
- * GTK dialog which allows the user to choose the name of the saved clip.
- * Min/max values for effects attributes.
- * GTK GUI (buttons, sliders, menu, etc.) that disappear in fullscreen (GUI could be in Python)
+
  * Onion skin
  * Intervalometer
  * portrait theme (rotation to the right)
  * mirror
- * Update the Smooth and Tween classes to C++. Merge them with this project. http://code.google.com/p/libinteract/source/browse/#svn/trunk/trunk/general
- * Support for video mapping. (needs a matte + separating the rectangle in a grid of rectangles, with coordinates that are interpolated linearily)
+ * one effect per clip
+ * Use FPS as a speed unit. Skip frames if needed.
+ * GTK GUI (buttons, sliders, menu, etc.) that disappear in fullscreen (GUI could be in Python)
 
 
 To be done for version 2.2 : Towards professional features
 ----------------------------------------------------------
 
+ * Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga.
+ * display square to represent frames in timeline
+ * GTK dialog which allows the user to choose the name of the saved clip.
+ * Min/max values for effects attributes.
  * Save all clips (all 10 from 0 to 9) with modifier (shift?)
  * playing two clips at a time
  * two onion skin layers
@@ -63,6 +62,8 @@ To be done for version 2.2 : Towards professional features
  * Add PNG and TGA saving image formats.
  * Joystick input.
  * Remote control input.
+ * Update the Smooth and Tween classes to C++. Merge them with this project. http://code.google.com/p/libinteract/source/browse/#svn/trunk/trunk/general
+ * Support for video mapping. (needs a matte + separating the rectangle in a grid of rectangles, with coordinates that are interpolated linearily)
 
 
 Other Ideas for Future Directions
@@ -102,3 +103,8 @@ Done
  * DONE: Save the images in the right directory, with unique names.
  * DONE: Save image files at snapshot time and play from disk.
  * Create an OSC input/output manager in a thread. (using liblo) See  http://bitbucket.org/tmatth/dystophonia
+ * Drop gst-gl-plugins and use GtkGlext or a drawing area with an OpenGL context**
+ * Fix the crash due to multiple threads modifying the image data**
+ * Use GLEW correctly
+ * Update textures rather than creating new. Use glTexSubImage2D rather than glTexImage2D after the first.
+ * Support many clips
