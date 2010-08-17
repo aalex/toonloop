@@ -64,3 +64,11 @@ The text of manual page for this software is located in the following file:
 
 We use help2man to generate a man page from this file and from the program's output. The man page is the primary location for any help and documentation about using this software.
 
+
+The TODO File
+-------------
+
+We store a list of things todo there. Tasks that are done are in the doc/DONE file. 
+
+It's simpler to keep bugs in tickets, but tasks in a TODO file.
+

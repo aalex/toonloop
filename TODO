@@ -1,0 +1,110 @@
+About this file
+---------------
+
+Here we list taks to be done. Once they are done, they should go in the RELEASE notes. 
+
+Once the tag is done for the version number in the RELEASE notes, they are moved to the NEWS file, (most recent first) and we update the version number in the RELEASE notes and the configure.ac file, and we remove all the task that are done from the RELEASE notes. 
+
+
+Things to do in priority
+------------------------
+
+Right now, here is the list of tasks to prioritize: 
+
+ * Switch between clips with the number keys
+ * Creating symbolic links to each image file in a temporary directory for the conversion to a movie.
+ * Get the process manager to call mencoder in a thread, create a clip out of images and tell us when it's done. (see src/subprocess.cpp in branch 2.x and toon/mencoder.py in branch 1.x)
+ * Create a MIDI input manager in a thread. see the src/midi.cpp and src/midithread.c files.
+ * Support the same editing controls as in version 1.x: up, down, left, right, enter
+ * Port the shaders from 1.x (See doc/effects.txt)
+ * Store option values in some map (?)
+ * Read a few bytes from an image to trigger the kernel's read-ahead. 
+ * Create a single-image theme, combining the two image with the overlay blending mode.
+ * Create basic GUI buttons
+ * Hide the GUI buttons when in fullscreen mode.
+
+
+Road map
+--------
+
+To be done for Version 2.0
+--------------------------
+
+Once those tasks are done, the features to be implemented in branch 2.x are:
+
+ * Onion skin
+ * Intervalometer
+ * portrait theme (rotation to the right)
+ * mirror
+ * one effect per clip
+ * Use FPS as a speed unit. Skip frames if needed.
+ * GTK GUI (buttons, sliders, menu, etc.) that disappear in fullscreen (GUI could be in Python)
+
+
+To be done for version 2.2 : Towards professional features
+----------------------------------------------------------
+
+ * Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga.
+ * display square to represent frames in timeline
+ * GTK dialog which allows the user to choose the name of the saved clip.
+ * Min/max values for effects attributes.
+ * Save all clips (all 10 from 0 to 9) with modifier (shift?)
+ * playing two clips at a time
+ * two onion skin layers
+ * Saving improvements. Add a level of indexation. 
+ * Background images can be an other clip.
+ * Save projects to Json
+ * Load images to a clip.
+ * Load a movie file to a clip.
+ * Load/save a whole project (many clips)
+ * Save background image when saving a clip.
+ * Basic sequences of clips.
+ * Add PNG and TGA saving image formats.
+ * Joystick input.
+ * Remote control input.
+ * Update the Smooth and Tween classes to C++. Merge them with this project. http://code.google.com/p/libinteract/source/browse/#svn/trunk/trunk/general
+ * Support for video mapping. (needs a matte + separating the rectangle in a grid of rectangles, with coordinates that are interpolated linearily)
+
+
+Other Ideas for Future Directions
+---------------------------------
+
+ * Multi layers (multi clips at a time)
+ * Advanced GUI for controlling clips and sequences
+ * Multi-layers sequences with blending mode
+ * Rippling effect (strobing) effect (like in _Pas de deux_)
+   * variable delay between each former frame
+   * variable number of former frames displayed
+ * Variable frame duration in a shot (freeze frame) and speed tweening.
+ * Color improvements (brightness, contrast, saturation)
+ * masks (matte)
+ * invert effect
+ * diff effect
+ * contour effect
+ * threshold effect
+ * translation *paths* and multiple sequences at a time
+ * plug with community vision, or opencv.
+ * Use a "Pixel Buffer Object" to move data into the texture  instead. You'll need the "ARB_pixel_buffer_object" extension.  This pages has a good description of what they are and how to use them:  http://www.songho.ca/opengl/gl_pbo.html
+
+
+Done 
+----
+
+ * DONE: Choose whether to use SDL, GTK, GTKglext, wxWidgets, or the generic one in the gst-plugins-gl/tests/examples. (We chose GTK)
+ * WONTFIX: If we choose Gtkglext, we must port the src/sdlshare.cpp GST-OpenGL prototype to Gtkglext. (or choose something else, but the fullscreen mode in SDL on GNU/Linux is very bad. Maybe we can test the newest SDL to see if it's better.)
+ * DONE: Get the pipeline that takes snapshots with gtkpixbufsink done. (it works, just need to save to a proper file name) 
+ * DONE: prototype: Load images in a gdkpixbuf to create an OpenGL texture and display it.
+ * DONE: creates directories (using boost::filesystem)
+ * DONE: Use boost::program_options in a similar way to Toonloop 1.x. 
+ * DONE: Be able to choose the camera input, or the test source. We had to detect the supported FPS by the camera. 
+ * DONE: Encapsulate the pipeline and the OpenGL rendering in a class.
+ * DONE: Resize render area when window is resized.
+ * DONE: Use GLEW to check for the OpenGL extensions needed to use shaders.
+ * DONE: Save the images in the right directory, with unique names.
+ * DONE: Save image files at snapshot time and play from disk.
+ * Create an OSC input/output manager in a thread. (using liblo) See  http://bitbucket.org/tmatth/dystophonia
+ * Drop gst-gl-plugins and use GtkGlext or a drawing area with an OpenGL context**
+ * Fix the crash due to multiple threads modifying the image data**
+ * Use GLEW correctly
+ * Update textures rather than creating new. Use glTexSubImage2D rather than glTexImage2D after the first.
+ * Support many clips

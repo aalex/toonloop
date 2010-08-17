@@ -99,6 +99,7 @@ void Application::run(int argc, char *argv[])
         //("keep-images-in-ram,R", po::bool_switch(), "Keep all the images to the computer RAM and do not load JPEG from the disk.")
         ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device. Use \"test\" for color bars. Use \"x\" to capture the screen.");
     po::variables_map options;
+    
     po::store(po::parse_command_line(argc, argv, desc), options);
     po::notify(options);
     if (options.count("help"))
@@ -176,7 +177,9 @@ void Application::run(int argc, char *argv[])
     
     // Stores the options in the Configuration class.
     //Configuration config(options);
+    // A lot of options parsing is done in the constructor of Configuration:
     config_ = std::tr1::shared_ptr<Configuration>(new Configuration(options));
+    // It's very important to call set_project_home and set_video_source here:
     config_->set_project_home(project_home);
     config_->set_video_source(video_source);
     // Init GTK, Clutter and GST:
@@ -190,7 +193,7 @@ void Application::run(int argc, char *argv[])
     gtk_clutter_init(&argc, &argv);
     //gtk_clutter_init_with_args (&argc, &argv, NULL, NULL, NULL, &error);
     if (error)
-        g_error ("Unable to initialize Clutter: %s", error->message);
+        g_error("Unable to initialize Clutter: %s", error->message);
     clutter_gst_init(&argc, &argv);
     //gst_init(&argc, &argv);
     // start GUI

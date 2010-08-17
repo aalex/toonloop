@@ -1,3 +1,23 @@
+/*
+ * Toonloop
+ *
+ * Copyright 2010 Alexandre Quessy
+ * <alexandre@quessy.net>
+ * http://www.toonloop.com
+ *
+ * Toonloop is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Toonloop is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the gnu general public license
+ * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include <string>
 #include <iostream>
 #include <boost/program_options.hpp>
@@ -11,6 +31,8 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     // video_source_ = options["video-source"].as<std::string>();
     display_ = options["display"].as<std::string>();
     fullscreen_ = options["fullscreen"].as<bool>();
+    verbose_ = options["verbose"].as<bool>();
+    // TODO:2010-08-16:aalex:Either discard keep-image-in-ram option or make it possible again.
     //images_in_ram_ = options["keep-images-in-ram"].as<bool>();
     images_in_ram_ = false;
     enable_effects_ = options["enable-effects"].as<bool>();

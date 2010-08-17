@@ -1,16 +1,22 @@
 /*
+ * Toonloop
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation; either version 2.1 of the
- *  License, or (at your option) any later version.
+ * Copyright 2010 Alexandre Quessy
+ * <alexandre@quessy.net>
+ * http://www.toonloop.com
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
+ * Toonloop is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  $Id$
+ * Toonloop is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the gnu general public license
+ * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <boost/bind.hpp>
