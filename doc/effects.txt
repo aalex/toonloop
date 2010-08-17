@@ -1,0 +1,14 @@
+Here is an attempt to figure out the required fields for a system of dynamically loaded GLSL shader effect with some default values for their uniform attributes. 
+
+== Example 1 : cinelike ==
+* Effect name: cinelike 
+* Description: Decreases the saturation, but increases the contrast, by combining a desaturated image with the original image using the overlay blending mode.
+
+Uniform variables with their default values:
+|= Name |=Default Value |=Type |=Range |
+| texture | 0 | int | [0, 999] |
+| contrast | 1.0 | float | [0.0, 1.0] |
+| brightness | 1.0 | float | [0.0, 1.0] |
+| saturation | 0.0 | float | [0.0, 1.0] |
+| alpha | 1.0 | float | [0.0, 1.0] |
+| average_luma | [1.0, 1.0, 1.0] | vec3 | [0.0, 1.0] |

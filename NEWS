@@ -39,3 +39,64 @@ Bug fixes:
     * 5:    Resizing the window should resize render area 
     * Memory leak when loading images.
 
+
+Things done for Toonloop 1.2 (Python)
+-------------------------------------
+
+In this version, we aimed to improve the kiosk/perf mode.
+
+ * DONE: fixed crash when camera changes its number before startup.
+ * DONE: More effects : cinelike, convolution
+ * DONE: Display name of the current effect + HUD. (toggled on/off) With GLUT.
+ * DONE: Create the Toonplayer looping video player. (external app) See [[http://bitbucket.org/aalex/toonplayer|the toonplayer project page]].
+ * DONE: remove some of the unused features. (RSS server, etc.)
+ * DONE: Use the control key for shortcuts when it is more user friendly. See [[InterfaceDesign|the InterfaceDesign page]]
+ * DONE: GTK error dialog in case of a critical error at startup.
+ * DONE: Text: improve how the HUD text look
+ * DONE beautify themes: 
+     * DONE: drop the picture in picture themes
+     * DONE: make one fullscreen playback theme
+
+
+Things done for Toonloop 1.1 (Python)
+-------------------------------------
+
+In this version, we aimed for feature completeness. 
+
+ * DONE: Able to add or delete frames anywhere in a clip.
+ * DONE: Playback direction : forward, backward.
+ * DONE: delete and add frames anywhere in a clip
+ * DONE: Playback in YOYO mode. (back&forth)
+ * DONE: Display a progress bar when saving a clip.
+ * DONE: Shift-Q to quit, and not ESC anymore.
+ * DONE: Added groups of options. One for each effect.
+ * DONE: Unified interface to effects. 
+ * DONE: Added simplechroma, lumakey, leavecolor and brcosa effects.
+ * DONE: Background image is one taken using a special key stroke. 
+
+
+Things done for Toonloop 1.0 beta (Python)
+-------------------------------------------
+
+ * DONE: Keying (OpenGL GLSL shader)
+ * DONE: midi input (keyboard + foot switch) using pd
+ * DONE: project name
+ * DONE: background image for chroma keying shader
+ * DONE: web and fudi disabled by default
+ * DONE: Separate file types.
+ * DONE: port numbers should be > 1024 (root)
+
+
+Things done for Toonloop 1.0 alpha (Python)
+-------------------------------------------
+
+ * DONE: Using Python ! See http://tristanswork.blogspot.com/2008/12/live-animation-with-pygame-and.html
+ * DONE: We use Python, twisted, pygame and OpenGL 
+ * DONE: onion peal + Full screen in OpenGL
+ * DONE: config CLI
+ * DONE: save a clip  in threads, unique JPEG, as name.  (using config or osc) Increment sequence name. Sequences are now a series of clips.
+ * DONE: different frame rate for capture=30 and playback=12 (refresh cam before adding frame)
+ * DONE: intervalometer
+ * DONE: convert to JPEG images and Motion-JPEG movie
+ * DONE: RSS feed server, documentation on the web
+
