@@ -372,6 +372,10 @@ Gui::Gui() :
     // vbox:
     vbox_ = gtk_vbox_new(FALSE, 0); // args: homogeneous, spacing
     gtk_container_add(GTK_CONTAINER(window_), vbox_);
+
+    //some buttons:
+    //TODO:2010:08-17:aalex:Add a HBox with some buttons, plus a menu
+
     // Clutter widget:
     clutter_widget_ = gtk_clutter_embed_new();
     gtk_widget_set_size_request(clutter_widget_, WINWIDTH, WINHEIGHT);
