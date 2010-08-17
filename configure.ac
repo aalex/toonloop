@@ -29,8 +29,8 @@ AC_CHECK_LIB([pthread],[pthread_exit],[AC_SUBST([LIBTHREAD_CXXFLAGS],["-lpthread
 AC_CHECK_LIB([m],[sin],[AC_SUBST([LIBM_CXXFLAGS],["-lm"])])
 
 # OpenGL
-AX_CHECK_GL
-AX_CHECK_GLU
+# AX_CHECK_GL
+# AX_CHECK_GLU
 # AC_CHECK_LIB([GLEW], [glewInit],[AC_SUBST([GLEW_LIBS],["-lGLEW"])])
 
 # PORTMIDI
@@ -43,7 +43,6 @@ PKG_CHECK_MODULES(LIBLO, liblo, have_liblo=true, have_liblo=false)
 if test "x${have_liblo}" = "xfalse" ; then
     AC_MSG_ERROR([Missing liblo])
 fi
-#AC_CHECK_LIB([lo],[lo_send_internal],[AC_SUBST([LIBLO_CXXFLAGS],["-llo"])])
 
 # GTK and GST
 PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.12.9 glib-2.0 >= 2.16.6 gdk-2.0])

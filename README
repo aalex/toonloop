@@ -21,6 +21,8 @@ These instructions are for Ubuntu GNU/Linux - and should work on Debian GNU/Linu
 Dependencies
 ------------
 
+Toonloop 1.9.x has been built successfully on Debian squeeze and Ubuntu 10.04 Lucid Lynx. It should build on Mac OS X and Windows too, but that might require some modifications. 
+
 Here is the list of Debian package that you will need to build Toonloop 2.x. 
 
  automake,
