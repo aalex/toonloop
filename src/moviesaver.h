@@ -27,7 +27,6 @@
 #include "clip.h"
 
 // forward declarations
-class SaverThread;
 class MovieSaver;
 
 class SaverWorker
@@ -36,7 +35,7 @@ class SaverWorker
         SaverWorker(MovieSaver *owner);
         void operator()();
     private:
-        MovieSaver owner_;
+        MovieSaver *owner_;
 };
 
 class MovieSaver
@@ -55,7 +54,7 @@ class MovieSaver
         int clip_id_;
         bool is_done_;
         bool is_saving_;
-        SaverThread worker_;
+        SaverWorker worker_;
         boost::thread worker_thread_;
 };
 

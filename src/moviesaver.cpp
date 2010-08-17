@@ -26,16 +26,17 @@
 
 MovieSaver::MovieSaver(Clip &clip) : // const Clip &clip?
     is_done_(false),
-    is_saving_(false)
+    is_saving_(false),
+    worker_(this)
 {
     // TODO: load image names
     // TODO: create symlinks
     clip_id_ = clip.get_id();
     std::cout << "MovieSaver Clip ID is " << clip_id_ << std::endl;  
-    worker_(*this);
 }
-SaverWorker::SaverWorker(MovieSaver *owner) {
-    owner_(owner);
+SaverWorker::SaverWorker(MovieSaver *owner) :
+    owner_(owner)
+{
 }
 void SaverWorker::operator()()
 {
@@ -56,7 +57,9 @@ bool MovieSaver::start_saving()
     is_saving_ = true;
     is_done_ = false;
 
-    worker_(*this); // will call operator()() in a thread 
+    //will call worker_.operator()() in a thread 
+    worker_thread_ = boost::thread(worker_);
+
     return true;
 }
 
