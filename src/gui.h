@@ -45,6 +45,7 @@ class Gui
         void resize_actors();
         float video_input_width_;
         float video_input_height_;
+        void switch_to_clip_number(unsigned int key_val);
     private:
         GtkWidget *window_;
         GtkWidget *clutter_widget_;

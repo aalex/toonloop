@@ -96,13 +96,33 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
         case GDK_Page_Up:
             clip = Application::get_instance().get_current_clip_number();
             if (clip < MAX_CLIPS - 1)
+            {
                 Application::get_instance().set_current_clip_number(clip + 1);
-            current_clip = Application::get_instance().get_current_clip();
+                // Not needed, but we never know:
+                current_clip = Application::get_instance().get_current_clip();
+            }
             break;
         case GDK_Page_Down:
             clip = Application::get_instance().get_current_clip_number();
             if (clip > 0)
+            {
                 Application::get_instance().set_current_clip_number(clip - 1);
+                // Not needed, but we never know:
+                current_clip = Application::get_instance().get_current_clip();
+            }
+            break;
+        case GDK_0:
+        case GDK_1:
+        case GDK_2:
+        case GDK_3:
+        case GDK_4:
+        case GDK_5:
+        case GDK_6:
+        case GDK_7:
+        case GDK_8:
+        case GDK_9:
+            context->switch_to_clip_number(event->keyval);
+            // Not needed, but we never know:
             current_clip = Application::get_instance().get_current_clip();
             break;
         case GDK_q:
@@ -118,6 +138,25 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
             break;
     }
     return TRUE;
+}
+/**
+ * Switch the current clip according to a gdk key value from 0 to 9.
+ *
+ * keyval should be one of :
+ * GDK_0 GDK_1 GDK_2 GDK_3 GDK_4 GDK_5 GDK_6 GDK_7 GDK_8 GDK_9
+ * Of course, any other value might lead to a crash.
+ */
+void Gui::switch_to_clip_number(unsigned int key_val) 
+{
+    // FIXME:2010-08-17:aalex:Doing arithmetics with a gdk keyval is a hack
+    unsigned int index = key_val & 0x0F;
+    if (index > MAX_CLIPS)
+        std::cout << "Invalid clip number " << index << std::endl;
+    else {
+        int clip = Application::get_instance().get_current_clip_number();
+        if (clip != index) 
+            Application::get_instance().set_current_clip_number(index);
+    }
 }
 
 void Gui::on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data)
