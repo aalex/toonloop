@@ -1,3 +1,3 @@
-SUBDIRS = src tests man
+SUBDIRS = src tests man pixmaps
 ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = RELEASE NEWS CONTRIBUTING

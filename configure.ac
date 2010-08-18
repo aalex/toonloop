@@ -141,11 +141,20 @@ if test "$MENCODER" = no ; then
     AC_MSG_ERROR([Cannot find mencoder.])
 fi
 
+AS_AC_EXPAND(DATADIR, $datadir)
+AC_MSG_NOTICE(Storing data files in $DATADIR)
+
+PIXMAPS_DIR=$DATADIR/pixmaps
+AC_SUBST(PIXMAPS_DIR)
+AC_MSG_NOTICE(Storing pixmaps files in $PIXMAPS_DIR)
+
+
 AC_CONFIG_FILES([
     Makefile
     src/Makefile
     man/Makefile
     tests/Makefile
+    pixmaps/Makefile
     ])
 AC_OUTPUT
 

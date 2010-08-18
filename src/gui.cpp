@@ -18,6 +18,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <boost/filesystem.hpp>
 #include <clutter-gst/clutter-gst.h>
 #include <clutter-gtk/clutter-gtk.h>
 #include <clutter/clutter.h>
@@ -33,6 +34,8 @@
 #include "application.h"
 #include "config.h"
 #include "timer.h"
+
+namespace fs = boost::filesystem;
 
 gboolean Gui::onWindowStateEvent(GtkWidget* widget, GdkEventWindowState *event, gpointer data)
 {
@@ -395,6 +398,11 @@ Gui::Gui() :
     gtk_widget_set_size_request(window_, WINWIDTH, WINHEIGHT); 
     gtk_window_move(GTK_WINDOW(window_), 300, 10); // TODO: make configurable
     gtk_window_set_title(GTK_WINDOW(window_), std::string(std::string("Toonloop ") + std::string(PACKAGE_VERSION)).c_str());
+    // Set window icon
+    fs::path iconPath(std::string(PIXMAPS_DIR) + "/toonloop.png");
+    if (fs::exists(iconPath))
+        gtk_window_set_icon_from_file(GTK_WINDOW(window_), iconPath.string().c_str(), NULL);
+
     GdkGeometry geometry;
     geometry.min_width = 1;
     geometry.min_height = 1;
