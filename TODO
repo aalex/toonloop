@@ -11,14 +11,12 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * Switch between clips with the number keys
  * Creating symbolic links to each image file in a temporary directory for the conversion to a movie.
  * Get the process manager to call mencoder in a thread, create a clip out of images and tell us when it's done. (see src/subprocess.cpp in branch 2.x and toon/mencoder.py in branch 1.x)
  * Create a MIDI input manager in a thread. see the src/midi.cpp and src/midithread.c files.
- * Support the same editing controls as in version 1.x: up, down, left, right, enter
- * Port the shaders from 1.x (See doc/effects.txt)
- * Store option values in some map (?)
- * Read a few bytes from an image to trigger the kernel's read-ahead. 
+ * Support the same writehead-motion editing controls as in version 1.x: left, right, enter
+ * Support playback directions: forward, backward, ping-pong
+ * Support themes
  * Create a single-image theme, combining the two image with the overlay blending mode.
  * Create basic GUI buttons
  * Hide the GUI buttons when in fullscreen mode.
@@ -35,10 +33,12 @@ Once those tasks are done, the features to be implemented in branch 2.x are:
  * Onion skin
  * Intervalometer
  * portrait theme (rotation to the right)
+ * Port the shaders from 1.x (See doc/effects.txt)
  * mirror
  * one effect per clip
  * Use FPS as a speed unit. Skip frames if needed.
  * GTK GUI (buttons, sliders, menu, etc.) that disappear in fullscreen (GUI could be in Python)
+ * Read a few bytes from an image to trigger the kernel's read-ahead. (?)
 
 
 To be done for version 2.2 : Towards professional features
@@ -108,3 +108,4 @@ Done
  * Use GLEW correctly
  * Update textures rather than creating new. Use glTexSubImage2D rather than glTexImage2D after the first.
  * Support many clips
+ * Switch between clips with the number keys
