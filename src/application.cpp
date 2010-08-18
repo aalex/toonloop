@@ -159,13 +159,12 @@ void Application::run(int argc, char *argv[])
     if (options.count("intervalometer-interval"))
         std::cout << "The rate of the intervalometer is set to " << options["intervalometer-interval"].as<double>() << std::endl; 
 #endif
+    std::cout << "The initial frame rate for clip playhead is set to " << options["playhead-fps"].as<int>() << std::endl;
     if (options.count("playhead-fps"))
     { 
-        std::cout << "The initial frame rate for clip playhead is set to " << options["playhead-fps"].as<int>() << std::endl;
         for (unsigned int i = 0; i < clips_.size(); i++)
         {
             clips_[i]->set_playhead_fps(options["playhead-fps"].as<int>());
-            //std::cout << "The initial frame rate for clip playhead is set to " << options["playhead-fps"].as<int>() << std::endl;
         }
     }
 
@@ -183,27 +182,18 @@ void Application::run(int argc, char *argv[])
     config_->set_project_home(project_home);
     config_->set_video_source(video_source);
     // Init GTK, Clutter and GST:
-    //TODO:We don't need to call all those init
-    //gtk_init(&argc, &argv);
-    //clutter_init(&argc, &argv);
-    //gtk_clutter_init(&argc, &argv);
-    //
     GError *error;
     error = NULL;
     gtk_clutter_init(&argc, &argv);
-    //gtk_clutter_init_with_args (&argc, &argv, NULL, NULL, NULL, &error);
     if (error)
         g_error("Unable to initialize Clutter: %s", error->message);
     clutter_gst_init(&argc, &argv);
-    //gst_init(&argc, &argv);
     // start GUI
     std::cout << "Starting GUI." << std::endl;
     gui_ = std::tr1::shared_ptr<Gui>(new Gui());
     // start Pipeline
     std::cout << "Starting pipeline." << std::endl;
     pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline());
-    // set drawing area TODO: simplify this
-    //get_pipeline().set_drawing_area(get_gui().get_drawing_area());
     // Start OSC
     //TODO:2010-08-05:aalex:Make the OSC port configurable
     std::cout << "Starting OSC receiver." << std::endl;

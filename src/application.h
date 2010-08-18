@@ -30,7 +30,7 @@
 #include "gui.h"
 #include "oscinterface.h"
 #include "pipeline.h"
-
+// FIXME:2010-08-17:aalex:We should allow more than 10 clips
 #define MAX_CLIPS 10
 
 namespace po = boost::program_options;
