@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Exec=toonloop 
+Type=Application
+Terminal=false
+Name=Toonloop Live Animation System
+Name[fr]=Système d'animation en direct Toonloop
+Comment=The Toonloop Live Stop Motion Animation System
+Comment[fr]=Système d'animation image par image en direct Toonloop
+Categories=AudioVideo;Video;AudioVideoEditing;
+Icon=toonloop.png
