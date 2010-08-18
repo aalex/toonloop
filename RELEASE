@@ -4,6 +4,9 @@ This release is an unstable version in the 1.9 series. This version contains new
 
 New features:
     * Switch between clips with the number keys
+    * Installing the icon
+    * Installing the desktop file
+    * Using the installed icon for window
     * Updated README with info about GLX and test src
 
 Bug fixes: 
