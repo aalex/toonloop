@@ -20,6 +20,7 @@ Right now, here is the list of tasks to prioritize:
  * Create a single-image theme, combining the two image with the overlay blending mode.
  * Create basic GUI buttons
  * Hide the GUI buttons when in fullscreen mode.
+ * Display information in either a HUD or some GTK widgets
 
 
 Road map
