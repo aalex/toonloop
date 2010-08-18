@@ -35,6 +35,7 @@ Toonloop interactive keyboard controls :
  - ctrl-q quits
  - Page-down to switch to the next clip
  - Page-up to switch to the previous clip
+ - Number from 0 to 9 to switch to a specific clip
 
 
 [HISTORY]
