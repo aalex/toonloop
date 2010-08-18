@@ -48,6 +48,7 @@ class Configuration
         void set_project_home(std::string project_home);
         void set_video_source(std::string video_source);
         bool get_verbose() const { return verbose_; } ;
+        bool get_fullscreen() const { return fullscreen_; } ;
     private:
         //int capture_frame_rate_;
         //int rendering_frame_rate_;

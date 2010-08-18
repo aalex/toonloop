@@ -35,7 +35,8 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     // TODO:2010-08-16:aalex:Either discard keep-image-in-ram option or make it possible again.
     //images_in_ram_ = options["keep-images-in-ram"].as<bool>();
     images_in_ram_ = false;
-    enable_effects_ = options["enable-effects"].as<bool>();
+    //enable_effects_ = options["enable-effects"].as<bool>();
+    enable_effects_ = false;
     if (images_in_ram_)
         std::cout << "Images will be kept into RAM and not loaded from the disk on every frame." << std::endl;
 }

@@ -473,6 +473,8 @@ Gui::Gui() :
      */
     clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
     //clutter_actor_show_all(CLUTTER_ACTOR(playback_texture_));
+    if (Application::get_instance().get_configuration().get_fullscreen())
+        toggleFullscreen(window_);
 }
 
 ClutterActor* Gui::get_live_input_texture()
