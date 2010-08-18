@@ -65,3 +65,5 @@ tests/check_statesaving
 INSTALL
 *.tar.gz
 src/core
+# mist built files
+proto/spawn
