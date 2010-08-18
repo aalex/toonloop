@@ -14,7 +14,7 @@ python-build-stamp-*
 *.o
 # autoconf generated
 *Makefile.in*
-*Makefile*
+*Makefile
 aclocal.m4
 autom4te.cache/*
 config.guess
