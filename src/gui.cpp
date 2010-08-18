@@ -394,7 +394,7 @@ Gui::Gui() :
     // TODO:2010-08-06:aalex:make window size configurable
     gtk_widget_set_size_request(window_, WINWIDTH, WINHEIGHT); 
     gtk_window_move(GTK_WINDOW(window_), 300, 10); // TODO: make configurable
-    gtk_window_set_title(GTK_WINDOW(window_), std::string(std::string("Toonloop ") + std::string(PACKAGE_VERSION) + std::string(" experimental")).c_str());
+    gtk_window_set_title(GTK_WINDOW(window_), std::string(std::string("Toonloop ") + std::string(PACKAGE_VERSION)).c_str());
     GdkGeometry geometry;
     geometry.min_width = 1;
     geometry.min_height = 1;
