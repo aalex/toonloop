@@ -13,7 +13,7 @@ Right now, here is the list of tasks to prioritize:
 
  * Creating symbolic links to each image file in a temporary directory for the conversion to a movie.
  * Get the process manager to call mencoder in a thread, create a clip out of images and tell us when it's done. (see src/subprocess.cpp in branch 2.x and toon/mencoder.py in branch 1.x)
- * Create a MIDI input manager in a thread. see the src/midi.cpp and src/midithread.c files.
+ * Create a MIDI input manager in a thread. see the src/midi.cpp and src/midithread.c files, or consider using RtMidi, which comes with STK.
  * Support the same writehead-motion editing controls as in version 1.x: left, right, enter
  * Support playback directions: forward, backward, ping-pong
  * Support themes
@@ -110,3 +110,4 @@ Done
  * Update textures rather than creating new. Use glTexSubImage2D rather than glTexImage2D after the first.
  * Support many clips
  * Switch between clips with the number keys
+
