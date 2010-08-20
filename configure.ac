@@ -38,6 +38,21 @@ AC_CHECK_LIB([asound],[snd_seq_open],[AC_SUBST([ASOUND_CXXFLAGS],["-lasound"])])
 AC_CHECK_LIB([portmidi],[Pm_Initialize],[AC_SUBST([PORTMIDI_CXXFLAGS],["-lportmidi -lporttime"])],[echo "Could not find portmidi !"], ["-lporttime"])
 # TODO: fail with error if MIDI lib not found
 
+# STK
+AC_LANG(C++)
+# save original flags
+SAVED_LDFLAGS=$LDFLAGS
+LDFLAGS="$LDFLAGS -lstk"
+AC_LINK_IFELSE(
+        [AC_LANG_PROGRAM([ #include <stk/RtAudio.h> ],
+        [RtAudio dac])],
+        [AC_SUBST(STK_LIBS," -lstk -lrt -lm")],
+        [AC_MSG_ERROR([libstk is not installed: alsa])])
+LDFLAGS=$SAVED_LDFLAGS # restore them
+AC_SUBST(STK_CXXFLAGS, "-D__LINUX_ALSA__ -D__UNIX_JACK__ -D__LITTLE_ENDIAN__")
+AC_SUBST(CXXFLAGS, " -O2 -Wall") #TODO:  -Wfatal-errors -Werror -pedantic")
+
+
 #Set LIBLO with pkg-config
 PKG_CHECK_MODULES(LIBLO, liblo, have_liblo=true, have_liblo=false)
 if test "x${have_liblo}" = "xfalse" ; then

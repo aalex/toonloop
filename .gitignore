@@ -58,5 +58,6 @@ tests/check_statesaving
 INSTALL
 *.tar.gz
 src/core
-# mist built files
+# misc built files
 proto/spawn
+src/protomidi

@@ -1,5 +1,5 @@
-bin_PROGRAMS = toonloop
-noinst_PROGRAMS = prototoonmidi 
+bin_PROGRAMS = toonloop protomidi
+noinst_PROGRAMS = prototoonmidi protomidi
 
 headers = \
 	application.h \
@@ -37,7 +37,8 @@ toonloop_SOURCES = \
     oscsender.cpp \
 	$(headers)
 
-toonloop_CXXFLAGS = -Wall \
+toonloop_CXXFLAGS = \
+	$(CXXFLAGS) \
 	$(BOOST_CPPFLAGS) \
 	$(CLUTTERGST_CFLAGS) \
 	$(CLUTTERGTK_CFLAGS) \
@@ -62,3 +63,7 @@ prototoonmidi_SOURCES = toonmidi.cpp pmutil.h
 prototoonmidi_CXXFLAGS = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS) $(PORTMIDI_CXXFLAGS) $(ASOUND_CXXFLAGS)
 prototoonmidi_LDADD = $(LIBM_LIBS) $(LIBTHREAD_LIBS) $(PORTMIDI_LIBS) $(ASOUND_LIBS)
 
+
+protomidi_SOURCES = midi.cpp
+protomidi_CXXFLAGS = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS) $(STK_CXXFLAGS) $(CXXFLAGS)
+protomidi_LDADD = $(LIBM_LIBS) $(LIBTHREAD_LIBS) $(LDFLAGS) $(STK_LIBS)
