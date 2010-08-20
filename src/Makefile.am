@@ -1,5 +1,5 @@
 bin_PROGRAMS = toonloop
-noinst_PROGRAMS = protomidi
+# noinst_PROGRAMS = 
 
 headers = \
 	application.h \
@@ -45,6 +45,8 @@ toonloop_CXXFLAGS = \
 	$(LIBLO_CFLAGS) \
 	$(LIBM_CXXFLAGS) \
 	$(LIBTHREAD_CXXFLAGS) \
+	$(STK_CXXFLAGS) \
+	$(CXXFLAGS) \
 	-DPIXMAPS_DIR=\"$(PIXMAPS_DIR)\"
  
 toonloop_LDADD = \
@@ -57,9 +59,7 @@ toonloop_LDADD = \
 	$(CLUTTERGTK_LIBS) \
 	$(LIBLO_LIBS) \
 	$(LIBM_LIBS) \
-	$(LIBTHREAD_LIBS) 
+	$(LIBTHREAD_LIBS) \
+	$(LDFLAGS) \
+	$(STK_LIBS)
 
-
-protomidi_SOURCES = midi.cpp midi.h
-protomidi_CXXFLAGS = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS) $(STK_CXXFLAGS) $(CXXFLAGS)
-protomidi_LDADD = $(LIBM_LIBS) $(LIBTHREAD_LIBS) $(LDFLAGS) $(STK_LIBS)

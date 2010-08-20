@@ -1,4 +1,4 @@
-TESTS = check_looper check_classes check_commands check_threads check_bool check_datetime check_tween check_moviesaver check_symlinks check_containers check_statesaving check_signals
+TESTS = check_looper check_classes check_commands check_threads check_bool check_datetime check_tween check_moviesaver check_symlinks check_containers check_statesaving check_signals check_midi
 
 noinst_PROGRAMS = $(TESTS)
 
@@ -53,3 +53,8 @@ check_statesaving_LDADD = $(BOOST_LIBS)
 check_signals_SOURCES = check_signals.cpp 
 check_signals_CXXFLAGS = $(BOOST_CPPFLAGS) 
 check_signals_LDADD = $(BOOST_LIBS) $(BOOST_SIGNALS_LIB)
+
+check_midi_SOURCES = check_midi.cpp ../src/midi.cpp
+check_midi_CXXFLAGS = $(STK_CXXFLAGS) $(CXXFLAGS)
+check_midi_LDADD = $(LDFLAGS) $(STK_LIBS)
+

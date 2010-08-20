@@ -48,6 +48,7 @@ tests/check_threads
 tests/check_tween
 tests/check_signals
 tests/check_statesaving
+tests/check_midi
 # TODO:2010-08-05:aalex:How can we avoid automake to create make INSTALL a symlink?
 INSTALL
 *.tar.gz
