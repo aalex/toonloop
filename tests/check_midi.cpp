@@ -44,7 +44,7 @@ int main( int argc, char *argv[] )
     unsigned int duration = 10;
     MidiInput in; // 
     //in(); // = MidiInput(); // FIXME
-    in.pedal_down_sinal_.connect(&on_pedal_down);
+    in.pedal_down_signal_.connect(&on_pedal_down);
     in.set_verbose(true);
     // Minimal command-line check.
     if (argc > 3) 

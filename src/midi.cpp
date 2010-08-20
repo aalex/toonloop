@@ -50,7 +50,7 @@ void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char >
             {
                 if (context->verbose_)
                     std::cout << "Sustain pedal is down."  << std::endl;
-                context->pedal_down_sinal_();
+                context->pedal_down_signal_();
             }
             // we might want pedal up signal too (0)
     }

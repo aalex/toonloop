@@ -18,7 +18,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <GL/glew.h>
+#include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include <clutter-gst/clutter-gst.h>
@@ -64,6 +64,12 @@ int Application::get_current_clip_number()
     return selected_clip_;
 }
 
+void Application::on_pedal_down()
+{
+    std::cout << "on_pedal_down" << std::endl;
+    pipeline_->grab_frame();
+}
+
 void Application::set_current_clip_number(int clipnumber)
 {
     selected_clip_ = clipnumber;
@@ -92,6 +98,7 @@ void Application::run(int argc, char *argv[])
         //("rendering-fps", po::value<int>()->default_value(30), "Rendering frame rate") // FIXME: can we get a FPS different for the rendering?
         //("capture-fps,r", po::value<int>()->default_value(30), "Rendering frame rate")
         ("playhead-fps", po::value<int>()->default_value(12), "Playback rate of clips, to be controlled by user")
+        ("midi-input,m", po::value<int>()->default_value(0), "Input MIDI device number")
         //("image-width,w", po::value<int>()->default_value(640), "Width of the images grabbed from the camera. Default is 640")
         //("image-height,y", po::value<int>()->default_value(480), "Height of the images grabbed from the camera. Default is 480")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode.")
@@ -199,6 +206,18 @@ void Application::run(int argc, char *argv[])
     std::cout << "Starting OSC receiver." << std::endl;
     osc_ = std::tr1::shared_ptr<OscInterface>(new OscInterface("11337"));
     osc_->start();
+    // Start MIDI
+    std::cout << "Starting MIDI input." << std::endl;
+    midi_input_ = std::tr1::shared_ptr<MidiInput>(new MidiInput());
+    midi_input_->pedal_down_signal_.connect(boost::bind(&Application::on_pedal_down, this));
+    if (config_->get_midi_input_number() != -1)
+    {
+        bool midi_ok = midi_input_->open(config_->get_midi_input_number());
+        if (midi_ok)
+            std::cout << "Opened MIDI port " << config_->get_midi_input_number() << std::endl;
+        else
+            std::cout << "Failed to open MIDI port " << config_->get_midi_input_number() << std::endl;
+    }
     std::cout << "Running toonloop" << std::endl;
     gtk_main();
 }
@@ -214,6 +233,10 @@ Gui& Application::get_gui()
 Configuration& Application::get_configuration() 
 {
     return *config_;
+}
+MidiInput& Application::get_midi_input() 
+{
+    return *midi_input_;
 }
 
 Application& Application::get_instance()

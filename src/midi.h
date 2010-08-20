@@ -30,7 +30,7 @@ class MidiInput
         const void enumerate_devices();
         static void input_message_cb(double delta_time, std::vector<unsigned char> *message, void *user_data);
         const bool is_open();
-        boost::signal<void ()> pedal_down_sinal_;
+        boost::signal<void ()> pedal_down_signal_;
         bool verbose_;
         void set_verbose(bool verbose);
     private:

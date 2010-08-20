@@ -21,15 +21,16 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
-//#include <GL/glew.h>
 #include <boost/program_options.hpp>
 #include <tr1/memory>
 
 #include "clip.h"
 #include "configuration.h"
 #include "gui.h"
+#include "midi.h"
 #include "oscinterface.h"
 #include "pipeline.h"
+
 // FIXME:2010-08-17:aalex:We should allow more than 10 clips
 #define MAX_CLIPS 10
 
@@ -43,18 +44,21 @@ class Application
         static void reset();
         Gui &get_gui();
         Pipeline &get_pipeline();
+        MidiInput &get_midi_input();
         Configuration &get_configuration();
         static Application& get_instance();
         Clip* get_current_clip();
         int get_current_clip_number();
         void set_current_clip_number(int clipnumber);
         double get_cfps();
+        void on_pedal_down();
 
     private:
         Application();
         static Application* instance_; // singleton
         // TODO: change for scoped_ptr
         std::tr1::shared_ptr<Gui> gui_;
+        std::tr1::shared_ptr<MidiInput> midi_input_;
         std::tr1::shared_ptr<OscInterface> osc_;
         std::tr1::shared_ptr<Pipeline> pipeline_;
         std::tr1::shared_ptr<Configuration> config_;

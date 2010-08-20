@@ -39,6 +39,7 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     enable_effects_ = false;
     if (images_in_ram_)
         std::cout << "Images will be kept into RAM and not loaded from the disk on every frame." << std::endl;
+    midi_input_number_ = options["midi-input"].as<int>();
 }
 
 void Configuration::set_project_home(std::string project_home)
@@ -50,3 +51,4 @@ void Configuration::set_video_source(std::string video_source)
 {
     video_source_ = video_source;
 }
+

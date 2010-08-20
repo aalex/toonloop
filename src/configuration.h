@@ -49,6 +49,7 @@ class Configuration
         void set_video_source(std::string video_source);
         bool get_verbose() const { return verbose_; } ;
         bool get_fullscreen() const { return fullscreen_; } ;
+        int get_midi_input_number() const { return midi_input_number_; }
     private:
         //int capture_frame_rate_;
         //int rendering_frame_rate_;
@@ -60,6 +61,7 @@ class Configuration
         bool enable_effects_;
         bool images_in_ram_;
         bool verbose_;
+        int midi_input_number_;
 };
 #endif // __VIDEO_CONFIG_H__
 

@@ -9,6 +9,7 @@ headers = \
 	gui.h \
 	image.h \
 	log.h \
+	midi.h \
 	moviesaver.h \
     oscinterface.h \
     oscreceiver.h \
@@ -26,6 +27,7 @@ toonloop_SOURCES = \
 	gui.cpp \
 	image.cpp \
 	main.cpp \
+	midi.cpp \
 	moviesaver.cpp \
 	pipeline.cpp \
 	subprocess.cpp \
@@ -54,6 +56,7 @@ toonloop_LDADD = \
 	$(BOOST_LDFLAGS) \
 	$(BOOST_LIBS)  \
 	$(BOOST_PROGRAM_OPTIONS_LIB) \
+    $(BOOST_SIGNALS_LIB) \
 	$(BOOST_THREAD_LIB) \
 	$(CLUTTERGST_LIBS) \
 	$(CLUTTERGTK_LIBS) \
