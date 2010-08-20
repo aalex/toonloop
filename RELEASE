@@ -16,4 +16,6 @@ Bug fixes:
     * corrections in dependencies
     * Made missing deps more explicit
     * lowered required version of gst-interface
+    * Using boost::signals2
+    * Had missing include guards in midi.h
 
