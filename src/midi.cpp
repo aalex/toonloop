@@ -20,24 +20,8 @@
  */
 #include <iostream>
 #include <cstdlib>
-#include "stk/RtMidi.h"
-
-class MidiInput
-{
-    public:
-        MidiInput();
-        bool open(unsigned int port);
-        ~MidiInput();
-        const void enumerate_devices();
-        static void input_message_cb(double delta_time, std::vector<unsigned char> *message, void *user_data);
-        const bool is_open();
-    private:
-        unsigned int port_;
-        unsigned int ports_count_;
-        RtMidiIn *midi_in_;
-        bool opened_;
-};
-
+#include <stk/RtMidi.h>
+#include "midi.h"
 
 void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char > *message, void *user_data )
 {
@@ -138,7 +122,7 @@ void usage()
 
 int main( int argc, char *argv[] )
 {
-    unsigned int port;
+    unsigned int port = 0;
     MidiInput in = MidiInput(); // FIXME
     // Minimal command-line check.
     if (argc > 2) 
