@@ -25,6 +25,7 @@
 
 void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char > *message, void *user_data )
 {
+    MidiInput* context = static_cast<MidiInput*>(user_data);
     unsigned int nBytes = message->size();
     for ( unsigned int i=0; i<nBytes; i++ )
         std::cout << "Byte " << i << " = " << (int)message->at(i) << ", ";
@@ -99,7 +100,7 @@ bool MidiInput::open(unsigned int port)
     // Set our callback function.  This should be done immediately after
     // opening the port to avoid having incoming messages written to the
     // queue instead of sent to the callback function.
-    midi_in_->setCallback(&input_message_cb);
+    midi_in_->setCallback(&input_message_cb, (void *) this);
     // Don't ignore sysex, timing, or active sensing messages.
     //midi_in_->ignoreTypes(false, false, false);
     // ignore sysex, timing, or active sensing messages.
