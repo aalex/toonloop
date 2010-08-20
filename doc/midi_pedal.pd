@@ -1,0 +1,22 @@
+#N canvas 619 320 623 297 10;
+#X obj 34 182 ctlout;
+#X obj 71 137 f 64;
+#X obj 34 36 metro 500;
+#X obj 34 -25 tgl 50 0 empty empty empty 17 7 0 10 -191407 -1 -1 1
+1;
+#X obj 33 72 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 127
+127;
+#X obj 34 -50 loadbang;
+#X text 119 18 This simulates a foot on a MIDI sustain pedal.;
+#X text 121 36 Make sure the MIDI is enabled.;
+#X text 124 62 pd -alsamidi -midioutdev 1;
+#X text 54 72 0 or 127;
+#X obj 33 105 t f b;
+#X text 86 182 Inlets: [value] [controller] [channel];
+#X connect 1 0 0 1;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 4 0 10 0;
+#X connect 5 0 3 0;
+#X connect 10 0 0 0;
+#X connect 10 1 1 0;
