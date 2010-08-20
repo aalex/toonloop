@@ -27,29 +27,45 @@ void usage()
 {
     // Error function in case of incorrect command-line
     // argument specifications.
-    std::cout << "\nuseage: cmidiin <port>\n";
-    std::cout << "    where port = the device to use (default = 0).\n\n";
+    std::cout << "\nuseage: check_midi <port> <duration>\n";
+    std::cout << "    port = the device to use (default = 0).\n\n";
+    std::cout << "    duration = how long to sleep (default = 10) Use 0 to sleep forever.\n\n";
     exit(0);
 }
 
 int main( int argc, char *argv[] )
 {
     unsigned int port = 0;
+    unsigned int duration = 10;
     MidiInput in = MidiInput(); // FIXME
     // Minimal command-line check.
-    if (argc > 2) 
+    if (argc > 3) 
         usage();
-    if (argc == 2) 
+    if (argc >= 2) 
         port = (unsigned int) atoi(argv[1]);
+    if (argc >= 2) 
+        duration = (unsigned int) atoi(argv[2]);
     bool success = in.open(port);
     if (success) 
     {
         std::cout << "\nReading MIDI input from port " << port << "..." << std::endl;
         //char input;
         //std::cin.get(input);
-        unsigned int duration = 10;
-        std::cout << "Sleeping for " << duration << " seconds..." << std::endl;
-        sleep(10);
+        if (duration == 0)
+        {
+            std::cout << "Sleeping forever. Ctrl-C to quit..." << std::endl;
+            while (true)
+                sleep(1);
+        } else {
+            std::cout << "Sleeping for " << duration << " seconds..." << std::endl;
+            while (duration > 0) 
+            {
+                std::cout << duration << " seconds left..." << std::endl;
+                sleep(1);
+                -- duration;
+            }
+            std::cout << "Done." << std::endl;
+        }
     } else {
         std::cout << "Failed to open port " << port << std::endl;
     }
