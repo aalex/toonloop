@@ -55,6 +55,8 @@ check_signals_CXXFLAGS = $(BOOST_CPPFLAGS)
 check_signals_LDADD = $(BOOST_LIBS) $(BOOST_SIGNALS_LIB)
 
 check_midi_SOURCES = check_midi.cpp ../src/midi.cpp
-check_midi_CXXFLAGS = $(STK_CXXFLAGS) $(CXXFLAGS)
-check_midi_LDADD = $(LDFLAGS) $(STK_LIBS)
+check_midi_CXXFLAGS = $(STK_CXXFLAGS) $(CXXFLAGS) $(BOOST_CPPFLAGS) 
+check_midi_LDADD = $(LDFLAGS) $(STK_LIBS) $(BOOST_LIBS) $(BOOST_SIGNALS_LIB)
+
+
 

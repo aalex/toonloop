@@ -33,11 +33,19 @@ void usage()
     exit(0);
 }
 
+void on_pedal_down()
+{
+    std::cout << "Pedal is down! (slot)" << std::endl;
+}
+
 int main( int argc, char *argv[] )
 {
     unsigned int port = 0;
     unsigned int duration = 10;
-    MidiInput in = MidiInput(); // FIXME
+    MidiInput in; // 
+    //in(); // = MidiInput(); // FIXME
+    in.pedal_down_sinal_.connect(&on_pedal_down);
+    in.set_verbose(true);
     // Minimal command-line check.
     if (argc > 3) 
         usage();

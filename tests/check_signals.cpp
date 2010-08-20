@@ -1,7 +1,8 @@
 // g++ -Wall -lboost_signals -o check_signals check_signals.cpp
-//
+// We will eventually switch to boost::signals2, but for now, 
+// Let's stick to the one that is packaged in Debian. 
 #include <iostream>
-#include "boost/signals.hpp"
+#include <boost/signals.hpp>
 
 class HelloSlot
 {

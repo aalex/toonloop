@@ -21,21 +21,38 @@
 #include <iostream>
 #include <cstdlib>
 #include <stk/RtMidi.h>
+#include <boost/signals.hpp>
 #include "midi.h"
-
+/**
+ * Callback for incoming MIDI messages. 
+ * 
+ * MIDI controller 64 is the sustain pedal controller. It looks like this:
+ *   <channel and status> <controller> <value>
+ * Where the controller number is 64 and the value is either 0 or 127.
+ */
 void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char > *message, void *user_data )
 {
     MidiInput* context = static_cast<MidiInput*>(user_data);
     unsigned int nBytes = message->size();
-    for ( unsigned int i=0; i<nBytes; i++ )
-        std::cout << "Byte " << i << " = " << (int)message->at(i) << ", ";
-    if ( nBytes > 0 )
-        std::cout << "stamp = " << delta_time << std::endl;
+    if (context->verbose_) 
+    {
+        std::cout << "(";
+        for (unsigned int i = 0; i < nBytes; i++)
+            std::cout << (int)message->at(i) << " ";
+        std::cout << ")";
+        if (nBytes > 0)
+            std::cout << " stamp = " << delta_time << std::endl;
+    }
     if (message->size() >= 3)
     {
         if ((int)message->at(1) == 64)
-            if ((int)message->at(2) == 127)
-                std::cout << "Sustain pedal is down."  << std::endl;
+            if ((int)message->at(2) == 127) 
+            {
+                if (context->verbose_)
+                    std::cout << "Sustain pedal is down."  << std::endl;
+                context->pedal_down_sinal_();
+            }
+            // we might want pedal up signal too (0)
     }
 }
 
@@ -64,6 +81,7 @@ const bool MidiInput::is_open()
 
 MidiInput::MidiInput()
 {
+    verbose_ = false;
     midi_in_ = 0;
     // RtMidiIn constructor
     try {
@@ -87,7 +105,7 @@ bool MidiInput::open(unsigned int port)
     {
         //TODO: raise excepion !
         // delete midi_in_;
-        std::cout << "Invalid port specifier!\n";
+        std::cout << "Invalid input MIDI port!" << std::endl;
         // usage();
         opened_ = false;
         return false;
@@ -115,6 +133,11 @@ bool MidiInput::open(unsigned int port)
     midi_in_->ignoreTypes(true, true, true);
     opened_ = true;
     return true;
+}
+
+void MidiInput::set_verbose(bool verbose)
+{
+    verbose_ = verbose;
 }
 
 MidiInput::~MidiInput()
