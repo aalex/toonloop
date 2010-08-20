@@ -33,11 +33,6 @@ AC_CHECK_LIB([m],[sin],[AC_SUBST([LIBM_CXXFLAGS],["-lm"])])
 # AX_CHECK_GLU
 # AC_CHECK_LIB([GLEW], [glewInit],[AC_SUBST([GLEW_LIBS],["-lGLEW"])])
 
-# PORTMIDI
-AC_CHECK_LIB([asound],[snd_seq_open],[AC_SUBST([ASOUND_CXXFLAGS],["-lasound"])])
-AC_CHECK_LIB([portmidi],[Pm_Initialize],[AC_SUBST([PORTMIDI_CXXFLAGS],["-lportmidi -lporttime"])],[echo "Could not find portmidi !"], ["-lporttime"])
-# TODO: fail with error if MIDI lib not found
-
 # STK
 AC_LANG(C++)
 # save original flags

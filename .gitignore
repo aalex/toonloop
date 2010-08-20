@@ -1,14 +1,9 @@
-# ------------ basic python files -------
+# ------------ some python files -------
 *.pyc
-build/*
-*.egg*
-dist/*
-_trial_temp/*
 # ------------ basic vim files -------
 .*.swp
 # toonloop custom files
 *.1
-python-build-stamp-*
 
 #---------- cpp files
 *.o
@@ -40,7 +35,6 @@ src/stamp-h1
 tests/.deps/*
 # --------- specific conmpiled files.
 src/toonloop
-src/prototoonmidi
 tests/check_bool
 tests/check_classes
 tests/check_commands

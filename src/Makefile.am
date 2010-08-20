@@ -1,5 +1,5 @@
-bin_PROGRAMS = toonloop protomidi
-noinst_PROGRAMS = prototoonmidi protomidi
+bin_PROGRAMS = toonloop
+noinst_PROGRAMS = protomidi
 
 headers = \
 	application.h \
@@ -58,10 +58,6 @@ toonloop_LDADD = \
 	$(LIBLO_LIBS) \
 	$(LIBM_LIBS) \
 	$(LIBTHREAD_LIBS) 
-
-prototoonmidi_SOURCES = toonmidi.cpp pmutil.h
-prototoonmidi_CXXFLAGS = $(LIBM_CXXFLAGS) $(LIBTHREAD_CXXFLAGS) $(PORTMIDI_CXXFLAGS) $(ASOUND_CXXFLAGS)
-prototoonmidi_LDADD = $(LIBM_LIBS) $(LIBTHREAD_LIBS) $(PORTMIDI_LIBS) $(ASOUND_LIBS)
 
 
 protomidi_SOURCES = midi.cpp midi.h
