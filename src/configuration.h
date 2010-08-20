@@ -25,6 +25,9 @@
 
 #include <string>
 #include <boost/program_options.hpp>
+
+const int MIDI_INPUT_NONE = 1;
+
 /**
  * Contains the configuration options for the whole application.
  */

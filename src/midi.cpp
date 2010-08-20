@@ -59,7 +59,7 @@ void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char >
 const void MidiInput::enumerate_devices()
 {
     // List inputs.
-    std::cout << "\nThere are " << ports_count_ << " MIDI input sources available.\n";
+    std::cout << std::endl << "MIDI input devices: " << ports_count_ << " found." << std::endl;
     std::string portName;
     for (unsigned int i=0; i < ports_count_; i++) 
     {
@@ -68,9 +68,8 @@ const void MidiInput::enumerate_devices()
         }
         catch (RtError &name_error) {
             name_error.printMessage();
-            //goto cleanup; // FIXME no goto
         }
-        std::cout << "  Input Port #" << i << ": " << portName << '\n';
+        std::cout << " * " << i << " : " << portName << '\n';
     }
 }
 
@@ -85,7 +84,7 @@ MidiInput::MidiInput()
     midi_in_ = 0;
     // RtMidiIn constructor
     try {
-        midi_in_ = new RtMidiIn(); // FIXME
+        midi_in_ = new RtMidiIn(); // FIXME: should be use a pointer?
     }
     catch (RtError &error) {
         error.printMessage();
@@ -118,7 +117,6 @@ bool MidiInput::open(unsigned int port)
     {
         std::cout << "Error opening MIDI port " << port << std::endl;
         error.printMessage();
-        //goto cleanup; // FIXME: no goto
         opened_ = false;
         return false;
     }

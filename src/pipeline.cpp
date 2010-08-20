@@ -116,6 +116,12 @@ void Pipeline::grab_frame()
     thisclip->lock_mutex();
     int current_clip_id = thisclip->get_id();
     g_object_get(G_OBJECT(gdkpixbufsink_), "last-pixbuf", &pixbuf, NULL);
+    if (! GDK_IS_PIXBUF(pixbuf))
+    {
+        std::cout << "No picture yet to grab!" << std::endl;
+        thisclip->unlock_mutex();
+        return;
+    }
 
     int w = gdk_pixbuf_get_width(pixbuf);
     int h = gdk_pixbuf_get_height(pixbuf);

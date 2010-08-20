@@ -39,7 +39,13 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     enable_effects_ = false;
     if (images_in_ram_)
         std::cout << "Images will be kept into RAM and not loaded from the disk on every frame." << std::endl;
-    midi_input_number_ = options["midi-input"].as<int>();
+    if (options.count("midi-input"))
+    {
+        midi_input_number_ = options["midi-input"].as<int>();
+        std::cout << "Using MIDI input " << midi_input_number_ << std::endl;
+    } else {
+        midi_input_number_ = MIDI_INPUT_NONE; // Means disabled;
+    }
 }
 
 void Configuration::set_project_home(std::string project_home)
