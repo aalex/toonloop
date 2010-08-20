@@ -21,7 +21,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <stk/RtMidi.h>
-#include <boost/signals.hpp>
+#include <boost/signals2.hpp>
 #include "midi.h"
 /**
  * Callback for incoming MIDI messages. 

@@ -1,8 +1,8 @@
-// g++ -Wall -lboost_signals -o check_signals check_signals.cpp
+// g++ -Wall -lboost_signals-mt -o check_signals check_signals.cpp
 // We will eventually switch to boost::signals2, but for now, 
 // Let's stick to the one that is packaged in Debian. 
 #include <iostream>
-#include <boost/signals.hpp>
+#include <boost/signals2.hpp>
 
 class HelloSlot
 {
@@ -34,7 +34,7 @@ void test_a()
 {
 
     HelloSlot slot;
-    boost::signal<void ()> sig_a;
+    boost::signals2::signal<void ()> sig_a;
     sig_a.connect(slot);
     std::cout << "Calling the signal A." << std::endl;
     sig_a();
@@ -45,7 +45,7 @@ void test_a()
 void test_b()
 {
 
-    boost::signal<void (float, float)> sig_b;
+    boost::signals2::signal<void (float, float)> sig_b;
     sig_b.connect(&print_sum);
     std::cout << "Calling the signal B." << std::endl;
     sig_b(3.14159, 1.618);

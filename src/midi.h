@@ -18,7 +18,10 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <boost/signals.hpp>
+#ifndef _MIDI_H_
+#define _MIDI_H_
+
+#include <boost/signals2.hpp>
 #include <stk/RtMidi.h>
 
 class MidiInput
@@ -30,7 +33,7 @@ class MidiInput
         const void enumerate_devices();
         static void input_message_cb(double delta_time, std::vector<unsigned char> *message, void *user_data);
         const bool is_open();
-        boost::signal<void ()> pedal_down_signal_;
+        boost::signals2::signal<void ()> pedal_down_signal_;
         bool verbose_;
         void set_verbose(bool verbose);
     private:
@@ -39,4 +42,6 @@ class MidiInput
         RtMidiIn *midi_in_;
         bool opened_;
 };
+
+#endif // _MIDI_H_
 
