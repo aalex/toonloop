@@ -31,6 +31,12 @@ void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char >
         std::cout << "Byte " << i << " = " << (int)message->at(i) << ", ";
     if ( nBytes > 0 )
         std::cout << "stamp = " << delta_time << std::endl;
+    if (message->size() >= 3)
+    {
+        if ((int)message->at(1) == 64)
+            if ((int)message->at(2) == 127)
+                std::cout << "Sustain pedal is down."  << std::endl;
+    }
 }
 
 const void MidiInput::enumerate_devices()
@@ -76,6 +82,7 @@ MidiInput::MidiInput()
 
 bool MidiInput::open(unsigned int port)
 {
+    ports_count_ = midi_in_->getPortCount();
     if (port >= ports_count_) 
     {
         //TODO: raise excepion !
@@ -91,6 +98,7 @@ bool MidiInput::open(unsigned int port)
     }
     catch (RtError &error) 
     {
+        std::cout << "Error opening MIDI port " << port << std::endl;
         error.printMessage();
         //goto cleanup; // FIXME: no goto
         opened_ = false;

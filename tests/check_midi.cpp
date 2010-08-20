@@ -43,8 +43,11 @@ int main( int argc, char *argv[] )
         usage();
     if (argc >= 2) 
         port = (unsigned int) atoi(argv[1]);
-    if (argc >= 2) 
+    if (argc == 3) 
         duration = (unsigned int) atoi(argv[2]);
+
+    in.enumerate_devices();
+    std::cout << "Opening " << port << std::endl;
     bool success = in.open(port);
     if (success) 
     {
