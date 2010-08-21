@@ -34,6 +34,7 @@
 #include "config.h"
 #include "configuration.h"
 #include "gui.h"
+#include "midi.h"
 #include "pipeline.h"
 
 namespace po = boost::program_options;
@@ -99,18 +100,20 @@ void Application::run(int argc, char *argv[])
         ("display,D", po::value<std::string>()->default_value(std::getenv("DISPLAY")), "Sets the X11 display name")
         //("rendering-fps", po::value<int>()->default_value(30), "Rendering frame rate") // FIXME: can we get a FPS different for the rendering?
         //("capture-fps,r", po::value<int>()->default_value(30), "Rendering frame rate")
-        ("playhead-fps", po::value<int>()->default_value(12), "Playback rate of clips, to be controlled by user")
+        ("playhead-fps", po::value<int>()->default_value(12), "Sets the initial playback rate of clips")
         ("midi-input,m", po::value<int>(), "Input MIDI device number")
+        ("list-midi-inputs,l", po::bool_switch(), "Lists MIDI inputs devices and exits")
         //("image-width,w", po::value<int>()->default_value(640), "Width of the images grabbed from the camera. Default is 640")
         //("image-height,y", po::value<int>()->default_value(480), "Height of the images grabbed from the camera. Default is 480")
-        ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode.")
+        ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode")
         //("sync", po::bool_switch(), "Enables X11 debug.")
         //("keep-images-in-ram,R", po::bool_switch(), "Keep all the images to the computer RAM and do not load JPEG from the disk.")
-        ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device. Use \"test\" for color bars. Use \"x\" to capture the screen.");
+        ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device. Use \"test\" for color bars. Use \"x\" to capture the screen");
     po::variables_map options;
     
     po::store(po::parse_command_line(argc, argv, desc), options);
     po::notify(options);
+    // Options that makes the program exit:
     if (options.count("help"))
     {
         std::cout << desc << std::endl;
@@ -121,6 +124,14 @@ void Application::run(int argc, char *argv[])
         std::cout << PACKAGE << " " << PACKAGE_VERSION << std::endl;
         return; 
     }
+    if (options.count("list-midi-inputs"))
+    {
+        MidiInput* tmp_midi_input = new MidiInput();
+        tmp_midi_input->enumerate_devices();
+        delete tmp_midi_input;
+        return; 
+    }
+    // Options to use in the normal mode:
     if (options.count("video-source"))
     {
         video_source = options["video-source"].as<std::string>();
