@@ -37,7 +37,7 @@ check_symlinks_CXXFLAGS = $(BOOST_CPPFLAGS)
 check_symlinks_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
 
 
-check_moviesaver_SOURCES = check_moviesaver.cpp ../src/clip.cpp  ../src/image.cpp ../src/timing.cpp ../src/moviesaver.cpp ../src/subprocess.cpp
+check_moviesaver_SOURCES = check_moviesaver.cpp ../src/clip.cpp  ../src/image.cpp ../src/timing.cpp ../src/moviesaver.cpp ../src/saverworker.cpp ../src/subprocess.cpp
 check_moviesaver_CXXFLAGS = $(BOOST_CPPFLAGS) $(GTK_CFLAGS) -I ../src/
 check_moviesaver_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB) $(GTK_LIBS)
 

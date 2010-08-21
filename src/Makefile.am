@@ -15,6 +15,7 @@ headers = \
     oscreceiver.h \
     oscsender.h \
 	pipeline.h \
+	saverworker.h \
 	subprocess.h \
 	timer.h \
 	timing.h \
@@ -30,6 +31,7 @@ toonloop_SOURCES = \
 	midi.cpp \
 	moviesaver.cpp \
 	pipeline.cpp \
+	saverworker.cpp \
 	subprocess.cpp \
 	timer.cpp \
 	timing.cpp \

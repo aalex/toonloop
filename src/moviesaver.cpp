@@ -21,8 +21,9 @@
 #include <iostream>
 #include <boost/thread.hpp>  
 #include <boost/date_time.hpp>  
+//#include <glib.h>
 #include "moviesaver.h"
-#include "subprocess.h"
+#include "saverworker.h"
 
 MovieSaver::MovieSaver(Clip &clip) : // const Clip &clip?
     is_done_(false),
@@ -31,21 +32,9 @@ MovieSaver::MovieSaver(Clip &clip) : // const Clip &clip?
 {
     // TODO: load image names
     // TODO: create symlinks
+    // TODO: get a handle to the clip 
     clip_id_ = clip.get_id();
     std::cout << "MovieSaver Clip ID is " << clip_id_ << std::endl;  
-}
-SaverWorker::SaverWorker(MovieSaver *owner) :
-    owner_(owner)
-{
-}
-void SaverWorker::operator()()
-{
-    std::string command = "sleep 1"; // TODO
-    std::cout << "Lauching $ " << command << std::endl;  
-    bool ret_val = run_command(command); // blocking call
-    //std::cout << "MovieSaver: done saving clip" << std::endl;  
-    std::cout << "Done with $ " << command << std::endl;
-    std::cout << "Its return value is " << ret_val << std::endl;
 }
 
 bool MovieSaver::start_saving()

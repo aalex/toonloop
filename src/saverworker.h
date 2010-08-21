@@ -18,33 +18,21 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef __MOVIESAVER_H__
-#define __MOVIESAVER_H__
+#ifndef __SAVERWORKER_H__
+#define __SAVERWORKER_H__
 
-#include <boost/thread.hpp>  
-#include <string>
-#include <vector>
 #include "clip.h"
-#include "saverworker.h"
 
-class MovieSaver
+// forward declarations
+class MovieSaver;
+
+class SaverWorker
 {
     public:
-        MovieSaver(Clip &clip);
-        bool start_saving();
-        bool is_done();
-        bool is_saving();
-        //void save(); // starts the thread
-        // Starts the thread. It's done when this method returns.
+        SaverWorker(MovieSaver *owner);
+        void operator()();
     private:
-        // TODO: list of path to each images to save.
-        std::vector<std::string> image_paths_;
-        // let's store its ID
-        int clip_id_;
-        bool is_done_;
-        bool is_saving_;
-        SaverWorker worker_;
-        boost::thread worker_thread_;
+        MovieSaver *owner_;
 };
 
 #endif

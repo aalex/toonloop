@@ -3,6 +3,7 @@
 #include <iostream>
 #include <boost/date_time.hpp>  
 #include "moviesaver.h"
+#include "saverworker.h"
 #include "clip.h"
 
 int main(int argc, char* argv[])  

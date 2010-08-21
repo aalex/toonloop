@@ -18,34 +18,23 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef __MOVIESAVER_H__
-#define __MOVIESAVER_H__
-
-#include <boost/thread.hpp>  
-#include <string>
-#include <vector>
-#include "clip.h"
+// #include <glib/glib.h>
+#include "moviesaver.h"
 #include "saverworker.h"
+#include "subprocess.h" // TODO: use glib instead of subprocess.h
 
-class MovieSaver
+SaverWorker::SaverWorker(MovieSaver *owner) :
+    owner_(owner)
 {
-    public:
-        MovieSaver(Clip &clip);
-        bool start_saving();
-        bool is_done();
-        bool is_saving();
-        //void save(); // starts the thread
-        // Starts the thread. It's done when this method returns.
-    private:
-        // TODO: list of path to each images to save.
-        std::vector<std::string> image_paths_;
-        // let's store its ID
-        int clip_id_;
-        bool is_done_;
-        bool is_saving_;
-        SaverWorker worker_;
-        boost::thread worker_thread_;
-};
-
-#endif
+}
+void SaverWorker::operator()()
+{
+    // mencoder mf:///tmp/toonloop-LKJSD/*.jpg  -mf w=640:h=480:fps=2:type=jpg -ovc lavc -lavcopts vcodec=mjpeg -oac copy -of lavf -lavfopts format=mov -o out.mov
+    std::string command = "sleep 1"; // TODO
+    std::cout << "Lauching $ " << command << std::endl;  
+    bool ret_val = run_command(command); // blocking call
+    //std::cout << "MovieSaver: done saving clip" << std::endl;  
+    std::cout << "Done with $ " << command << std::endl;
+    std::cout << "Its return value is " << ret_val << std::endl;
+}
 
