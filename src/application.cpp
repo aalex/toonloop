@@ -36,6 +36,7 @@
 #include "gui.h"
 #include "midi.h"
 #include "pipeline.h"
+#include "v4l2util.h"
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -101,14 +102,16 @@ void Application::run(int argc, char *argv[])
         //("rendering-fps", po::value<int>()->default_value(30), "Rendering frame rate") // FIXME: can we get a FPS different for the rendering?
         //("capture-fps,r", po::value<int>()->default_value(30), "Rendering frame rate")
         ("playhead-fps", po::value<int>()->default_value(12), "Sets the initial playback rate of clips")
-        ("midi-input,m", po::value<int>(), "Input MIDI device number")
-        ("list-midi-inputs,l", po::bool_switch(), "Lists MIDI inputs devices and exits")
         //("image-width,w", po::value<int>()->default_value(640), "Width of the images grabbed from the camera. Default is 640")
         //("image-height,y", po::value<int>()->default_value(480), "Height of the images grabbed from the camera. Default is 480")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode")
         //("sync", po::bool_switch(), "Enables X11 debug.")
         //("keep-images-in-ram,R", po::bool_switch(), "Keep all the images to the computer RAM and do not load JPEG from the disk.")
-        ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device. Use \"test\" for color bars. Use \"x\" to capture the screen");
+        ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device. Use \"test\" for color bars. Use \"x\" to capture the screen")
+        ("midi-input,m", po::value<int>(), "Sets the input MIDI device number to open")
+        ("list-midi-inputs,L", po::bool_switch(), "Lists MIDI inputs devices and exits")
+        ("list-cameras,l", po::bool_switch(), "Lists connected cameras and exits")
+        ; // <-- important semi-colon
     po::variables_map options;
     
     po::store(po::parse_command_line(argc, argv, desc), options);
@@ -124,7 +127,13 @@ void Application::run(int argc, char *argv[])
         std::cout << PACKAGE << " " << PACKAGE_VERSION << std::endl;
         return; 
     }
-    if (options.count("list-midi-inputs"))
+    if (options["list-cameras"].as<bool>())
+    {
+        std::cout << "List of cameras:" << std::endl;
+        v4l2util::listCameras();
+        return; 
+    }
+    if (options["list-midi-inputs"].as<bool>())
     {
         MidiInput* tmp_midi_input = new MidiInput();
         tmp_midi_input->enumerate_devices();
