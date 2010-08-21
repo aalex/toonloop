@@ -24,6 +24,7 @@
 #include "moviesaver.h"
 #include "saverworker.h"
 #include "subprocess.h" // TODO: use glib instead of subprocess.h
+//#include "timing.h" // get_iso_dateime_for_now
 
 SaverWorker::SaverWorker(MovieSaver *owner) :
     owner_(owner)
@@ -32,6 +33,7 @@ SaverWorker::SaverWorker(MovieSaver *owner) :
 void SaverWorker::operator()()
 {
     // mencoder mf:///tmp/toonloop-LKJSD/*.jpg  -mf w=640:h=480:fps=2:type=jpg -ovc lavc -lavcopts vcodec=mjpeg -oac copy -of lavf -lavfopts format=mov -o out.mov
+    // TODO: create a directory with get_iso_dateime_for_now or mkstemp 
     std::string command = "sleep 1"; // TODO
     std::cout << "Lauching $ " << command << std::endl;  
     bool ret_val = run_command(command); // blocking call
