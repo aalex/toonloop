@@ -9,6 +9,7 @@ New features:
     * Installing the desktop file
     * Using the installed icon for window
     * Updated README with info about GLX and test src
+    * Added the --list-cameras option
 
 Bug fixes: 
     * No more blank image when one is taken when none had been received yet.
