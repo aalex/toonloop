@@ -68,9 +68,8 @@ static std::string getDriverInfo(int fd, const std::string &device)
 
     if (doioctl(fd, VIDIOC_QUERYCAP, &vcap, "VIDIOC_QUERYCAP") < 0)
     {
-        LOG_PRINT("\n");
         LOG_WARNING("Cannot get capabilities for device " << device 
-                << ",\n    it isn't a v4l2 driver. Check if it is a v4l1 driver.");
+                << ", it isn't a v4l2 driver. Check if it is a v4l1 driver.");
         return "";
     }
 
@@ -242,16 +241,16 @@ void v4l2util::printCaptureFormat(const std::string &device)
     {
         LOG_PRINT("\nVideo4Linux Camera " << device << ":" << std::endl);
         LOG_PRINT(driverInfo);
-        LOG_PRINT("    Video input   : " << getInputName(fd) << "\n");
-        LOG_PRINT("    All inputs    : " << inputsPerDevice(fd) << "\n");
-        LOG_PRINT("    Standard      : " << getStandard(fd) << "\n");
-        LOG_PRINT("    Width/Height  : " << vfmt.fmt.pix.width << "x" << vfmt.fmt.pix.height << "\n");
-        LOG_PRINT("    Pixel Format  : " << fcc2s(vfmt.fmt.pix.pixelformat) << "\n");
-        LOG_PRINT("    Capture Type  : " << vfmt.type << "\n");
-        LOG_PRINT("    Field         : " << field2s(vfmt.fmt.pix.field) << "\n");
-        LOG_PRINT("    Bytes per Line: " << vfmt.fmt.pix.bytesperline << "\n");
-        LOG_PRINT("    Size Image    : " << vfmt.fmt.pix.sizeimage << "\n");
-        LOG_PRINT("    Colorspace    : " << colorspace2s(vfmt.fmt.pix.colorspace) << "\n");
+        LOG_PRINT("    Video input   : " << getInputName(fd));
+        LOG_PRINT("    All inputs    : " << inputsPerDevice(fd));
+        LOG_PRINT("    Standard      : " << getStandard(fd));
+        LOG_PRINT("    Width/Height  : " << vfmt.fmt.pix.width << "x" << vfmt.fmt.pix.height);
+        LOG_PRINT("    Pixel Format  : " << fcc2s(vfmt.fmt.pix.pixelformat));
+        LOG_PRINT("    Capture Type  : " << vfmt.type);
+        LOG_PRINT("    Field         : " << field2s(vfmt.fmt.pix.field));
+        LOG_PRINT("    Bytes per Line: " << vfmt.fmt.pix.bytesperline);
+        LOG_PRINT("    Size Image    : " << vfmt.fmt.pix.sizeimage);
+        LOG_PRINT("    Colorspace    : " << colorspace2s(vfmt.fmt.pix.colorspace));
         printSupportedSizes(fd);
     }
     close(fd);
@@ -408,7 +407,7 @@ void v4l2util::printSupportedSizes(int fd)
         v4l2_format currentFormat = getCaptureFormat(fd);
 
         if (formatsMatch(format, currentFormat))
-            LOG_PRINT("    Format " << size->first << "x" << size->second << " supported\n");
+            LOG_PRINT("    Format " << size->first << "x" << size->second << " supported");
 
     }
 
