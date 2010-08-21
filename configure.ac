@@ -34,6 +34,7 @@ AC_CHECK_LIB([m],[sin],[AC_SUBST([LIBM_CXXFLAGS],["-lm"])])
 # AC_CHECK_LIB([GLEW], [glewInit],[AC_SUBST([GLEW_LIBS],["-lGLEW"])])
 
 # STK
+# TODO: print some message when configuring STK is OK
 AC_LANG(C++)
 # save original flags
 SAVED_LDFLAGS=$LDFLAGS

@@ -21,6 +21,7 @@ Right now, here is the list of tasks to prioritize:
  * Hide the GUI buttons when in fullscreen mode.
  * Display information in either a HUD in Clutter
  * Support the --osc-recv-port option
+ * Improve STK packaging
 
 
 Road map
@@ -113,4 +114,5 @@ Done
  * DONE: Support many clips
  * DONE: Switch between clips with the number keys
  * DONE: Create a MIDI input manager using RtMidi, which comes with STK.
+ * DONE: Use boost::signals2
 
