@@ -13,14 +13,14 @@ Right now, here is the list of tasks to prioritize:
 
  * Creating symbolic links to each image file in a temporary directory for the conversion to a movie.
  * Get the process manager to call mencoder in a thread, create a clip out of images and tell us when it's done. (see src/subprocess.cpp in branch 2.x and toon/mencoder.py in branch 1.x)
- * Create a MIDI input manager in a thread. see the src/midi.cpp and src/midithread.c files, or consider using RtMidi, which comes with STK.
  * Support the same writehead-motion editing controls as in version 1.x: left, right, enter
  * Support playback directions: forward, backward, ping-pong
  * Support themes
  * Create a single-image theme, combining the two image with the overlay blending mode.
  * Create basic GUI buttons
  * Hide the GUI buttons when in fullscreen mode.
- * Display information in either a HUD or some GTK widgets
+ * Display information in either a HUD in Clutter
+ * Support the --osc-recv-port option
 
 
 Road map
@@ -40,6 +40,8 @@ Once those tasks are done, the features to be implemented in branch 2.x are:
  * Use FPS as a speed unit. Skip frames if needed.
  * GTK GUI (buttons, sliders, menu, etc.) that disappear in fullscreen (GUI could be in Python)
  * Read a few bytes from an image to trigger the kernel's read-ahead. (?)
+ * Support receiving OSC in a UDP multicast group 239.0.0.1
+ * Use the default GStreamer-properties camera when none is given
 
 
 To be done for version 2.2 : Towards professional features
@@ -91,9 +93,9 @@ Other Ideas for Future Directions
 Done 
 ----
 
- * DONE: Choose whether to use SDL, GTK, GTKglext, wxWidgets, or the generic one in the gst-plugins-gl/tests/examples. (We chose GTK)
+ * DONE: Choose whether to use SDL, GTK, GTKglext, wxWidgets, or the generic one in the gst-plugins-gl/tests/examples. (We chose Clutter-GST)
  * WONTFIX: If we choose Gtkglext, we must port the src/sdlshare.cpp GST-OpenGL prototype to Gtkglext. (or choose something else, but the fullscreen mode in SDL on GNU/Linux is very bad. Maybe we can test the newest SDL to see if it's better.)
- * DONE: Get the pipeline that takes snapshots with gtkpixbufsink done. (it works, just need to save to a proper file name) 
+ * DONE: Get the pipeline that takes snapshots with gtkpixbufsink done. 
  * DONE: prototype: Load images in a gdkpixbuf to create an OpenGL texture and display it.
  * DONE: creates directories (using boost::filesystem)
  * DONE: Use boost::program_options in a similar way to Toonloop 1.x. 
@@ -103,11 +105,12 @@ Done
  * DONE: Use GLEW to check for the OpenGL extensions needed to use shaders.
  * DONE: Save the images in the right directory, with unique names.
  * DONE: Save image files at snapshot time and play from disk.
- * Create an OSC input/output manager in a thread. (using liblo) See  http://bitbucket.org/tmatth/dystophonia
- * Drop gst-gl-plugins and use GtkGlext or a drawing area with an OpenGL context**
- * Fix the crash due to multiple threads modifying the image data**
- * Use GLEW correctly
- * Update textures rather than creating new. Use glTexSubImage2D rather than glTexImage2D after the first.
- * Support many clips
- * Switch between clips with the number keys
+ * DONE: Create an OSC input/output manager in a thread. (using liblo) See  http://bitbucket.org/tmatth/dystophonia
+ * DONE: Drop gst-gl-plugins and use GtkGlext or a drawing area with an OpenGL context**
+ * DONE: Fix the crash due to multiple threads modifying the image data**
+ * DONE: Use GLEW correctly
+ * DONE: Update textures rather than creating new. Use glTexSubImage2D rather than glTexImage2D after the first.
+ * DONE: Support many clips
+ * DONE: Switch between clips with the number keys
+ * DONE: Create a MIDI input manager using RtMidi, which comes with STK.
 
