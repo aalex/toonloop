@@ -18,7 +18,9 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-// #include <glib/glib.h>
+#include <boost/filesystem.hpp>
+#include <iostream>
+#include <glib.h>
 #include "moviesaver.h"
 #include "saverworker.h"
 #include "subprocess.h" // TODO: use glib instead of subprocess.h

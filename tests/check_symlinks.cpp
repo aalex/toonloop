@@ -1,14 +1,15 @@
 // tests that we can make symlinks
+#include <boost/filesystem.hpp>
 #include <iostream>
-#include "boost/filesystem.hpp"
 
 int main(int argc, char **argv)
 {
     namespace fs = boost::filesystem;
-
+    //TODO:2010-08-21:aalex: use fs::unique_path... only in boost 1.44 and up
+    //fs::path directory = fs::unique_path("toonloop-%%%%-%%%%-%%%%-%%%%");
     fs::path directory = fs::path("/tmp/hellooo");
     fs::path to_p = fs::path("/etc/apt/sources.list");
-    fs::path from_p = fs::path("/tmp/hellooo/sucess");
+    fs::path from_p = directory / fs::path("success");
 
     if (!fs::exists(directory)) 
     { 
