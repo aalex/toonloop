@@ -24,7 +24,6 @@
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <string>
-
 #include "configuration.h"
 #include "image.h"
 #include "texture.h"
@@ -37,9 +36,6 @@ class Pipeline
         ~Pipeline();
         void grab_frame();
         void remove_frame();
-        //Texture playback_texture_;
-        //Texture onionskin_texture_;
-        std::string get_image_full_path(Image* image);
     private:
         GstElement* videosrc_;
         GstElement* videosink_;

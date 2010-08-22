@@ -35,6 +35,17 @@ MovieSaver::MovieSaver(Clip &clip) : // const Clip &clip?
     // TODO: get a handle to the clip 
     clip_id_ = clip.get_id();
     std::cout << "MovieSaver Clip ID is " << clip_id_ << std::endl;  
+    image_paths_.clear();
+
+    clip.lock_mutex(); // FIXME: do we need mutexes at all?
+    for (int i = 0; i < clip.size(); i++)
+    {
+        // TODO: store the SavingTaskInfo in a struct
+        // Will containt the image_paths, file_extension and format, plus the path to the image directory, etc.
+        image_paths_.push_back(clip.get_image(i).get_name());
+    }
+    clip.unlock_mutex();
+    
 }
 
 bool MovieSaver::start_saving()

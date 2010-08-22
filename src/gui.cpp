@@ -271,7 +271,7 @@ void iterate_playhead()
                     //    buf = thisimage->get_rawdata();
                     //pixels_are_loaded = true;
                 } else {
-                    std::string image_full_path = Application::get_instance().get_pipeline().get_image_full_path(thisimage);
+                    std::string image_full_path = thisclip->get_image_full_path(thisimage);
                     GError *error = NULL;
                     gboolean success;
                     success = clutter_texture_set_from_file(CLUTTER_TEXTURE(gui.playback_texture_), image_full_path.c_str(), &error);

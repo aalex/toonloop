@@ -56,6 +56,7 @@ class Application
     private:
         Application();
         static Application* instance_; // singleton
+        void update_project_home_for_each_clip();
         // TODO: change for scoped_ptr
         std::tr1::shared_ptr<Gui> gui_;
         std::tr1::shared_ptr<MidiInput> midi_input_;

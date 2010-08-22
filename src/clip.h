@@ -44,25 +44,6 @@ enum direction
 
 class Clip 
 {
-    private:
-        unsigned int id_;
-        unsigned int playhead_;
-        unsigned int writehead_;
-        unsigned int width_;
-        unsigned int height_;
-        unsigned int nchannels_;
-        direction direction_;
-        //std::vector<int> intervalometer_rate_;
-        //std::vector<int> fps_;
-        // This is a list of images
-        // I think we should use a std::list<std::tr1::shared_ptr<Image*>>
-        // Their order can change.
-        // Some of them may disappear.
-        // the app is multithread!
-        std::vector< shared_ptr<Image> > images_; // FIXME: use a list of shared_ptr to *Image
-        int playhead_fps_;
-        bool has_recorded_a_frame_;
-        boost::mutex mutex_;
     public:
         Clip(int id);
         int get_id();
@@ -85,6 +66,31 @@ class Clip
         void unlock_mutex();
         void set_has_recorded_frame();
         bool get_has_recorded_frame();
+        void set_directory_path(std::string directory_path);
+        std::string get_directory_path() { return directory_path_; } 
+        std::string get_image_file_extension() { return ".jpg"; };
+        std::string get_image_full_path(Image* image);
+    private:
+        unsigned int id_;
+        unsigned int playhead_;
+        unsigned int writehead_;
+        unsigned int width_;
+        unsigned int height_;
+        unsigned int nchannels_;
+        direction direction_;
+        //std::vector<int> intervalometer_rate_;
+        //std::vector<int> fps_;
+        // This is a list of images
+        // I think we should use a std::list<std::tr1::shared_ptr<Image*>>
+        // Their order can change.
+        // Some of them may disappear.
+        // the app is multithread!
+        std::vector< shared_ptr<Image> > images_; // FIXME: use a list of shared_ptr to *Image
+        int playhead_fps_;
+        bool has_recorded_a_frame_;
+        boost::mutex mutex_;
+        std::string directory_path_;
+        std::string file_extension_;
 };
 
 #endif // __CLIP_H__

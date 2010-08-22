@@ -209,6 +209,7 @@ void Application::run(int argc, char *argv[])
     config_ = std::tr1::shared_ptr<Configuration>(new Configuration(options));
     // It's very important to call set_project_home and set_video_source here:
     config_->set_project_home(project_home);
+    update_project_home_for_each_clip();
     config_->set_video_source(video_source);
     // Init GTK, Clutter and GST:
     GError *error;
@@ -243,6 +244,16 @@ void Application::run(int argc, char *argv[])
     }
     std::cout << "Running toonloop" << std::endl;
     gtk_main();
+}
+
+void Application::update_project_home_for_each_clip()
+{
+    
+    for (unsigned int i = 0; i < clips_.size(); i++)
+    {
+        // TODO: be able to change the project_home on-the-fly
+        clips_[i]->set_directory_path(get_configuration().get_project_home());
+    }
 }
 
 Pipeline& Application::get_pipeline() 

@@ -36,9 +36,11 @@ class MovieSaver
         bool is_saving();
         //void save(); // starts the thread
         // Starts the thread. It's done when this method returns.
-    private:
-        // TODO: list of path to each images to save.
+        /**
+         * list of absolute path to each images to save.
+         */
         std::vector<std::string> image_paths_;
+    private:
         // let's store its ID
         int clip_id_;
         bool is_done_;

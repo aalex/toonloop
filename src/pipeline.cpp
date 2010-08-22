@@ -80,15 +80,6 @@ void Pipeline::end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipel
     }
 }
 
-// TODO: make sure the number of consecutive slashes in the path is ok
-std::string Pipeline::get_image_full_path(Image* image)
-{
-    std::string project_path = Application::get_instance().get_configuration().get_project_home();
-    std::string image_name = image->get_name() + ".jpg";
-    //std::string file_name = fs::path(project_path) / image_name; 
-    return project_path + "/" + image_name; 
-}
-
 /** 
  * Adds an image to the current clip.
  * TODO: should be moved out of here, to application. 
@@ -139,7 +130,7 @@ void Pipeline::grab_frame()
     int image_number = thisclip->frame_add();
     Image *thisimage = &thisclip->get_image(image_number);
     std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl;
-    std::string file_name = get_image_full_path(thisimage);
+    std::string file_name = thisclip->get_image_full_path(thisimage);
     // We can store the pixel data in RAM or not.
     // We need 3 textures: 
     //  * the onionskin of the last frame grabbed. (or at the writehead position)
