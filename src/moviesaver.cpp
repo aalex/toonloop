@@ -25,50 +25,69 @@
 #include "moviesaver.h"
 #include "saverworker.h"
 
-MovieSaver::MovieSaver(Clip &clip) : // const Clip &clip?
+MovieSaver::MovieSaver() : // const Clip &clip?
     is_done_(false),
-    is_saving_(false),
-    worker_(this)
+    is_saving_(false)
+    //worker_(this)
 {
-    // TODO: load image names
+}
+
+/**
+ * Starts saving a clip to a movie file.
+ */
+// TODO: store tasks and defer them to later.
+bool MovieSaver::add_saving_task(Clip &clip)
+{
+    if (is_saving_) {
+        std::cout << "The MovieSaver has already started saving!" << std::endl;
+        return false;
+    }
+    is_saving_ = true;
+    is_done_ = false;
+    // TODO: delete current_task_ if already allocated
+    current_task_ = std::tr1::shared_ptr<SavingTask>(new SavingTask());
+    // TODO: delete current worker if there is one
+    worker_ = new SaverWorker(this); // create a brand new worker...
+
+    // gather info about this clip:
+    current_task_->clip_id_ = clip.get_id();
+    std::cout << "MovieSaver Clip ID is " << current_task_->clip_id_ << std::endl;  
+
+    // load image names
+    current_task_->image_paths_.clear();
+
     // TODO: create symlinks
     // TODO: get a handle to the clip 
-    clip_id_ = clip.get_id();
-    std::cout << "MovieSaver Clip ID is " << clip_id_ << std::endl;  
-    image_paths_.clear();
-
+    
     clip.lock_mutex(); // FIXME: do we need mutexes at all?
+    //TODO: save in reverse order or ping pong - as well
     for (int i = 0; i < clip.size(); i++)
     {
         // TODO: store the SavingTaskInfo in a struct
         // Will containt the image_paths, file_extension and format, plus the path to the image directory, etc.
-        image_paths_.push_back(clip.get_image(i).get_name());
+        current_task_->image_paths_.push_back(clip.get_image_full_path(&(clip.get_image(i))));
     }
     clip.unlock_mutex();
-    
-}
-
-bool MovieSaver::start_saving()
-{
-    if (is_saving_) {
-        std::cout << "The MovieSaver has already started saving!" << std::endl;
-        assert(false); // TODO: raise an exception
-    }
-    is_saving_ = true;
-    is_done_ = false;
-
     //will call worker_.operator()() in a thread 
-    worker_thread_ = boost::thread(worker_);
-
+    worker_thread_ = boost::thread(*worker_);
     return true;
 }
 
+
+void MovieSaver::set_result_directory(std::string path) 
+{
+    result_directory_ = path;
+}
+
+/**
+ * Returns if it's currently busy or not
+ */
 bool MovieSaver::is_saving()
 {
     return is_saving_;
 }
 /**
- * Checks if the thread is done.
+ * Checks if the saving thread is done.
  */
 //TODO: call a signal when done
 bool MovieSaver::is_done()
@@ -85,5 +104,10 @@ bool MovieSaver::is_done()
         is_done_ = returned;
         return returned;
     }
+}
+
+SavingTask& MovieSaver::get_current_task() 
+{
+    return *current_task_;
 }
 

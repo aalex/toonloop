@@ -24,29 +24,43 @@
 #include <boost/thread.hpp>  
 #include <string>
 #include <vector>
+#include <tr1/memory>
 #include "clip.h"
 #include "saverworker.h"
+
+/**
+ * We store there a snapshot of the info about a clip to save.
+ */
+struct SavingTask
+{
+    std::vector<std::string> image_paths_;
+    int clip_id_;
+};
 
 class MovieSaver
 {
     public:
-        MovieSaver(Clip &clip);
-        bool start_saving();
+        MovieSaver();
+        bool add_saving_task(Clip &clip);
         bool is_done();
         bool is_saving();
+        void set_result_directory(std::string path);
+        std::string get_result_directory() { return result_directory_; } 
+        SavingTask &get_current_task();
+
         //void save(); // starts the thread
         // Starts the thread. It's done when this method returns.
         /**
          * list of absolute path to each images to save.
          */
-        std::vector<std::string> image_paths_;
     private:
         // let's store its ID
-        int clip_id_;
         bool is_done_;
         bool is_saving_;
-        SaverWorker worker_;
+        std::string result_directory_;
+        SaverWorker* worker_;
         boost::thread worker_thread_;
+        std::tr1::shared_ptr<SavingTask> current_task_;
 };
 
 #endif
