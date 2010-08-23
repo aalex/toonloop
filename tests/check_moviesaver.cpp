@@ -9,16 +9,20 @@
 int main(int argc, char* argv[])  
 {  
     std::cout << "main: startup" << std::endl;  
-    Clip clip(99);
+    Clip clip(99);// dummy id, no images.
     MovieSaver* saver = new MovieSaver();
-    saver->add_saving_task(clip);
-    boost::posix_time::millisec sleep_time(100);
-    bool done(false);
-    while (! done)
+    bool ok;
+    ok = saver->add_saving_task(clip);
+    if (! ok)
     {
-        std::cout << "main: waiting for thread" << std::endl;  
-        done = saver->is_done();
-        boost::this_thread::sleep(sleep_time); // simulates doing something else.
+        std::cout << "clip is empty" << std::endl;  
+    } else {
+        boost::posix_time::millisec sleep_time(100);
+        while (saver->is_busy())
+        {
+            std::cout << "main: waiting for thread" << std::endl;  
+            boost::this_thread::sleep(sleep_time); // simulates doing something else.
+        }
     }
     return 0;
 }

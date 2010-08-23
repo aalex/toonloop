@@ -110,15 +110,9 @@ ctrl-q             : quit
 Page down          : next clip
 Page up            : previous clip
 Number from 0 to 9 : switch to a specific clip
+Ctrl-s             : saves the current clip as a movie file
 
-How to transform into a movie
------------------------------
-
-There are many ways, depending the video format you need. But if 
-it's just for preview you can use:
-
- cd ~/Documents/toonloop/default/
- mencoder "mf://*.jpg" -mf fps=5 -o test.avi -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=800
+Toonloop saves the clip in its project directory. The default project directory is the ~/Documents/toonloop/default/ directory, where "~" is your HOME directory. 
 
 
 Additional Configuration Notes

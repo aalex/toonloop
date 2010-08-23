@@ -4,18 +4,22 @@
 #include <iostream>
 #include <boost/signals2.hpp>
 
+#define verbose false
+
 class HelloSlot
 {
     public:
         void operator()() const
         {
-            std::cout << "Hello" << std::endl;
+            if (verbose)
+                std::cout << "Hello" << std::endl;
         }
 };
 
 void print_sum(float x, float y)
 {
-    std::cout << x << " + " << y << " = " << x + y << std::endl;
+    if (verbose)
+        std::cout << x << " + " << y << " = " << x + y << std::endl;
 }
 
 class DummyObject 
@@ -25,7 +29,8 @@ class DummyObject
 };
 void DummyObject::foo(int i)
 {
-    std::cout << "foo(" << i <<  ");" << std::endl;
+    if (verbose)
+        std::cout << "foo(" << i <<  ");" << std::endl;
 }
 /**
  * Simple example with no argument
@@ -36,7 +41,8 @@ void test_a()
     HelloSlot slot;
     boost::signals2::signal<void ()> sig_a;
     sig_a.connect(slot);
-    std::cout << "Calling the signal A." << std::endl;
+    if (verbose)
+        std::cout << "Calling the signal A." << std::endl;
     sig_a();
 }
 /**
@@ -47,7 +53,8 @@ void test_b()
 
     boost::signals2::signal<void (float, float)> sig_b;
     sig_b.connect(&print_sum);
-    std::cout << "Calling the signal B." << std::endl;
+    if (verbose)
+        std::cout << "Calling the signal B." << std::endl;
     sig_b(3.14159, 1.618);
 }
 

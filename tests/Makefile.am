@@ -1,4 +1,4 @@
-TESTS = check_looper check_classes check_commands check_threads check_bool check_datetime check_tween check_moviesaver check_symlinks check_containers check_statesaving check_signals check_midi
+TESTS = check_looper check_classes check_threads check_bool check_datetime check_tween check_moviesaver check_symlinks check_containers check_statesaving check_signals check_midi
 
 noinst_PROGRAMS = $(TESTS)
 
@@ -9,14 +9,6 @@ check_looper_LDADD = $(BOOST_LIBS)
 check_classes_SOURCES = check_classes.cpp
 check_classes_CXXFLAGS = $(BOOST_CPPFLAGS)
 check_classes_LDADD = $(BOOST_LIBS)
-
-#check_files_SOURCES = check_files.cpp
-#check_files_CXXFLAGS = $(BOOST_CPPFLAGS)
-#check_files_LDADD = $(BOOST_LIBS) $(BOOST_FILESYSTEM_LIB)
-
-check_commands_SOURCES = check_commands.cpp ../src/subprocess.cpp
-check_commands_CXXFLAGS = $(BOOST_CPPFLAGS) -I ../src/
-check_commands_LDADD = $(BOOST_LIBS)
 
 check_threads_SOURCES = check_threads.cpp 
 check_threads_CXXFLAGS = $(BOOST_CPPFLAGS) 
@@ -35,7 +27,6 @@ check_tween_LDADD = $(BOOST_LIBS)
 check_symlinks_SOURCES = check_symlinks.cpp 
 check_symlinks_CXXFLAGS = $(BOOST_CPPFLAGS) 
 check_symlinks_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
-
 
 check_moviesaver_SOURCES = check_moviesaver.cpp ../src/clip.cpp  ../src/image.cpp ../src/timing.cpp ../src/moviesaver.cpp ../src/saverworker.cpp ../src/subprocess.cpp
 check_moviesaver_CXXFLAGS = $(BOOST_CPPFLAGS)  $(GTK_CFLAGS) -I ../src/

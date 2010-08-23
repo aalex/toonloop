@@ -21,6 +21,7 @@
 #ifndef __SAVERWORKER_H__
 #define __SAVERWORKER_H__
 
+#include <boost/filesystem.hpp>
 #include "clip.h"
 
 // forward declarations
@@ -31,6 +32,7 @@ class SaverWorker
     public:
         SaverWorker(MovieSaver *owner);
         void operator()();
+        bool success_;
     private:
         MovieSaver *owner_;
 };
