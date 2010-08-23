@@ -36,14 +36,15 @@ Image::Image(std::string name)
 
 int Image::allocate_image(int bufsize)
 {
-    delete rawdata_;
+    delete [] rawdata_;
     rawdata_ = new char[bufsize];
+    return 0;
 }
 
 Image::~Image()
 {
     std::cout << "~Image destructor called for " << name_ << std::endl;
-    delete rawdata_;
+    delete [] rawdata_;
 }
 
 std::string Image::get_name()
