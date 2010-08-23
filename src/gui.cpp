@@ -137,6 +137,15 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
                 Application::get_instance().quit();
             }
             break;
+        case GDK_s:
+            // Ctrl-s: Saves the current clip, this quits the main loop
+            // (if there is one)
+            if (event->state & GDK_CONTROL_MASK)
+            {
+                g_print("Ctrl-S key pressed, saving.\n");
+                Application::get_instance().save_current_clip();
+            }
+            break;
         default:
             break;
     }

@@ -30,6 +30,7 @@
 #include "midi.h"
 #include "oscinterface.h"
 #include "pipeline.h"
+#include "moviesaver.h"
 
 // FIXME:2010-08-17:aalex:We should allow more than 10 clips
 #define MAX_CLIPS 10
@@ -46,8 +47,10 @@ class Application
         Pipeline &get_pipeline();
         MidiInput &get_midi_input();
         Configuration &get_configuration();
+        MovieSaver &get_movie_saver();
         static Application& get_instance();
         Clip* get_current_clip();
+        bool save_current_clip();
         int get_current_clip_number();
         void set_current_clip_number(int clipnumber);
         double get_cfps();
@@ -55,6 +58,7 @@ class Application
 
     private:
         Application();
+        ~Application();
         static Application* instance_; // singleton
         void update_project_home_for_each_clip();
         // TODO: change for scoped_ptr
@@ -63,6 +67,7 @@ class Application
         std::tr1::shared_ptr<OscInterface> osc_;
         std::tr1::shared_ptr<Pipeline> pipeline_;
         std::tr1::shared_ptr<Configuration> config_;
+        std::tr1::shared_ptr<MovieSaver> movie_saver_;
         int selected_clip_;
         double cfps_;
         std::tr1::unordered_map<int, Clip*> clips_;

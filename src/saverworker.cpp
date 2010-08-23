@@ -30,8 +30,20 @@ SaverWorker::SaverWorker(MovieSaver *owner) :
     owner_(owner)
 {
 }
+
+/**
+ * Converts the series of images of a movie clip.
+ */
 void SaverWorker::operator()()
 {
+    // TODO: image paths and clip id be attribute of this
+    int num_images = owner_->current_task_->image_paths_.size();
+    int clip_id_ = owner_->current_task_->clip_id_;
+
+    
+    // TODO: create symlinks
+    // TODO: get a handle to the clip 
+    //
     // mencoder mf:///tmp/toonloop-LKJSD/*.jpg  -mf w=640:h=480:fps=2:type=jpg -ovc lavc -lavcopts vcodec=mjpeg -oac copy -of lavf -lavfopts format=mov -o out.mov
     // TODO: create a directory with get_iso_dateime_for_now or mkstemp 
     std::string command = "sleep 1"; // TODO

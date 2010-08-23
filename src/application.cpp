@@ -211,6 +211,9 @@ void Application::run(int argc, char *argv[])
     config_->set_project_home(project_home);
     update_project_home_for_each_clip();
     config_->set_video_source(video_source);
+    movie_saver_ = std::tr1::shared_ptr<MovieSaver>(new MovieSaver());
+
+    movie_saver_->set_result_directory(config_->get_project_home());
     // Init GTK, Clutter and GST:
     GError *error;
     error = NULL;
@@ -245,6 +248,16 @@ void Application::run(int argc, char *argv[])
     std::cout << "Running toonloop" << std::endl;
     gtk_main();
 }
+/**
+ * Destructor of a toon looper.
+ */
+Application::~Application()
+{
+    //delete osc_;
+    //delete gui_;
+    //delete pipeline_;
+    //delete config_;
+}
 
 void Application::update_project_home_for_each_clip()
 {
@@ -254,6 +267,16 @@ void Application::update_project_home_for_each_clip()
         // TODO: be able to change the project_home on-the-fly
         clips_[i]->set_directory_path(get_configuration().get_project_home());
     }
+}
+/**
+ * Saves the current clip
+ *
+ * Returns success or false if busy
+ */
+bool Application::save_current_clip()
+{
+    std::cout << "Saving clip " << selected_clip_ << std::endl;
+    return movie_saver_->add_saving_task(get_current_clip());
 }
 
 Pipeline& Application::get_pipeline() 
@@ -278,6 +301,10 @@ Application& Application::get_instance()
     if (!instance_)
         instance_ = new Application();
     return *instance_;
+}
+MovieSaver& Application::get_movie_saver() 
+{
+    return *movie_saver_;
 }
 
 // delete the instance

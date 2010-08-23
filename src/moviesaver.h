@@ -41,13 +41,13 @@ class MovieSaver
 {
     public:
         MovieSaver();
-        bool add_saving_task(Clip &clip);
-        bool is_done();
-        bool is_saving();
+        bool add_saving_task(Clip* clip);
+        bool is_busy();
         void set_result_directory(std::string path);
         std::string get_result_directory() { return result_directory_; } 
         SavingTask &get_current_task();
 
+        std::tr1::shared_ptr<SavingTask> current_task_;
         //void save(); // starts the thread
         // Starts the thread. It's done when this method returns.
         /**
@@ -55,12 +55,12 @@ class MovieSaver
          */
     private:
         // let's store its ID
-        bool is_done_;
-        bool is_saving_;
+        //bool is_done_;
+        //bool is_saving_;
+        bool is_busy_;
         std::string result_directory_;
         SaverWorker* worker_;
         boost::thread worker_thread_;
-        std::tr1::shared_ptr<SavingTask> current_task_;
 };
 
 #endif
