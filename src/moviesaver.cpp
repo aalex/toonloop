@@ -38,11 +38,14 @@ MovieSaver::MovieSaver() : // const Clip &clip?
 // TODO: store tasks and defer them to later.
 bool MovieSaver::add_saving_task(Clip* clip)
 {
+
+    std::cout << "MovieSaver::add_saving_task" << std::endl;
     if (is_busy()) {
         std::cout << "The MovieSaver is busy !" << std::endl;
         return false; // failed adding task
     } // else:
     is_busy_ = true;
+    std::cout << "The MovieSaver is available" << std::endl;
     // TODO: delete current_task_ if already allocated
     //delete &current_task_;
     //current_task_ = std::tr1::shared_ptr<SavingTask>(new SavingTask());
@@ -51,11 +54,11 @@ bool MovieSaver::add_saving_task(Clip* clip)
     //worker_ = new SaverWorker(this); // create a brand new worker...
 
     // gather info about this clip:
-    current_task_->clip_id_ = clip->get_id();
+    (*current_task_).clip_id_ = clip->get_id();
     std::cout << "MovieSaver Clip ID is " << current_task_->clip_id_ << "and size is " << clip->size() << std::endl;  
 
     // load image names
-    current_task_->image_paths_.clear();
+    get_current_task().image_paths_.clear();
     
     //clip.lock_mutex(); // FIXME: do we need mutexes at all?
     //TODO: save in reverse order or ping pong - as well
@@ -63,11 +66,13 @@ bool MovieSaver::add_saving_task(Clip* clip)
     {
         // TODO: store the SavingTaskInfo in a struct
         // Will containt the image_paths, file_extension and format, plus the path to the image directory, etc.
-        current_task_->image_paths_.push_back(clip->get_image_full_path(&(clip->get_image(i))));
+        get_current_task().image_paths_.push_back(clip->get_image_full_path(&(clip->get_image(i))));
     }
     //clip.unlock_mutex();
     // See saverworker.h
     //will call worker_.operator()() in a thread 
+
+    std::cout << "Starting thread to save movie #" << clip->get_id() << std::endl;
     worker_thread_ = boost::thread(*worker_);
     return true;
 }

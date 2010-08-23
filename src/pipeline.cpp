@@ -104,6 +104,7 @@ void Pipeline::grab_frame()
 {
     GdkPixbuf* pixbuf;
     Clip *thisclip = Application::get_instance().get_current_clip();
+    bool is_verbose = Application::get_instance().get_configuration().get_verbose();
     thisclip->lock_mutex();
     int current_clip_id = thisclip->get_id();
     g_object_get(G_OBJECT(gdkpixbufsink_), "last-pixbuf", &pixbuf, NULL);
@@ -129,7 +130,8 @@ void Pipeline::grab_frame()
 
     int image_number = thisclip->frame_add();
     Image *thisimage = &thisclip->get_image(image_number);
-    std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl;
+    if (is_verbose)
+        std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl;
     std::string file_name = thisclip->get_image_full_path(thisimage);
     // We can store the pixel data in RAM or not.
     // We need 3 textures: 
@@ -140,9 +142,10 @@ void Pipeline::grab_frame()
     if (!gdk_pixbuf_save(pixbuf, file_name.c_str(), "jpeg", NULL, "quality", "100", NULL))
     {
         g_print("Image %s could not be saved. Error\n", file_name.c_str());
+    } else {
+        if (is_verbose)
+            g_print("Image %s saved\n", file_name.c_str());
     }
-    else
-        g_print("Image %s saved\n", file_name.c_str());
     if (Application::get_instance().get_configuration().get_images_in_ram())
     {
         size_t buf_size = w * h * nchannels;

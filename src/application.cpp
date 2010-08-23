@@ -275,8 +275,9 @@ void Application::update_project_home_for_each_clip()
  */
 bool Application::save_current_clip()
 {
-    std::cout << "Saving clip " << selected_clip_ << std::endl;
-    return movie_saver_->add_saving_task(get_current_clip());
+    std::cout << "Saving clip #" << selected_clip_ << std::endl;
+    Clip* clip = get_current_clip();
+    return movie_saver_->add_saving_task(clip);
 }
 
 Pipeline& Application::get_pipeline() 
