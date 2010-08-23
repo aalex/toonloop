@@ -41,14 +41,13 @@ void OscReceiver::error(int num, const char *msg, const char *path)
  *  * message has not been fully handled and the server should try other methods */
 int OscReceiver::genericHandler(const char *path, 
         const char *types, lo_arg **argv, 
-        int argc, void *data, void *user_data) 
+        int argc, void * /*data*/, void * /*user_data*/) 
 { 
     //OscReceiver *context = static_cast<OscReceiver*>(user_data);
-    int i; 
 
 #ifdef CONFIG_DEBUG
     printf("path: <%s>\n", path); 
-    for (i = 0; i < argc; ++i) 
+    for (int i = 0; i < argc; ++i) 
     { 
         printf("arg %d '%c' ", i, types[i]); 
         lo_arg_pp(static_cast<lo_type>(types[i]), argv[i]); 
@@ -56,7 +55,7 @@ int OscReceiver::genericHandler(const char *path,
     } 
     printf("\n"); 
     fflush(stdout); 
-#endif CONFIG_DEBUG
+#endif // CONFIG_DEBUG
 
     return 1; 
 } 

@@ -57,7 +57,7 @@ int OscInterface::pingCb(
         const char *types, lo_arg **argv, 
         int argc, void *data, void *user_data) 
 { 
-    OscInterface *context = static_cast<OscInterface*>(user_data);
+    //OscInterface *context = static_cast<OscInterface*>(user_data);
 #ifdef CONFIG_DEBUG
     std::cout << "Got " << path << std::endl << std::endl;
 #endif

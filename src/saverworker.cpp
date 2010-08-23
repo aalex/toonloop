@@ -69,7 +69,7 @@ void SaverWorker::operator()()
     }
     int BUFSIZE = 11;
     char buffer[BUFSIZE];
-    for (int i = 0; i < owner_->current_task_.image_paths_.size(); i++)
+    for (unsigned i = 0; i < owner_->current_task_.image_paths_.size(); i++)
     {
         // TODO: store the SavingTaskInfo in a struct
         // Will containt the image_paths, file_extension and format, plus the path to the image directory, etc.

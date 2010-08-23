@@ -9,9 +9,8 @@ AC_CONFIG_MACRO_DIR([m4]) # check for m4 macros in directory m4
 AC_PROG_LIBTOOL
 AM_INIT_AUTOMAKE()
 
-# Check for C and C++ compilers
+# Check for C++ compiler
 AC_PROG_CXX
-AC_PROG_CC
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -35,7 +34,7 @@ AC_CHECK_LIB([m],[sin],[AC_SUBST([LIBM_CXXFLAGS],["-lm"])])
 
 # STK
 # TODO: print some message when configuring STK is OK
-AC_LANG(C++)
+AC_LANG_PUSH(C++)
 # save original flags
 SAVED_LDFLAGS=$LDFLAGS
 LDFLAGS="$LDFLAGS -lstk"
@@ -46,7 +45,7 @@ AC_LINK_IFELSE(
         [AC_MSG_ERROR([libstk is not installed: alsa])])
 LDFLAGS=$SAVED_LDFLAGS # restore them
 AC_SUBST(STK_CXXFLAGS, "-D__LINUX_ALSA__ -D__UNIX_JACK__ -D__LITTLE_ENDIAN__")
-AC_SUBST(CXXFLAGS, " -O2 -Wall -Wno-unused-parameter") #TODO:  -Wfatal-errors -Werror -pedantic")
+AC_LANG_POP(C++)
 
 
 #Set LIBLO with pkg-config
@@ -154,6 +153,7 @@ PIXMAPS_DIR=$DATADIR/pixmaps
 AC_SUBST(PIXMAPS_DIR)
 AC_MSG_NOTICE(Storing pixmaps files in $PIXMAPS_DIR)
 
+AC_SUBST(CXXFLAGS, " -O2 -Wall -Werror") #TODO:  -Wfatal-errors -Werror -pedantic")
 
 AC_CONFIG_FILES([
     Makefile
