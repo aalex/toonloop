@@ -1,0 +1,6 @@
+#!/bin/bash
+# This file is not included in the distributed package, nor installed
+# It is only useful for developers to simplify launching spinic.
+cd $(dirname $0)
+./src/toonloop $@
+
