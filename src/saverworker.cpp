@@ -102,6 +102,8 @@ void SaverWorker::operator()()
     fs::path output_movie = directory / fs::path("out.mov");
 
     // TODO: Make width/height configurable
+    // TODO: support AVI file.. 
+    //  mencoder "mf://*.jpg" -mf fps=5 -o test.avi -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=800
     std::string command = std::string("mencoder mf://") + directory.string() + std::string("/*.jpg -quiet -mf w=640:h=480:fps=" + fps + ":type=jpg -ovc lavc -lavcopts vcodec=mjpeg -oac copy -of lavf -lavfopts format=mov -o ") + output_movie.string(); 
     std::cout << "Lauching $ " << command << std::endl;  
     bool ret_val = run_command(command); // blocking call

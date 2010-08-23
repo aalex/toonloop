@@ -11,8 +11,9 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * Creating symbolic links to each image file in a temporary directory for the conversion to a movie.
- * Get the process manager to call mencoder in a thread, create a clip out of images and tell us when it's done. (see src/subprocess.cpp in branch 2.x and toon/mencoder.py in branch 1.x)
+ * Create a directory for movies and one for images, in the project dir.
+ * Support saving in AVI
+ * Use the FPS of the current clip for the saved movie
  * Support the same writehead-motion editing controls as in version 1.x: left, right, enter
  * Support playback directions: forward, backward, ping-pong
  * Support themes
@@ -115,4 +116,5 @@ Done
  * DONE: Switch between clips with the number keys
  * DONE: Create a MIDI input manager using RtMidi, which comes with STK.
  * DONE: Use boost::signals2
-
+ * DONE: Creating symbolic links to each image file in a temporary directory for the conversion to a movie.
+ * DONE: Get the process manager to call mencoder in a thread, create a clip out of images and tell us when it's done. (see src/subprocess.cpp in branch 2.x and toon/mencoder.py in branch 1.x)

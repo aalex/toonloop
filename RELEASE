@@ -10,6 +10,7 @@ New features:
     * Using the installed icon for window
     * Updated README with info about GLX and test src
     * Added the --list-cameras option
+    * Saving the current clip as a movie file
 
 Bug fixes: 
     * No more blank image when one is taken when none had been received yet.
