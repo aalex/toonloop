@@ -26,7 +26,6 @@
 #include <string>
 #include "configuration.h"
 #include "image.h"
-#include "texture.h"
 
 class Pipeline
 {

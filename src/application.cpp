@@ -277,7 +277,12 @@ bool Application::save_current_clip()
 {
     std::cout << "Saving clip #" << selected_clip_ << std::endl;
     Clip* clip = get_current_clip();
-    return movie_saver_->add_saving_task(clip);
+    if (clip->size() == 0)
+    {
+        std::cout << "Clip is empty: " << selected_clip_ << std::endl;
+        return false;
+    } else
+        return movie_saver_->add_saving_task(clip);
 }
 
 Pipeline& Application::get_pipeline() 
