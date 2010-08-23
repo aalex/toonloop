@@ -49,7 +49,7 @@ void SaverWorker::operator()()
     
     // TODO: create symlinks
     std::string datetime_started = timing::get_iso_datetime_for_now();
-    fs::path directory = fs::path("/tmp/" + datetime_started);
+    fs::path directory = fs::path("/tmp/toonloop-" + datetime_started);
     std::cout << "----------------------------------" << std::endl;
     std::cout << "tmp dir: " << directory.string() << std::endl;
     std::cout << "----------------------------------" << std::endl;
@@ -111,7 +111,8 @@ void SaverWorker::operator()()
     std::string final_movie = owner_->get_result_directory() + "/movie-" + datetime_started  + ".mov"; 
     try 
     {
-        fs::rename(fs::path(output_movie), fs::path(final_movie));
+        fs::copy_file(fs::path(output_movie), fs::path(final_movie));
+        // the old file will be deleted with the whole dir
     }
     catch(fs::filesystem_error e) 
     { 
@@ -128,7 +129,7 @@ void SaverWorker::operator()()
         success_ = false;
         return;
     }
-    std::cout << "Done creating movie " << output_movie.string() << std::endl;
+    std::cout << "Done creating movie " << final_movie << std::endl;
     success_ = true;
     return;
 }
