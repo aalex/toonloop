@@ -40,8 +40,8 @@ AC_LANG(C++)
 SAVED_LDFLAGS=$LDFLAGS
 LDFLAGS="$LDFLAGS -lstk"
 AC_LINK_IFELSE(
-        [AC_LANG_PROGRAM([ #include <stk/RtAudio.h> ],
-        [RtAudio dac])],
+        [AC_LANG_PROGRAM([ #include <stk/RtMidi.h> ],
+        [RtMidiIn input])],
         [AC_SUBST(STK_LIBS," -lstk -lrt -lm")],
         [AC_MSG_ERROR([libstk is not installed: alsa])])
 LDFLAGS=$SAVED_LDFLAGS # restore them
