@@ -94,6 +94,7 @@ float Tween::easeInOutCubic(float t)
 	{ 
 		return c/2*t*t*t + b;
 	}
-	return c / 2* ((t-=2)*t*t + 2) + b;
+    t -= 2;
+	return c / 2 * (t*t*t + 2) + b;
 }
 

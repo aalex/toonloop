@@ -149,10 +149,10 @@ void Pipeline::grab_frame()
     if (Application::get_instance().get_configuration().get_images_in_ram())
     {
         size_t buf_size = w * h * nchannels;
-        thisimage->allocate_image(w * h * nchannels);
+        thisimage->allocate_image(buf_size);
         char *buf = thisimage->get_rawdata();
         /* copy gdkpixbuf raw data to Image's buffer. Will be used for the texture of the grabbed frames */
-        memcpy(buf, gdk_pixbuf_get_pixels(pixbuf), w * h * nchannels);
+        memcpy(buf, gdk_pixbuf_get_pixels(pixbuf), buf_size);
     }
     // TODO:2010-08-06:aalex:Deprecate Image::set_ready() and Image::is_ready()
     thisimage->set_ready(true);

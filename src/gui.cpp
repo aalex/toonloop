@@ -165,8 +165,8 @@ void Gui::switch_to_clip_number(unsigned int key_val)
     if (index > MAX_CLIPS)
         std::cout << "Invalid clip number " << index << std::endl;
     else {
-        int clip = Application::get_instance().get_current_clip_number();
-        if (clip != index) 
+        unsigned int clipIndex = Application::get_instance().get_current_clip_number();
+        if (clipIndex != index) 
             Application::get_instance().set_current_clip_number(index);
     }
 }
@@ -202,7 +202,6 @@ void iterate_playhead()
     Pipeline pipeline = Application::get_instance().get_pipeline();
     
     static int number_of_frames_in_last_second = 0; // counting FPS
-    static bool first_draw = true;
     static int prev_image_number = -1;
     static Clip *prevclip = NULL;
     static Timer fps_calculation_timer = Timer();
@@ -253,7 +252,6 @@ void iterate_playhead()
         //bool pixels_are_loaded = false;
         //width = thisclip->get_width(); // FIXME: do not override data given by gst-plugins-gl!
         //height = thisclip->get_height();// FIXME: do not override data given by gst-plugins-gl!
-        char *buf;
         //GdkPixbuf *pixbuf;
         //bool loaded_pixbuf = false;
         Image* thisimage = &(thisclip->get_image(image_number));
@@ -396,8 +394,8 @@ void on_playback_texture_size_changed(ClutterTexture *texture, gfloat width, gfl
  * Exits the application if OpenGL needs are not met.
  */
 Gui::Gui() :
-    video_input_height_(1),
     video_input_width_(1),
+    video_input_height_(1),
     isFullscreen_(false)
 {
     //video_xwindow_id_ = 0;
