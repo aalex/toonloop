@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
     Clip clip(99);// dummy id, no images.
     MovieSaver* saver = new MovieSaver();
     bool ok;
-    ok = saver->add_saving_task(&clip);
+    ok = saver->add_saving_task(clip);
     if (! ok)
     {
         std::cout << "clip is empty" << std::endl;  

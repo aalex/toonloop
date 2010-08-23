@@ -37,8 +37,8 @@ SaverWorker::SaverWorker(MovieSaver *owner) :
 void SaverWorker::operator()()
 {
     // TODO: image paths and clip id be attribute of this
-    int num_images = owner_->current_task_->image_paths_.size();
-    int clip_id = owner_->current_task_->clip_id_;
+    int num_images = owner_->current_task_.image_paths_.size();
+    int clip_id = owner_->current_task_.clip_id_;
     std::cout << "In the saving thread for clip #" << clip_id << " with " << num_images << " images" << std::endl; // TODO
     
     // TODO: create symlinks
