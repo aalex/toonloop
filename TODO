@@ -11,18 +11,15 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * Create a directory for movies and one for images, in the project dir.
- * Support saving in AVI
- * Use the FPS of the current clip for the saved movie
- * Support the same writehead-motion editing controls as in version 1.x: left, right, enter
- * Support playback directions: forward, backward, ping-pong
- * Support themes
- * Create a single-image theme, combining the two image with the overlay blending mode.
- * Create basic GUI buttons
- * Hide the GUI buttons when in fullscreen mode.
- * Display information in either a HUD in Clutter
- * Support the --osc-recv-port option
- * Improve STK packaging
+ * saving: Create a directory for movies and one for images, in the project dir.
+ * saving: Support saving in AVI
+ * saving: Use the FPS of the current clip for the saved movie
+ * osc: Pipeline::grab_frame should be called by Application::add_image
+ * osc: Create signals for added and removed frames
+ * osc: Send an OSC message upon frame/clip events
+ * osc: Support the --osc-recv-port option
+ * edit: Support the same writehead-motion editing controls as in version 1.x: left, right, enter
+ * edit: Support playback directions: forward, backward, ping-pong
 
 
 Road map
@@ -33,17 +30,22 @@ To be done for Version 2.0
 
 Once those tasks are done, the features to be implemented in branch 2.x are:
 
- * Onion skin
- * Intervalometer
- * portrait theme (rotation to the right)
- * Port the shaders from 1.x (See doc/effects.txt)
- * mirror
- * one effect per clip
- * Use FPS as a speed unit. Skip frames if needed.
- * GTK GUI (buttons, sliders, menu, etc.) that disappear in fullscreen (GUI could be in Python)
- * Read a few bytes from an image to trigger the kernel's read-ahead. (?)
- * Support receiving OSC in a UDP multicast group 239.0.0.1
- * Use the default GStreamer-properties camera when none is given
+ * themes: Support themes
+ * themes: Create a single-image theme, combining the two image with the overlay blending mode.
+ * gui: Display information in either a HUD in Clutter
+ * packaging: Improve STK packaging
+ * gui: Create basic GUI buttons (in Clutter)
+ * edit: Onion skin
+ * edit: Intervalometer
+ * themes: portrait theme (rotation to the right)
+ * effects: Port the shaders from 1.x (See doc/effects.txt)
+ * edit: mirror
+ * effects: one effect per clip
+ * edit: Use FPS as a speed unit. Skip frames if needed.
+ * gui: GTK GUI (buttons, sliders, menu, etc.) that disappear in fullscreen (GUI could be in Python)
+ * optimization: Read a few bytes from an image to trigger the kernel's read-ahead. (?)
+ * osc: Support receiving OSC in a UDP multicast group 239.0.0.1
+ * video: Use the default GStreamer-properties camera when none is given
 
 
 To be done for version 2.2 : Towards professional features
