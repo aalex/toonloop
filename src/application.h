@@ -43,10 +43,15 @@ class Application
         void run(int argc, char *argv[]);
         void quit();
         static void reset();
+        // TODO: return a pointer
         Gui &get_gui();
+        // TODO: return a pointer
         Pipeline &get_pipeline();
+        // TODO: return a pointer
         MidiInput &get_midi_input();
+        // TODO: return a pointer
         Configuration &get_configuration();
+        // TODO: return a pointer
         MovieSaver &get_movie_saver();
         static Application& get_instance();
         Clip* get_current_clip();
