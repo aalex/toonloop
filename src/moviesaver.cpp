@@ -47,12 +47,6 @@ bool MovieSaver::add_saving_task(Clip& clip)
     } // else:
     is_busy_ = true;
     std::cout << "The MovieSaver is available" << std::endl;
-    // TODO: delete current_task_ if already allocated
-    //delete &current_task_;
-    //current_task_ = std::tr1::shared_ptr<SavingTask>(new SavingTask());
-    //// delete current worker if there is one
-    //delete &worker_;
-    //worker_ = new SaverWorker(this); // create a brand new worker...
 
     // gather info about this clip:
     current_task_.clip_id_ = clip.get_id();
