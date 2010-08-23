@@ -41,7 +41,7 @@ void on_pedal_down()
 int main( int argc, char *argv[] )
 {
     unsigned int port = 0;
-    unsigned int duration = 10;
+    unsigned int duration = 1; // Should it be more?
     MidiInput in; // 
     //in(); // = MidiInput(); // FIXME
     in.pedal_down_signal_.connect(&on_pedal_down);
