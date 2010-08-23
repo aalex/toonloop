@@ -3,6 +3,8 @@
 #include <boost/thread.hpp>  
 #include <boost/date_time.hpp>  
 
+#define verbose false
+
 class Worker
 {
     public:
@@ -13,10 +15,12 @@ class Worker
          */
         void operator()()
         {
-            boost::posix_time::seconds workTime(1);  
-            std::cout << "Worker: running during one second..." << std::endl;  
+            boost::posix_time::millisec workTime(10);  
+            if (verbose)
+                std::cout << "Worker: running during 10 ms..." << std::endl;  
             boost::this_thread::sleep(workTime);  
-            std::cout << "Worker: finished" << std::endl;  
+            if (verbose)
+                std::cout << "Worker: finished" << std::endl;  
         }
 };
 
@@ -27,15 +31,17 @@ int main(int argc, char* argv[])
     boost::thread workerThread(w);  
 
     boost::posix_time::millisec wait_time(0);
-    boost::posix_time::millisec sleep_time(100);
+    boost::posix_time::millisec sleep_time(1);
     bool returned(false);
     while (! returned)
     {
-        std::cout << "main: waiting for thread" << std::endl;  
+        if (verbose)
+            std::cout << "main: waiting for thread" << std::endl;  
         returned = workerThread.timed_join(wait_time);
         boost::this_thread::sleep(sleep_time); // simulates doing something else.
     }
-    std::cout << "main: done" << std::endl;  
+    if (verbose)
+        std::cout << "main: done" << std::endl;  
     return 0;  
 }
 

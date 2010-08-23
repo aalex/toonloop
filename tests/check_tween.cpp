@@ -1,7 +1,7 @@
 #include <iostream>
 #include "tween.h"
 
-#define VERBOSE true
+#define VERBOSE false
 
 int main(int argc, char *argv[])
 {

@@ -9,7 +9,7 @@
 
 //#include <unistd.h> // usleep and sleep
 
-#define VERBOSE true
+#define VERBOSE false
 
 void check_iso_string()
 {
