@@ -13,7 +13,11 @@ Basic Tools for Compiling
 
 To build applications such as Toonloop, you should have the following packages installed on your system:
 
- build-essential
+ automake,
+ bison,
+ build-essential,
+ flex,
+ libtool
 
 These instructions are for Ubuntu GNU/Linux - and should work on Debian GNU/Linux as well. Toonloop should build on other platforms too. Please help us improving this documentation if you get it to work on other operating systems.
 
@@ -25,10 +29,7 @@ Toonloop 1.9.x has been built successfully on Debian squeeze and Ubuntu 10.04 Lu
 
 Here is the list of Debian package that you will need to build Toonloop 2.x. 
 
- automake,
- bison,
  ffmpeg,
- flex,
  gettext,
  gstreamer0.10-alsa,
  gstreamer0.10-ffmpeg,
@@ -56,9 +57,7 @@ Here is the list of Debian package that you will need to build Toonloop 2.x.
  libgstreamer-plugins-base0.10-dev,
  libgstreamer0.10-dev (>= 0.10.23),
  libgtk2.0-dev,
- libportmidi-dev,
  libstk0-dev,
- libtool,
  libxml2-dev,
  libxv-dev,
  mencoder
