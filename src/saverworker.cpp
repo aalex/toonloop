@@ -40,6 +40,8 @@ void SaverWorker::operator()()
 {
     namespace fs = boost::filesystem;
     success_ = false;
+    // TODO: make FPS configurable
+    std::string fps = "24";
     // TODO: image paths and clip id be attribute of this
     int num_images = owner_->current_task_.image_paths_.size();
     int clip_id = owner_->current_task_.clip_id_;
@@ -97,18 +99,26 @@ void SaverWorker::operator()()
             std::cout << "Success creating symlink" << std::endl;
         }
     }
-    // TODO: get a handle to the clip 
-    //
-    // 
-    // TODO: create a directory with get_iso_dateime_for_now or mkstemp 
     fs::path output_movie = directory / fs::path("out.mov");
-    std::string command = std::string("mencoder mf://") + directory.string() + std::string("/*.jpg -quiet -mf w=640:h=480:fps=24:type=jpg -ovc lavc -lavcopts vcodec=mjpeg -oac copy -of lavf -lavfopts format=mov -o ") + output_movie.string(); 
+
+    // TODO: Make width/height configurable
+    std::string command = std::string("mencoder mf://") + directory.string() + std::string("/*.jpg -quiet -mf w=640:h=480:fps=" + fps + ":type=jpg -ovc lavc -lavcopts vcodec=mjpeg -oac copy -of lavf -lavfopts format=mov -o ") + output_movie.string(); 
     std::cout << "Lauching $ " << command << std::endl;  
     bool ret_val = run_command(command); // blocking call
-    //std::cout << "MovieSaver: done saving clip" << std::endl;  
     std::cout << "Done with $ " << command << std::endl;
     std::cout << "Its return value is " << ret_val << std::endl;
-#if 0
+    // rename movie file
+    std::string final_movie = owner_->get_result_directory() + "/movie-" + datetime_started  + ".mov"; 
+    try 
+    {
+        fs::rename(fs::path(output_movie), fs::path(final_movie));
+    }
+    catch(fs::filesystem_error e) 
+    { 
+        std::cerr << "Error renaming final movie file : " << e.what() << std::endl;
+        success_ = false;
+        return;
+    }   
     try
     {
         std::cout << "remove directory tree" << std::endl;
@@ -118,7 +128,6 @@ void SaverWorker::operator()()
         success_ = false;
         return;
     }
-#endif
     std::cout << "Done creating movie " << output_movie.string() << std::endl;
     success_ = true;
     return;

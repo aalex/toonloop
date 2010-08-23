@@ -213,6 +213,7 @@ void Application::run(int argc, char *argv[])
     config_->set_video_source(video_source);
     movie_saver_ = std::tr1::shared_ptr<MovieSaver>(new MovieSaver());
 
+    // TODO: create a directory for clips and one for images.
     movie_saver_->set_result_directory(config_->get_project_home());
     // Init GTK, Clutter and GST:
     GError *error;
