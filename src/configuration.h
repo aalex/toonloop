@@ -32,15 +32,19 @@ const int MIDI_INPUT_NONE = 99;
 /**
  * Name of the directory to store images in the project directory.
  */
-const std::string IMAGE_DIRECTORY = "images";
+const std::string IMAGES_DIRECTORY = "images";
 /**
  * Name of the directory to store movies in the project directory.
  */
-const std::string MOVIE_DIRECTORY = "movies";
+const std::string MOVIES_DIRECTORY = "movies";
+// /**
+//  * Name of the directory to store data in the project directory.
+//  */
+// const std::string DATA_DIRECTORY = "data";
 /**
- * Name of the directory to store data in the project directory.
+ * Default project directory.
  */
-const std::string DATA_DIRECTORY = "data";
+const std::string DEFAULT_PROJECT_HOME = "~/Documents/toonloop/default";
 
 /**
  * Contains the configuration options for the whole application.

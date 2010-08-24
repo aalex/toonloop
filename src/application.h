@@ -37,6 +37,8 @@
 
 namespace po = boost::program_options;
 
+bool make_sure_directory_exists(std::string directory);;
+
 class Application 
 {
     public:
@@ -58,7 +60,7 @@ class Application
         bool save_current_clip();
         int get_current_clip_number();
         void set_current_clip_number(int clipnumber);
-        double get_cfps();
+        //double get_cfps();
         void on_pedal_down();
 
     private:
@@ -66,6 +68,7 @@ class Application
         ~Application();
         static Application* instance_; // singleton
         void update_project_home_for_each_clip();
+        bool setup_project_home(std::string project_home);
         // TODO: change for scoped_ptr
         std::tr1::shared_ptr<Gui> gui_;
         std::tr1::shared_ptr<MidiInput> midi_input_;

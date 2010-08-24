@@ -86,8 +86,8 @@ void Application::set_current_clip_number(int clipnumber)
 void Application::run(int argc, char *argv[])
 {
     std::string video_source = "/dev/video0";
-    std::string project_home = "~/Documents/toonloop/default";
-    po::options_description desc("Toonloop options");
+    std::string project_home = DEFAULT_PROJECT_HOME;
+    po::options_description desc("Toonloop live stop motion animation editor");
     // std::cout << "adding options" << std::endl;
     desc.add_options()
         ("help,h", "Show this help message and exit")
@@ -159,26 +159,12 @@ void Application::run(int argc, char *argv[])
     if (options.count("project-home")) // of course it will be there.
     {
         project_home = options["project-home"].as<std::string>();
-        if (project_home == "~/Documents/toonloop/default") // replace ~ by $HOME
+        if (project_home == DEFAULT_PROJECT_HOME) // FIXME: replace ~ by $HOME instead of hard-coding this
             project_home = std::string(std::getenv("HOME")) + "/Documents/toonloop/default";
         std::cout << "project-home is set to " << project_home << std::endl;
-        if (! fs::exists(project_home))
-        {
-            try 
-            {
-                fs::create_directories(project_home); // TODO: check if it returns true
-            } catch(const std::exception& e) 
-            {
-                // TODO: be more specific to fs::basic_filesystem_error<Path> 
-                std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
-            }
-        } else {
-            if (! fs::is_directory(project_home))
-            {
-                std::cout << "Error: " << project_home << " is not a directory." << std::endl;
-                exit(1);
-            }
-        }
+        if (! setup_project_home(project_home))
+            exit(1);
+
     }
     // FIXME: From there, the options are set in configuration.cpp
     // TODO: We should do this in only one place. 
@@ -258,6 +244,49 @@ Application::~Application()
     //delete gui_;
     //delete pipeline_;
     //delete config_;
+}
+/**
+ * Creates all the project directories.
+ *
+ * Returns whether the directories exist or not once done.
+ */
+
+bool Application::setup_project_home(std::string project_home)
+{
+    if (! make_sure_directory_exists(project_home))
+        return false;
+    if (! make_sure_directory_exists(project_home + "/" + MOVIES_DIRECTORY))
+        return false;
+    if (! make_sure_directory_exists(project_home + "/" + IMAGES_DIRECTORY))
+        return false;
+    return true;
+}
+/**
+ * Checks if a directory exists, create it and its parent directories if not.
+ *
+ * Returns whether the directory exists or not once done.
+ */
+bool make_sure_directory_exists(std::string directory)
+{
+    if (! fs::exists(directory))
+    {
+        try 
+        {
+            fs::create_directories(directory); // TODO: check if it returns true
+        } catch(const std::exception& e) 
+        {
+            // TODO: be more specific to fs::basic_filesystem_error<Path> 
+            std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
+            return false;
+        }
+    } else {
+        if (! fs::is_directory(directory))
+        {
+            std::cout << "Error: " << directory << " is not a directory." << std::endl;
+            return false;
+        }
+    }
+    return true;
 }
 
 void Application::update_project_home_for_each_clip()
