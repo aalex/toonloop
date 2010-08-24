@@ -1,3 +1,944 @@
+commit 52f83c2b2c27e1eda3f3279475d54e83152b39fb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 11:05:57 2010 -0400
+
+    updated TODO and RELEASE
+
+commit e13a98baf4618658652efd3446826a349f580025
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 10:57:28 2010 -0400
+
+    removed the keep_images_in_ram config entry
+
+commit 75486218b6bb2fe7acd2f6e0572b61489c5b09d8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 10:07:57 2010 -0400
+
+    updated TODO
+
+commit 214f697042588d5c6f862d43800a9c50ed791e89
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 09:53:37 2010 -0400
+
+    updated TODO
+
+commit 30350fc039f66575738101f5ddb4dfe50355a0b6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 09:52:22 2010 -0400
+
+    adding the --osc-receive-port option
+
+commit 012c2882c928751375fd3055cf70bc5d8aa4c4f9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 09:04:19 2010 -0400
+
+    saving images and movies in their own directory
+
+commit 878ab5f0a8c942cda8605ae363cb160a43d88405
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 08:59:29 2010 -0400
+
+    creating the images and movies subdirs
+
+commit cad7781443483ce9dfe175d13e248ea6b6bcbb06
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 08:32:57 2010 -0400
+
+    updated RELEASE
+
+commit aa09722e971fafadca2df62b90cdcf0ebaf9bc2a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 08:31:16 2010 -0400
+
+    Fixed a bug: was not possible to open MIDI dev 1
+
+commit a981f214f6acaea045d0948eea532addf3bb75cf
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 08:27:26 2010 -0400
+
+    updated RELEASE notes
+
+commit 59016d457beed130474d054ecd6e87164814e6c4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 08:26:11 2010 -0400
+
+    removed prototype
+
+commit 9648448008555204514fe50092a3b42443278854
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 08:24:42 2010 -0400
+
+    remove gstgtk.cpp
+
+commit d62d4b40431bf311b3c0e12fd93a2731f9f2f9ad
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 08:17:12 2010 -0400
+
+    all tests now pass
+
+commit 7b9b7a5daa512d3f6c53726de51f025358f82b2f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 08:15:50 2010 -0400
+
+    using glib to spawn a process
+
+commit 867febacca92ff3220f4d7047ef02dae653644eb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 08:06:10 2010 -0400
+
+    using clip's FPS for final movie FPS
+
+commit 9dd1291dfca6790e60991bb4a7a20cb890d71d76
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 18:04:54 2010 -0400
+
+    added a TODO note
+    
+    We'll return pointers!
+
+commit 462277476406ae0b020dd10d92654cea1f5425f2
+Merge: 90a014e 457c65d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 17:55:17 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 90a014e5d6c97188f458fc1270235fc9ecf00c1b
+Merge: 042012e f732d87
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 17:55:11 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 042012e845d172452196f2f14da249100ff7aa8d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 17:54:59 2010 -0400
+
+    updated TODO
+
+commit 457c65d8e9fd08cdba45daa0520eecb1929e725f
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Mon Aug 23 17:54:16 2010 -0400
+
+    added warning flags, fixed warnings
+    
+    configure: Werror had to be added at the end of configure to avoid problems with the other compilation configure performs.
+
+commit f732d8784e943d9ba96e38d38248c61fb070894c
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Mon Aug 23 17:46:56 2010 -0400
+
+    image: Use delete [] for memory allocated with new []
+    
+    See http://www.parashift.com/c++-faq-lite/freestore-mgmt.html#faq-16.13
+
+commit ac6ace0d14112a022031201c83e723917259a63d
+Merge: 92a987b be0aa71
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Mon Aug 23 17:29:58 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 92a987bcf02413160ce0de6b57cffe252f5096a7
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Mon Aug 23 17:29:34 2010 -0400
+
+    configure: check for RtMidi rather than RtAudio
+
+commit be0aa7102dd0b327fcf47323bba3dd3ebc1dab28
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 16:56:59 2010 -0400
+
+    updated TODO
+
+commit 6c65f6fbc7225e666dd5b19d93db2a09b0c17ae7
+Merge: d80396f 0fb42e0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 16:42:50 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit d80396f96b7a83ea0bef3f854a90e750858ce879
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 16:38:01 2010 -0400
+
+    updated list of deps in README
+
+commit 0fb42e0b12e1573c7a0c4ba7dc84932168fa428e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 14:51:40 2010 -0400
+
+    removed unused attribute
+
+commit 11114e31d8eac1a97c3b165a7e3181193fa02fb7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 14:39:04 2010 -0400
+
+    added TODO and updated RELEASE notes
+
+commit f1e631cb0ac915c5b675b87a411dac241481768e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 14:31:41 2010 -0400
+
+    Success in moving final movie and delete dir
+
+commit cae222f5d6f791d70a90c2268a35c8e202c320af
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 14:02:17 2010 -0400
+
+    almost rename movie file once done
+
+commit 05e9687629ce2703f9543d755cf35b21ed19a166
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 13:44:59 2010 -0400
+
+    creating a movie file
+
+commit 4d11ba0b0a7c8c7dd2a6577dcdd10b91eba7dc0d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 12:58:31 2010 -0400
+
+    Fixed segfault when starting saving thread
+
+commit 00577c0bd9a1c6d93be82f7305ff358d2f14afdc
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 03:53:51 2010 -0400
+
+    decreased verbosity and duration of tests
+
+commit 57cb9fbbb74c9b8dbf3beae7d472221d3023be55
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 03:37:23 2010 -0400
+
+    removed check_commands.cpp
+
+commit 8f20f17dfd551e52670c936d334c654d673af651
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 03:27:19 2010 -0400
+
+    check if clip is empty
+
+commit c03b52b8a33cc41694b00df93f998bc8379f4601
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 03:15:39 2010 -0400
+
+    removed unused texture.cpp
+
+commit 100ce7a0e437b6cb17da90c48cfd645a6fcc6327
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 03:14:45 2010 -0400
+
+    removed unused midithread.c
+
+commit 1e9a6d8be17287f51e671222bdf3e80bc2eb6aa1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 03:11:00 2010 -0400
+
+    adding run
+
+commit 9d862087b3ec12b0db609aeb96d00b43932512c5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 03:10:37 2010 -0400
+
+    decreased verbosity + tentative fix...
+
+commit 761d713cb96ef9bb7aa75c775b851eef75abcc4d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 23 02:45:40 2010 -0400
+
+    Ctrl-S crashes
+
+commit 5b5d9fae1705c61dc70decebf850283944bd6910
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 22 16:56:10 2010 -0400
+
+    Complexified movie saving: Store data in task
+
+commit 714098f4a8014ea7fd0c8a427d31d32844ebbb13
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 22 16:13:56 2010 -0400
+
+    Moved image path stuff to Clip, not Pipeline
+
+commit 60eba4be613756ad7ae278d468f4dca94c057dfe
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Aug 21 11:02:59 2010 -0400
+
+    added comments
+
+commit 227451587bd07c674b1dd2e2f352f0b7655dbb91
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Aug 21 10:49:13 2010 -0400
+
+    Need to link the check_symlinks to boost:fs
+
+commit c4bbeca557c11afd0ace04655b18818a90892f49
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Aug 21 10:26:24 2010 -0400
+
+    added a TODO
+
+commit ac8daa841c117c6c1a3e9185711cd7d1a5ffac92
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Aug 21 10:23:27 2010 -0400
+
+    Splitting saverworker into a separate file
+
+commit bf564fd2d1845aa06935675f7751abe2b56a8e40
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Aug 21 10:23:03 2010 -0400
+
+    updated TODO
+
+commit c0220b453b34ba14138428d5f31bc5ab09dc0595
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Aug 21 10:04:23 2010 -0400
+
+    Moved src/README.txt contents into CONTRIBUTING
+
+commit c2af276b629442b52250cde71ad1224f3e323248
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Aug 21 09:05:24 2010 -0400
+
+    updated RELEASE notes
+
+commit fb80f40ab069198e41e4daa9f44da435c70bf6c6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Aug 21 09:03:57 2010 -0400
+
+    added the --list-cameras option
+    
+    Bool switch must not be checked for their presence, but rather
+    their value must be read and that's it. By default, they are false, but
+    set.
+
+commit 62166c4d0ce097d6b411f232500bbaa77a2118ee
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Aug 21 08:54:16 2010 -0400
+
+    Made the --list-camera output have less new lines
+
+commit 0fb12c522c6d725e17d89944ae937747e900cb7d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 20:34:03 2010 -0400
+
+    updated man page a bit
+
+commit 1e0723ecc70acb5b80d126502d76917f1c8e57b9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 20:31:21 2010 -0400
+
+    added the --list-midi-inputs option
+
+commit 2326b889c9978fbe8bb10a71753e4e0aa0e103b8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 17:06:42 2010 -0400
+
+    updated RELEASE notes
+
+commit a3c6397b1dccd089f17521167387c036bd852375
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 17:05:53 2010 -0400
+
+    Using boost::signals2
+
+commit d49f335ac946b3da8204823cd08f884cb9737f70
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 16:09:01 2010 -0400
+
+    updated RELEASE notes
+
+commit b39d41cc6e76ae673203a69de08f7137b2b92ccf
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 16:05:45 2010 -0400
+
+    Using no MIDI as default
+    
+    Fixed bug when no frame has been grabbed yet
+
+commit 8dabddf868687fad03b1b3ea2fe8c6b7a2394293
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 15:40:13 2010 -0400
+
+    Grab a frame when the MIDI pedal is down
+
+commit 79d7e9339eeaf93b929485f7118e3e2f03b7127c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 14:54:44 2010 -0400
+
+    adding pd patches to test MIDI with
+
+commit 4443f7093e3e91d5fb900faf1e7df0f1d57fa45a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 14:54:21 2010 -0400
+
+    Using signals in midi.cpp
+
+commit a896c477fd5899029f9678299422d879347dc7f6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 14:02:30 2010 -0400
+
+    updated README with number keys
+
+commit a622ab8cf6eae773374c41883ebd493f6b272d6e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 13:38:04 2010 -0400
+
+    adding STK to deps in README
+
+commit d6e0e1cdf95c5e2d69f63630e5e7e6e298c0997d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 12:31:13 2010 -0400
+
+    Detecting sustain pedal + fixed segfault
+
+commit 85eace6cf0295680f684d0501aacea6624897f4e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 12:18:34 2010 -0400
+
+    Allow to specify how long to sleep in midi proto
+
+commit edb7bec061a61d80d7b128b743737f294c37527f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 12:11:30 2010 -0400
+
+    Moved midi proto to test/check_midi.cpp
+
+commit 9bdb605d8788bd38df7f8970329b7e78a1468dcf
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 12:02:36 2010 -0400
+
+    Removed portmidi prototype
+
+commit ce74a30f9b005ed23adbe9ecd170f235d214c662
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 11:44:44 2010 -0400
+
+    Get the * to this in MIDI callback
+
+commit a5481387dfec95985375e3d610ed2ff2cc8fc8fe
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 11:37:02 2010 -0400
+
+    Splitting midi.cpp header into midi.h
+
+commit 05f93e06df8ee49ee1acb5a09323fa08e06e9aa7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 11:34:18 2010 -0400
+
+    Created a MidiInput class
+
+commit aff7edc3eba45b58105fa44cb4fbe21f309b0ee8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 20 11:02:26 2010 -0400
+
+    adding the src/midi.cpp prototype using RtMidi
+
+commit 2c06f69eaf9cea84fcc07679fb4f2319204321b0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 19 09:30:10 2010 -0400
+
+    updated TODO
+
+commit 084931dbcfa2f27f95a2ab7d73bb808534649f33
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 18 12:21:07 2010 -0400
+
+    Fixed --fullscreen and remove useless options
+
+commit 5885ff5c3588ac6595f8cf3fbfe1be51419a75da
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 18 11:53:51 2010 -0400
+
+    adding pixmaps/Makefile.am
+
+commit ed55d555a12740a4b947c08002adce987273b1d4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 18 01:18:58 2010 -0400
+
+    updated the TODO list
+
+commit cc55955ab6acecc4255a50f10ead09e3a7abce4a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 18 01:17:44 2010 -0400
+
+    updated RELEASE notes
+
+commit 4851b98a55116c05cfbfdc5cfc075ba205dd0b6e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 18 01:17:25 2010 -0400
+
+    Installing the .desktop as well
+
+commit 8ab7fe9ccb73bf0d03a57576fab020c455b64918
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 18 01:13:31 2010 -0400
+
+    Using the installed icon for window
+
+commit 424388b9c5ed5ac90d484aded3ea32bcecc8de1b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 18 00:55:47 2010 -0400
+
+    adding icons and .desktop file
+
+commit fd72666e58276d40505a139c774c892eaa6aeb2e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 18 00:33:15 2010 -0400
+
+    modified .gitignore
+
+commit 320b5539f1a9fc0836a1205e7b20fc0892a6f126
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 18 00:31:52 2010 -0400
+
+    spawn.cpp does mkdir, ln -s, ls and rm -rf
+
+commit 5d54749627d579833ac4b4d12903cbc682736e2a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 18 00:09:52 2010 -0400
+
+    removed "experimental" from the window title
+
+commit ee51ae35299ea2a0105f32c96b3187b8682b512a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 18 00:08:09 2010 -0400
+
+    Deleting prototypes of pipelines in bash
+
+commit 60408a402b4993dca7cb57e453eebf288e2348b5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 18 00:07:07 2010 -0400
+
+    adding proto/spawn.cpp: nice prototype
+
+commit 90a16c70470cb5ce6840b0e4c82637de72d1f335
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 17 22:57:47 2010 -0400
+
+    updated tasks TODO
+
+commit 4b16efe7d872cf14a28046f07472f5ff33648bf6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 17 22:57:40 2010 -0400
+
+    updated RELEASE notes
+
+commit c4b74dead05868121df174ab90b7c9e0d8f438fb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 17 22:53:41 2010 -0400
+
+    updated man page with how to use number keys
+
+commit 51292a02c362252ab5598cb943943b010daf43f6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 17 22:52:53 2010 -0400
+
+    Able to switch clip with the number keys
+
+commit b59af8fb92b37a3f5826b97603aff8815f2a6bbb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 17 22:31:55 2010 -0400
+
+    removed some useless comments
+
+commit 9800e6de138b99b5c5801adef2b4a2eaba698c82
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 17 13:00:47 2010 -0400
+
+    Fixed threading issue in moviesaver
+    
+    Thanks to Tristan!
+    We are now ready to actually save a movie.
+    (need to create symlinks to images first)
+
+commit 71f1be7d907eea7cefd78928d3f0542ba907f31c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 17 08:44:44 2010 -0400
+
+    updated README and removed some stuff from configu
+
+commit 11ccd80904e13a49d93ecbc811baa37a27e9bcb8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 17 08:40:00 2010 -0400
+
+    added a TODO
+
+commit 6aa214ad6941e396ecc3d5b5660ea4aedec71598
+Merge: 8919fbd ea1e683
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 17 08:36:23 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop into topic/movisave
+
+commit ea1e683baae6aa6599d90f23e8920aad67b9e602
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 22:46:08 2010 -0400
+
+    updated TODO
+
+commit 473b1ea5e7c146e726581fbdd7868229ef4e2865
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 22:40:26 2010 -0400
+
+    updated a lot the TODO file
+
+commit 826c3837e0cb1473107df511f26741bf94c9ae39
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 22:14:09 2010 -0400
+
+    avoid repeating g++ flags
+
+commit ba23d616e69535a7fe9ecc2c008ca71b6bed4d61
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 22:06:11 2010 -0400
+
+    adding the licence to a few files
+
+commit 1946e03acdaecffbb073a26e800125c132e163c4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 22:00:47 2010 -0400
+
+    Using the --verbose option
+
+commit 70e38a0b27e8f33500e321c22b1354fd6e736519
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 13:15:08 2010 -0400
+
+    added a TODO file
+
+commit 53450588cde8a0dcc96423093dca23dab16b6d65
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 12:11:48 2010 -0400
+
+    Removed the printing of FPS.
+
+commit 8919fbd012b49fc9b34bfb72679f60ece011e57a
+Merge: 08e6746 ad1953f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 03:41:30 2010 -0400
+
+    Merge branch 'master' into topic/movisave
+
+commit ad1953f5b54c4c39722be12c0b855a14f651009a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 03:39:32 2010 -0400
+
+    Towards using members functions with boost signals
+    
+    By the way, Ardour dropped sigc++ for boost::signals2
+
+commit 1871e419e8b6bf1c4bd4a543a073ee12f0c06a26
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 02:51:26 2010 -0400
+
+    Added a nice proto to the check_signals.cpp
+
+commit 19f5ade24a0f559a895dd13369e5f6519a353f88
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 02:46:55 2010 -0400
+
+    Fixed Makefile.am : was compiling wrong file
+
+commit a28c91d19f83f5e033b885b74555f76a92876113
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 02:45:11 2010 -0400
+
+    Towards a working check_signals proto/test
+
+commit d63e5da7055fc4c512db8c14e6af1b9e055db0db
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 02:35:57 2010 -0400
+
+    updated README
+
+commit 7335836fbc35276b9d6afebe4bc81d2e317f9c13
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 02:35:22 2010 -0400
+
+    Checking for boost::signals
+
+commit 08e67468b67e87289debae3f32a61f1522283960
+Merge: 070476a 58425c7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 02:28:53 2010 -0400
+
+    Merge branch 'master' into topic/movisave
+
+commit 58425c75714fc5c582ce0572a13d9b53b940cf3b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 02:13:06 2010 -0400
+
+    Fixed tests using the Timer class - not in its file
+
+commit 070476a3953cd42bd8e8a782a18f0bd26f7d2824
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 16 01:50:32 2010 -0400
+
+    Towards a movie saver in a thread.
+
+commit a383b9cfbf683e99fb528b325a40ecfc7ac6cb9b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 23:20:00 2010 -0400
+
+    Adding command-line OSC utilities
+    
+    Not yet added to the built system. (tarball)
+
+commit f8b7a94bcdc64be4e2585ea5b2c0ef5985195b18
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 21:03:15 2010 -0400
+
+    Removed unused files from Makefile.am
+    
+     * texture.cpp
+     * tween.cpp
+     * draw.cpp
+     * gstgtk.cpp
+
+commit 24a64ce96dedb85ce40bcc98a8a1504ea21caeff
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 20:29:54 2010 -0400
+
+    Moved Timer to an indenpendant file
+
+commit cbe6be2dd160d909819ea5e5a04b4a556dfd992c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 20:17:36 2010 -0400
+
+    starting to clean up pipeline.cpp
+
+commit 11004bcf713b0a5e992d62256e25233079cb822a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 20:15:19 2010 -0400
+
+    added /toon/frame/add and /toon/frame/remove OSC
+
+commit 3afab4dbe4ee45109a0e6af67feef00f5ee6062d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 20:09:16 2010 -0400
+
+    added /toon/quit and /pong OSC handlers
+
+commit 4f5f1a0e5847c6ef791f76f0231f6513136c37aa
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 19:58:10 2010 -0400
+
+    re-added PACKAGE_URL
+
+commit 847424c24e31f36abd1bfb2290a5fd08d461f577
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 17:34:44 2010 -0400
+
+    updated RELEASE notes
+
+commit 7a3320a3ee3b151145f07ee623f8b4c6fa918b38
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 17:21:12 2010 -0400
+
+    Fixed how the video-input option is parsed
+
+commit 9fae120f54707053a802ae9d7eeec1f04c045603
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 17:20:58 2010 -0400
+
+    Updated README with info about GLX and test src
+
+commit 14d4329ef5878bd7336c20eb5cd33eb5ee501057
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 12:29:41 2010 -0400
+
+    corrections in dependencies
+
+commit 39595665f2ed3ef6c9df615f90db8e13aba7a823
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 11:38:06 2010 -0400
+
+    added figlet -f small toonloop
+
+commit 6e6b8fd9d099685ee7e887d62f3733dfe01290b0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 09:44:09 2010 -0400
+
+    Changed the order of checks in configure.ac
+
+commit b9bc10a0def6e5327e7863b2529934a10a2681c1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 15 09:33:02 2010 -0400
+
+    Made missing deps more explicit
+
+commit 3f76e4083fce670744cb02a71c5ede5bba016e6f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Aug 14 21:45:38 2010 -0400
+
+    lowered required version of gst-interface
+
+commit c401c38d0ff73ca835f344ff0330586e49b533ab
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 16:10:54 2010 -0400
+
+    updated version to 0.9.2 - not yet released
+
+commit 913b0487bc6109441a7d064064fc9c3e0a2ccbb6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 16:08:04 2010 -0400
+
+    updated RELEASE notes and man page
+
+commit 89c43888a1f2a1f2f788bd7c4d0848be7813efcc
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 16:01:15 2010 -0400
+
+    do not show playback if there is none
+
+commit 1c00124c9befe7679c919c963afd5ddccdf6ae94
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 15:51:50 2010 -0400
+
+    less verbose
+
+commit 9040155315b0b86b7dfd245dcf6a7af9bbf2f49c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 15:49:15 2010 -0400
+
+    Need to add and show the actor to see it
+
+commit c2db714ec3b125014bf762324af16992a6dfd01f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 15:46:36 2010 -0400
+
+    Do not load image twice in a row
+
+commit 724eb602e4157988a507e022dead2600da785f02
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 15:39:51 2010 -0400
+
+    Trying to display the playback image
+
+commit 4239b9185d69b77a7fdd515fdadc679461476d17
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 15:36:50 2010 -0400
+
+    Loading the image when iterating the playhead.
+
+commit 15c7a9523e9248108193764e63615210a3ecbd53
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 12:09:07 2010 -0400
+
+    more comments
+
+commit 1f1d5d66e7db69da0df5581b65a1d47a335892d7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 11:57:55 2010 -0400
+
+    updated README
+
+commit a726754f896d80d2a55be214193c6388211b4960
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 11:54:30 2010 -0400
+
+    Removed dep for gst-gl-plugins
+
+commit 7116942cc15355e8eff3568036fbe37658d4c64e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 11:37:13 2010 -0400
+
+    more cleanup
+
+commit a064f8fc5d2d511bc5b09b794e33c267ac05ffca
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 11:31:13 2010 -0400
+
+    hiding cursor in fullscreen
+
+commit 5ff65cb6244e0b86e67278ae5d86ef679cde48ae
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 11:27:56 2010 -0400
+
+    modif .gitignore
+
+commit ba4587efa86a2c3d2eceab59c6f3d0c9c02f5fd3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 11:27:22 2010 -0400
+
+    Very big cleanup + resizing texture with window
+
+commit 50d305069f36f6ad3445de49d9300fd9f48a481e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 10:36:08 2010 -0400
+
+    Fixed segfault. g_object_set last arg is NULL
+
+commit 8b69fe3a5aa05b8af6c1e0dddd52cd4b71c645c7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 10:15:43 2010 -0400
+
+    simplifed c_str => string => c_str
+
+commit db1ab5ab25eb6fc1f433b3d72ec9fa226099c458
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 09:44:57 2010 -0400
+
+    Seems segfault is calling gst_get_caps_from_string
+
+commit 5c9d93ad8e22c866084363a1122f6ca4a756c891
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 09:23:02 2010 -0400
+
+    Trying to port to Clutter-GST embeded in GTK
+    
+    Segfaults. :-(
+
+commit fa3c9aa40c6b26bce23cb4695760efe5f653e088
+Merge: 0caa88d c63e41c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 07:43:05 2010 -0400
+
+    Merge branch 'master' into clutter-gui
+
+commit c63e41c0ff86fcaebb4200660b312eec7e9a1715
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 07:35:55 2010 -0400
+
+    updated version to 1.9.1 - not yet released
+
+commit a5ba20b81589f82badefb337b7d45108e9c95063
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 07:33:22 2010 -0400
+
+    added *.tar.gz to .gitignore
+
+commit 6ed5161b2621c708a254d6df4b08b46e2528a3d9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 07:33:14 2010 -0400
+
+    Fixed make dist
+
+commit f186389fcb023065433309201092a9f8cc3610c2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 07:03:12 2010 -0400
+
+    Fixed typo
+
+commit e0fafef61f34690ab80332e3e8838cfb1631adf8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 07:02:13 2010 -0400
+
+    Makefile.am must include m4 macros dir
+
+commit 6e054d335c29914e17ab176b2b199563a7ce30dc
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 06:58:20 2010 -0400
+
+    added CONTRIBUTING
+
+commit c2be3b0d88eb27868cdcd1e262dd299242e3e6dd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 6 06:56:21 2010 -0400
+
+    updated ChangeLog
+
 commit 415021a3de9d8ba1360c5b2b289f8f7ff14280dd
 Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Fri Aug 6 06:29:09 2010 -0400
@@ -9,6 +950,50 @@ Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Fri Aug 6 06:27:16 2010 -0400
 
     Updated README, RELEASE and the man page
+
+commit 0caa88dc2895eebc5393618442d49c6d35b71339
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 5 23:23:37 2010 -0400
+
+    one more comment
+
+commit 1b2d4408ce0cd0c97509fead1d766c0c9c91816d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 5 23:22:20 2010 -0400
+
+    sorting more includes
+
+commit a4bf8b040b5a97dadbbfcce631f9a7062651a91c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 5 23:21:32 2010 -0400
+
+    Cannot import glew after gl
+
+commit c52dce48eb508474438827daf9101c6123afb122
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 5 23:19:38 2010 -0400
+
+    sorting includes... That will create a big diff
+    
+    Useless?
+
+commit f7f75ede88511967a2be03df66c50817f3b00cc8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 5 23:10:14 2010 -0400
+
+    Init gtk/clutter/gst + startin OSC after GUI
+
+commit 0abea7fea600d2b78002e73db8970bdcbb95270f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 5 22:59:24 2010 -0400
+
+    Including and linking with clutter-gst/gtk
+
+commit c2b26a6314a6702e313cb12cee6beee60836b6fa
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 5 22:45:46 2010 -0400
+
+    check for clutter-gst and the appsink
 
 commit 910eb9533183316b54e78378cea0897e6c081fcd
 Author: Alexandre Quessy <alexandre@quessy.net>
