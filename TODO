@@ -40,6 +40,7 @@ To be done for version 2.2 : Towards professional features
  * saving: Support saving in AVI
  * saving: create a subdir for each clip in images and movies dirs
  * gui: Create basic GUI buttons (in Clutter)
+ * edit: record video (every frame in a row)
  * edit: Onion skin
  * edit: Intervalometer
  * themes: portrait theme (rotation to the right)

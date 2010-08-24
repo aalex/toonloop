@@ -21,52 +21,22 @@
 
 #include "image.h"
 #include <string>
-#include <iostream>
 
 /** 
- * This Image class is just a container for a single integer value.
- * We use this number to determine the file name for the image saved as JPEG.
+ * This Image class is just a container for a single string value.
+ * Its the image saved as JPEG.
  */
 Image::Image(std::string name)
 {
     name_ = name;
-    ready_ = false;
-    rawdata_ = new char[0];
-}
-
-int Image::allocate_image(int bufsize)
-{
-    delete [] rawdata_;
-    rawdata_ = new char[bufsize];
-    return 0;
 }
 
 Image::~Image()
 {
-    std::cout << "~Image destructor called for " << name_ << std::endl;
-    delete [] rawdata_;
 }
 
 std::string Image::get_name()
 {
     return name_;
-}
-
-char* Image::get_rawdata()
-{
-    return rawdata_;
-}
-
-/**
- * Whether the image data has been fully loaded/saved or not.
- */
-bool Image::is_ready()
-{
-    return ready_;
-}
-
-void Image::set_ready(bool ready)
-{
-    ready_ = ready;
 }
 

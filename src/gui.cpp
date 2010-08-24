@@ -249,11 +249,8 @@ void iterate_playhead()
         if (move_playhead) // if it's time to move the playhead
             thisclip->iterate_playhead(); // updates the clip's playhead number
         int image_number = thisclip->get_playhead();
-        //bool pixels_are_loaded = false;
-        //width = thisclip->get_width(); // FIXME: do not override data given by gst-plugins-gl!
-        //height = thisclip->get_height();// FIXME: do not override data given by gst-plugins-gl!
-        //GdkPixbuf *pixbuf;
-        //bool loaded_pixbuf = false;
+        //width = thisclip->get_width(); 
+        //height = thisclip->get_height();
         Image* thisimage = &(thisclip->get_image(image_number));
 
         if ( (prevclip != thisclip) || (prev_image_number != image_number) )
@@ -269,33 +266,23 @@ void iterate_playhead()
             the grabbed frame dimensions don't match with the width, height passed from glimasesink to the draw callback*/
             // XXX: yes, I think we should always check the size of the images. (especially when we will read them from the disk)
 
-            if (thisimage->is_ready() and need_refresh)
+            if (need_refresh)
             {
-                if (Application::get_instance().get_configuration().get_images_in_ram())
-                {   
-                    std::cerr << "Loading in RAM is disabled for now." << std::endl; 
-                    //if ( need_refresh )
-                    //    buf = thisimage->get_rawdata();
-                    //pixels_are_loaded = true;
+                std::string image_full_path = thisclip->get_image_full_path(thisimage);
+                GError *error = NULL;
+                gboolean success;
+                success = clutter_texture_set_from_file(CLUTTER_TEXTURE(gui.playback_texture_), image_full_path.c_str(), &error);
+                // TODO: validate this path
+                if (!success)
+                {
+                    std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
+                    g_error_free(error);
                 } else {
-                    std::string image_full_path = thisclip->get_image_full_path(thisimage);
-                    GError *error = NULL;
-                    gboolean success;
-                    success = clutter_texture_set_from_file(CLUTTER_TEXTURE(gui.playback_texture_), image_full_path.c_str(), &error);
-                    // TODO: validate this path
-                    
-                    //pixbuf = gdk_pixbuf_new_from_file(image_full_path.c_str(), &error);
-                    if (!success)
-                    {
-                        std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
-                        g_error_free(error);
-                    } else {
-                        // TODO:2010-08-06:aalex:Do not load an image twice in a row
-                        //std::cout << "Loaded image " <<  image_full_path << std::endl;
-                        //buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
-                        //pixels_are_loaded = true;
-                        //loaded_pixbuf = true;
-                    }
+                    // TODO:2010-08-06:aalex:Do not load an image twice in a row
+                    //std::cout << "Loaded image " <<  image_full_path << std::endl;
+                    //buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
+                    //pixels_are_loaded = true;
+                    //loaded_pixbuf = true;
                 }
             }
         }

@@ -64,7 +64,6 @@ class Configuration
         std::string display() const { return display_; }
         std::string get_project_home() const { return project_home_; }
         bool fullscreen() const { return fullscreen_; }
-        bool get_images_in_ram() const { return images_in_ram_; }
         bool get_effects_enabled() const { return enable_effects_; }
         void set_effects_enabled(bool enabled) { enable_effects_ = enabled; }
         void set_project_home(std::string project_home);
@@ -82,7 +81,6 @@ class Configuration
         std::string project_home_;
         bool fullscreen_;
         bool enable_effects_;
-        bool images_in_ram_;
         bool verbose_;
         int midi_input_number_;
         std::string osc_recv_port_;

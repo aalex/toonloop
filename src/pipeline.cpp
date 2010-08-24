@@ -105,19 +105,18 @@ void Pipeline::grab_frame()
     GdkPixbuf* pixbuf;
     Clip *thisclip = Application::get_instance().get_current_clip();
     bool is_verbose = Application::get_instance().get_configuration().get_verbose();
-    thisclip->lock_mutex();
+    //thisclip->lock_mutex();
     int current_clip_id = thisclip->get_id();
     g_object_get(G_OBJECT(gdkpixbufsink_), "last-pixbuf", &pixbuf, NULL);
     if (! GDK_IS_PIXBUF(pixbuf))
     {
         std::cout << "No picture yet to grab!" << std::endl;
-        thisclip->unlock_mutex();
+        //thisclip->unlock_mutex();
         return;
     }
 
     int w = gdk_pixbuf_get_width(pixbuf);
     int h = gdk_pixbuf_get_height(pixbuf);
-    int nchannels = gdk_pixbuf_get_n_channels(pixbuf);
 
     /* if this is the first frame grabbed, set frame properties in clip */
     if (! thisclip->get_has_recorded_frame()) 
@@ -133,7 +132,6 @@ void Pipeline::grab_frame()
     if (is_verbose)
         std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl;
     std::string file_name = thisclip->get_image_full_path(thisimage);
-    // We can store the pixel data in RAM or not.
     // We need 3 textures: 
     //  * the onionskin of the last frame grabbed. (or at the writehead position)
     //  * the frame at the playhead position
@@ -146,18 +144,8 @@ void Pipeline::grab_frame()
         if (is_verbose)
             g_print("Image %s saved\n", file_name.c_str());
     }
-    if (Application::get_instance().get_configuration().get_images_in_ram())
-    {
-        size_t buf_size = w * h * nchannels;
-        thisimage->allocate_image(buf_size);
-        char *buf = thisimage->get_rawdata();
-        /* copy gdkpixbuf raw data to Image's buffer. Will be used for the texture of the grabbed frames */
-        memcpy(buf, gdk_pixbuf_get_pixels(pixbuf), buf_size);
-    }
-    // TODO:2010-08-06:aalex:Deprecate Image::set_ready() and Image::is_ready()
-    thisimage->set_ready(true);
     g_object_unref(pixbuf);
-    thisclip->unlock_mutex();
+    //thisclip->unlock_mutex();
 }
 
 /**
@@ -181,12 +169,9 @@ void Pipeline::stop()
 Pipeline::Pipeline()
 {
     Configuration config = Application::get_instance().get_configuration();
-
     //onionskin_texture_ = Texture();
     //playback_texture_ = Texture();
-    
     pipeline_ = NULL;
-    
     pipeline_ = GST_PIPELINE(gst_pipeline_new("pipeline"));
     
     // Video source element
