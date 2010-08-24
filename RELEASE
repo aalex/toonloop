@@ -28,4 +28,5 @@ Bug fixes:
     * Fixed g++ warnings
     * Use delete [] for memory allocated with new []
     * remove the --keep-in-ram related code
+    * Fixed make distcheck target
 
