@@ -19,14 +19,28 @@
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef __VIDEO_CONFIG_H__
 #define __VIDEO_CONFIG_H__
 
 #include <string>
 #include <boost/program_options.hpp>
 
-const int MIDI_INPUT_NONE = 1;
+/**
+ * Integer value that means that no MIDI input has been selected.
+ */
+const int MIDI_INPUT_NONE = 99;
+/**
+ * Name of the directory to store images in the project directory.
+ */
+const std::string IMAGE_DIRECTORY = "images";
+/**
+ * Name of the directory to store movies in the project directory.
+ */
+const std::string MOVIE_DIRECTORY = "movies";
+/**
+ * Name of the directory to store data in the project directory.
+ */
+const std::string DATA_DIRECTORY = "data";
 
 /**
  * Contains the configuration options for the whole application.
