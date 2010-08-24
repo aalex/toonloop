@@ -111,6 +111,7 @@ void Application::run(int argc, char *argv[])
         ("midi-input,m", po::value<int>(), "Sets the input MIDI device number to open")
         ("list-midi-inputs,L", po::bool_switch(), "Lists MIDI inputs devices and exits")
         ("list-cameras,l", po::bool_switch(), "Lists connected cameras and exits")
+        ("osc-receive-port,p", po::value<std::string>(), "Sets the listening OSC port")
         ; // <-- important semi-colon
     po::variables_map options;
     
@@ -216,9 +217,32 @@ void Application::run(int argc, char *argv[])
     pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline());
     // Start OSC
     //TODO:2010-08-05:aalex:Make the OSC port configurable
-    std::cout << "Starting OSC receiver." << std::endl;
-    osc_ = std::tr1::shared_ptr<OscInterface>(new OscInterface("11337"));
-    osc_->start();
+    if (config_->get_osc_recv_port() != OSC_RECV_PORT_NONE)
+    {
+        std::cout << "Starting OSC receiver." << std::endl;
+        int osc_recv_port_num = atoi(config_->get_osc_recv_port().c_str());
+        if (osc_recv_port_num == 0)
+        {
+            std::cerr << "Invalid port number: " << config_->get_osc_recv_port() << std::endl;
+            exit(1);
+        } else {
+            if (osc_recv_port_num > 65535)
+            {
+                std::cerr << "Port number " << config_->get_osc_recv_port() <<  "is over the maximum of 65535." <<  std::endl;
+                exit(1);
+            } else if (osc_recv_port_num < 1) {
+                std::cerr << "Port number " << config_->get_osc_recv_port() <<  "is under the minimum of 1." <<  std::endl;
+                exit(1);
+            } else if (osc_recv_port_num < 1024) {
+                std::cerr << "Port number " << config_->get_osc_recv_port() <<  "is under 1024. It will probably fail." <<  std::endl;
+                // Don't exit
+            }
+        }
+        osc_ = std::tr1::shared_ptr<OscInterface>(new OscInterface(config_->get_osc_recv_port()));
+        osc_->start();
+    } else
+        std::cout << "OSC receiver is disabled" << std::endl;
+
     // Start MIDI
     // std::cout << "Starting MIDI input." << std::endl;
     midi_input_ = std::tr1::shared_ptr<MidiInput>(new MidiInput());

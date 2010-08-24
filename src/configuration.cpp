@@ -51,6 +51,12 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     } else {
         midi_input_number_ = MIDI_INPUT_NONE; // Means disabled;
     }
+    if (options.count("osc-receive-port"))
+    {
+        osc_recv_port_ = options["osc-receive-port"].as<std::string>();
+    } else {
+        osc_recv_port_ = OSC_RECV_PORT_NONE; // Means disabled;
+    }
 }
 
 void Configuration::set_project_home(std::string project_home)
