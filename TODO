@@ -12,7 +12,6 @@ Things to do in priority
 Right now, here is the list of tasks to prioritize: 
 
  * saving: Create a directory for movies and one for images, in the project dir.
- * saving: Support saving in AVI
  * osc: Pipeline::grab_frame should be called by Application::add_image
  * osc: Create signals for added and removed frames
  * osc: Send an OSC message upon frame/clip events, and /toon/playback/begin
@@ -38,6 +37,7 @@ Once those tasks are done, the features to be implemented in branch 2.x are:
 To be done for version 2.2 : Towards professional features
 ----------------------------------------------------------
 
+ * saving: Support saving in AVI
  * gui: Create basic GUI buttons (in Clutter)
  * edit: Onion skin
  * edit: Intervalometer

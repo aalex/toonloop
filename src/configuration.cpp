@@ -23,6 +23,11 @@
 #include <boost/program_options.hpp>
 #include "configuration.h"
 
+/**
+ * Contains the runtime configuration options for Toonloop.
+ *
+ * Some of these values might change while the program is running.
+ */
 Configuration::Configuration(const boost::program_options::variables_map &options)
 {
     //capture_frame_rate_ = options["capture-fps"].as<int>();
