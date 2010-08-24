@@ -200,7 +200,7 @@ void Application::run(int argc, char *argv[])
     movie_saver_ = std::tr1::shared_ptr<MovieSaver>(new MovieSaver());
 
     // TODO: create a directory for clips and one for images.
-    movie_saver_->set_result_directory(config_->get_project_home());
+    movie_saver_->set_result_directory(config_->get_project_home() + "/" + MOVIES_DIRECTORY);
     // Init GTK, Clutter and GST:
     GError *error;
     error = NULL;
