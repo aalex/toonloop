@@ -22,4 +22,7 @@ Bug fixes:
     * lowered required version of gst-interface
     * Using boost::signals2
     * Had missing include guards in midi.h
+    * Was not possible to open MIDI input 1
+    * Fixed g++ warnings
+    * Use delete [] for memory allocated with new []
 
