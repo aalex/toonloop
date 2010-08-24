@@ -13,6 +13,8 @@ New features:
     * Saving the current clip as a movie file
     * saving: Use the FPS of the current clip for the saved movie
     * saving: use glib's subprocess functions
+    * saving: Create a directory for movies and one for images, in the project dir.
+    * osc: Support the --osc-receive-port option
 
 Bug fixes: 
     * No more blank image when one is taken when none had been received yet.
@@ -25,4 +27,5 @@ Bug fixes:
     * Was not possible to open MIDI input 1
     * Fixed g++ warnings
     * Use delete [] for memory allocated with new []
+    * remove the --keep-in-ram related code
 
