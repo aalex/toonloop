@@ -79,13 +79,12 @@ class Clip
         unsigned int nchannels_;
         direction direction_;
         //std::vector<int> intervalometer_rate_;
-        //std::vector<int> fps_;
-        // This is a list of images
-        // I think we should use a std::list<std::tr1::shared_ptr<Image*>>
-        // Their order can change.
-        // Some of them may disappear.
-        // the app is multithread!
-        std::vector< shared_ptr<Image> > images_; // FIXME: use a list of shared_ptr to *Image
+        /**
+         * This is a list of images
+         * Their order can change.
+         * Some of them may disappear.
+         */
+        std::vector< shared_ptr<Image> > images_;
         int playhead_fps_;
         bool has_recorded_a_frame_;
         boost::mutex mutex_;

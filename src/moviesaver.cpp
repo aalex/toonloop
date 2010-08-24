@@ -50,6 +50,7 @@ bool MovieSaver::add_saving_task(Clip& clip)
 
     // gather info about this clip:
     current_task_.clip_id_ = clip.get_id();
+    current_task_.fps_ = clip.get_playhead_fps();
     std::cout << "MovieSaver Clip ID is " << current_task_.clip_id_ << " and it has " << clip.size() << " images" << std::endl;  
 
     // load image names

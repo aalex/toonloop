@@ -13,7 +13,7 @@ Right now, here is the list of tasks to prioritize:
 
  * saving: Create a directory for movies and one for images, in the project dir.
  * saving: Support saving in AVI
- * saving: Use the FPS of the current clip for the saved movie
+ * saving: use glib's subprocess functions
  * osc: Pipeline::grab_frame should be called by Application::add_image
  * osc: Create signals for added and removed frames
  * osc: Send an OSC message upon frame/clip events, and /toon/playback/begin
@@ -119,3 +119,4 @@ Done
  * DONE: Use boost::signals2
  * DONE: Creating symbolic links to each image file in a temporary directory for the conversion to a movie.
  * DONE: Get the process manager to call mencoder in a thread, create a clip out of images and tell us when it's done. (see src/subprocess.cpp in branch 2.x and toon/mencoder.py in branch 1.x)
+ * DONE: saving: Use the FPS of the current clip for the saved movie
