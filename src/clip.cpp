@@ -187,7 +187,7 @@ void Clip::increase_playhead_fps()
 {
     if (playhead_fps_ < MAX_FPS)
     {
-        ++ playhead_fps_;
+        ++playhead_fps_;
         std::cout << "FPS: " << playhead_fps_ << std::endl;
     }
 }

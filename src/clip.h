@@ -33,7 +33,7 @@
 
 using namespace std::tr1; // shared_ptr
 
-const int MAX_FPS = 30;
+const int MAX_FPS = 60;
 
 enum direction 
 {
