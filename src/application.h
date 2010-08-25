@@ -45,20 +45,15 @@ class Application
         void run(int argc, char *argv[]);
         void quit();
         Gui *get_gui();
-        // TODO: return a pointer
-        Pipeline &get_pipeline();
-        // TODO: return a pointer
-        MidiInput &get_midi_input();
-        // TODO: return a pointer
-        Configuration &get_configuration();
-        // TODO: return a pointer
-        MovieSaver &get_movie_saver();
+        Pipeline *get_pipeline();
+        MidiInput *get_midi_input();
+        Configuration *get_configuration();
+        MovieSaver *get_movie_saver();
         static Application& get_instance();
         Clip* get_current_clip();
         bool save_current_clip();
         int get_current_clip_number();
         void set_current_clip_number(int clipnumber);
-        //double get_cfps();
         void on_pedal_down();
 
     private:
@@ -66,7 +61,6 @@ class Application
         ~Application();
         void update_project_home_for_each_clip();
         bool setup_project_home(std::string project_home);
-        // TODO: change for scoped_ptr
         boost::scoped_ptr<Gui> gui_;
         boost::scoped_ptr<MidiInput> midi_input_;
         boost::scoped_ptr<OscInterface> osc_;
@@ -74,7 +68,8 @@ class Application
         boost::scoped_ptr<Configuration> config_;
         boost::scoped_ptr<MovieSaver> movie_saver_;
         int selected_clip_;
-        double cfps_;
+        // Aug 25 2010:tmatth:TODO:use shared_ptr, not raw pointers for clips_
+        typedef std::tr1::unordered_map<int, Clip*>::iterator ClipIterator;
         std::tr1::unordered_map<int, Clip*> clips_;
 };
 

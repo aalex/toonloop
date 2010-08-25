@@ -35,7 +35,7 @@ void Controller::add_frame()
     Clip* clip = owner_->get_current_clip();
     LOG_DEBUG("add_frame to clip " << clip->get_id());
     int new_frame_number = clip->get_writehead();
-    owner_->get_pipeline().grab_frame();
+    owner_->get_pipeline()->grab_frame();
     add_frame_signal_(clip->get_id(), new_frame_number);
 }
 void Controller::remove_frame()
@@ -46,7 +46,7 @@ void Controller::remove_frame()
     if (deleted_frame_number < 0)
         deleted_frame_number = 0;
     // TODO:2010-08-25:aalex:Check for deletion success
-    owner_->get_pipeline().remove_frame();
+    owner_->get_pipeline()->remove_frame();
     remove_frame_signal_(clip->get_id(), deleted_frame_number);
 }
 void Controller::choose_clip(int i)

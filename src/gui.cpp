@@ -88,13 +88,13 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
         //case GDK_Right:
         //case GDK_Return:
         case GDK_BackSpace:
-            Application::get_instance().get_pipeline().remove_frame();
+            Application::get_instance().get_pipeline()->remove_frame();
             break;
         case GDK_Escape:
             context->toggleFullscreen(widget);
             break;
         case GDK_space:
-            Application::get_instance().get_pipeline().grab_frame();
+            Application::get_instance().get_pipeline()->grab_frame();
             break;
         case GDK_Page_Up:
             clip = Application::get_instance().get_current_clip_number();
@@ -201,7 +201,6 @@ void iterate_playhead()
     // TODO:2010-08-25:aalex: iterate_playhead should be a method of Controller
     // which calls the method with the same name (?) of the current clip
     Gui *gui = Application::get_instance().get_gui();
-    Pipeline pipeline = Application::get_instance().get_pipeline();
     
     static int number_of_frames_in_last_second = 0; // counting FPS
     static int prev_image_number = -1;
@@ -229,7 +228,7 @@ void iterate_playhead()
     // calculate rendering FPS
     if (fps_calculation_timer.get_elapsed() >= 1.0f)
     {
-        if (Application::get_instance().get_configuration().get_verbose())
+        if (Application::get_instance().get_configuration()->get_verbose())
             std::cout << "Rendering FPS: " << number_of_frames_in_last_second << std::endl;
         number_of_frames_in_last_second = 0;
         fps_calculation_timer.reset();
@@ -257,15 +256,15 @@ void iterate_playhead()
         // Aug 25 2010:tmatth:FIXME: when deleting frames, image_number can be invalid
         Image* thisimage = thisclip->get_image(image_number);
 
-        if ( (prevclip != thisclip) || (prev_image_number != image_number) )
+        if ((prevclip != thisclip) or (prev_image_number != image_number))
               need_refresh = true;
-        if (prevclip != thisclip) {
+        if (prevclip != thisclip) 
             prevclip = thisclip;
-        }
+        
         if (thisimage == NULL)
-        {
             std::cout << "No image at index" << image_number << "." << std::endl;
-        } else {
+        else 
+        {
             /*FIXME: we may not need this dimension update in general. But I get a weirdly cropped frame, for the right side rendering grabbed frame. It seems
             the grabbed frame dimensions don't match with the width, height passed from glimasesink to the draw callback*/
             // XXX: yes, I think we should always check the size of the images. (especially when we will read them from the disk)
@@ -477,7 +476,7 @@ Gui::Gui() :
      */
     clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
     //clutter_actor_show_all(CLUTTER_ACTOR(playback_texture_));
-    if (Application::get_instance().get_configuration().get_fullscreen())
+    if (Application::get_instance().get_configuration()->get_fullscreen())
         toggleFullscreen(window_);
 }
 

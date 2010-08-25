@@ -87,7 +87,7 @@ int OscInterface::addFrameCb(
         void * /*user_data*/)
 {
     std::cout << "Got /toon/frame/add" << std::endl;
-    Application::get_instance().get_pipeline().grab_frame();
+    Application::get_instance().get_pipeline()->grab_frame();
     return 0;
 }
 
@@ -100,7 +100,7 @@ int OscInterface::removeFrameCb(
         void * /*user_data*/)
 {
     std::cout << "Got /toon/frame/remove" << std::endl;
-    Application::get_instance().get_pipeline().remove_frame();
+    Application::get_instance().get_pipeline()->remove_frame();
     return 0;
 }
 /**

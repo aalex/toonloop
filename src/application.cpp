@@ -41,14 +41,12 @@
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
-Application::Application() 
+Application::Application() : selected_clip_(0)
 {
     // FIXME:2010-08-05:aalex:We should not create clips at startup like that.
     // They should be created on-demand
     for (int i = 0; i < MAX_CLIPS; i++)
         clips_[i] = new Clip(i);
-
-    selected_clip_ = 0;
 }
 
 Clip* Application::get_current_clip()
@@ -170,10 +168,8 @@ void Application::run(int argc, char *argv[])
     std::cout << "The initial frame rate for clip playhead is set to " << options["playhead-fps"].as<int>() << std::endl;
     if (options.count("playhead-fps"))
     { 
-        for (unsigned int i = 0; i < clips_.size(); i++)
-        {
-            clips_[i]->set_playhead_fps(options["playhead-fps"].as<int>());
-        }
+        for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
+            iter->second->set_playhead_fps(options["playhead-fps"].as<int>());
     }
 
     if (options["fullscreen"].as<bool>())
@@ -256,7 +252,6 @@ void Application::run(int argc, char *argv[])
  */
 Application::~Application()
 {
-    typedef std::tr1::unordered_map<int, Clip*>::iterator ClipIterator;
     for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
         delete iter->second;
 }
@@ -306,12 +301,9 @@ bool make_sure_directory_exists(std::string directory)
 
 void Application::update_project_home_for_each_clip()
 {
-    
-    for (unsigned int i = 0; i < clips_.size(); i++)
-    {
-        // TODO: be able to change the project_home on-the-fly
-        clips_[i]->set_directory_path(get_configuration().get_project_home());
-    }
+    // TODO: be able to change the project_home on-the-fly
+    for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
+        iter->second->set_directory_path(get_configuration()->get_project_home());
 }
 /**
  * Saves the current clip
@@ -330,9 +322,9 @@ bool Application::save_current_clip()
         return movie_saver_->add_saving_task(*clip);
 }
 
-Pipeline& Application::get_pipeline() 
+Pipeline* Application::get_pipeline() 
 {
-    return *pipeline_;
+    return pipeline_.get();
 }
 
 Gui* Application::get_gui() 
@@ -340,13 +332,14 @@ Gui* Application::get_gui()
     return gui_.get();
 }
 
-Configuration& Application::get_configuration() 
+Configuration* Application::get_configuration() 
 {
-    return *config_;
+    return config_.get();
 }
-MidiInput& Application::get_midi_input() 
+
+MidiInput* Application::get_midi_input() 
 {
-    return *midi_input_;
+    return midi_input_.get();
 }
 
 Application& Application::get_instance()
@@ -356,15 +349,15 @@ Application& Application::get_instance()
     static Application instance_; 
     return instance_;
 }
-MovieSaver& Application::get_movie_saver() 
+MovieSaver* Application::get_movie_saver() 
 {
-    return *movie_saver_;
+    return movie_saver_.get();
 }
 
 void Application::quit()
 {
     std::cout << "Quitting the application." << std::endl;
-    get_pipeline().stop();
+    pipeline_->stop();
     gtk_main_quit();
 }
 

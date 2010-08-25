@@ -104,7 +104,7 @@ void Pipeline::grab_frame()
 {
     GdkPixbuf* pixbuf;
     Clip *thisclip = Application::get_instance().get_current_clip();
-    bool is_verbose = Application::get_instance().get_configuration().get_verbose();
+    bool is_verbose = Application::get_instance().get_configuration()->get_verbose();
     //thisclip->lock_mutex();
     int current_clip_id = thisclip->get_id();
     g_object_get(G_OBJECT(gdkpixbufsink_), "last-pixbuf", &pixbuf, NULL);
@@ -176,19 +176,19 @@ void Pipeline::stop()
  */
 Pipeline::Pipeline()
 {
-    Configuration config = Application::get_instance().get_configuration();
+    Configuration *config = Application::get_instance().get_configuration();
     //onionskin_texture_ = Texture();
     //playback_texture_ = Texture();
     pipeline_ = NULL;
     pipeline_ = GST_PIPELINE(gst_pipeline_new("pipeline"));
     
     // Video source element
-    if (config.videoSource() == std::string("test")) 
+    if (config->videoSource() == "test")
     {
         std::cout << "Video source: videotestsrc" << std::endl;
         videosrc_  = gst_element_factory_make("videotestsrc", "videosrc0");
     } 
-    else if (config.videoSource() == std::string("x")) 
+    else if (config->videoSource() == "x") 
     {
         std::cout << "Video source: ximagesrc" << std::endl;
         videosrc_  = gst_element_factory_make("ximagesrc", "videosrc0");
@@ -255,9 +255,9 @@ Pipeline::Pipeline()
     gboolean is_linked = NULL;
     bool source_is_linked = false;
     int frame_rate_index = 0;
-    if (config.videoSource() == std::string("test") || config.videoSource() == std::string("x")) 
+    if (config->videoSource() == std::string("test") || config->videoSource() == std::string("x")) 
     {
-        if (config.videoSource() == std::string("x")) 
+        if (config->videoSource() == std::string("x")) 
         {
             g_object_set(G_OBJECT(videosrc_), "endx", 640, NULL);
             g_object_set(G_OBJECT(videosrc_), "endy", 480, NULL);
@@ -352,9 +352,9 @@ Pipeline::Pipeline()
     gst_object_unref(bus);
 
     // TODO:2010-08-06:aalex:We could rely on gstremer-properties to configure the video source.
-    if (config.videoSource() != std::string("test") && config.videoSource() != std::string("x"))
+    if (config->videoSource() != std::string("test") && config->videoSource() != std::string("x"))
     {
-        std::string device_name = config.videoSource(); // "/dev/video0";
+        std::string device_name = config->videoSource(); // "/dev/video0";
         g_print("Using camera %s.\n", device_name.c_str());
         g_object_set(videosrc_, "device", device_name.c_str(), NULL); 
     }
