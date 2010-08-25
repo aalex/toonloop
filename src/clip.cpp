@@ -160,14 +160,11 @@ int Clip::iterate_playhead()
     //int len = size();
     unsigned int len = writehead_;
     // TODO: implement BACK_AND_FORTH and BACKWARD directions
-    if (len == 0) {
+    if (len == 0 or playhead_ >= len - 1) // >= ?
         playhead_ = 0;
-    } else if (playhead_ >= len - 1) // >= ?
-    {
-        playhead_ = 0;
-    } else {
-        playhead_ ++;
-    }
+    else 
+        ++playhead_;
+    
     return playhead_;
 }
 
@@ -180,7 +177,7 @@ int Clip::size()
 /**
  * Returns NULL if there is no image at the given index.
  */
-Image& Clip::get_image(int index)
+Image* Clip::get_image(int index)
 {
     // FIXME: will crash if no image at that index
     //if (images_.empty())
@@ -193,7 +190,18 @@ Image& Clip::get_image(int index)
     //    std::cout << "ERROR: There is no image at index " << index << " in the clip! Total is " << images_.size() << "." << std::endl;
     //    return NULL;
     //}
-    return *images_.at(index); // FIXME: is this OK?
+    try 
+    {
+        Image *img = images_.at(index).get();
+        return img;
+    }
+    catch (const std::out_of_range &e)
+    {
+        // Aug 25 2010:tmatth:FIXME we should actually prevent callers' 
+        // logic from trying to get invalid framenumbers
+        std::cerr << "Got exception " << e.what() << std::endl;
+        return 0;
+    }
 }
 
 void Clip::increase_playhead_fps()

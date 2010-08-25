@@ -63,7 +63,7 @@ bool MovieSaver::add_saving_task(Clip& clip)
     {
         // TODO: store the SavingTaskInfo in a struct
         // Will containt the image_paths, file_extension and format, plus the path to the image directory, etc.
-        image_path = clip.get_image_full_path(&clip.get_image(i));
+        image_path = clip.get_image_full_path(clip.get_image(i));
         std::cout << "Clip has image " << image_path << std::endl;
         current_task_.image_paths_.push_back(image_path);
     }

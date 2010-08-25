@@ -129,7 +129,13 @@ void Pipeline::grab_frame()
 
     int image_number = thisclip->frame_add();
 
-    Image *thisimage = &thisclip->get_image(image_number);
+    Image *thisimage = thisclip->get_image(image_number);
+    if (thisimage == 0)
+    {
+        std::cerr << "No image at " << image_number << std::endl;
+        gdk_pixbuf_unref(pixbuf);
+        return;
+    }
 
     if (is_verbose)
         std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl;

@@ -216,7 +216,7 @@ void iterate_playhead()
 //
 //    thisclip->lock_mutex();
 //
-    ++ number_of_frames_in_last_second;
+    ++number_of_frames_in_last_second;
     playback_timer.tick();
     fps_calculation_timer.tick();
 
@@ -253,7 +253,9 @@ void iterate_playhead()
         int image_number = thisclip->get_playhead();
         //width = thisclip->get_width(); 
         //height = thisclip->get_height();
-        Image* thisimage = &(thisclip->get_image(image_number));
+        
+        // Aug 25 2010:tmatth:FIXME: when deleting frames, image_number can be invalid
+        Image* thisimage = thisclip->get_image(image_number);
 
         if ( (prevclip != thisclip) || (prev_image_number != image_number) )
               need_refresh = true;
