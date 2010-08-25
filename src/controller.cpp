@@ -22,6 +22,7 @@
 #include <boost/signals2.hpp>
 #include "application.h"
 #include "clip.h"
+#include "pipeline.h"
 #include "controller.h"
 #include "log.h"
 

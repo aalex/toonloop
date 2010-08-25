@@ -23,14 +23,15 @@
 
 #include <boost/program_options.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <tr1/unordered_map>
 
-#include "clip.h"
-#include "configuration.h"
-#include "gui.h"
-#include "midi.h"
-#include "oscinterface.h"
-#include "pipeline.h"
-#include "moviesaver.h"
+class Clip;
+class Configuration;
+class Gui;
+class MidiInput;
+class OscInterface;
+class Pipeline;
+class MovieSaver;
 
 // FIXME:2010-08-17:aalex:We should allow more than 10 clips
 static const unsigned int MAX_CLIPS = 10;

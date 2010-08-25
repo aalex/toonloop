@@ -30,6 +30,7 @@
 #include <iostream>
 
 #include "pipeline.h"
+#include "clip.h"
 #include "gui.h"
 #include "application.h"
 #include "config.h"

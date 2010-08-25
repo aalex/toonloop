@@ -27,6 +27,7 @@
 
 #include "lo/lo.h"
 #include "oscinterface.h"
+#include "pipeline.h"
 #include "application.h"
 #include "unused.h"
 

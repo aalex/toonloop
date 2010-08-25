@@ -30,6 +30,8 @@
 #include <string>
 
 #include "application.h"
+#include "moviesaver.h"
+#include "oscinterface.h"
 #include "clip.h"
 #include "config.h"
 #include "configuration.h"
