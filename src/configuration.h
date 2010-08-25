@@ -19,8 +19,8 @@
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __VIDEO_CONFIG_H__
-#define __VIDEO_CONFIG_H__
+#ifndef __CONFIGURATION_H__
+#define __CONFIGURATION_H__
 
 #include <string>
 #include <boost/program_options.hpp>
@@ -66,8 +66,8 @@ class Configuration
         bool fullscreen() const { return fullscreen_; }
         bool get_effects_enabled() const { return enable_effects_; }
         void set_effects_enabled(bool enabled) { enable_effects_ = enabled; }
-        void set_project_home(std::string project_home);
-        void set_video_source(std::string video_source);
+        void set_project_home(const std::string &project_home);
+        void set_video_source(const std::string &video_source);
         bool get_verbose() const { return verbose_; } ;
         bool get_fullscreen() const { return fullscreen_; } ;
         int get_midi_input_number() const { return midi_input_number_; }
@@ -85,5 +85,5 @@ class Configuration
         int midi_input_number_;
         std::string osc_recv_port_;
 };
-#endif // __VIDEO_CONFIG_H__
+#endif // __CONFIGURATION_H__
 

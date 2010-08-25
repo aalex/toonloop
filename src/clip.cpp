@@ -45,13 +45,13 @@ Clip::Clip(int id)
     //mutex_;
 }
 
-void Clip::set_directory_path(std::string directory_path)
+void Clip::set_directory_path(const std::string &directory_path)
 {
     directory_path_ = directory_path;
 }
 
 // TODO: make sure the number of consecutive slashes in the path is ok
-std::string Clip::get_image_full_path(Image* image)
+std::string Clip::get_image_full_path(Image* image) const
 {
     //std::string project_path = Application::get_instance().get_configuration().get_project_home();
     std::string project_path = get_directory_path();
@@ -61,26 +61,27 @@ std::string Clip::get_image_full_path(Image* image)
     return project_path + "/" + IMAGES_DIRECTORY + "/" + image_name; 
 }
 
-int Clip::get_playhead_fps()
+int Clip::get_playhead_fps() const
 {
     return playhead_fps_;
 }
+
 void Clip::set_playhead_fps(int fps)
 {
     playhead_fps_ = fps;
 }
 
-int Clip::get_id()
+int Clip::get_id() const
 {
     return id_;
 }
 
-int Clip::get_width()
+int Clip::get_width() const
 {
     return width_;
 }
 
-int Clip::get_height()
+int Clip::get_height() const
 {
     return height_;
 }
@@ -146,11 +147,12 @@ int Clip::frame_remove()
 }
 
 
-int Clip::get_playhead()
+int Clip::get_playhead() const
 {
     return playhead_;
 }
-int Clip::get_writehead()
+
+int Clip::get_writehead() const
 {
     return writehead_;
 }
@@ -168,7 +170,7 @@ int Clip::iterate_playhead()
     return playhead_;
 }
 
-int Clip::size()
+int Clip::size() const
 {
     int ret = static_cast<int>(images_.size());
     return ret;
@@ -177,7 +179,7 @@ int Clip::size()
 /**
  * Returns NULL if there is no image at the given index.
  */
-Image* Clip::get_image(int index)
+Image* Clip::get_image(int index) const
 {
     // FIXME: will crash if no image at that index
     //if (images_.empty())
@@ -232,7 +234,7 @@ void Clip::unlock_mutex()
     mutex_.unlock();
 }
 
-bool Clip::get_has_recorded_frame()
+bool Clip::get_has_recorded_frame() const
 {
     return has_recorded_a_frame_;
 }

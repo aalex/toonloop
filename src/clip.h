@@ -45,31 +45,31 @@ class Clip
 {
     public:
         Clip(int id);
-        int get_id();
+        int get_id() const;
         //TODO: list<int>* get_all_images();
         int frame_add();
         int frame_remove();
         int iterate_playhead();
-        int size();
-        Image* get_image(int index);
-        int get_playhead();
-        int get_writehead();
+        int size() const;
+        Image* get_image(int index) const;
+        int get_playhead() const;
+        int get_writehead() const;
         void set_width(int width);
         void set_height(int height);
-        int get_width();
-        int get_height();
-        int get_playhead_fps();
+        int get_width() const;
+        int get_height() const;
+        int get_playhead_fps() const;
         void set_playhead_fps(int fps);
         void increase_playhead_fps();
         void decrease_playhead_fps();
         void lock_mutex();
         void unlock_mutex();
         void set_has_recorded_frame();
-        bool get_has_recorded_frame();
-        void set_directory_path(std::string directory_path);
-        std::string get_directory_path() { return directory_path_; } 
-        std::string get_image_file_extension() { return ".jpg"; };
-        std::string get_image_full_path(Image* image);
+        bool get_has_recorded_frame() const;
+        void set_directory_path(const std::string &directory_path);
+        std::string get_directory_path() const { return directory_path_; } 
+        std::string get_image_file_extension() const { return ".jpg"; };
+        std::string get_image_full_path(Image* image) const;
     private:
         unsigned int id_;
         unsigned int playhead_;

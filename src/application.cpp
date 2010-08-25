@@ -300,7 +300,7 @@ Application::~Application()
  * Returns whether the directories exist or not once done.
  */
 
-bool Application::setup_project_home(std::string project_home)
+bool Application::setup_project_home(const std::string &project_home)
 {
     if (not make_sure_directory_exists(project_home))
         return false;

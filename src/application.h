@@ -59,7 +59,7 @@ class Application
         Application();
         ~Application();
         void update_project_home_for_each_clip();
-        bool setup_project_home(std::string project_home);
+        bool setup_project_home(const std::string& project_home);
         boost::scoped_ptr<Gui> gui_;
         boost::scoped_ptr<MidiInput> midi_input_;
         boost::scoped_ptr<OscInterface> osc_;
