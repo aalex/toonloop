@@ -46,9 +46,8 @@ Application::Application()
     // FIXME:2010-08-05:aalex:We should not create clips at startup like that.
     // They should be created on-demand
     for (int i = 0; i < MAX_CLIPS; i++)
-    {
         clips_[i] = new Clip(i);
-    }
+
     selected_clip_ = 0;
 }
 
@@ -257,10 +256,9 @@ void Application::run(int argc, char *argv[])
  */
 Application::~Application()
 {
-    //delete osc_;
-    //delete gui_;
-    //delete pipeline_;
-    //delete config_;
+    typedef std::tr1::unordered_map<int, Clip*>::iterator ClipIterator;
+    for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
+        delete iter->second;
 }
 /**
  * Creates all the project directories.
