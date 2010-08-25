@@ -80,7 +80,8 @@ namespace {
 }
 
 
-Application::Application() : selected_clip_(0)
+Application::Application() : 
+        selected_clip_(0)
 {
     // FIXME:2010-08-05:aalex:We should not create clips at startup like that.
     // They should be created on-demand
@@ -238,7 +239,7 @@ void Application::run(int argc, char *argv[])
     clutter_gst_init(&argc, &argv);
     // start GUI
     std::cout << "Starting GUI." << std::endl;
-    gui_.reset(new Gui);
+    gui_.reset(new Gui(this));
     // start Pipeline
     std::cout << "Starting pipeline." << std::endl;
     pipeline_.reset(new Pipeline);

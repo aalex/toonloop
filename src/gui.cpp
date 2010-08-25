@@ -74,7 +74,7 @@ void Gui::showCursor()
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
     Gui *context = static_cast<Gui*>(data);
-    Clip *current_clip = Application::get_instance().get_current_clip();
+    Clip *current_clip = context->owner_->get_current_clip();
     unsigned int clip;
 
     switch (event->keyval)
@@ -89,30 +89,30 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
         //case GDK_Right:
         //case GDK_Return:
         case GDK_BackSpace:
-            Application::get_instance().get_pipeline()->remove_frame();
+            context->owner_->get_pipeline()->remove_frame();
             break;
         case GDK_Escape:
             context->toggleFullscreen(widget);
             break;
         case GDK_space:
-            Application::get_instance().get_pipeline()->grab_frame();
+            context->owner_->get_pipeline()->grab_frame();
             break;
         case GDK_Page_Up:
-            clip = Application::get_instance().get_current_clip_number();
+            clip = context->owner_->get_current_clip_number();
             if (clip < MAX_CLIPS - 1)
             {
-                Application::get_instance().set_current_clip_number(clip + 1);
+                context->owner_->set_current_clip_number(clip + 1);
                 // Not needed, but we never know:
-                current_clip = Application::get_instance().get_current_clip();
+                current_clip = context->owner_->get_current_clip();
             }
             break;
         case GDK_Page_Down:
-            clip = Application::get_instance().get_current_clip_number();
+            clip = context->owner_->get_current_clip_number();
             if (clip > 0)
             {
-                Application::get_instance().set_current_clip_number(clip - 1);
+                context->owner_->set_current_clip_number(clip - 1);
                 // Not needed, but we never know:
-                current_clip = Application::get_instance().get_current_clip();
+                current_clip = context->owner_->get_current_clip();
             }
             break;
         case GDK_0:
@@ -127,7 +127,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
         case GDK_9:
             context->switch_to_clip_number(event->keyval);
             // Not needed, but we never know:
-            current_clip = Application::get_instance().get_current_clip();
+            current_clip = context->owner_->get_current_clip();
             break;
         case GDK_q:
             // Quit application on ctrl-q, this quits the main loop
@@ -135,7 +135,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
             if (event->state & GDK_CONTROL_MASK)
             {
                 g_print("Ctrl-Q key pressed, quitting.\n");
-                Application::get_instance().quit();
+                context->owner_->quit();
             }
             break;
         case GDK_s:
@@ -144,7 +144,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
             if (event->state & GDK_CONTROL_MASK)
             {
                 g_print("Ctrl-S key pressed, saving.\n");
-                Application::get_instance().save_current_clip();
+                context->owner_->save_current_clip();
             }
             break;
         default:
@@ -390,10 +390,11 @@ void on_playback_texture_size_changed(ClutterTexture *texture,
 /**
  * Exits the application if OpenGL needs are not met.
  */
-Gui::Gui() :
+Gui::Gui(Application* owner) :
     video_input_width_(1),
     video_input_height_(1),
-    isFullscreen_(false)
+    isFullscreen_(false),
+    owner_(owner)
 {
     //video_xwindow_id_ = 0;
     // Main GTK window
@@ -477,7 +478,7 @@ Gui::Gui() :
      */
     clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
     //clutter_actor_show_all(CLUTTER_ACTOR(playback_texture_));
-    if (Application::get_instance().get_configuration()->get_fullscreen())
+    if (owner_->get_configuration()->get_fullscreen())
         toggleFullscreen(window_);
 }
 
