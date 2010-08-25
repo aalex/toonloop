@@ -142,6 +142,10 @@ int Clip::get_playhead()
 {
     return playhead_;
 }
+int Clip::get_writehead()
+{
+    return writehead_;
+}
 
 int Clip::iterate_playhead()
 {

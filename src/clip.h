@@ -54,6 +54,7 @@ class Clip
         int size();
         Image& get_image(int index);
         int get_playhead();
+        int get_writehead();
         void set_width(int width);
         void set_height(int height);
         int get_width();

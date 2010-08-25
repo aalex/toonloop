@@ -77,12 +77,24 @@ class Controller
          */
         void choose_clip(int i);
         /** 
-         * Saves a clip
+         * Chooses the next clip
          */
-        void save_clip(int i);
+        void choose_next_clip();
+        /** 
+         * Chooses the previous clip
+         */
+        void choose_previous_clip();
+        /** 
+         * Saves the currently selected clip
+         */
+        void save_current_clip();
 
     private:
         Application* owner_;
 };
-
+// TODO: 
+// /** 
+// * Saves a clip
+// */
+// void save_clip(int clip_number);
 #endif 
