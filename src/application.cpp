@@ -266,7 +266,7 @@ void Application::run(int argc, char *argv[])
                 // Don't exit
             }
         }
-        osc_.reset(new OscInterface(config_->get_osc_recv_port()));
+        osc_.reset(new OscInterface(this, config_->get_osc_recv_port()));
         osc_->start();
     } else
         std::cout << "OSC receiver is disabled" << std::endl;

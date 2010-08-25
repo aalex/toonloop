@@ -39,7 +39,6 @@ MovieSaver::MovieSaver() : // const Clip &clip?
 // TODO: store tasks and defer them to later.
 bool MovieSaver::add_saving_task(Clip& clip)
 {
-
     std::cout << "MovieSaver::add_saving_task" << std::endl;
     if (is_busy()) {
         std::cout << "The MovieSaver is busy !" << std::endl;

@@ -32,11 +32,13 @@
 #include "unused.h"
 
 OscInterface::OscInterface(
+        Application* owner,
         const std::string &listen_port)//,
         //const std::string &send_host,
         //const std::string &send_port) 
     :
-    receiver_(listen_port) //,
+    receiver_(listen_port),
+    owner_(owner) //,
     //sender_(serverHost, serverListenPort),
     //tryToSubscribe_(true)
 {
@@ -59,7 +61,6 @@ int OscInterface::pingCb(
         const char * /*types*/, lo_arg ** /*argv*/,
         int /*argc*/, void * /*data*/, void * /*user_data*/)
 { 
-    //OscInterface *context = static_cast<OscInterface*>(user_data);
 #ifdef CONFIG_DEBUG
     std::cout << "Got " << path << std::endl << std::endl;
 #endif
@@ -85,10 +86,11 @@ int OscInterface::addFrameCb(
         lo_arg ** /*argv*/,
         int /*argc*/, 
         void * /*data*/, 
-        void * /*user_data*/)
+        void *user_data)
 {
     std::cout << "Got /toon/frame/add" << std::endl;
-    Application::get_instance().get_pipeline()->grab_frame();
+    OscInterface* context = static_cast<OscInterface*>(user_data);
+    context->owner_->get_pipeline()->grab_frame();
     return 0;
 }
 
@@ -98,10 +100,11 @@ int OscInterface::removeFrameCb(
         lo_arg ** /*argv*/,
         int /*argc*/, 
         void * /*data*/, 
-        void * /*user_data*/)
+        void *user_data)
 {
     std::cout << "Got /toon/frame/remove" << std::endl;
-    Application::get_instance().get_pipeline()->remove_frame();
+    OscInterface* context = static_cast<OscInterface*>(user_data);
+    context->owner_->get_pipeline()->remove_frame();
     return 0;
 }
 /**
@@ -116,13 +119,11 @@ int OscInterface::quitCb(
         lo_arg ** /*argv*/,
         int /*argc*/, 
         void * /*data*/, 
-        void * /*user_data*/)
+        void *user_data)
 {
     std::cout << "Got /toon/quit" << std::endl;
-    //TODO:2010-08-15:aalex:Get rid of the application singleton
-    //SamplerServer *context = static_cast<SamplerServer*>(user_data);
-    //context->owner_->quit();
-    Application::get_instance().quit();
+    OscInterface* context = static_cast<OscInterface*>(user_data);
+    context->owner_->quit();
     return 0;
 }
 
