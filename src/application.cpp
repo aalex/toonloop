@@ -340,9 +340,9 @@ Pipeline& Application::get_pipeline()
 {
     return *pipeline_;
 }
-Gui& Application::get_gui() 
+Gui* Application::get_gui() 
 {
-    return *gui_;
+    return gui_.get();
 }
 Configuration& Application::get_configuration() 
 {

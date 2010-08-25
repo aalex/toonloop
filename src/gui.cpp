@@ -198,7 +198,9 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
 
 void iterate_playhead()
 {
-    Gui gui = Application::get_instance().get_gui();
+    // TODO:2010-08-25:aalex: iterate_playhead should be a method of Controller
+    // which calls the method with the same name (?) of the current clip
+    Gui *gui = Application::get_instance().get_gui();
     Pipeline pipeline = Application::get_instance().get_pipeline();
     
     static int number_of_frames_in_last_second = 0; // counting FPS
@@ -235,11 +237,11 @@ void iterate_playhead()
     
     if(thisclip->size() > 0) 
     {     
-        if (! CLUTTER_ACTOR_IS_VISIBLE(gui.playback_texture_))
-            clutter_actor_show_all(CLUTTER_ACTOR(gui.playback_texture_));
+        if (! CLUTTER_ACTOR_IS_VISIBLE(gui->playback_texture_))
+            clutter_actor_show_all(CLUTTER_ACTOR(gui->playback_texture_));
     } else {
-        if (CLUTTER_ACTOR_IS_VISIBLE(gui.playback_texture_))
-            clutter_actor_hide_all(CLUTTER_ACTOR(gui.playback_texture_));
+        if (CLUTTER_ACTOR_IS_VISIBLE(gui->playback_texture_))
+            clutter_actor_hide_all(CLUTTER_ACTOR(gui->playback_texture_));
     }
     if(thisclip->size() > 0) 
     {     
@@ -271,7 +273,7 @@ void iterate_playhead()
                 std::string image_full_path = thisclip->get_image_full_path(thisimage);
                 GError *error = NULL;
                 gboolean success;
-                success = clutter_texture_set_from_file(CLUTTER_TEXTURE(gui.playback_texture_), image_full_path.c_str(), &error);
+                success = clutter_texture_set_from_file(CLUTTER_TEXTURE(gui->playback_texture_), image_full_path.c_str(), &error);
                 // TODO: validate this path
                 if (!success)
                 {

@@ -221,7 +221,7 @@ Pipeline::Pipeline()
     GstElement* queue0 = gst_element_factory_make("queue", "queue0");
     g_assert(queue0);
 
-    videosink_ = clutter_gst_video_sink_new(CLUTTER_TEXTURE(Application::get_instance().get_gui().get_live_input_texture()));
+    videosink_ = clutter_gst_video_sink_new(CLUTTER_TEXTURE(Application::get_instance().get_gui()->get_live_input_texture()));
     // TODO: Make sure the rendering FPS is constant, and not subordinate to
     // the FPS of the camera.
 

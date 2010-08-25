@@ -45,8 +45,7 @@ class Application
         void run(int argc, char *argv[]);
         void quit();
         static void reset();
-        // TODO: return a pointer
-        Gui &get_gui();
+        Gui* get_gui();
         // TODO: return a pointer
         Pipeline &get_pipeline();
         // TODO: return a pointer
