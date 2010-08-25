@@ -43,27 +43,27 @@ class Controller
          * Called when a frame is added to a clip.
          * Arguments: clip number, new frame number.
          */
-        s2::signal<void (int, int)> add_frame_signal_;
+        s2::signal<void (unsigned int, unsigned int)> add_frame_signal_;
         /** 
          * Called when a frame is removed from a clip.
          * Arguments: clip number, deleted frame number.
          */
-        s2::signal<void (int, int)> remove_frame_signal_;
+        s2::signal<void (unsigned int, unsigned int)> remove_frame_signal_;
         /** 
          * Called when a clip is chosen.
          * Arguments: clip number.
          */
-        s2::signal<void (int)> choose_clip_signal_;
+        s2::signal<void (unsigned int)> choose_clip_signal_;
         /** 
          * Called when the FPS of a clip changes.
          * Arguments: clip number, FPS.
          */
-        s2::signal<void (int, int)> clip_fps_changed_signal_;
+        s2::signal<void (unsigned int, unsigned int)> clip_fps_changed_signal_;
         /** 
          * Called when a clip is saved.
          * Arguments: clip number.
          */
-        s2::signal<void (int)> save_clip_signal_;
+        s2::signal<void (unsigned int)> save_clip_signal_;
         /**
          * Adds a frame to the current clip.
          */
@@ -75,7 +75,7 @@ class Controller
         /** 
          * Chooses a clip
          */
-        void choose_clip(int i);
+        void choose_clip(unsigned int clip_number);
         /** 
          * Chooses the next clip
          */
