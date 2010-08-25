@@ -56,7 +56,7 @@ void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char >
     }
 }
 
-const void MidiInput::enumerate_devices()
+void MidiInput::enumerate_devices() const
 {
     // List inputs.
     std::cout << std::endl << "MIDI input devices: " << ports_count_ << " found." << std::endl;
@@ -73,7 +73,7 @@ const void MidiInput::enumerate_devices()
     }
 }
 
-const bool MidiInput::is_open()
+bool MidiInput::is_open() const
 {
     return opened_;
 }

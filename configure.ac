@@ -153,7 +153,7 @@ PIXMAPS_DIR=$DATADIR/pixmaps
 AC_SUBST(PIXMAPS_DIR)
 AC_MSG_NOTICE(Storing pixmaps files in $PIXMAPS_DIR)
 
-AC_SUBST(CXXFLAGS, " -O2 -Wall -Werror") #TODO:  -Wfatal-errors -Werror -pedantic")
+AC_SUBST(CXXFLAGS, " -O2 -Wall -Werror -Wextra -Wfatal-errors") 
 
 AC_CONFIG_FILES([
     Makefile

@@ -70,7 +70,7 @@ class Clip {
         {
 
         }
-        void writehead_goto(unsigned int index)
+        void writehead_goto(unsigned int /*index*/)
         {
 
         }
@@ -86,7 +86,7 @@ class Clip {
         }
 };
 
-int main(int argc, char *argv[])
+int main()
 {
     Clip clip = Clip();
     clip.add_image();

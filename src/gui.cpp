@@ -37,7 +37,7 @@
 
 namespace fs = boost::filesystem;
 
-gboolean Gui::onWindowStateEvent(GtkWidget* widget, GdkEventWindowState *event, gpointer data)
+gboolean Gui::onWindowStateEvent(GtkWidget* /*widget*/, GdkEventWindowState *event, gpointer data)
 {
     Gui *context = static_cast<Gui*>(data);
     context->isFullscreen_ = (event->new_window_state & GDK_WINDOW_STATE_FULLSCREEN);
@@ -171,7 +171,7 @@ void Gui::switch_to_clip_number(unsigned int key_val)
     }
 }
 
-void Gui::on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data)
+void Gui::on_delete_event(GtkWidget* /*widget*/, GdkEvent* /*event*/, gpointer /*data*/)
 {
     //Gui *context = static_cast<Gui*>(data);
     g_print("Window has been deleted.\n");
@@ -296,7 +296,7 @@ void iterate_playhead()
  * Timeline handler.
  * Called on every frame. 
  */
-void on_new_frame(ClutterTimeline *timeline, gint msecs, gpointer data)
+void on_new_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpointer /*data*/)
 {
     //std::cout << "on_new_frame" << std::endl; 
 //     Gui *gui = (Gui*)data;
@@ -306,7 +306,11 @@ void on_new_frame(ClutterTimeline *timeline, gint msecs, gpointer data)
 /**
  * Called when the stage size has changed.
  */
-void on_stage_allocation_changed(ClutterActor *stage, ClutterActorBox *box, ClutterAllocationFlags *flags, gpointer user_data) {
+void on_stage_allocation_changed(ClutterActor * /*stage*/, 
+        ClutterActorBox * /*box*/, 
+        ClutterAllocationFlags * /*flags*/, 
+        gpointer user_data) 
+{
     //g_print("on_stage_allocation_changed\n");
     Gui *gui = static_cast<Gui*>(user_data);
     gui->resize_actors();
@@ -369,7 +373,9 @@ void on_live_input_texture_size_changed(ClutterTexture *texture, gfloat width, g
     gui->resize_actors();
 }
 
-void on_playback_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data) {
+void on_playback_texture_size_changed(ClutterTexture *texture, 
+        gfloat /*width*/, gfloat /*height*/, gpointer user_data) 
+{
     //g_print("on_playback_texture_size_changed\n");
     // TODO:2010-08-06:aalex:Take into account size and ratio of the playback texture
     Gui *gui = static_cast<Gui*>(user_data);

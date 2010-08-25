@@ -20,6 +20,7 @@ headers = \
 	subprocess.h \
 	timer.h \
 	timing.h \
+    unused.h \
 	v4l2util.h
 
 toonloop_SOURCES = \

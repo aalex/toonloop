@@ -71,7 +71,7 @@ void test_b()
 //    sig_c(32768);
 //}
 
-int main(int argc, char **argv)
+int main()
 {
     test_a();
     test_b();

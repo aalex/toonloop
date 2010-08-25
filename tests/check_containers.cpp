@@ -32,7 +32,7 @@ Hello::Hello()
     }
 }
 
-int main(int argc, char **argv)
+int main()
 {
     Hello h = Hello();
     std::list< shared_ptr<Dummy> >::iterator iter;
