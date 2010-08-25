@@ -26,6 +26,7 @@
 #include <clutter/clutter.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
+#include "application.h"
 
 const int WINWIDTH = 640;
 const int WINHEIGHT = 480;
@@ -34,7 +35,7 @@ class Gui
 {
     public:
         ClutterActor* get_live_input_texture();
-        Gui(); 
+        Gui(Application* owner); 
         ~Gui() {};
         void toggleFullscreen() { toggleFullscreen(window_); } // no argument version of the same method below.
         ClutterActor *stage_;
@@ -50,7 +51,8 @@ class Gui
         GtkWidget *window_;
         GtkWidget *clutter_widget_;
         GtkWidget *vbox_;
-        GLXContext glx_context_;
+        bool isFullscreen_;
+        Application* owner_;
         static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data);
         static gboolean key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
@@ -60,7 +62,7 @@ class Gui
         void makeUnfullscreen(GtkWidget* widget);
         void hideCursor();
         void showCursor();
-        bool isFullscreen_;
+
 };
 
 #endif // __GUI_H__

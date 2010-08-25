@@ -390,10 +390,11 @@ void on_playback_texture_size_changed(ClutterTexture *texture,
 /**
  * Exits the application if OpenGL needs are not met.
  */
-Gui::Gui() :
+Gui::Gui(Application* owner) :
     video_input_width_(1),
     video_input_height_(1),
-    isFullscreen_(false)
+    isFullscreen_(false),
+    owner_(owner)
 {
     //video_xwindow_id_ = 0;
     // Main GTK window
