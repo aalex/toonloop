@@ -41,10 +41,6 @@
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
-// TODO:2010-08-05:aalex:Get rid of the singleton pattern
-// We might want many loopers!
-Application* Application::instance_ = 0;
-
 Application::Application() 
 {
     // FIXME:2010-08-05:aalex:We should not create clips at startup like that.
@@ -355,22 +351,14 @@ MidiInput& Application::get_midi_input()
 
 Application& Application::get_instance()
 {
-    if (!instance_)
-        instance_ = new Application();
-    return *instance_;
+// TODO:2010-08-05:aalex:Get rid of the singleton pattern
+// We might want many loopers!
+    static Application instance_; 
+    return instance_;
 }
 MovieSaver& Application::get_movie_saver() 
 {
     return *movie_saver_;
-}
-
-// delete the instance
-// FIXME: not sure how safe this is
-void Application::reset()
-{
-    std::cout << "Resetting the application" << std::endl;
-    delete instance_;
-    instance_ = 0;
 }
 
 void Application::quit()

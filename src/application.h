@@ -44,7 +44,6 @@ class Application
     public:
         void run(int argc, char *argv[]);
         void quit();
-        static void reset();
         // TODO: return a pointer
         Gui &get_gui();
         // TODO: return a pointer
@@ -66,7 +65,6 @@ class Application
     private:
         Application();
         ~Application();
-        static Application* instance_; // singleton
         void update_project_home_for_each_clip();
         bool setup_project_home(std::string project_home);
         // TODO: change for scoped_ptr
