@@ -30,7 +30,7 @@ Once those tasks are done, the features to be implemented in branch 2.x are:
  * packaging: fix make check. Re-add previous tests, including headers from src
  * themes: Support themes
  * themes: Create a single-image theme, combining the two image with the overlay blending mode.
- * gui: Display information in either a HUD in Clutter
+ * gui: Display information in either a HUD, or a mx GUI in Clutter
  * packaging: Improve STK packaging
 
 
