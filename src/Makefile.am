@@ -6,6 +6,7 @@ headers = \
 	clip.h \
 	config.h \
 	configuration.h \
+	controller.h \
 	gui.h \
 	image.h \
 	log.h \
@@ -26,6 +27,7 @@ toonloop_SOURCES = \
 	application.cpp \
 	clip.cpp \
 	configuration.cpp \
+	controller.cpp \
 	gui.cpp \
 	image.cpp \
 	main.cpp \
