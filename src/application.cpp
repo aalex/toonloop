@@ -134,9 +134,8 @@ void Application::run(int argc, char *argv[])
     }
     if (options["list-midi-inputs"].as<bool>())
     {
-        MidiInput* tmp_midi_input = new MidiInput();
-        tmp_midi_input->enumerate_devices();
-        delete tmp_midi_input;
+        MidiInput tmp_midi_input; 
+        tmp_midi_input.enumerate_devices();
         return; 
     }
     // Options to use in the normal mode:
@@ -196,7 +195,7 @@ void Application::run(int argc, char *argv[])
     config_->set_project_home(project_home);
     update_project_home_for_each_clip();
     config_->set_video_source(video_source);
-    movie_saver_ = std::tr1::shared_ptr<MovieSaver>(new MovieSaver());
+    movie_saver_ = std::tr1::shared_ptr<MovieSaver>(new MovieSaver);
 
     // TODO: create a directory for clips and one for images.
     movie_saver_->set_result_directory(config_->get_project_home() + "/" + MOVIES_DIRECTORY);
@@ -209,10 +208,10 @@ void Application::run(int argc, char *argv[])
     clutter_gst_init(&argc, &argv);
     // start GUI
     std::cout << "Starting GUI." << std::endl;
-    gui_ = std::tr1::shared_ptr<Gui>(new Gui());
+    gui_ = std::tr1::shared_ptr<Gui>(new Gui);
     // start Pipeline
     std::cout << "Starting pipeline." << std::endl;
-    pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline());
+    pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline);
     // Start OSC
     //TODO:2010-08-05:aalex:Make the OSC port configurable
     if (config_->get_osc_recv_port() != OSC_RECV_PORT_NONE)
@@ -243,7 +242,7 @@ void Application::run(int argc, char *argv[])
 
     // Start MIDI
     // std::cout << "Starting MIDI input." << std::endl;
-    midi_input_ = std::tr1::shared_ptr<MidiInput>(new MidiInput());
+    midi_input_ = std::tr1::shared_ptr<MidiInput>(new MidiInput);
     midi_input_->pedal_down_signal_.connect(boost::bind(&Application::on_pedal_down, this));
     midi_input_->enumerate_devices();
     if (config_->get_midi_input_number() != MIDI_INPUT_NONE)

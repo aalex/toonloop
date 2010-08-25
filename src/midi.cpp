@@ -84,7 +84,7 @@ MidiInput::MidiInput()
     midi_in_ = 0;
     // RtMidiIn constructor
     try {
-        midi_in_ = new RtMidiIn(); // FIXME: should be use a pointer?
+        midi_in_ = new RtMidiIn; // FIXME: should be use a pointer?
     }
     catch (RtError &error) {
         error.printMessage();
