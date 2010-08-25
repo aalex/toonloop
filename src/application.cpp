@@ -40,6 +40,7 @@
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
+typedef std::tr1::unordered_map<int, Clip*>::iterator ClipIterator;
 
 /**
  * Checks if a directory exists, create it and its parent directories if not.
@@ -81,7 +82,7 @@ Application::Application() : selected_clip_(0)
 {
     // FIXME:2010-08-05:aalex:We should not create clips at startup like that.
     // They should be created on-demand
-    for (int i = 0; i < MAX_CLIPS; i++)
+    for (unsigned int i = 0; i < MAX_CLIPS; i++)
         clips_[i] = new Clip(i);
 }
 
@@ -90,7 +91,7 @@ Clip* Application::get_current_clip()
     return clips_[selected_clip_];
 }
 
-int Application::get_current_clip_number()
+unsigned int Application::get_current_clip_number()
 {
     return selected_clip_;
 }
@@ -102,7 +103,7 @@ void Application::on_pedal_down()
     pipeline_->grab_frame();
 }
 
-void Application::set_current_clip_number(int clipnumber)
+void Application::set_current_clip_number(unsigned int clipnumber)
 {
     selected_clip_ = clipnumber;
     if (config_->get_verbose())

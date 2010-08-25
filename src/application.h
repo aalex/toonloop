@@ -33,7 +33,7 @@
 #include "moviesaver.h"
 
 // FIXME:2010-08-17:aalex:We should allow more than 10 clips
-#define MAX_CLIPS 10
+static const unsigned int MAX_CLIPS = 10;
 
 namespace po = boost::program_options;
 
@@ -50,8 +50,8 @@ class Application
         static Application& get_instance();
         Clip* get_current_clip();
         bool save_current_clip();
-        int get_current_clip_number();
-        void set_current_clip_number(int clipnumber);
+        unsigned int get_current_clip_number();
+        void set_current_clip_number(unsigned int clipnumber);
         void on_pedal_down();
 
     private:
@@ -65,9 +65,8 @@ class Application
         boost::scoped_ptr<Pipeline> pipeline_;
         boost::scoped_ptr<Configuration> config_;
         boost::scoped_ptr<MovieSaver> movie_saver_;
-        int selected_clip_;
+        unsigned int selected_clip_;
         // Aug 25 2010:tmatth:TODO:use shared_ptr, not raw pointers for clips_
-        typedef std::tr1::unordered_map<int, Clip*>::iterator ClipIterator;
         std::tr1::unordered_map<int, Clip*> clips_;
 };
 

@@ -49,12 +49,10 @@ void Controller::remove_frame()
     owner_->get_pipeline()->remove_frame();
     remove_frame_signal_(clip->get_id(), deleted_frame_number);
 }
-void Controller::choose_clip(int i)
+void Controller::choose_clip(unsigned int i)
 {
-    int current_clip = owner_->get_current_clip_number();
-    if (i < 0)
-        LOG_ERROR("Invalid clip number " << i);
-    else if (i > MAX_CLIPS)
+    unsigned int current_clip = owner_->get_current_clip_number();
+    if (i > MAX_CLIPS)
         LOG_ERROR("Invalid clip number " << i);
     if (current_clip == i)
         LOG_ERROR("Already chosen clip number " << i);
@@ -73,7 +71,7 @@ void Controller::choose_previous_clip()
 }
 void Controller::choose_next_clip()
 {
-    int current_clip = owner_->get_current_clip_number();
+    unsigned int current_clip = owner_->get_current_clip_number();
     if (current_clip < MAX_CLIPS - 1)
         choose_clip(current_clip + 1);
 }

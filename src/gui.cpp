@@ -74,7 +74,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
 {
     Gui *context = static_cast<Gui*>(data);
     Clip *current_clip = Application::get_instance().get_current_clip();
-    int clip;
+    unsigned int clip;
 
     switch (event->keyval)
     {

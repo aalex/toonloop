@@ -75,7 +75,7 @@ class Controller
         /** 
          * Chooses a clip
          */
-        void choose_clip(int i);
+        void choose_clip(unsigned int i);
         /** 
          * Chooses the next clip
          */
