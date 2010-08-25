@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(TOONLOOP, 1.9.2, support@toonloop.com)
+AC_INIT(TOONLOOP, 1.9.3, support@toonloop.com)
 AC_DEFINE([PACKAGE_URL],["http://www.toonloop.com"])
 AC_CONFIG_HEADER([src/config.h])
 AC_CONFIG_MACRO_DIR([m4]) # check for m4 macros in directory m4
@@ -153,7 +153,7 @@ PIXMAPS_DIR=$DATADIR/pixmaps
 AC_SUBST(PIXMAPS_DIR)
 AC_MSG_NOTICE(Storing pixmaps files in $PIXMAPS_DIR)
 
-AC_SUBST(CXXFLAGS, " -O2 -Wall -Werror") #TODO:  -Wfatal-errors -Werror -pedantic")
+AC_SUBST(CXXFLAGS, " -O2 -Wall -Werror -Wextra -Wfatal-errors") 
 
 AC_CONFIG_FILES([
     Makefile

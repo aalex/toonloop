@@ -1,23 +1,10 @@
-Release notes for Toonloop 1.9.2
+2010-0?-??: Toonloop 1.9.3
 
 This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. Since the 1.2 series, we have done a complete rewrite of the application in C++. 
 
 New features:
-    * MIDI input controls with the sustain pedal
-    * Switch between clips with the number keys
-    * Installing the icon
-    * Installing the desktop file
-    * Using the installed icon for window
-    * Updated README with info about GLX and test src
-    * Added the --list-cameras option
-    * Saving the current clip as a movie file
+    * 
 
 Bug fixes: 
-    * No more blank image when one is taken when none had been received yet.
-    * Fixed how the video-input option is parsed
-    * corrections in dependencies
-    * Made missing deps more explicit
-    * lowered required version of gst-interface
-    * Using boost::signals2
-    * Had missing include guards in midi.h
+    * 
 

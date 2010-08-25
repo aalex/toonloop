@@ -41,7 +41,9 @@ void SaverWorker::operator()()
     namespace fs = boost::filesystem;
     success_ = false;
     // TODO: make FPS configurable
-    std::string fps = "24";
+    std::ostringstream fps_os;
+    fps_os << owner_->current_task_.fps_;
+    std::string fps = fps_os.str();
     // TODO: image paths and clip id be attribute of this
     int num_images = owner_->current_task_.image_paths_.size();
     int clip_id = owner_->current_task_.clip_id_;

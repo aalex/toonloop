@@ -33,7 +33,7 @@ class Clip {
         }
 };
 
-int main(int argc, char *argv[])
+int main()
 {
     std::tr1::unordered_map<int, Clip*> dict;
     dict[1] = new Clip();

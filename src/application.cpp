@@ -41,10 +41,6 @@
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
-// TODO:2010-08-05:aalex:Get rid of the singleton pattern
-// We might want many loopers!
-Application* Application::instance_ = 0;
-
 Application::Application() 
 {
     // FIXME:2010-08-05:aalex:We should not create clips at startup like that.
@@ -86,8 +82,8 @@ void Application::set_current_clip_number(int clipnumber)
 void Application::run(int argc, char *argv[])
 {
     std::string video_source = "/dev/video0";
-    std::string project_home = "~/Documents/toonloop/default";
-    po::options_description desc("Toonloop options");
+    std::string project_home = DEFAULT_PROJECT_HOME;
+    po::options_description desc("Toonloop live stop motion animation editor");
     // std::cout << "adding options" << std::endl;
     desc.add_options()
         ("help,h", "Show this help message and exit")
@@ -105,12 +101,11 @@ void Application::run(int argc, char *argv[])
         //("image-width,w", po::value<int>()->default_value(640), "Width of the images grabbed from the camera. Default is 640")
         //("image-height,y", po::value<int>()->default_value(480), "Height of the images grabbed from the camera. Default is 480")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode")
-        //("sync", po::bool_switch(), "Enables X11 debug.")
-        //("keep-images-in-ram,R", po::bool_switch(), "Keep all the images to the computer RAM and do not load JPEG from the disk.")
         ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device. Use \"test\" for color bars. Use \"x\" to capture the screen")
         ("midi-input,m", po::value<int>(), "Sets the input MIDI device number to open")
         ("list-midi-inputs,L", po::bool_switch(), "Lists MIDI inputs devices and exits")
         ("list-cameras,l", po::bool_switch(), "Lists connected cameras and exits")
+        ("osc-receive-port,p", po::value<std::string>(), "Sets the listening OSC port")
         ; // <-- important semi-colon
     po::variables_map options;
     
@@ -135,9 +130,8 @@ void Application::run(int argc, char *argv[])
     }
     if (options["list-midi-inputs"].as<bool>())
     {
-        MidiInput* tmp_midi_input = new MidiInput();
-        tmp_midi_input->enumerate_devices();
-        delete tmp_midi_input;
+        MidiInput tmp_midi_input; 
+        tmp_midi_input.enumerate_devices();
         return; 
     }
     // Options to use in the normal mode:
@@ -159,26 +153,12 @@ void Application::run(int argc, char *argv[])
     if (options.count("project-home")) // of course it will be there.
     {
         project_home = options["project-home"].as<std::string>();
-        if (project_home == "~/Documents/toonloop/default") // replace ~ by $HOME
+        if (project_home == DEFAULT_PROJECT_HOME) // FIXME: replace ~ by $HOME instead of hard-coding this
             project_home = std::string(std::getenv("HOME")) + "/Documents/toonloop/default";
         std::cout << "project-home is set to " << project_home << std::endl;
-        if (! fs::exists(project_home))
-        {
-            try 
-            {
-                fs::create_directories(project_home); // TODO: check if it returns true
-            } catch(const std::exception& e) 
-            {
-                // TODO: be more specific to fs::basic_filesystem_error<Path> 
-                std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
-            }
-        } else {
-            if (! fs::is_directory(project_home))
-            {
-                std::cout << "Error: " << project_home << " is not a directory." << std::endl;
-                exit(1);
-            }
-        }
+        if (! setup_project_home(project_home))
+            exit(1);
+
     }
     // FIXME: From there, the options are set in configuration.cpp
     // TODO: We should do this in only one place. 
@@ -211,10 +191,10 @@ void Application::run(int argc, char *argv[])
     config_->set_project_home(project_home);
     update_project_home_for_each_clip();
     config_->set_video_source(video_source);
-    movie_saver_ = std::tr1::shared_ptr<MovieSaver>(new MovieSaver());
+    movie_saver_ = std::tr1::shared_ptr<MovieSaver>(new MovieSaver);
 
     // TODO: create a directory for clips and one for images.
-    movie_saver_->set_result_directory(config_->get_project_home());
+    movie_saver_->set_result_directory(config_->get_project_home() + "/" + MOVIES_DIRECTORY);
     // Init GTK, Clutter and GST:
     GError *error;
     error = NULL;
@@ -224,18 +204,41 @@ void Application::run(int argc, char *argv[])
     clutter_gst_init(&argc, &argv);
     // start GUI
     std::cout << "Starting GUI." << std::endl;
-    gui_ = std::tr1::shared_ptr<Gui>(new Gui());
+    gui_ = std::tr1::shared_ptr<Gui>(new Gui);
     // start Pipeline
     std::cout << "Starting pipeline." << std::endl;
-    pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline());
+    pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline);
     // Start OSC
     //TODO:2010-08-05:aalex:Make the OSC port configurable
-    std::cout << "Starting OSC receiver." << std::endl;
-    osc_ = std::tr1::shared_ptr<OscInterface>(new OscInterface("11337"));
-    osc_->start();
+    if (config_->get_osc_recv_port() != OSC_RECV_PORT_NONE)
+    {
+        std::cout << "Starting OSC receiver." << std::endl;
+        int osc_recv_port_num = atoi(config_->get_osc_recv_port().c_str());
+        if (osc_recv_port_num == 0)
+        {
+            std::cerr << "Invalid port number: " << config_->get_osc_recv_port() << std::endl;
+            exit(1);
+        } else {
+            if (osc_recv_port_num > 65535)
+            {
+                std::cerr << "Port number " << config_->get_osc_recv_port() <<  "is over the maximum of 65535." <<  std::endl;
+                exit(1);
+            } else if (osc_recv_port_num < 1) {
+                std::cerr << "Port number " << config_->get_osc_recv_port() <<  "is under the minimum of 1." <<  std::endl;
+                exit(1);
+            } else if (osc_recv_port_num < 1024) {
+                std::cerr << "Port number " << config_->get_osc_recv_port() <<  "is under 1024. It will probably fail." <<  std::endl;
+                // Don't exit
+            }
+        }
+        osc_ = std::tr1::shared_ptr<OscInterface>(new OscInterface(config_->get_osc_recv_port()));
+        osc_->start();
+    } else
+        std::cout << "OSC receiver is disabled" << std::endl;
+
     // Start MIDI
     // std::cout << "Starting MIDI input." << std::endl;
-    midi_input_ = std::tr1::shared_ptr<MidiInput>(new MidiInput());
+    midi_input_ = std::tr1::shared_ptr<MidiInput>(new MidiInput);
     midi_input_->pedal_down_signal_.connect(boost::bind(&Application::on_pedal_down, this));
     midi_input_->enumerate_devices();
     if (config_->get_midi_input_number() != MIDI_INPUT_NONE)
@@ -258,6 +261,49 @@ Application::~Application()
     //delete gui_;
     //delete pipeline_;
     //delete config_;
+}
+/**
+ * Creates all the project directories.
+ *
+ * Returns whether the directories exist or not once done.
+ */
+
+bool Application::setup_project_home(std::string project_home)
+{
+    if (! make_sure_directory_exists(project_home))
+        return false;
+    if (! make_sure_directory_exists(project_home + "/" + MOVIES_DIRECTORY))
+        return false;
+    if (! make_sure_directory_exists(project_home + "/" + IMAGES_DIRECTORY))
+        return false;
+    return true;
+}
+/**
+ * Checks if a directory exists, create it and its parent directories if not.
+ *
+ * Returns whether the directory exists or not once done.
+ */
+bool make_sure_directory_exists(std::string directory)
+{
+    if (! fs::exists(directory))
+    {
+        try 
+        {
+            fs::create_directories(directory); // TODO: check if it returns true
+        } catch(const std::exception& e) 
+        {
+            // TODO: be more specific to fs::basic_filesystem_error<Path> 
+            std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
+            return false;
+        }
+    } else {
+        if (! fs::is_directory(directory))
+        {
+            std::cout << "Error: " << directory << " is not a directory." << std::endl;
+            return false;
+        }
+    }
+    return true;
 }
 
 void Application::update_project_home_for_each_clip()
@@ -290,10 +336,12 @@ Pipeline& Application::get_pipeline()
 {
     return *pipeline_;
 }
-Gui& Application::get_gui() 
+
+Gui* Application::get_gui() 
 {
-    return *gui_;
+    return gui_.get();
 }
+
 Configuration& Application::get_configuration() 
 {
     return *config_;
@@ -305,22 +353,14 @@ MidiInput& Application::get_midi_input()
 
 Application& Application::get_instance()
 {
-    if (!instance_)
-        instance_ = new Application();
-    return *instance_;
+// TODO:2010-08-05:aalex:Get rid of the singleton pattern
+// We might want many loopers!
+    static Application instance_; 
+    return instance_;
 }
 MovieSaver& Application::get_movie_saver() 
 {
     return *movie_saver_;
-}
-
-// delete the instance
-// FIXME: not sure how safe this is
-void Application::reset()
-{
-    std::cout << "Resetting the application" << std::endl;
-    delete instance_;
-    instance_ = 0;
 }
 
 void Application::quit()

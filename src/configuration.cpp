@@ -23,6 +23,11 @@
 #include <boost/program_options.hpp>
 #include "configuration.h"
 
+/**
+ * Contains the runtime configuration options for Toonloop.
+ *
+ * Some of these values might change while the program is running.
+ */
 Configuration::Configuration(const boost::program_options::variables_map &options)
 {
     //capture_frame_rate_ = options["capture-fps"].as<int>();
@@ -32,19 +37,20 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     display_ = options["display"].as<std::string>();
     fullscreen_ = options["fullscreen"].as<bool>();
     verbose_ = options["verbose"].as<bool>();
-    // TODO:2010-08-16:aalex:Either discard keep-image-in-ram option or make it possible again.
-    //images_in_ram_ = options["keep-images-in-ram"].as<bool>();
-    images_in_ram_ = false;
     //enable_effects_ = options["enable-effects"].as<bool>();
     enable_effects_ = false;
-    if (images_in_ram_)
-        std::cout << "Images will be kept into RAM and not loaded from the disk on every frame." << std::endl;
     if (options.count("midi-input"))
     {
         midi_input_number_ = options["midi-input"].as<int>();
         std::cout << "Using MIDI input " << midi_input_number_ << std::endl;
     } else {
         midi_input_number_ = MIDI_INPUT_NONE; // Means disabled;
+    }
+    if (options.count("osc-receive-port"))
+    {
+        osc_recv_port_ = options["osc-receive-port"].as<std::string>();
+    } else {
+        osc_recv_port_ = OSC_RECV_PORT_NONE; // Means disabled;
     }
 }
 

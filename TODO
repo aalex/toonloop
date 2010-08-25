@@ -11,13 +11,10 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * saving: Create a directory for movies and one for images, in the project dir.
- * saving: Support saving in AVI
- * saving: Use the FPS of the current clip for the saved movie
- * osc: Pipeline::grab_frame should be called by Application::add_image
- * osc: Create signals for added and removed frames
- * osc: Send an OSC message upon frame/clip events
- * osc: Support the --osc-recv-port option
+ * signals: Pipeline::grab_frame should be called by Application::add_image
+ * signals: Create signals for added and removed frames
+ * osc: Send an OSC message upon frame/clip events, and /toon/playback/begin
+ * osc: Support the --osc-send-port option
  * edit: Support the same writehead-motion editing controls as in version 1.x: left, right, enter
  * edit: Support playback directions: forward, backward, ping-pong
 
@@ -30,11 +27,20 @@ To be done for Version 2.0
 
 Once those tasks are done, the features to be implemented in branch 2.x are:
 
+ * packaging: fix make check. Re-add previous tests, including headers from src
  * themes: Support themes
  * themes: Create a single-image theme, combining the two image with the overlay blending mode.
  * gui: Display information in either a HUD in Clutter
  * packaging: Improve STK packaging
+
+
+To be done for version 2.2 : Towards professional features
+----------------------------------------------------------
+
+ * saving: Support saving in AVI
+ * saving: create a subdir for each clip in images and movies dirs
  * gui: Create basic GUI buttons (in Clutter)
+ * edit: record video (every frame in a row)
  * edit: Onion skin
  * edit: Intervalometer
  * themes: portrait theme (rotation to the right)
@@ -42,15 +48,9 @@ Once those tasks are done, the features to be implemented in branch 2.x are:
  * edit: mirror
  * effects: one effect per clip
  * edit: Use FPS as a speed unit. Skip frames if needed.
- * gui: GTK GUI (buttons, sliders, menu, etc.) that disappear in fullscreen (GUI could be in Python)
+ * gui: Clutter GUI (buttons, sliders, menu, etc.) 
  * optimization: Read a few bytes from an image to trigger the kernel's read-ahead. (?)
- * osc: Support receiving OSC in a UDP multicast group 239.0.0.1
  * video: Use the default GStreamer-properties camera when none is given
-
-
-To be done for version 2.2 : Towards professional features
-----------------------------------------------------------
-
  * Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga.
  * display square to represent frames in timeline
  * GTK dialog which allows the user to choose the name of the saved clip.
@@ -120,3 +120,8 @@ Done
  * DONE: Use boost::signals2
  * DONE: Creating symbolic links to each image file in a temporary directory for the conversion to a movie.
  * DONE: Get the process manager to call mencoder in a thread, create a clip out of images and tell us when it's done. (see src/subprocess.cpp in branch 2.x and toon/mencoder.py in branch 1.x)
+ * DONE: saving: Use the FPS of the current clip for the saved movie
+ * DONE: saving: use glib's subprocess functions
+ * DONE: saving: Create a directory for movies and one for images, in the project dir.
+ * DONE: osc: Support the --osc-receive-port option
+ * DONE: remove the --keep-in-ram related code

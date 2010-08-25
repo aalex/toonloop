@@ -37,7 +37,7 @@
 
 namespace fs = boost::filesystem;
 
-gboolean Gui::onWindowStateEvent(GtkWidget* widget, GdkEventWindowState *event, gpointer data)
+gboolean Gui::onWindowStateEvent(GtkWidget* /*widget*/, GdkEventWindowState *event, gpointer data)
 {
     Gui *context = static_cast<Gui*>(data);
     context->isFullscreen_ = (event->new_window_state & GDK_WINDOW_STATE_FULLSCREEN);
@@ -171,7 +171,7 @@ void Gui::switch_to_clip_number(unsigned int key_val)
     }
 }
 
-void Gui::on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data)
+void Gui::on_delete_event(GtkWidget* /*widget*/, GdkEvent* /*event*/, gpointer /*data*/)
 {
     //Gui *context = static_cast<Gui*>(data);
     g_print("Window has been deleted.\n");
@@ -198,7 +198,9 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
 
 void iterate_playhead()
 {
-    Gui gui = Application::get_instance().get_gui();
+    // TODO:2010-08-25:aalex: iterate_playhead should be a method of Controller
+    // which calls the method with the same name (?) of the current clip
+    Gui *gui = Application::get_instance().get_gui();
     Pipeline pipeline = Application::get_instance().get_pipeline();
     
     static int number_of_frames_in_last_second = 0; // counting FPS
@@ -235,11 +237,11 @@ void iterate_playhead()
     
     if(thisclip->size() > 0) 
     {     
-        if (! CLUTTER_ACTOR_IS_VISIBLE(gui.playback_texture_))
-            clutter_actor_show_all(CLUTTER_ACTOR(gui.playback_texture_));
+        if (! CLUTTER_ACTOR_IS_VISIBLE(gui->playback_texture_))
+            clutter_actor_show_all(CLUTTER_ACTOR(gui->playback_texture_));
     } else {
-        if (CLUTTER_ACTOR_IS_VISIBLE(gui.playback_texture_))
-            clutter_actor_hide_all(CLUTTER_ACTOR(gui.playback_texture_));
+        if (CLUTTER_ACTOR_IS_VISIBLE(gui->playback_texture_))
+            clutter_actor_hide_all(CLUTTER_ACTOR(gui->playback_texture_));
     }
     if(thisclip->size() > 0) 
     {     
@@ -249,11 +251,8 @@ void iterate_playhead()
         if (move_playhead) // if it's time to move the playhead
             thisclip->iterate_playhead(); // updates the clip's playhead number
         int image_number = thisclip->get_playhead();
-        //bool pixels_are_loaded = false;
-        //width = thisclip->get_width(); // FIXME: do not override data given by gst-plugins-gl!
-        //height = thisclip->get_height();// FIXME: do not override data given by gst-plugins-gl!
-        //GdkPixbuf *pixbuf;
-        //bool loaded_pixbuf = false;
+        //width = thisclip->get_width(); 
+        //height = thisclip->get_height();
         Image* thisimage = &(thisclip->get_image(image_number));
 
         if ( (prevclip != thisclip) || (prev_image_number != image_number) )
@@ -269,33 +268,23 @@ void iterate_playhead()
             the grabbed frame dimensions don't match with the width, height passed from glimasesink to the draw callback*/
             // XXX: yes, I think we should always check the size of the images. (especially when we will read them from the disk)
 
-            if (thisimage->is_ready() and need_refresh)
+            if (need_refresh)
             {
-                if (Application::get_instance().get_configuration().get_images_in_ram())
-                {   
-                    std::cerr << "Loading in RAM is disabled for now." << std::endl; 
-                    //if ( need_refresh )
-                    //    buf = thisimage->get_rawdata();
-                    //pixels_are_loaded = true;
+                std::string image_full_path = thisclip->get_image_full_path(thisimage);
+                GError *error = NULL;
+                gboolean success;
+                success = clutter_texture_set_from_file(CLUTTER_TEXTURE(gui->playback_texture_), image_full_path.c_str(), &error);
+                // TODO: validate this path
+                if (!success)
+                {
+                    std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
+                    g_error_free(error);
                 } else {
-                    std::string image_full_path = thisclip->get_image_full_path(thisimage);
-                    GError *error = NULL;
-                    gboolean success;
-                    success = clutter_texture_set_from_file(CLUTTER_TEXTURE(gui.playback_texture_), image_full_path.c_str(), &error);
-                    // TODO: validate this path
-                    
-                    //pixbuf = gdk_pixbuf_new_from_file(image_full_path.c_str(), &error);
-                    if (!success)
-                    {
-                        std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
-                        g_error_free(error);
-                    } else {
-                        // TODO:2010-08-06:aalex:Do not load an image twice in a row
-                        //std::cout << "Loaded image " <<  image_full_path << std::endl;
-                        //buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
-                        //pixels_are_loaded = true;
-                        //loaded_pixbuf = true;
-                    }
+                    // TODO:2010-08-06:aalex:Do not load an image twice in a row
+                    //std::cout << "Loaded image " <<  image_full_path << std::endl;
+                    //buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
+                    //pixels_are_loaded = true;
+                    //loaded_pixbuf = true;
                 }
             }
         }
@@ -307,7 +296,7 @@ void iterate_playhead()
  * Timeline handler.
  * Called on every frame. 
  */
-void on_new_frame(ClutterTimeline *timeline, gint msecs, gpointer data)
+void on_new_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpointer /*data*/)
 {
     //std::cout << "on_new_frame" << std::endl; 
 //     Gui *gui = (Gui*)data;
@@ -317,7 +306,11 @@ void on_new_frame(ClutterTimeline *timeline, gint msecs, gpointer data)
 /**
  * Called when the stage size has changed.
  */
-void on_stage_allocation_changed(ClutterActor *stage, ClutterActorBox *box, ClutterAllocationFlags *flags, gpointer user_data) {
+void on_stage_allocation_changed(ClutterActor * /*stage*/, 
+        ClutterActorBox * /*box*/, 
+        ClutterAllocationFlags * /*flags*/, 
+        gpointer user_data) 
+{
     //g_print("on_stage_allocation_changed\n");
     Gui *gui = static_cast<Gui*>(user_data);
     gui->resize_actors();
@@ -380,7 +373,9 @@ void on_live_input_texture_size_changed(ClutterTexture *texture, gfloat width, g
     gui->resize_actors();
 }
 
-void on_playback_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data) {
+void on_playback_texture_size_changed(ClutterTexture *texture, 
+        gfloat /*width*/, gfloat /*height*/, gpointer user_data) 
+{
     //g_print("on_playback_texture_size_changed\n");
     // TODO:2010-08-06:aalex:Take into account size and ratio of the playback texture
     Gui *gui = static_cast<Gui*>(user_data);

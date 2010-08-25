@@ -35,6 +35,7 @@ struct SavingTask
 {
     std::vector<std::string> image_paths_;
     int clip_id_;
+    int fps_;
 };
 
 class MovieSaver

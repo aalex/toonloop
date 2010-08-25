@@ -18,13 +18,44 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <cstdlib>
 #include <iostream>
+#include <glib.h>
+#include <glib/gstdio.h>
+#include <glib/gutils.h>
+#include <string>
+/**
+ * Runs a command synchronously
+ */
+bool run_command(std::string command)
+{
+    GError *error = NULL;
+    gint status = 0;
+    gchar *stdout_message = NULL;
+    gchar *stderr_message = NULL;
+    gboolean ret = false;
+    
+    ret = g_spawn_command_line_sync(command.c_str(), &stdout_message, &stderr_message, &status, &error);
+    if ((error && (0 != error->code)) || ! WIFEXITED(status) || WEXITSTATUS(status)) {
+        g_warning("Failed to execute command \"%s\", exited: %i, status: %i, stderr: %s, stdout: %s\n", command.c_str(), WIFEXITED(status), WEXITSTATUS(status), stderr_message ? : "", stdout_message ? : "");
+    } else {
+        g_print("Successfully ran command \"%s\"\n", command.c_str());
+        std::cout << "Its output is : " << stdout_message << std::endl;
+        ret = true;
+    }
+    if (error)
+        g_error_free (error);
+    g_free(stdout_message);
+    g_free(stderr_message);
+    return ret == true;
+}
+
+
+// Old implementation:
+#if 0
 #include <unistd.h> // environ, usleep, execv
-#include <stdlib.h> // EXIT_SUCCESS
 #include <sys/types.h> // pid_t
 #include <sys/wait.h> // wait
-#include <string>
-
 /**
  * Runs a bash command.
  * Returns false if could not execute it.
@@ -91,15 +122,5 @@ bool run_command(std::string command)
     }
     return true;
 }
+#endif
 
-
-//int main(int argc, char *argv[])
-//{
-//    std::string command("echo 'Hello'; sleep 1; echo 'bye'");
-//    if (run_command(command))
-//    {
-//        return EXIT_SUCCESS;
-//    } else {
-//        return EXIT_FAILURE;
-//    }
-//}

@@ -2,7 +2,7 @@
 #include <boost/filesystem.hpp>
 #include <iostream>
 
-int main(int argc, char **argv)
+int main()
 {
     namespace fs = boost::filesystem;
     //TODO:2010-08-21:aalex: use fs::unique_path... only in boost 1.44 and up

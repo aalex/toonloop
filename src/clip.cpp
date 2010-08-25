@@ -20,6 +20,7 @@
  */
 
 #include "clip.h"
+#include "configuration.h"
 #include "image.h"
 #include "timing.h"
 #include <string>
@@ -59,7 +60,7 @@ std::string Clip::get_image_full_path(Image* image)
     std::string image_name = image->get_name() + get_image_file_extension(); //".jpg";
     //std::string file_name = fs::path(project_path) / image_name; 
     // TODO: use boost:file_system to append paths
-    return project_path + "/" + image_name; 
+    return project_path + "/" + IMAGES_DIRECTORY + "/" + image_name; 
 }
 
 int Clip::get_playhead_fps()
@@ -140,6 +141,10 @@ int Clip::frame_remove()
 int Clip::get_playhead()
 {
     return playhead_;
+}
+int Clip::get_writehead()
+{
+    return writehead_;
 }
 
 int Clip::iterate_playhead()

@@ -41,6 +41,7 @@ void check_long()
             std::cout << "Now = " << current << std::endl; 
         assert(current != previous);
         previous = current;
+        usleep(1000); // 1 ms
     }
 }
 // checks the Timer class
