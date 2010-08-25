@@ -41,6 +41,42 @@
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
+/**
+ * Checks if a directory exists, create it and its parent directories if not.
+ *
+ * Returns whether the directory exists or not once done.
+ * This is in an anonymous namespace to keep it visible to this file only and to ensure 
+ * it doesn't conflict with a function we link in.
+ */
+namespace {
+    bool make_sure_directory_exists(const std::string &directory)
+    {
+        if (not fs::exists(directory))
+        {
+            try 
+            {
+                fs::create_directories(directory); // TODO: check if it returns true
+            } 
+            catch(const std::exception& e) 
+            {
+                // TODO: be more specific to fs::basic_filesystem_error<Path> 
+                std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
+                return false;
+            }
+        } 
+        else 
+        {
+            if (not fs::is_directory(directory))
+            {
+                std::cout << "Error: " << directory << " is not a directory." << std::endl;
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+
 Application::Application() : selected_clip_(0)
 {
     // FIXME:2010-08-05:aalex:We should not create clips at startup like that.
@@ -263,39 +299,12 @@ Application::~Application()
 
 bool Application::setup_project_home(std::string project_home)
 {
-    if (! make_sure_directory_exists(project_home))
+    if (not make_sure_directory_exists(project_home))
         return false;
-    if (! make_sure_directory_exists(project_home + "/" + MOVIES_DIRECTORY))
+    if (not make_sure_directory_exists(project_home + "/" + MOVIES_DIRECTORY))
         return false;
-    if (! make_sure_directory_exists(project_home + "/" + IMAGES_DIRECTORY))
+    if (not make_sure_directory_exists(project_home + "/" + IMAGES_DIRECTORY))
         return false;
-    return true;
-}
-/**
- * Checks if a directory exists, create it and its parent directories if not.
- *
- * Returns whether the directory exists or not once done.
- */
-bool make_sure_directory_exists(std::string directory)
-{
-    if (! fs::exists(directory))
-    {
-        try 
-        {
-            fs::create_directories(directory); // TODO: check if it returns true
-        } catch(const std::exception& e) 
-        {
-            // TODO: be more specific to fs::basic_filesystem_error<Path> 
-            std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
-            return false;
-        }
-    } else {
-        if (! fs::is_directory(directory))
-        {
-            std::cout << "Error: " << directory << " is not a directory." << std::endl;
-            return false;
-        }
-    }
     return true;
 }
 
@@ -344,8 +353,8 @@ MidiInput* Application::get_midi_input()
 
 Application& Application::get_instance()
 {
-// TODO:2010-08-05:aalex:Get rid of the singleton pattern
-// We might want many loopers!
+    // TODO:2010-08-05:aalex:Get rid of the singleton pattern
+    // We might want many loopers!
     static Application instance_; 
     return instance_;
 }

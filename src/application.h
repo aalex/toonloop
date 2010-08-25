@@ -37,8 +37,6 @@
 
 namespace po = boost::program_options;
 
-bool make_sure_directory_exists(std::string directory);;
-
 class Application 
 {
     public:
