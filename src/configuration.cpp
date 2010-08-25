@@ -28,38 +28,31 @@
  *
  * Some of these values might change while the program is running.
  */
-Configuration::Configuration(const boost::program_options::variables_map &options)
+Configuration::Configuration(const boost::program_options::variables_map &options) :
+    playhead_fps_(0),
+    video_source_(""),
+    display_(options["display"].as<std::string>()),
+    fullscreen_(options["fullscreen"].as<bool>()),
+    enable_effects_(false),
+    verbose_(options["verbose"].as<bool>()),
+    midi_input_number_(options.count("midi-input") ? options["midi-input"].as<int>() : MIDI_INPUT_NONE),
+    osc_recv_port_(options.count("osc-receive-port") ? options["osc-receive-port"].as<std::string>() : OSC_RECV_PORT_NONE)
 {
+    //enable_effects_ = options["enable-effects"].as<bool>();
     //capture_frame_rate_ = options["capture-fps"].as<int>();
     //rendering_frame_rate_ = capture_frame_rate_; //options["rendering-fps"].as<int>();
     //playhead_fps_ = options["playhead-fps"].as<int>();
     // video_source_ = options["video-source"].as<std::string>();
-    display_ = options["display"].as<std::string>();
-    fullscreen_ = options["fullscreen"].as<bool>();
-    verbose_ = options["verbose"].as<bool>();
-    //enable_effects_ = options["enable-effects"].as<bool>();
-    enable_effects_ = false;
-    if (options.count("midi-input"))
-    {
-        midi_input_number_ = options["midi-input"].as<int>();
+    if (midi_input_number_ != MIDI_INPUT_NONE) // Means disabled
         std::cout << "Using MIDI input " << midi_input_number_ << std::endl;
-    } else {
-        midi_input_number_ = MIDI_INPUT_NONE; // Means disabled;
-    }
-    if (options.count("osc-receive-port"))
-    {
-        osc_recv_port_ = options["osc-receive-port"].as<std::string>();
-    } else {
-        osc_recv_port_ = OSC_RECV_PORT_NONE; // Means disabled;
-    }
 }
 
-void Configuration::set_project_home(std::string project_home)
+void Configuration::set_project_home(const std::string &project_home)
 {
     project_home_ = project_home;
 }
 
-void Configuration::set_video_source(std::string video_source)
+void Configuration::set_video_source(const std::string &video_source)
 {
     video_source_ = video_source;
 }
