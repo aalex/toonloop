@@ -27,7 +27,7 @@ bool Test::check()
     return val_;
 }
 
-int main(int argc, char *argv[])
+int main()
 {
     Test t = Test();
     assert(t.check());

@@ -17,10 +17,11 @@ class OscReceiver {
         std::string toString() const;
         std::string port_;
         lo_server_thread server_;
+#ifdef CONFIG_DEBUG
         static int genericHandler(const char *path, 
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
-
+#endif
         static void error(int num, const char *msg, const char *path);
 };
 

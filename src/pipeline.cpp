@@ -40,7 +40,7 @@ namespace fs = boost::filesystem;
 /**
  * GST bus signal watch callback 
  */
-void Pipeline::end_stream_cb(GstBus* bus, GstMessage* message, GstElement* pipeline)
+void Pipeline::end_stream_cb(GstBus* /*bus*/, GstMessage* message, GstElement* /*pipeline*/)
 {
     bool stop_it = true;
     if (GST_MESSAGE_TYPE(message) == GST_MESSAGE_ERROR)

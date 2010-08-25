@@ -6,8 +6,10 @@ OscReceiver::OscReceiver(const std::string &port) :
     port_(port), 
     server_(lo_server_thread_new(port_.c_str(), error))
 {
+#ifdef CONFIG_DEBUG
     /* add method that will match any path and args */
     lo_server_thread_add_method(server_, NULL, NULL, genericHandler, this);
+#endif
 }
 
 
@@ -37,6 +39,7 @@ void OscReceiver::error(int num, const char *msg, const char *path)
         << ": " << msg << std::endl;
 }
 
+#ifdef CONFIG_DEBUG
 /* catch any incoming messages and display them. returning 1 means that the 
  *  * message has not been fully handled and the server should try other methods */
 int OscReceiver::genericHandler(const char *path, 
@@ -44,8 +47,6 @@ int OscReceiver::genericHandler(const char *path,
         int argc, void * /*data*/, void * /*user_data*/) 
 { 
     //OscReceiver *context = static_cast<OscReceiver*>(user_data);
-
-#ifdef CONFIG_DEBUG
     printf("path: <%s>\n", path); 
     for (int i = 0; i < argc; ++i) 
     { 
@@ -55,10 +56,10 @@ int OscReceiver::genericHandler(const char *path,
     } 
     printf("\n"); 
     fflush(stdout); 
-#endif // CONFIG_DEBUG
 
     return 1; 
 } 
+#endif // CONFIG_DEBUG
 
 
 std::string OscReceiver::toString() const

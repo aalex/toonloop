@@ -24,7 +24,7 @@ class Worker
         }
 };
 
-int main(int argc, char* argv[])  
+int main()
 {  
     std::cout << "main: startup" << std::endl;  
     Worker w = Worker();
