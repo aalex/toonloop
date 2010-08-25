@@ -28,6 +28,7 @@
 #include <stdlib.h> // for itoa()
 
 #include "application.h"
+#include "clip.h"
 #include "configuration.h"
 #include "gui.h"
 #include "log.h" // TODO: make it async and implement THROW_ERROR

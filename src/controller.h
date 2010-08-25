@@ -23,9 +23,12 @@
 
 #include <boost/bind.hpp>
 #include <boost/signals2.hpp>
-#include "application.h"
 
 namespace s2 = boost::signals2;
+
+// Forward declaration
+class Application;
+
 /**
  * The Controller contains the methods that any class should call
  * in order to create Toonloop animations. It also contains the signals 

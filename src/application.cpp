@@ -30,6 +30,8 @@
 #include <string>
 
 #include "application.h"
+#include "moviesaver.h"
+#include "oscinterface.h"
 #include "clip.h"
 #include "config.h"
 #include "configuration.h"
@@ -40,12 +42,49 @@
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
+typedef std::tr1::unordered_map<int, Clip*>::iterator ClipIterator;
+
+/**
+ * Checks if a directory exists, create it and its parent directories if not.
+ *
+ * Returns whether the directory exists or not once done.
+ * This is in an anonymous namespace to keep it visible to this file only and to ensure 
+ * it doesn't conflict with a function we link in.
+ */
+namespace {
+    bool make_sure_directory_exists(const std::string &directory)
+    {
+        if (not fs::exists(directory))
+        {
+            try 
+            {
+                fs::create_directories(directory); // TODO: check if it returns true
+            } 
+            catch(const std::exception& e) 
+            {
+                // TODO: be more specific to fs::basic_filesystem_error<Path> 
+                std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
+                return false;
+            }
+        } 
+        else 
+        {
+            if (not fs::is_directory(directory))
+            {
+                std::cout << "Error: " << directory << " is not a directory." << std::endl;
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
 
 Application::Application() : selected_clip_(0)
 {
     // FIXME:2010-08-05:aalex:We should not create clips at startup like that.
     // They should be created on-demand
-    for (int i = 0; i < MAX_CLIPS; i++)
+    for (unsigned int i = 0; i < MAX_CLIPS; i++)
         clips_[i] = new Clip(i);
 }
 
@@ -54,7 +93,7 @@ Clip* Application::get_current_clip()
     return clips_[selected_clip_];
 }
 
-int Application::get_current_clip_number()
+unsigned int Application::get_current_clip_number()
 {
     return selected_clip_;
 }
@@ -66,7 +105,7 @@ void Application::on_pedal_down()
     pipeline_->grab_frame();
 }
 
-void Application::set_current_clip_number(int clipnumber)
+void Application::set_current_clip_number(unsigned int clipnumber)
 {
     selected_clip_ = clipnumber;
     if (config_->get_verbose())
@@ -263,39 +302,12 @@ Application::~Application()
 
 bool Application::setup_project_home(std::string project_home)
 {
-    if (! make_sure_directory_exists(project_home))
+    if (not make_sure_directory_exists(project_home))
         return false;
-    if (! make_sure_directory_exists(project_home + "/" + MOVIES_DIRECTORY))
+    if (not make_sure_directory_exists(project_home + "/" + MOVIES_DIRECTORY))
         return false;
-    if (! make_sure_directory_exists(project_home + "/" + IMAGES_DIRECTORY))
+    if (not make_sure_directory_exists(project_home + "/" + IMAGES_DIRECTORY))
         return false;
-    return true;
-}
-/**
- * Checks if a directory exists, create it and its parent directories if not.
- *
- * Returns whether the directory exists or not once done.
- */
-bool make_sure_directory_exists(std::string directory)
-{
-    if (! fs::exists(directory))
-    {
-        try 
-        {
-            fs::create_directories(directory); // TODO: check if it returns true
-        } catch(const std::exception& e) 
-        {
-            // TODO: be more specific to fs::basic_filesystem_error<Path> 
-            std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
-            return false;
-        }
-    } else {
-        if (! fs::is_directory(directory))
-        {
-            std::cout << "Error: " << directory << " is not a directory." << std::endl;
-            return false;
-        }
-    }
     return true;
 }
 
@@ -344,8 +356,8 @@ MidiInput* Application::get_midi_input()
 
 Application& Application::get_instance()
 {
-// TODO:2010-08-05:aalex:Get rid of the singleton pattern
-// We might want many loopers!
+    // TODO:2010-08-05:aalex:Get rid of the singleton pattern
+    // We might want many loopers!
     static Application instance_; 
     return instance_;
 }
