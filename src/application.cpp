@@ -242,7 +242,7 @@ void Application::run(int argc, char *argv[])
     gui_.reset(new Gui(this));
     // start Pipeline
     std::cout << "Starting pipeline." << std::endl;
-    pipeline_.reset(new Pipeline);
+    pipeline_.reset(new Pipeline(this));
     // Start OSC
     //TODO:2010-08-05:aalex:Make the OSC port configurable
     if (config_->get_osc_recv_port() != OSC_RECV_PORT_NONE)

@@ -175,9 +175,10 @@ void Pipeline::stop()
  * Constructor which create the Gstreamer pipeline.
  * This pipeline grabs the video and render the OpenGL.
  */
-Pipeline::Pipeline()
+Pipeline::Pipeline(Application* owner) :
+        owner_(owner)
 {
-    Configuration *config = Application::get_instance().get_configuration();
+    Configuration *config = owner_->get_configuration();
     //onionskin_texture_ = Texture();
     //playback_texture_ = Texture();
     pipeline_ = NULL;
@@ -230,7 +231,7 @@ Pipeline::Pipeline()
     GstElement* queue0 = gst_element_factory_make("queue", "queue0");
     g_assert(queue0);
 
-    videosink_ = clutter_gst_video_sink_new(CLUTTER_TEXTURE(Application::get_instance().get_gui()->get_live_input_texture()));
+    videosink_ = clutter_gst_video_sink_new(CLUTTER_TEXTURE(owner_->get_gui()->get_live_input_texture()));
     // TODO: Make sure the rendering FPS is constant, and not subordinate to
     // the FPS of the camera.
 

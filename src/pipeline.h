@@ -27,15 +27,18 @@
 #include "configuration.h"
 #include "image.h"
 
+class Application;
+
 class Pipeline
 {
     public:
         void stop();
-        Pipeline();
+        Pipeline(Application* owner);
         ~Pipeline();
         void grab_frame();
         void remove_frame();
     private:
+        Application* owner_;
         GstElement* videosrc_;
         GstElement* videosink_;
         GstElement* gdkpixbufsink_;
