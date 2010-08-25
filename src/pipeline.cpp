@@ -128,7 +128,9 @@ void Pipeline::grab_frame()
     }
 
     int image_number = thisclip->frame_add();
+
     Image *thisimage = &thisclip->get_image(image_number);
+
     if (is_verbose)
         std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl;
     std::string file_name = thisclip->get_image_full_path(thisimage);

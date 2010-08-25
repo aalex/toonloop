@@ -28,8 +28,6 @@
 #include <tr1/memory>
 #include <boost/thread/mutex.hpp>
 
-using namespace std::tr1; // shared_ptr
-
 /**
  * A clip is a list of images.
  */
@@ -102,12 +100,14 @@ void Clip::set_height(int height)
  */
 int Clip::frame_add()
 {
+    using namespace std::tr1; // shared_ptr
+
     int assigned = writehead_;
     std::string name = timing::get_iso_datetime_for_now();
     //images_.push_back(shared_ptr<Image>(new Image(name)));
     images_.insert(images_.begin() + writehead_, shared_ptr<Image>(new Image(name)));
     //images_[writehead_] = new Image(name);
-    writehead_ ++;
+    writehead_++;
     return assigned;
 }
 
@@ -121,17 +121,25 @@ int Clip::frame_remove()
     int how_many_deleted = 0;
     //int len = size();
     //unsigned int len = writehead_;
-    if (writehead_ == 0) // TODO: ! images_.empty()
+    if (images_.empty()) // TODO: ! images_.empty()
     {
         std::cout << "Cannot delete a frame since writehead is at the beginning of the clip." << std::endl;
-    } else if (images_.empty()) {
+    } 
+    else if (images_.empty()) 
+    {
         std::cout << "Cannot delete a frame since the clip is empty." << std::endl;
-    } else if (writehead_ > images_.size()) {
-        std::cout << "Cannot delete a frame since the writehead points to a non-existing frame index " << writehead_ << " while the clip has only " << images_.size() << " images." << std::endl;
-    } else {
+    } 
+    else if (writehead_ > images_.size()) 
+    {
+        std::cout << "Cannot delete a frame since the writehead points to a " <<
+            "non-existing frame index " << writehead_ << " while the clip has only " << 
+            images_.size() << " images." << std::endl;
+    } 
+    else 
+    {
         std::cout << "Deleting image at position " << (writehead_ - 1) << "/" << images_.size() << std::endl;
         images_.erase(images_.begin() + (writehead_ - 1));
-        writehead_ --; 
+        --writehead_;
         how_many_deleted = 1;
     }
     return how_many_deleted;

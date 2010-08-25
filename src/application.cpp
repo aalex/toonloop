@@ -186,12 +186,12 @@ void Application::run(int argc, char *argv[])
     // Stores the options in the Configuration class.
     //Configuration config(options);
     // A lot of options parsing is done in the constructor of Configuration:
-    config_ = std::tr1::shared_ptr<Configuration>(new Configuration(options));
+    config_.reset(new Configuration(options));
     // It's very important to call set_project_home and set_video_source here:
     config_->set_project_home(project_home);
     update_project_home_for_each_clip();
     config_->set_video_source(video_source);
-    movie_saver_ = std::tr1::shared_ptr<MovieSaver>(new MovieSaver);
+    movie_saver_.reset(new MovieSaver);
 
     // TODO: create a directory for clips and one for images.
     movie_saver_->set_result_directory(config_->get_project_home() + "/" + MOVIES_DIRECTORY);
@@ -204,10 +204,10 @@ void Application::run(int argc, char *argv[])
     clutter_gst_init(&argc, &argv);
     // start GUI
     std::cout << "Starting GUI." << std::endl;
-    gui_ = std::tr1::shared_ptr<Gui>(new Gui);
+    gui_.reset(new Gui);
     // start Pipeline
     std::cout << "Starting pipeline." << std::endl;
-    pipeline_ = std::tr1::shared_ptr<Pipeline>(new Pipeline);
+    pipeline_.reset(new Pipeline);
     // Start OSC
     //TODO:2010-08-05:aalex:Make the OSC port configurable
     if (config_->get_osc_recv_port() != OSC_RECV_PORT_NONE)
@@ -231,14 +231,14 @@ void Application::run(int argc, char *argv[])
                 // Don't exit
             }
         }
-        osc_ = std::tr1::shared_ptr<OscInterface>(new OscInterface(config_->get_osc_recv_port()));
+        osc_.reset(new OscInterface(config_->get_osc_recv_port()));
         osc_->start();
     } else
         std::cout << "OSC receiver is disabled" << std::endl;
 
     // Start MIDI
     // std::cout << "Starting MIDI input." << std::endl;
-    midi_input_ = std::tr1::shared_ptr<MidiInput>(new MidiInput);
+    midi_input_.reset(new MidiInput);
     midi_input_->pedal_down_signal_.connect(boost::bind(&Application::on_pedal_down, this));
     midi_input_->enumerate_devices();
     if (config_->get_midi_input_number() != MIDI_INPUT_NONE)

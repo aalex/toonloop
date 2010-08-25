@@ -22,7 +22,7 @@
 #define __APPLICATION_H__
 
 #include <boost/program_options.hpp>
-#include <tr1/memory>
+#include <boost/scoped_ptr.hpp>
 
 #include "clip.h"
 #include "configuration.h"
@@ -67,12 +67,12 @@ class Application
         void update_project_home_for_each_clip();
         bool setup_project_home(std::string project_home);
         // TODO: change for scoped_ptr
-        std::tr1::shared_ptr<Gui> gui_;
-        std::tr1::shared_ptr<MidiInput> midi_input_;
-        std::tr1::shared_ptr<OscInterface> osc_;
-        std::tr1::shared_ptr<Pipeline> pipeline_;
-        std::tr1::shared_ptr<Configuration> config_;
-        std::tr1::shared_ptr<MovieSaver> movie_saver_;
+        boost::scoped_ptr<Gui> gui_;
+        boost::scoped_ptr<MidiInput> midi_input_;
+        boost::scoped_ptr<OscInterface> osc_;
+        boost::scoped_ptr<Pipeline> pipeline_;
+        boost::scoped_ptr<Configuration> config_;
+        boost::scoped_ptr<MovieSaver> movie_saver_;
         int selected_clip_;
         double cfps_;
         std::tr1::unordered_map<int, Clip*> clips_;

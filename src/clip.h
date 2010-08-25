@@ -29,9 +29,8 @@
 #include <tr1/unordered_map>
 #include <vector>
 
-#include "image.h"
-
-using namespace std::tr1; // shared_ptr
+// forward declaration
+class Image;
 
 const int MAX_FPS = 60;
 
@@ -85,7 +84,7 @@ class Clip
          * Their order can change.
          * Some of them may disappear.
          */
-        std::vector< shared_ptr<Image> > images_;
+        std::vector< std::tr1::shared_ptr<Image> > images_;
         int playhead_fps_;
         bool has_recorded_a_frame_;
         boost::mutex mutex_;
