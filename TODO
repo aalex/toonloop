@@ -11,6 +11,7 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
+ * osc: cannot validate sending port
  * signals: Pipeline::grab_frame should be called by Application::add_image
  * signals: Create signals for added and removed frames
  * osc: Send an OSC message upon frame/clip events, and /toon/playback/begin
