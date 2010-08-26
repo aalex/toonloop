@@ -37,7 +37,18 @@ class OscInterface
                     const std::string &send_addr); 
             ~OscInterface();
             void start();
-            void publish_added_frame() const;
+            /**
+             * Slot for the Controller's add_frame_signal_ signal.
+             */
+            void on_add_frame(unsigned int clip_number, unsigned int frame_number);
+            /**
+             * Slot for the Controller's remove_frame_signal_ signal.
+             */
+            void on_remove_frame(unsigned int clip_number, unsigned int frame_number);
+            /**
+             * Slot for the Controller's next_image_to_play_signal_ signal.
+             */
+            void on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name);
     private:
         OscReceiver receiver_;
         OscSender sender_;
@@ -62,6 +73,7 @@ class OscInterface
         static int removeFrameCb(const char *path, 
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
+        void connect_signals_to_sending_slots();
 };
 
 #endif // __OSC_INTERFACE_H__

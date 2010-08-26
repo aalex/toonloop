@@ -23,12 +23,14 @@
 #include <boost/thread.hpp>
 #include <cstdio>
 #include <iostream>
+#include <lo/lo.h>
 #include <tr1/memory>
 
-#include "lo/lo.h"
+#include "application.h"
+#include "controller.h"
+#include "log.h"
 #include "oscinterface.h"
 #include "pipeline.h"
-#include "application.h"
 #include "unused.h"
 
 OscInterface::OscInterface(
@@ -65,7 +67,21 @@ OscInterface::OscInterface(
     if (sending_enabled_)
     {
         std::cout << "Sending to osc_udp://" << send_addr << ":" << send_port << std::endl;
+        connect_signals_to_sending_slots();
     }
+}
+/**
+ * Connects the Controller's signals to this class' slots.
+ */
+void OscInterface::connect_signals_to_sending_slots()
+{
+    Controller* controller = owner_->get_controller();
+    controller->add_frame_signal_.connect(boost::bind(
+        &OscInterface::on_add_frame, this, _1, _2));
+    controller->remove_frame_signal_.connect(boost::bind(
+        &OscInterface::on_remove_frame, this, _1, _2));
+    controller->next_image_to_play_signal_.connect(boost::bind(
+        &OscInterface::on_next_image_to_play, this, _1, _2, _3));
 }
 
 int OscInterface::pingCb(
@@ -151,5 +167,26 @@ void OscInterface::start()
         //boost::thread trySubscribe(boost::bind<void>(&StateClient::subscribe, this));
         receiver_.listen(); // start listening in separate thread
     }
+}
+
+void OscInterface::on_add_frame(unsigned int clip_number, unsigned int frame_number)
+{
+    UNUSED(clip_number);
+    UNUSED(frame_number);
+    LOG_DEBUG("OSC: on_add_frame");
+}
+void OscInterface::on_remove_frame(unsigned int clip_number, unsigned int frame_number)
+{
+    UNUSED(clip_number);
+    UNUSED(frame_number);
+    LOG_DEBUG("OSC: on_remove_frame");
+}
+void OscInterface::on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name)
+{
+    UNUSED(clip_number);
+    UNUSED(image_number);
+    UNUSED(file_name);
+    // TODO: remove this OSC logging
+    LOG_DEBUG("OSC: on_next_image_to_play");
 }
 

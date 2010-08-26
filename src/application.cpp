@@ -254,18 +254,18 @@ void Application::run(int argc, char *argv[])
         int osc_recv_port_num = atoi(config_->get_osc_recv_port().c_str());
         if (osc_recv_port_num == 0)
         {
-            std::cerr << "Invalid port number: " << config_->get_osc_recv_port() << std::endl;
+            std::cerr << "Invalid receiving port number: " << config_->get_osc_recv_port() << std::endl;
             exit(1);
         } else {
             if (osc_recv_port_num > 65535)
             {
-                std::cerr << "Port number " << config_->get_osc_recv_port() <<  "is over the maximum of 65535." <<  std::endl;
+                std::cerr << "Receiving port number " << config_->get_osc_recv_port() <<  "is over the maximum of 65535." <<  std::endl;
                 exit(1);
             } else if (osc_recv_port_num < 1) {
-                std::cerr << "Port number " << config_->get_osc_recv_port() <<  "is under the minimum of 1." <<  std::endl;
+                std::cerr << "Receiving port number " << config_->get_osc_recv_port() <<  "is under the minimum of 1." <<  std::endl;
                 exit(1);
             } else if (osc_recv_port_num < 1024) {
-                std::cerr << "Port number " << config_->get_osc_recv_port() <<  "is under 1024. It will probably fail." <<  std::endl;
+                std::cerr << "Receiving port number " << config_->get_osc_recv_port() <<  "is under 1024. It will probably fail." <<  std::endl;
                 // Don't exit
             }
         }
@@ -276,14 +276,15 @@ void Application::run(int argc, char *argv[])
     {
         //TODO:2010-08-26:aalex:Replace atoi by something more sturdy
         int osc_send_port_num = atoi(config_->get_osc_recv_port().c_str());
+        std::cout << "OSC send port " << osc_send_port_num << std::endl; 
         if (osc_send_port_num == 0)
         {
-            std::cerr << "Invalid port number: " << config_->get_osc_send_port() << std::endl;
+            std::cerr << "Invalid sending port number: " << config_->get_osc_send_port() << std::endl;
             exit(1);
         }
         if (osc_send_port_num > 65535)
         {
-            std::cerr << "Port number " << config_->get_osc_send_port() <<  "is over the maximum of 65535." <<  std::endl;
+            std::cerr << "Sending port number " << config_->get_osc_send_port() <<  "is over the maximum of 65535." <<  std::endl;
             exit(1);
         }
     } else

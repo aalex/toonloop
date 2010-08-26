@@ -73,6 +73,7 @@ class Controller
          *
          * Arguments: clip number, image number, file name.
          */
+        // TODO:2010-08-26:aalex:Make the file name string &const?
         s2::signal<void (unsigned int, unsigned int, std::string)> next_image_to_play_signal_;
         /**
          * Called when there is no image to play
