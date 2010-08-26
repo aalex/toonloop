@@ -71,6 +71,21 @@ void Gui::showCursor()
     gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), NULL);
 }
 
+/**
+ * Handles key pressed event.
+ *
+ * Up: increase playhead FPS
+ * Down: decrease playhead FPS
+ * Backscape: remove a frame
+ * Escape or f: toggle full screen mode
+ * Space: add a frame
+ * Page Up: choose next clip
+ * Page Down: choose previous clip
+ * 0, 1, 2, 3, 4, 5, 6, 7, 8, 9: choose a clip
+ * Ctrl-q: quit
+ * Ctrl-s: save
+ */
+
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
     Gui *context = static_cast<Gui*>(data);
@@ -91,6 +106,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer da
         case GDK_BackSpace:
             context->owner_->get_pipeline()->remove_frame();
             break;
+        case GDK_f:
         case GDK_Escape:
             context->toggleFullscreen(widget);
             break;
