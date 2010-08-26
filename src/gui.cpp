@@ -90,17 +90,14 @@ void Gui::showCursor()
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
     Gui *context = static_cast<Gui*>(user_data);
-    Clip *current_clip = context->owner_->get_current_clip();
 
     switch (event->keyval)
     {
         case GDK_Up:
-            //TODO:call Controller::increase_playhead_fps
-            current_clip->increase_playhead_fps();
+            context->owner_->get_controller()->increase_playhead_fps();
             break;
         case GDK_Down:
-            //TODO:call Controller::decrease_playhead_fps
-            current_clip->decrease_playhead_fps();
+            context->owner_->get_controller()->decrease_playhead_fps();
             break;
         //case GDK_Left:
         //case GDK_Right:
@@ -117,13 +114,9 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             break;
         case GDK_Page_Up:
             context->owner_->get_controller()->choose_previous_clip();
-            // Not needed to update Clip*
-            //current_clip = context->owner_->get_current_clip();
             break;
         case GDK_Page_Down:
             context->owner_->get_controller()->choose_next_clip();
-            // Not needed to update Clip*
-            //current_clip = context->owner_->get_current_clip();
             break;
         case GDK_0:
         case GDK_1:
@@ -136,8 +129,6 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
         case GDK_8:
         case GDK_9:
             context->switch_to_clip_number(event->keyval);
-            // Not needed, but we never know:
-            current_clip = context->owner_->get_current_clip();
             break;
         case GDK_q:
             // Quit application on ctrl-q, this quits the main loop
