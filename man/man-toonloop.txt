@@ -40,9 +40,15 @@ Toonloop interactive keyboard controls :
 
 
 [HISTORY]
-Alexandre Quessy wrote the original Toonloop 0.x in Processing/Java in 2008. It has been rewritten by Alexandre Quessy and Tristan Matthews for version 1.x from 2008 to 2010. The version 1.9 and up has been rewritten again in C++ in 2010. Contributers include Visilis Liaskovitis, Tristan Matthews, mose, Arjan Scherpenisse and the Society for Arts and Technology.
+2008 - Version 0.x written by Alexandre Quessy in Processing/Java
 
-Toonloop is an original idea of Alexandre Quessy, and is his research project for his master at UQAM. It is similar to the live animation work of Pierre Hebert and the one from Frédéric Back. Toonloop is released under the GNU GPL. 
+2008 - Version 1.x written by Alexandre Quessy with contributions from Tristan Matthews and Arjan Scherpenisse in Python
+
+2010 - Version 2.x written by Alexandre Quessy with contributions from Tristan Matthews and Vasilis Liaskovitis in C++ 
+
+Contributers include Tristan Matthews, Vasilis Liaskovitis, mose, Arjan Scherpenisse and the Society for Arts and Technology.
+
+Toonloop is an idea of Alexandre Quessy, and is his research project for his master at UQAM. It is similar to the live animation work of Pierre Hebert and Frédéric Back, respectively. Toonloop is released under the GNU GPL. 
 
 [REPORTING BUGS]
 http://www.toonloop.com
@@ -64,3 +70,5 @@ GNU General Public License for more details.
 You should have received a copy of the gnu general public license
 along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 
+[SEE ALSO]
+gst-launch(1), sooperlooper(1), lunch(1)
