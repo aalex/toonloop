@@ -230,23 +230,7 @@ void Application::run(int argc, char *argv[])
     config_->set_project_home(project_home);
     update_project_home_for_each_clip();
     config_->set_video_source(video_source);
-    movie_saver_.reset(new MovieSaver);
 
-    // TODO: create a directory for clips and one for images.
-    movie_saver_->set_result_directory(config_->get_project_home() + "/" + MOVIES_DIRECTORY);
-    // Init GTK, Clutter and GST:
-    GError *error;
-    error = NULL;
-    gtk_clutter_init(&argc, &argv);
-    if (error)
-        g_error("Unable to initialize Clutter: %s", error->message);
-    clutter_gst_init(&argc, &argv);
-    // start GUI
-    std::cout << "Starting GUI." << std::endl;
-    gui_.reset(new Gui(this));
-    // start Pipeline
-    std::cout << "Starting pipeline." << std::endl;
-    pipeline_.reset(new Pipeline(this));
     // Start OSC
     if (config_->get_osc_recv_port() != OSC_PORT_NONE)
     {
@@ -295,6 +279,22 @@ void Application::run(int argc, char *argv[])
         osc_->start();
     }
 
+    movie_saver_.reset(new MovieSaver);
+    // TODO: create a directory for clips and one for images.
+    movie_saver_->set_result_directory(config_->get_project_home() + "/" + MOVIES_DIRECTORY);
+    // Init GTK, Clutter and GST:
+    GError *error;
+    error = NULL;
+    gtk_clutter_init(&argc, &argv);
+    if (error)
+        g_error("Unable to initialize Clutter: %s", error->message);
+    clutter_gst_init(&argc, &argv);
+    // start GUI
+    std::cout << "Starting GUI." << std::endl;
+    gui_.reset(new Gui(this));
+    // start Pipeline
+    std::cout << "Starting pipeline." << std::endl;
+    pipeline_.reset(new Pipeline(this));
     // Start MIDI
     // std::cout << "Starting MIDI input." << std::endl;
     midi_input_.reset(new MidiInput);
