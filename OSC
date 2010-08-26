@@ -1,0 +1,17 @@
+Toonloop can send and receive OSC messages. Here is the list of messages it can receive and send.
+
+Messages Toonloop can receive
+-----------------------------
+
+ * /ping : Answers with /pong
+ * /pong
+ * /toon/quit : Quits
+ * /toon/frame/add : Grabs a frame
+ * /toon/frame/remove : Removes a frame
+
+
+Messages sent by Toonloop
+-------------------------
+
+Toonloop does not send any message for now.
+
