@@ -1,9 +1,9 @@
 [DESCRIPTION]
-The Toonloop Live Stop Motion Tool. 
-
 Toonloop is a live stop motion animation software. It aims to show the creation process the the audience as well as the result of the creation. The frame by frame animation is made by adding frames one by one to a clip made of many frames. Clips are displayed in a never ending loop. 
 
 Toonloop is a great tool for teaching new medias to children. It can also be used as a professionnal software for movie creators, though it is mainly intended to be used in a live kiosk of show. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop.
+
+Toonloop can be controlled using MIDI input, or the Open Sound Control protocol. Images are saved to the disk in the JPEG formant, and the clips are saved using the photo-JPEG video codec (using mencoder). 
 
 [SYNOPSIS]
 toonloop [options]

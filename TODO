@@ -19,6 +19,32 @@ Right now, here is the list of tasks to prioritize:
  * edit: Support playback directions: forward, backward, ping-pong
  * video: do not crash if the v4l2 device is busy
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
+ * Press 'r' to reset and start the current sequence. 
+ * press 'p' to pause playback.
+ * press 'o' to toggle the onion skinning on/off.
+ * Press '.' to change the graphical theme.
+ * Press TAB to change the playback direction.
+ * Left:      Play backward
+ * Right:     Play forward
+
+OSC Messages to implement
+-------------------------
+
+Receiving:
+  *  /toon/playhead/goto <i>
+  *  /toon/playhead/iterate
+  *  /toon/clip/select <i>
+  *  /toon/clip/save
+
+Sending:
+  *  /toon/framerate <i>
+  *  /toon/writehead <i>
+  *  /toon/playhead <i>
+  *  /toon/clip/index <i>
+  *  /sampler/play/start <i>
+  *  /sampler/play/stop <i>
+  *  /sampler/record/start <i>
+  *  /sampler/record/stop <i>
 
 
 Road map
@@ -34,6 +60,11 @@ Once those tasks are done, the features to be implemented in branch 2.x are:
  * themes: Create a single-image theme, combining the two image with the overlay blending mode.
  * gui: Display information in either a HUD, or a mx GUI in Clutter
  * packaging: Improve STK packaging
+ * edit: Intervalometer
+ * edit: Onion skin
+ * edit: add an option to delete JPEG images when deleted from a clip
+ * edit: record video (every frame in a row)
+ * edit: support playing back a single clip or all of them
 
 
 To be done for version 2.2 : Towards professional features
@@ -41,22 +72,13 @@ To be done for version 2.2 : Towards professional features
 
  * saving: Support saving in AVI
  * saving: create a subdir for each clip in images and movies dirs
- * gui: Create basic GUI buttons (in Clutter)
- * edit: record video (every frame in a row)
- * edit: Onion skin
- * edit: Intervalometer
+ * Load/save a whole project (many clips)
  * themes: portrait theme (rotation to the right)
- * effects: Port the shaders from 1.x (See doc/effects.txt)
  * edit: mirror
- * effects: one effect per clip
- * edit: Use FPS as a speed unit. Skip frames if needed.
- * gui: Clutter GUI (buttons, sliders, menu, etc.) 
- * optimization: Read a few bytes from an image to trigger the kernel's read-ahead. (?)
  * video: Use the default GStreamer-properties camera when none is given
- * Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga.
+ * video: Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga.
  * display square to represent frames in timeline
- * GTK dialog which allows the user to choose the name of the saved clip.
- * Min/max values for effects attributes.
+ * GUI dialog which allows the user to choose the name of the saved clip.
  * Save all clips (all 10 from 0 to 9) with modifier (shift?)
  * playing two clips at a time
  * two onion skin layers
@@ -65,14 +87,15 @@ To be done for version 2.2 : Towards professional features
  * Save projects to Json
  * Load images to a clip.
  * Load a movie file to a clip.
- * Load/save a whole project (many clips)
  * Save background image when saving a clip.
  * Basic sequences of clips.
  * Add PNG and TGA saving image formats.
- * Joystick input.
- * Remote control input.
- * Update the Smooth and Tween classes to C++. Merge them with this project. http://code.google.com/p/libinteract/source/browse/#svn/trunk/trunk/general
- * Support for video mapping. (needs a matte + separating the rectangle in a grid of rectangles, with coordinates that are interpolated linearily)
+ * gui: Clutter Mx GUI (buttons, sliders, menu, etc.) 
+ * effects: Port the shaders from 1.x (See doc/effects.txt)
+ * effects: one effect per clip
+ * effects: Min/max values for effects attributes.
+ * optimization: Read a few bytes from an image to trigger the kernel's read-ahead. (?)
+ * midi: MIDI learn for controls
 
 
 Other Ideas for Future Directions
@@ -94,6 +117,10 @@ Other Ideas for Future Directions
  * translation *paths* and multiple sequences at a time
  * plug with community vision, or opencv.
  * Use a "Pixel Buffer Object" to move data into the texture  instead. You'll need the "ARB_pixel_buffer_object" extension.  This pages has a good description of what they are and how to use them:  http://www.songho.ca/opengl/gl_pbo.html
+ * Joystick input.
+ * Remote control input.
+ * Update the Smooth and Tween classes to C++. Merge them with this project. http://code.google.com/p/libinteract/source/browse/#svn/trunk/trunk/general
+ * Support for video mapping. (needs a matte + separating the rectangle in a grid of rectangles, with coordinates that are interpolated linearily)
 
 
 Done 
@@ -127,3 +154,4 @@ Done
  * DONE: saving: Create a directory for movies and one for images, in the project dir.
  * DONE: osc: Support the --osc-receive-port option
  * DONE: remove the --keep-in-ram related code
+ * DONE: Use FPS as a speed unit. Skip frames if needed.
