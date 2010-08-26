@@ -47,16 +47,19 @@ class Gui
         float video_input_width_;
         float video_input_height_;
         void switch_to_clip_number(unsigned int key_val);
+        void update_playback_image_if_ready();
     private:
         GtkWidget *window_;
         GtkWidget *clutter_widget_;
         GtkWidget *vbox_;
         bool isFullscreen_;
         Application* owner_;
-        static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer data);
-        static gboolean key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data);
+        static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer user_data);
+        static gboolean key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data);
 
-        static int onWindowStateEvent(_GtkWidget *widget, _GdkEventWindowState *event, void *data);
+        static int on_window_state_event(_GtkWidget *widget, _GdkEventWindowState *event, gpointer user_data);
+
+        static void on_new_frame(ClutterTimeline * timeline, gint msecs, gpointer user_data);
         void toggleFullscreen(GtkWidget* widget);
         void makeFullscreen(GtkWidget* widget);
         void makeUnfullscreen(GtkWidget* widget);

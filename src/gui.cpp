@@ -38,9 +38,9 @@
 
 namespace fs = boost::filesystem;
 
-gboolean Gui::onWindowStateEvent(GtkWidget* /*widget*/, GdkEventWindowState *event, gpointer data)
+gboolean Gui::on_window_state_event(GtkWidget* /*widget*/, GdkEventWindowState *event, gpointer user_data)
 {
-    Gui *context = static_cast<Gui*>(data);
+    Gui *context = static_cast<Gui*>(user_data);
     context->isFullscreen_ = (event->new_window_state & GDK_WINDOW_STATE_FULLSCREEN);
     if (context->isFullscreen_)
         context->hideCursor();
@@ -86,9 +86,9 @@ void Gui::showCursor()
  * Ctrl-s: save
  */
 
-gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data)
+gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
-    Gui *context = static_cast<Gui*>(data);
+    Gui *context = static_cast<Gui*>(user_data);
     Clip *current_clip = context->owner_->get_current_clip();
     unsigned int clip;
 
@@ -212,10 +212,12 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
     gtk_window_unstick(GTK_WINDOW(widget)); // window is not visible on all workspaces
     gtk_window_unfullscreen(GTK_WINDOW(widget));
 }
-
-void iterate_playhead()
+/**
+ * Times the playback frames and display it if it's time to do so.
+ */
+void Gui::update_playback_image_if_ready()
 {
-    // TODO:2010-08-25:aalex: iterate_playhead should be a method of Controller
+    // TODO:2010-08-25:aalex: update_playback_image_if_ready should be a method of Controller
     // which calls the method with the same name (?) of the current clip
     Gui *gui = Application::get_instance().get_gui();
     
@@ -282,10 +284,6 @@ void iterate_playhead()
             std::cout << "No image at index" << image_number << "." << std::endl;
         else 
         {
-            /*FIXME: we may not need this dimension update in general. But I get a weirdly cropped frame, for the right side rendering grabbed frame. It seems
-            the grabbed frame dimensions don't match with the width, height passed from glimasesink to the draw callback*/
-            // XXX: yes, I think we should always check the size of the images. (especially when we will read them from the disk)
-
             if (need_refresh)
             {
                 std::string image_full_path = thisclip->get_image_full_path(thisimage);
@@ -298,11 +296,7 @@ void iterate_playhead()
                     std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
                     g_error_free(error);
                 } else {
-                    // TODO:2010-08-06:aalex:Do not load an image twice in a row
                     //std::cout << "Loaded image " <<  image_full_path << std::endl;
-                    //buf = (char*) gdk_pixbuf_get_pixels(pixbuf);
-                    //pixels_are_loaded = true;
-                    //loaded_pixbuf = true;
                 }
             }
         }
@@ -314,11 +308,11 @@ void iterate_playhead()
  * Timeline handler.
  * Called on every frame. 
  */
-void on_new_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpointer /*data*/)
+void Gui::on_new_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpointer user_data)
 {
     //std::cout << "on_new_frame" << std::endl; 
-//     Gui *gui = (Gui*)data;
-    iterate_playhead();
+    Gui *gui = static_cast<Gui*>(user_data);
+    gui->update_playback_image_if_ready();
 }
 
 /**
@@ -435,7 +429,7 @@ Gui::Gui(Application* owner) :
 
     g_signal_connect(G_OBJECT(window_), "key-press-event", G_CALLBACK(key_press_event), this);
     // add listener for window-state-event to detect fullscreenness
-    g_signal_connect(G_OBJECT(window_), "window-state-event", G_CALLBACK(onWindowStateEvent), this);
+    g_signal_connect(G_OBJECT(window_), "window-state-event", G_CALLBACK(on_window_state_event), this);
 
     // vbox:
     vbox_ = gtk_vbox_new(FALSE, 0); // args: homogeneous, spacing
