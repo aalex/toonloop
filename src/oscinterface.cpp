@@ -33,27 +33,39 @@
 
 OscInterface::OscInterface(
         Application* owner,
-        const std::string &listen_port)//,
-        //const std::string &send_host,
-        //const std::string &send_port) 
+        const std::string &listen_port,
+        const std::string &send_port, 
+        const std::string &send_addr)
     :
     receiver_(listen_port),
-    owner_(owner) //,
-    //sender_(serverHost, serverListenPort),
-    //tryToSubscribe_(true)
+    sender_(send_addr, send_port),
+    sending_enabled_(false),
+    receiving_enabled_(false),
+    owner_(owner)
 {
-    std::cout << "Listening osc_udp://localhost:" << listen_port << std::endl;
-    receiver_.addHandler("/ping", "", pingCb, this);
-    receiver_.addHandler("/pong", "", pongCb, this);
-    receiver_.addHandler("/toon/quit", "", quitCb, this);
-    receiver_.addHandler("/toon/frame/add", "", addFrameCb, this);
-    receiver_.addHandler("/toon/frame/remove", "", removeFrameCb, this);
-    std::cout << "OSC message handlers:" << std::endl;
-    std::cout << " * /ping : Answers with /pong" << std::endl;
-    std::cout << " * /pong" << std::endl;
-    std::cout << " * /toon/quit : Quits" << std::endl;
-    std::cout << " * /toon/frame/add : Grabs a frame" << std::endl;
-    std::cout << " * /toon/frame/remove : Removes a frame" << std::endl;
+    if (listen_port != OSC_PORT_NONE)
+        receiving_enabled_ = true;
+    if (send_port != OSC_PORT_NONE)
+        sending_enabled_ = true;
+    if (receiving_enabled_)
+    {
+        std::cout << "Listening osc_udp://localhost:" << listen_port << std::endl;
+        receiver_.addHandler("/ping", "", pingCb, this);
+        receiver_.addHandler("/pong", "", pongCb, this);
+        receiver_.addHandler("/toon/quit", "", quitCb, this);
+        receiver_.addHandler("/toon/frame/add", "", addFrameCb, this);
+        receiver_.addHandler("/toon/frame/remove", "", removeFrameCb, this);
+        std::cout << "OSC message handlers:" << std::endl;
+        std::cout << " * /ping : Answers with /pong" << std::endl;
+        std::cout << " * /pong" << std::endl;
+        std::cout << " * /toon/quit : Quits" << std::endl;
+        std::cout << " * /toon/frame/add : Grabs a frame" << std::endl;
+        std::cout << " * /toon/frame/remove : Removes a frame" << std::endl;
+    }
+    if (sending_enabled_)
+    {
+        std::cout << "Sending to osc_udp://" << send_addr << ":" << send_port << std::endl;
+    }
 }
 
 int OscInterface::pingCb(
@@ -133,8 +145,11 @@ OscInterface::~OscInterface()
 
 void OscInterface::start()
 {
-    // start a thread to try and subscribe us
-    //boost::thread trySubscribe(boost::bind<void>(&StateClient::subscribe, this));
-    receiver_.listen(); // start listening in separate thread
+    if (receiving_enabled_)
+    {
+        // start a thread to try and subscribe us
+        //boost::thread trySubscribe(boost::bind<void>(&StateClient::subscribe, this));
+        receiver_.listen(); // start listening in separate thread
+    }
 }
 

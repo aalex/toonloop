@@ -46,7 +46,7 @@ const std::string MOVIES_DIRECTORY = "movies";
  */
 const std::string DEFAULT_PROJECT_HOME = "~/Documents/toonloop/default";
 
-const std::string OSC_RECV_PORT_NONE = "";
+const std::string OSC_PORT_NONE = "";
 /**
  * Contains the configuration options for the whole application.
  */
@@ -72,6 +72,8 @@ class Configuration
         bool get_fullscreen() const { return fullscreen_; } ;
         int get_midi_input_number() const { return midi_input_number_; }
         std::string get_osc_recv_port() const { return osc_recv_port_; }
+        std::string get_osc_send_port() const { return osc_send_port_; }
+        std::string get_osc_send_addr() const { return osc_send_addr_; }
     private:
         //int capture_frame_rate_;
         //int rendering_frame_rate_;
@@ -84,6 +86,8 @@ class Configuration
         bool verbose_;
         int midi_input_number_;
         std::string osc_recv_port_;
+        std::string osc_send_port_;
+        std::string osc_send_addr_;
 };
 #endif // __CONFIGURATION_H__
 

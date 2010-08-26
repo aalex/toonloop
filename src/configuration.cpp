@@ -36,7 +36,9 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     enable_effects_(false),
     verbose_(options["verbose"].as<bool>()),
     midi_input_number_(options.count("midi-input") ? options["midi-input"].as<int>() : MIDI_INPUT_NONE),
-    osc_recv_port_(options.count("osc-receive-port") ? options["osc-receive-port"].as<std::string>() : OSC_RECV_PORT_NONE)
+    osc_recv_port_(options.count("osc-receive-port") ? options["osc-receive-port"].as<std::string>() : OSC_PORT_NONE),
+    osc_send_port_(options.count("osc-send-port") ? options["osc-send-port"].as<std::string>() : OSC_PORT_NONE),
+    osc_send_addr_(options["osc-send-addr"].as<std::string>())
 {
     //enable_effects_ = options["enable-effects"].as<bool>();
     //capture_frame_rate_ = options["capture-fps"].as<int>();

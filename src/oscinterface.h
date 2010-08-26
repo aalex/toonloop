@@ -23,21 +23,27 @@
 
 #include <string>
 #include "./oscreceiver.h"
-//TODO: #include "./oscsender.h"
+#include "./oscsender.h"
 
 class Application;
 
 class OscInterface 
 {
     public:
-            OscInterface(Application* owner, const std::string &listen_port); 
+            OscInterface(
+                    Application* owner, 
+                    const std::string &listen_port,
+                    const std::string &send_port,
+                    const std::string &send_addr); 
             ~OscInterface();
             void start();
             void publish_added_frame() const;
     private:
         OscReceiver receiver_;
+        OscSender sender_;
+        bool sending_enabled_;
+        bool receiving_enabled_;
         Application* owner_;
-        //OscSender sender_;
         //boost::mutex tryToSubscribeMutex_;
         //bool tryToSubscribe_;   // FIXME: should this be protected by a mutex?
         //void subscribe();

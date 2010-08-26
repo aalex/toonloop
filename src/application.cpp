@@ -144,6 +144,8 @@ void Application::run(int argc, char *argv[])
         ("list-midi-inputs,L", po::bool_switch(), "Lists MIDI inputs devices and exits")
         ("list-cameras,l", po::bool_switch(), "Lists connected cameras and exits")
         ("osc-receive-port,p", po::value<std::string>(), "Sets the listening OSC port")
+        ("osc-send-port,P", po::value<std::string>(), "Sets the port to send OSC messages to")
+        ("osc-send-addr,a", po::value<std::string>()->default_value("localhost"), "Sets the IP address to send OSC messages to")
         ; // <-- important semi-colon
     po::variables_map options;
     
@@ -246,10 +248,9 @@ void Application::run(int argc, char *argv[])
     std::cout << "Starting pipeline." << std::endl;
     pipeline_.reset(new Pipeline(this));
     // Start OSC
-    //TODO:2010-08-05:aalex:Make the OSC port configurable
-    if (config_->get_osc_recv_port() != OSC_RECV_PORT_NONE)
+    if (config_->get_osc_recv_port() != OSC_PORT_NONE)
     {
-        std::cout << "Starting OSC receiver." << std::endl;
+        //TODO:2010-08-26:aalex:Replace atoi by something more sturdy
         int osc_recv_port_num = atoi(config_->get_osc_recv_port().c_str());
         if (osc_recv_port_num == 0)
         {
@@ -268,10 +269,30 @@ void Application::run(int argc, char *argv[])
                 // Don't exit
             }
         }
-        osc_.reset(new OscInterface(this, config_->get_osc_recv_port()));
-        osc_->start();
+        std::cout << "Starting OSC receiver." << std::endl;
     } else
         std::cout << "OSC receiver is disabled" << std::endl;
+    if (config_->get_osc_send_port() != OSC_PORT_NONE)
+    {
+        //TODO:2010-08-26:aalex:Replace atoi by something more sturdy
+        int osc_send_port_num = atoi(config_->get_osc_recv_port().c_str());
+        if (osc_send_port_num == 0)
+        {
+            std::cerr << "Invalid port number: " << config_->get_osc_send_port() << std::endl;
+            exit(1);
+        }
+        if (osc_send_port_num > 65535)
+        {
+            std::cerr << "Port number " << config_->get_osc_send_port() <<  "is over the maximum of 65535." <<  std::endl;
+            exit(1);
+        }
+    } else
+        std::cout << "OSC sender is disabled" << std::endl;
+    if (config_->get_osc_recv_port() != OSC_PORT_NONE || config_->get_osc_send_port() != OSC_PORT_NONE)
+    {
+        osc_.reset(new OscInterface(this, config_->get_osc_recv_port(), config_->get_osc_send_port(), config_->get_osc_send_addr()));
+        osc_->start();
+    }
 
     // Start MIDI
     // std::cout << "Starting MIDI input." << std::endl;
