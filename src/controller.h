@@ -114,8 +114,24 @@ class Controller
         /**
          * Checks if it's time to update the playback image
          * and iterate the playhead.
+         *
+         * Times the playhead and iterate it if it's time to.
          */
         void update_playback_image();
+
+        /**
+         * Increases the FPS of the current clip's playhead.
+         */
+        void increase_playhead_fps();
+
+        /**
+         * Decreases the FPS of the current clip's playhead.
+         */
+        void decrease_playhead_fps();
+        /**
+         * Sets the FPS of the current clip's playhead.
+         */
+        void set_playhead_fps(unsigned int fps);
 
     private:
         Application* owner_;

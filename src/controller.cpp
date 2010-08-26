@@ -107,9 +107,7 @@ void Controller::save_current_clip()
         save_clip_signal_(current_clip, "TODO: add file name");
     }
 }
-/**
- * Times the playhead and iterate it if it's time to.
- */
+
 void Controller::update_playback_image()
 {
     static int prev_image_number = -1;
@@ -163,4 +161,26 @@ void Controller::update_playback_image()
         prev_image_number = image_number;
     } 
 
+}
+
+void Controller::increase_playhead_fps()
+{
+
+    Clip *current_clip = owner_->get_current_clip();
+    current_clip->increase_playhead_fps();
+    clip_fps_changed_signal_(current_clip->get_id(), current_clip->get_playhead_fps());
+}
+
+void Controller::decrease_playhead_fps()
+{
+    Clip *current_clip = owner_->get_current_clip();
+    current_clip->decrease_playhead_fps();
+    clip_fps_changed_signal_(current_clip->get_id(), current_clip->get_playhead_fps());
+}
+
+void Controller::set_playhead_fps(unsigned int fps)
+{
+    Clip *current_clip = owner_->get_current_clip();
+    current_clip->set_playhead_fps(fps);
+    clip_fps_changed_signal_(current_clip->get_id(), current_clip->get_playhead_fps());
 }

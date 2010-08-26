@@ -32,7 +32,7 @@
  * A clip is a list of images.
  */
 // FIXME: vector is not thread safe. You need to protect it with a mutex or such.
-Clip::Clip(int id)
+Clip::Clip(unsigned int id)
 {
     // FIXME: How to use a 2-int vector?
     //intervalometer_rate_(1, 1); // default: 1 FPS
@@ -61,37 +61,37 @@ std::string Clip::get_image_full_path(Image* image) const
     return project_path + "/" + IMAGES_DIRECTORY + "/" + image_name; 
 }
 
-int Clip::get_playhead_fps() const
+unsigned int Clip::get_playhead_fps() const
 {
     return playhead_fps_;
 }
 
-void Clip::set_playhead_fps(int fps)
+void Clip::set_playhead_fps(unsigned int fps)
 {
     playhead_fps_ = fps;
 }
 
-int Clip::get_id() const
+unsigned int Clip::get_id() const
 {
     return id_;
 }
 
-int Clip::get_width() const
+unsigned int Clip::get_width() const
 {
     return width_;
 }
 
-int Clip::get_height() const
+unsigned int Clip::get_height() const
 {
     return height_;
 }
 
-void Clip::set_width(int width)
+void Clip::set_width(unsigned int width)
 {
     width_ = width;
 }
 
-void Clip::set_height(int height)
+void Clip::set_height(unsigned int height)
 {
     height_ = height;
 }
@@ -99,11 +99,11 @@ void Clip::set_height(int height)
  * Adds an image to the clip.
  * Returns the its index.
  */
-int Clip::frame_add()
+unsigned int Clip::frame_add()
 {
     using namespace std::tr1; // shared_ptr
 
-    int assigned = writehead_;
+    unsigned int assigned = writehead_;
     std::string name = timing::get_iso_datetime_for_now();
     //images_.push_back(shared_ptr<Image>(new Image(name)));
     images_.insert(images_.begin() + writehead_, shared_ptr<Image>(new Image(name)));
@@ -117,9 +117,9 @@ int Clip::frame_add()
  * Returns how many images it has deleted. (0 or 1)
  */
 // FIXME: this is not thread-safe, isn't it? (we must used shared_ptr)
-int Clip::frame_remove()
+unsigned int Clip::frame_remove()
 {
-    int how_many_deleted = 0;
+    unsigned int how_many_deleted = 0;
     //int len = size();
     //unsigned int len = writehead_;
     if (images_.empty()) // TODO: ! images_.empty()
@@ -147,17 +147,17 @@ int Clip::frame_remove()
 }
 
 
-int Clip::get_playhead() const
+unsigned int Clip::get_playhead() const
 {
     return playhead_;
 }
 
-int Clip::get_writehead() const
+unsigned int Clip::get_writehead() const
 {
     return writehead_;
 }
 
-int Clip::iterate_playhead()
+unsigned int Clip::iterate_playhead()
 {
     //int len = size();
     unsigned int len = writehead_;
@@ -170,16 +170,16 @@ int Clip::iterate_playhead()
     return playhead_;
 }
 
-int Clip::size() const
+unsigned int Clip::size() const
 {
-    int ret = static_cast<int>(images_.size());
+    int ret = static_cast<unsigned int>(images_.size());
     return ret;
 }
 
 /**
  * Returns NULL if there is no image at the given index.
  */
-Image* Clip::get_image(int index) const
+Image* Clip::get_image(unsigned int index) const
 {
     // FIXME: will crash if no image at that index
     //if (images_.empty())
@@ -211,7 +211,8 @@ void Clip::increase_playhead_fps()
     if (playhead_fps_ < MAX_FPS)
     {
         ++playhead_fps_;
-        std::cout << "FPS: " << playhead_fps_ << std::endl;
+        //TODO:2010-08-26:aalex:Do not print if not verbose
+        std::cout << "Playback FPS: " << playhead_fps_ << std::endl;
     }
 }
 
@@ -220,7 +221,8 @@ void Clip::decrease_playhead_fps()
     if (playhead_fps_ > 1)
     {
         -- playhead_fps_;
-        std::cout << "FPS: " << playhead_fps_ << std::endl;
+        //TODO:2010-08-26:aalex:Do not print if not verbose
+        std::cout << "Playback FPS: " << playhead_fps_ << std::endl;
     }
 }
 

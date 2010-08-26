@@ -32,7 +32,7 @@
 // forward declaration
 class Image;
 
-const int MAX_FPS = 60;
+const unsigned int MAX_FPS = 60;
 
 enum direction 
 {
@@ -44,22 +44,22 @@ enum direction
 class Clip 
 {
     public:
-        Clip(int id);
-        int get_id() const;
+        Clip(unsigned int id);
+        unsigned int get_id() const;
         //TODO: list<int>* get_all_images();
-        int frame_add();
-        int frame_remove();
-        int iterate_playhead();
-        int size() const;
-        Image* get_image(int index) const;
-        int get_playhead() const;
-        int get_writehead() const;
-        void set_width(int width);
-        void set_height(int height);
-        int get_width() const;
-        int get_height() const;
-        int get_playhead_fps() const;
-        void set_playhead_fps(int fps);
+        unsigned int frame_add();
+        unsigned int frame_remove();
+        unsigned int iterate_playhead();
+        unsigned int size() const;
+        Image* get_image(unsigned int index) const;
+        unsigned int get_playhead() const;
+        unsigned int get_writehead() const;
+        void set_width(unsigned int width);
+        void set_height(unsigned int height);
+        unsigned int get_width() const;
+        unsigned int get_height() const;
+        unsigned int get_playhead_fps() const;
+        void set_playhead_fps(unsigned int fps);
         void increase_playhead_fps();
         void decrease_playhead_fps();
         void lock_mutex();
@@ -85,7 +85,7 @@ class Clip
          * Some of them may disappear.
          */
         std::vector< std::tr1::shared_ptr<Image> > images_;
-        int playhead_fps_;
+        unsigned int playhead_fps_;
         bool has_recorded_a_frame_;
         boost::mutex mutex_;
         std::string directory_path_;

@@ -58,7 +58,7 @@ bool MovieSaver::add_saving_task(Clip& clip)
     //clip.lock_mutex(); // FIXME: do we need mutexes at all?
     //TODO: save in reverse order or ping pong - as well
     std::string image_path;
-    for (int i = 0; i < clip.size(); i++)
+    for (unsigned int i = 0; i < clip.size(); i++)
     {
         // TODO: store the SavingTaskInfo in a struct
         // Will containt the image_paths, file_extension and format, plus the path to the image directory, etc.
