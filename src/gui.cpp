@@ -91,46 +91,39 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
 {
     Gui *context = static_cast<Gui*>(user_data);
     Clip *current_clip = context->owner_->get_current_clip();
-    unsigned int clip;
 
     switch (event->keyval)
     {
         case GDK_Up:
+            //TODO:call Controller::increase_playhead_fps
             current_clip->increase_playhead_fps();
             break;
         case GDK_Down:
+            //TODO:call Controller::decrease_playhead_fps
             current_clip->decrease_playhead_fps();
             break;
         //case GDK_Left:
         //case GDK_Right:
         //case GDK_Return:
         case GDK_BackSpace:
-            context->owner_->get_pipeline()->remove_frame();
+            context->owner_->get_controller()->remove_frame();
             break;
         case GDK_f:
         case GDK_Escape:
             context->toggleFullscreen(widget);
             break;
         case GDK_space:
-            context->owner_->get_pipeline()->grab_frame();
+            context->owner_->get_controller()->add_frame();
             break;
         case GDK_Page_Up:
-            clip = context->owner_->get_current_clip_number();
-            if (clip < MAX_CLIPS - 1)
-            {
-                context->owner_->set_current_clip_number(clip + 1);
-                // Not needed, but we never know:
-                current_clip = context->owner_->get_current_clip();
-            }
+            context->owner_->get_controller()->choose_previous_clip();
+            // Not needed to update Clip*
+            //current_clip = context->owner_->get_current_clip();
             break;
         case GDK_Page_Down:
-            clip = context->owner_->get_current_clip_number();
-            if (clip > 0)
-            {
-                context->owner_->set_current_clip_number(clip - 1);
-                // Not needed, but we never know:
-                current_clip = context->owner_->get_current_clip();
-            }
+            context->owner_->get_controller()->choose_next_clip();
+            // Not needed to update Clip*
+            //current_clip = context->owner_->get_current_clip();
             break;
         case GDK_0:
         case GDK_1:
@@ -161,7 +154,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             if (event->state & GDK_CONTROL_MASK)
             {
                 g_print("Ctrl-S key pressed, saving.\n");
-                context->owner_->save_current_clip();
+                context->owner_->get_controller()->save_current_clip();
             }
             break;
         default:
@@ -180,20 +173,14 @@ void Gui::switch_to_clip_number(unsigned int key_val)
 {
     // FIXME:2010-08-17:aalex:Doing arithmetics with a gdk keyval is a hack
     unsigned int index = key_val & 0x0F;
-    if (index > MAX_CLIPS)
-        std::cout << "Invalid clip number " << index << std::endl;
-    else {
-        unsigned int clipIndex = Application::get_instance().get_current_clip_number();
-        if (clipIndex != index) 
-            Application::get_instance().set_current_clip_number(index);
-    }
+    owner_->get_controller()->choose_clip(index);
 }
 
-void Gui::on_delete_event(GtkWidget* /*widget*/, GdkEvent* /*event*/, gpointer /*data*/)
+void Gui::on_delete_event(GtkWidget* /*widget*/, GdkEvent* /*event*/, gpointer user_data)
 {
-    //Gui *context = static_cast<Gui*>(data);
+    Gui *context = static_cast<Gui*>(user_data);
     g_print("Window has been deleted.\n");
-    Application::get_instance().quit();
+    context->owner_->quit();
 }
 
 void Gui::toggleFullscreen(GtkWidget *widget)

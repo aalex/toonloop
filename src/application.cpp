@@ -320,23 +320,6 @@ void Application::update_project_home_for_each_clip()
     for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
         iter->second->set_directory_path(get_configuration()->get_project_home());
 }
-/**
- * Saves the current clip
- *
- * Returns success or false if busy
- */
-bool Application::save_current_clip()
-{
-    std::cout << "Saving clip #" << selected_clip_ << std::endl;
-    Clip* clip = get_current_clip();
-    if (clip->size() == 0)
-    {
-        std::cout << "Clip is empty: " << selected_clip_ << std::endl;
-        return false;
-    } else
-        return movie_saver_->add_saving_task(*clip);
-}
-
 Pipeline* Application::get_pipeline() 
 {
     return pipeline_.get();

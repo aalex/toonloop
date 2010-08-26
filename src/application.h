@@ -52,7 +52,6 @@ class Application
         MovieSaver *get_movie_saver();
         static Application& get_instance();
         Clip* get_current_clip();
-        bool save_current_clip();
         unsigned int get_current_clip_number();
         void set_current_clip_number(unsigned int clipnumber);
         void on_pedal_down();

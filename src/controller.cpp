@@ -23,6 +23,7 @@
 #include <boost/signals2.hpp>
 #include "application.h"
 #include "clip.h"
+#include "moviesaver.h"
 #include "pipeline.h"
 #include "controller.h"
 #include "timer.h"
@@ -60,7 +61,7 @@ void Controller::choose_clip(unsigned int clip_number)
     if (clip_number > MAX_CLIPS)
         LOG_ERROR("Invalid clip number " << clip_number);
     if (current_clip == clip_number)
-        LOG_ERROR("Already chosen clip number " << clip_number);
+        LOG_DEBUG("Already chosen clip number " << clip_number);
     else 
     {
         owner_->set_current_clip_number(clip_number);
@@ -87,12 +88,24 @@ void Controller::choose_next_clip()
 //     // Not only the current one
 // }
 
+/**
+ * Saves the current clip
+ */
 void Controller::save_current_clip()
 {
     unsigned int current_clip = owner_->get_current_clip_number();
     //save_clip(current_clip);
-    owner_->save_current_clip();
-    save_clip_signal_(current_clip, "TODO: add file name");
+    std::cout << "Saving clip #" << current_clip << std::endl;
+    Clip* clip = owner_->get_current_clip();
+    if (clip->size() == 0)
+    {
+        std::cout << "Clip is empty: " << current_clip << std::endl;
+        // return false;
+    } else {
+        owner_->get_movie_saver()->add_saving_task(*clip);
+        //TODO: save_clip_signal_ should only be called when done saving.
+        save_clip_signal_(current_clip, "TODO: add file name");
+    }
 }
 /**
  * Times the playhead and iterate it if it's time to.
