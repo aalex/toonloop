@@ -17,6 +17,7 @@ Right now, here is the list of tasks to prioritize:
  * osc: Support the --osc-send-port option
  * edit: Support the same writehead-motion editing controls as in version 1.x: left, right, enter
  * edit: Support playback directions: forward, backward, ping-pong
+ * video: do not crash if the v4l2 device is busy
 
 
 Road map
