@@ -29,11 +29,12 @@
 #include <gtk/gtk.h>
 #include <iostream>
 
-#include "pipeline.h"
-#include "clip.h"
-#include "gui.h"
 #include "application.h"
+#include "clip.h"
 #include "config.h"
+#include "controller.h"
+#include "gui.h"
+#include "pipeline.h"
 #include "timer.h"
 
 namespace fs = boost::filesystem;
@@ -212,107 +213,62 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
     gtk_window_unstick(GTK_WINDOW(widget)); // window is not visible on all workspaces
     gtk_window_unfullscreen(GTK_WINDOW(widget));
 }
-/**
- * Times the playback frames and display it if it's time to do so.
- */
-void Gui::update_playback_image_if_ready()
-{
-    // TODO:2010-08-25:aalex: update_playback_image_if_ready should be a method of Controller
-    // which calls the method with the same name (?) of the current clip
-    Gui *gui = Application::get_instance().get_gui();
-    
-    static int number_of_frames_in_last_second = 0; // counting FPS
-    static int prev_image_number = -1;
-    static Clip *prevclip = NULL;
-    static Timer fps_calculation_timer = Timer();
-    static Timer playback_timer = Timer(); // TODO: move to Clip
-//    static GLuint frametexture;
-//    GLint texturelocation;
-    bool move_playhead = false;
-    Clip *thisclip = Application::get_instance().get_current_clip();
-    bool need_refresh = false;
-//
-//    thisclip->lock_mutex();
-//
-    ++number_of_frames_in_last_second;
-    playback_timer.tick();
-    fps_calculation_timer.tick();
 
-    // check if it is time to move the playhead
-    if ((playback_timer.get_elapsed()) >=  (1.0f / thisclip->get_playhead_fps() * 1.0) || playback_timer.get_elapsed() < 0.0f)
+void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*image_number*/, std::string file_name)
+{
+    GError *error = NULL;
+    gboolean success;
+    success = clutter_texture_set_from_file(CLUTTER_TEXTURE(playback_texture_), file_name.c_str(), &error);
+    // TODO: validate this path
+    if (!success)
     {
-        move_playhead = true;
-        playback_timer.reset();
+        std::cerr << "Failed to load pixbuf file: " << file_name << " " << error->message << std::endl;
+        g_error_free(error);
+    } else {
+        //std::cout << "Loaded image " <<  image_full_path << std::endl;
     }
+}
+/** 
+ * Timeline handler.
+ * Called on every frame. 
+ *
+ * Times the playback frames and display it if it's time to do so.
+ *
+ * Prints the rendering FPS information.
+ * Calls Controller::update_playback_image
+ */
+void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpointer user_data)
+{
+    // Prints rendering FPS information
+    static int number_of_frames_in_last_second = 0; // counting FPS
+    static Timer fps_calculation_timer = Timer();
+    
+    Gui *context = static_cast<Gui*>(user_data);
+    bool verbose = context->owner_->get_configuration()->get_verbose();
+    Clip *thisclip = context->owner_->get_current_clip();
+
+    fps_calculation_timer.tick();
+    ++number_of_frames_in_last_second;
     // calculate rendering FPS
     if (fps_calculation_timer.get_elapsed() >= 1.0f)
     {
-        if (Application::get_instance().get_configuration()->get_verbose())
+        if (verbose)
             std::cout << "Rendering FPS: " << number_of_frames_in_last_second << std::endl;
         number_of_frames_in_last_second = 0;
         fps_calculation_timer.reset();
     }
-    
+
+    context->owner_->get_controller()->update_playback_image();
+
+    //TODO:2010-08-26:aalex:connect to Controller's on_no_image_to_play
     if(thisclip->size() > 0) 
     {     
-        if (! CLUTTER_ACTOR_IS_VISIBLE(gui->playback_texture_))
-            clutter_actor_show_all(CLUTTER_ACTOR(gui->playback_texture_));
+        if (! CLUTTER_ACTOR_IS_VISIBLE(context->playback_texture_))
+            clutter_actor_show_all(CLUTTER_ACTOR(context->playback_texture_));
     } else {
-        if (CLUTTER_ACTOR_IS_VISIBLE(gui->playback_texture_))
-            clutter_actor_hide_all(CLUTTER_ACTOR(gui->playback_texture_));
+        if (CLUTTER_ACTOR_IS_VISIBLE(context->playback_texture_))
+            clutter_actor_hide_all(CLUTTER_ACTOR(context->playback_texture_));
     }
-    if(thisclip->size() > 0) 
-    {     
-            
-        // FIXME: we don't need to create a texture on every frame!!
-        //double spf = (1 / thisclip->get_playhead_fps());
-        if (move_playhead) // if it's time to move the playhead
-            thisclip->iterate_playhead(); // updates the clip's playhead number
-        int image_number = thisclip->get_playhead();
-        //width = thisclip->get_width(); 
-        //height = thisclip->get_height();
-        
-        // Aug 25 2010:tmatth:FIXME: when deleting frames, image_number can be invalid
-        Image* thisimage = thisclip->get_image(image_number);
-
-        if ((prevclip != thisclip) or (prev_image_number != image_number))
-              need_refresh = true;
-        if (prevclip != thisclip) 
-            prevclip = thisclip;
-        
-        if (thisimage == NULL)
-            std::cout << "No image at index" << image_number << "." << std::endl;
-        else 
-        {
-            if (need_refresh)
-            {
-                std::string image_full_path = thisclip->get_image_full_path(thisimage);
-                GError *error = NULL;
-                gboolean success;
-                success = clutter_texture_set_from_file(CLUTTER_TEXTURE(gui->playback_texture_), image_full_path.c_str(), &error);
-                // TODO: validate this path
-                if (!success)
-                {
-                    std::cerr << "Failed to load pixbuf file: " << image_full_path << " " << error->message << std::endl;
-                    g_error_free(error);
-                } else {
-                    //std::cout << "Loaded image " <<  image_full_path << std::endl;
-                }
-            }
-        }
-        prev_image_number = image_number;
-    } 
-}
-
-/** 
- * Timeline handler.
- * Called on every frame. 
- */
-void Gui::on_new_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpointer user_data)
-{
-    //std::cout << "on_new_frame" << std::endl; 
-    Gui *gui = static_cast<Gui*>(user_data);
-    gui->update_playback_image_if_ready();
 }
 
 /**
@@ -403,10 +359,12 @@ void on_playback_texture_size_changed(ClutterTexture *texture,
 Gui::Gui(Application* owner) :
     video_input_width_(1),
     video_input_height_(1),
-    isFullscreen_(false),
-    owner_(owner)
+    owner_(owner),
+    isFullscreen_(false)
 {
     //video_xwindow_id_ = 0;
+    owner_->get_controller()->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
+    //TODO: owner_->get_controller()->no_image_to_play_signals_.connect(boost::bind(&Gui::on_no_image_to_play, this))
     // Main GTK window
     window_ = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     // TODO:2010-08-06:aalex:make window size configurable
@@ -471,7 +429,7 @@ Gui::Gui(Application* owner) :
     timeline_ = clutter_timeline_new(6000);
     g_object_set(timeline_, "loop", TRUE, NULL);   /* have it loop */
     /* fire a callback for frame change */
-    g_signal_connect(timeline_, "new-frame", G_CALLBACK(on_new_frame), this);
+    g_signal_connect(timeline_, "new-frame", G_CALLBACK(on_render_frame), this);
     /* and start it */
     clutter_timeline_start(timeline_);
 

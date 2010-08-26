@@ -27,11 +27,12 @@
 
 class Clip;
 class Configuration;
+class Controller;
 class Gui;
 class MidiInput;
+class MovieSaver;
 class OscInterface;
 class Pipeline;
-class MovieSaver;
 
 // FIXME:2010-08-17:aalex:We should allow more than 10 clips
 static const unsigned int MAX_CLIPS = 10;
@@ -46,6 +47,7 @@ class Application
         Gui *get_gui();
         Pipeline *get_pipeline();
         MidiInput *get_midi_input();
+        Controller *get_controller();
         Configuration *get_configuration();
         MovieSaver *get_movie_saver();
         static Application& get_instance();
@@ -60,6 +62,7 @@ class Application
         ~Application();
         void update_project_home_for_each_clip();
         bool setup_project_home(const std::string& project_home);
+        boost::scoped_ptr<Controller> controller_;
         boost::scoped_ptr<Gui> gui_;
         boost::scoped_ptr<MidiInput> midi_input_;
         boost::scoped_ptr<OscInterface> osc_;

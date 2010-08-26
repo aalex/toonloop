@@ -30,6 +30,7 @@
 #include <string>
 
 #include "application.h"
+#include "controller.h"
 #include "moviesaver.h"
 #include "oscinterface.h"
 #include "clip.h"
@@ -222,6 +223,7 @@ void Application::run(int argc, char *argv[])
     //Configuration config(options);
     // A lot of options parsing is done in the constructor of Configuration:
     config_.reset(new Configuration(options));
+    controller_.reset(new Controller(this));
     // It's very important to call set_project_home and set_video_source here:
     config_->set_project_home(project_home);
     update_project_home_for_each_clip();
@@ -343,6 +345,11 @@ Pipeline* Application::get_pipeline()
 Gui* Application::get_gui() 
 {
     return gui_.get();
+}
+
+Controller* Application::get_controller() 
+{
+    return controller_.get();
 }
 
 Configuration* Application::get_configuration() 

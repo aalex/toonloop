@@ -23,6 +23,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/signals2.hpp>
+#include <string>
 
 namespace s2 = boost::signals2;
 
@@ -38,9 +39,6 @@ class Application;
 class Controller
 {
     public:
-        /**
-         * Constructor
-         */
         Controller(Application* owner);
         /** 
          * Called when a frame is added to a clip.
@@ -64,9 +62,22 @@ class Controller
         s2::signal<void (unsigned int, unsigned int)> clip_fps_changed_signal_;
         /** 
          * Called when a clip is saved.
-         * Arguments: clip number.
+         * Arguments: clip number, file name.
          */
-        s2::signal<void (unsigned int)> save_clip_signal_;
+        //TODO: make the string &const
+        s2::signal<void (unsigned int, std::string)> save_clip_signal_;
+
+
+        /**
+         * Called when it's time to play the next image.
+         *
+         * Arguments: clip number, image number, file name.
+         */
+        s2::signal<void (unsigned int, unsigned int, std::string)> next_image_to_play_signal_;
+        /**
+         * Called when there is no image to play
+         */
+        s2::signal<void ()> no_image_to_play_signal_;
         /**
          * Adds a frame to the current clip.
          */
@@ -77,20 +88,34 @@ class Controller
         void remove_frame();
         /** 
          * Chooses a clip
+         *
+         * Triggers the choose_clip_signal_ 
          */
         void choose_clip(unsigned int clip_number);
         /** 
          * Chooses the next clip
+         *
+         * Calls choose_clip
          */
         void choose_next_clip();
         /** 
          * Chooses the previous clip
+         *
+         * Calls choose_clip
          */
         void choose_previous_clip();
         /** 
          * Saves the currently selected clip
+         *
+         * Triggers the save_clip_signal_
          */
         void save_current_clip();
+        
+        /**
+         * Checks if it's time to update the playback image
+         * and iterate the playhead.
+         */
+        void update_playback_image();
 
     private:
         Application* owner_;
