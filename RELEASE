@@ -1,6 +1,6 @@
 2010-0?-??: Toonloop 1.9.3
 
-This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. Since the 1.2 series, we have done a complete rewrite of the application in C++. 
+This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. 
 
 Know bugs:
     * Setting up the OSC sender port doesn't work, though
@@ -12,6 +12,7 @@ New features:
     * Hitting the period key toggles the layout
     * moved Application::on_pedal_down to MidiInput::on_pedal_down
     * Improved comments to create doc with doxygen.
+    * Added the make html target, which creates HTML doc with doxygen
     * adding file OSC, which documents the OSC messages send/received
     * documented key strokes
     * Tab changes the playback direction
