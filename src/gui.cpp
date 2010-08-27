@@ -109,7 +109,10 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             break;
         //case GDK_Left:
         //case GDK_Right:
-        //case GDK_Return:
+        case GDK_period:
+            //TODO:2010-08-27:aalex:Create Controller:toggle_layout
+            context->toggle_layout();
+            break;
         case GDK_BackSpace:
             context->owner_->get_controller()->remove_frame();
             break;
@@ -302,27 +305,38 @@ void Gui::resize_actors() {
         set_x = (stage_width - set_width) / 2;
         set_y = 0;
     }
-    // Now that we know the ratio of stuff, 
-    // Set the live texture size and position:
-    gfloat live_tex_width = set_width / 2;
-    gfloat live_tex_height = set_height / 2;
-    gfloat live_tex_x = set_x;
-    gfloat live_tex_y = (stage_height / 4);
-    clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), live_tex_x, live_tex_y);
-    clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), live_tex_width, live_tex_height);
+    if (current_layout_ == LAYOUT_SPLITSCREEN)
+    {
+        // Now that we know the ratio of stuff, 
+        // Set the live texture size and position:
+        gfloat live_tex_width = set_width / 2;
+        gfloat live_tex_height = set_height / 2;
+        gfloat live_tex_x = set_x;
+        gfloat live_tex_y = (stage_height / 4);
+        clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), live_tex_x, live_tex_y);
+        clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), live_tex_width, live_tex_height);
 
-    // Set the playback texture size and position:
-    gfloat playback_tex_width = set_width / 2;
-    gfloat playback_tex_height = set_height / 2;
-    gfloat playback_tex_x = (stage_width / 2);
-    gfloat playback_tex_y = (stage_height / 4);
-    clutter_actor_set_position(CLUTTER_ACTOR(playback_texture_), playback_tex_x, playback_tex_y);
-    clutter_actor_set_size(CLUTTER_ACTOR(playback_texture_), playback_tex_width, playback_tex_height);
+        // Set the playback texture size and position:
+        gfloat playback_tex_width = set_width / 2;
+        gfloat playback_tex_height = set_height / 2;
+        gfloat playback_tex_x = (stage_width / 2);
+        gfloat playback_tex_y = (stage_height / 4);
+        clutter_actor_set_position(CLUTTER_ACTOR(playback_texture_), playback_tex_x, playback_tex_y);
+        clutter_actor_set_size(CLUTTER_ACTOR(playback_texture_), playback_tex_width, playback_tex_height);
+    } else if (current_layout_ == LAYOUT_PLAYBACK_ONLY) {
+
+        clutter_actor_set_position(CLUTTER_ACTOR(playback_texture_), set_x, set_y);
+        clutter_actor_set_size(CLUTTER_ACTOR(playback_texture_), set_width, set_height);
+    } else {
+        std::cout << "Invlalid layout" << std::endl; // should not occur...
+    }
 }
 /**
  * Called when the size of the input image has changed.
  *
  * Useful to update the layout. Calls Gui::resize_actors.
+ *
+ * Makes the live input texture visible. 
  */
 void on_live_input_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data) {
     //g_print("on_live_input_texture_size_changed\n");
@@ -335,7 +349,32 @@ void on_live_input_texture_size_changed(ClutterTexture *texture, gfloat width, g
     stage = clutter_actor_get_stage(CLUTTER_ACTOR(texture));
     if (stage == NULL)
         return;
+
+    clutter_actor_show_all(CLUTTER_ACTOR(gui->live_input_texture_));
     gui->resize_actors();
+}
+
+/**
+ * Toggles the layout
+ */
+void Gui::toggle_layout()
+{
+    current_layout_ == LAYOUT_PLAYBACK_ONLY ? set_layout(LAYOUT_SPLITSCREEN) : set_layout(LAYOUT_PLAYBACK_ONLY);
+}
+/**
+ * Sets the current layout.
+ * Also makes some actors visible or not.
+ */
+void Gui::set_layout(layout_number layout)
+{
+    current_layout_ = layout; 
+    if (current_layout_ == LAYOUT_PLAYBACK_ONLY)
+    {
+        clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
+    } else if (current_layout_ == LAYOUT_SPLITSCREEN) {
+        clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
+    }
+    resize_actors();
 }
 
 /**
@@ -366,7 +405,8 @@ Gui::Gui(Application* owner) :
     video_input_width_(1),
     video_input_height_(1),
     owner_(owner),
-    isFullscreen_(false)
+    isFullscreen_(false),
+    current_layout_(LAYOUT_SPLITSCREEN)
 {
     //video_xwindow_id_ = 0;
     owner_->get_controller()->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
@@ -442,6 +482,8 @@ Gui::Gui(Application* owner) :
     /* of course, we need to show the texture in the stage. */
 
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_));
+
+    clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_texture_));
   
     gtk_widget_show_all(window_);

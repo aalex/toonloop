@@ -32,6 +32,11 @@
 const int WINWIDTH = 640;
 const int WINHEIGHT = 480;
 
+enum layout_number {
+    LAYOUT_SPLITSCREEN,
+    LAYOUT_PLAYBACK_ONLY
+};
+
 /** This graphical user interface uses GTK and Clutter-GST.
  */
 class Gui
@@ -61,13 +66,16 @@ class Gui
         void makeFullscreen(GtkWidget* widget);
         void makeUnfullscreen(GtkWidget* widget);
         bool isFullscreen_;
+        layout_number get_layout() { return current_layout_; }
+        void set_layout(layout_number layout);
+        void toggle_layout();
     private:
         GtkWidget *window_;
         GtkWidget *clutter_widget_;
         GtkWidget *vbox_;
         void hideCursor();
         void showCursor();
-
+        layout_number current_layout_;
 };
 
 #endif // __GUI_H__
