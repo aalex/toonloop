@@ -165,16 +165,16 @@ void Pipeline::grab_frame()
  */
 void Pipeline::stop()
 {
-    std::cout << "Stopping the Gstreamer pipeline." << std::endl;
+    std::cout << "Stopping the GStreamer pipeline." << std::endl;
     // FIXME: a segfault occurs here!
     gst_element_set_state(GST_ELEMENT(pipeline_), GST_STATE_NULL);
-    //std::cout << "Deleting the Gstreamer pipeline." << std::endl;
+    //std::cout << "Deleting the GStreamer pipeline." << std::endl;
     //gst_object_unref(pipeline_);
     // gtk main quit?
 }
 
 /**
- * Constructor which create the Gstreamer pipeline.
+ * Constructor which create the GStreamer pipeline.
  * This pipeline grabs the video and render the OpenGL.
  */
 Pipeline::Pipeline(Application* owner) :
