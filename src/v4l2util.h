@@ -25,7 +25,7 @@
 
 #include <string>
  	
-/// FIXME: this should be a real object that only opens the device ONCE
+// FIXME: this should be a real object that only opens the device ONCE
 /** V4L2 video for Linux utilities.
  */
 class v4l2util
