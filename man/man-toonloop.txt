@@ -37,6 +37,7 @@ Toonloop interactive keyboard controls :
  - Page-up to switch to the previous clip
  - Number from 0 to 9 to switch to a specific clip
  - ctrl-s saves the current clip as a movie file
+ - period toggles the layout
 
 
 [HISTORY]

@@ -2,9 +2,31 @@
 
 This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. Since the 1.2 series, we have done a complete rewrite of the application in C++. 
 
+Know bugs:
+    * Setting up the OSC sender port doesn't work, though
+    * need to remove the getInstance singleton static method
+    * we should still figure out why the call to get_image in gui.cpp is sometimes out_of_range when we delete frames
+
 New features:
-    * 
+    * Created the Controller class
+    * Hitting the period key toggles the layout
+    * moved Application::on_pedal_down to MidiInput::on_pedal_down
+    * Improved comments to create doc with doxygen.
+    * adding file OSC, which documents the OSC messages send/received
+    * documented key strokes
 
 Bug fixes: 
-    * 
-
+    * removed unused shader.cpp
+    * Using unsigned int for images and clips
+    * passing Application* to most classes to their owner_ attribute
+    * use const std::string & parameters
+    * use forward declarations where possible
+    * application: keep free function out of global namespace
+    * application: use pointers instead of references, and iterators instead of raw for loops
+    * application: fixed memory leak. Make sure we delete unordered map clips_ in destructor
+    * clip: catch out_of_range in get_image
+    * use scoped_ptr instead of shared_ptr where possible.
+    *  limit scope of using declarations
+    * removed unused parameters, added extra warning flags
+    * constructor invocation cleanup. removed extraneous parentheses when calling new
+    * application.cpp:137: create objects on the stack when possible

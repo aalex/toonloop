@@ -1,3 +1,358 @@
+commit 8dd2848c52282e4dbdfc3c92f727539af7dbd9f6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 13:52:13 2010 -0400
+
+    Hitting the period key toggles the layout
+
+commit 8c147bb39688104efa141e92398fe25008dc49d0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 12:29:03 2010 -0400
+
+    moved Application::on_pedal_down to MidiInput::on_pedal_down
+    
+    More doc strings as well
+
+commit 098fc4ca156c8c5f89618d1c07b086d2ffcaabe0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 12:10:17 2010 -0400
+
+    imrpoved one more doc string
+
+commit a0148276e7a74db7ddc3f9cb24204e197915b9d4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 12:06:48 2010 -0400
+
+    Improved dox with doxygen.
+
+commit 343a8a033d6fee860f3bc7d6ae92c7980e86a808
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 11:39:30 2010 -0400
+
+    improved doc strings in gui and controller
+
+commit 674de4df1bc55494c8a1c9d819db711f25ba896d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 14:22:40 2010 -0400
+
+    updated TODO
+
+commit 09d361b186ccdcef0c2a9c918741dc13dcad9992
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 14:19:41 2010 -0400
+
+    start moviesaver, pipeline and gui after OSC
+
+commit 40c4fb3b1da173ccff017491d81e28eac1818830
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 14:17:34 2010 -0400
+
+    Connected signals to OSC sender slots
+    
+    Setting up the sender port doesn't work, though
+
+commit a9bb0465c7a6284f947ab8def7c4cc531b39b20a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 13:41:56 2010 -0400
+
+    updated man page
+
+commit 157e717c496c738a34bfebd28f804b9f971fa5b1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 13:31:14 2010 -0400
+
+    Using OscSender
+
+commit 3cddaae09ebac3c1a8cc43148a38458c723dd153
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 12:58:11 2010 -0400
+
+    removed unused shader.cpp
+
+commit 99da24a03f2b28db77cbd28d718d06a9655b3bbe
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 12:49:02 2010 -0400
+
+    No need for a handle to the clip in on_key_pressed
+
+commit 0b8884379149bfdfc09f8b2daa1c52183c822a2b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 12:46:54 2010 -0400
+
+    added methods to change FPS in controller
+    
+    Using unsigned int for images in a clip
+
+commit 2447e735f4ea0585f4c8a6311032380e0625140f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 01:51:33 2010 -0400
+
+    Improved man page and TODO
+
+commit 21b9204ba0d4c58e3bf3011e291f5428817af32d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 01:51:16 2010 -0400
+
+    adding file OSC
+
+commit cf6315fdd0a002e07ea57f82c56cd77477ad55e7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 01:29:42 2010 -0400
+
+    updated one_click_build
+
+commit 0cf540ad497c3261fd5395b7ad9a3ced2c4a73a3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 01:26:25 2010 -0400
+
+    added a TODO
+
+commit ab281f7171c49e7f091be073b81c048b631c0385
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 01:21:04 2010 -0400
+
+    using more the controller
+
+commit 8415d6a5c1d747aeb3128dbf6695f2000e735a08
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 01:01:42 2010 -0400
+
+    Calling Controller::update_playback_image
+
+commit f3768c6a4c362ce2b432e9e0e20ede1283023633
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 26 01:01:13 2010 -0400
+
+    added a TODO
+
+commit 3ed2975c75de0715f0e3f539767db3aacfa94eae
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 23:46:20 2010 -0400
+
+    Cleanup + made gui methods members
+
+commit 422a685fabf49b93d15995630fa0023ab2c074f4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 23:07:33 2010 -0400
+
+    documented key strokes
+
+commit 6dde3e60f2697e7b4d50b8787b11c4b962c939e8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 18:05:01 2010 -0400
+
+    passing Application* to OscInterface
+
+commit a61b699ccf8d289bf8de7c97c2f19533207e0ca2
+Merge: 39a459a 36a9975
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 17:50:11 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 39a459a084a4a7039d7b07be4ac30ab01218ffe7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 17:49:58 2010 -0400
+
+    passing Application* to Pipeline
+
+commit 36a997522feafc772d84e39626dbed62fab831f4
+Merge: fca0619 0e3717c
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Aug 25 17:42:04 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 0e3717ccaed515862b0e9d7bca37cfced17921f5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 17:41:31 2010 -0400
+
+    using Gui->owner_ to access the app
+
+commit fca06190f8cdcf38ab928250bb3731b793e47615
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Aug 25 17:40:41 2010 -0400
+
+    use const std::string & parameters
+
+commit 8613aa84d7ac7ccd5a63111d7e532f824ccd7f79
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 17:37:46 2010 -0400
+
+    Passing Application* to Gui
+
+commit a55b495af5ee00595d26442fecf5bf6c28101cdd
+Merge: 9e9ccd5 7bf97d3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 17:23:45 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+    
+    Resolved conflicts:
+    	src/controller.cpp
+    	src/controller.h
+
+commit 9e9ccd50823a793d3a0108644e68d68af6f0b478
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 17:19:55 2010 -0400
+
+    use unsigned ints when needed in controller.cpp
+
+commit 7bf97d39bf0c729a13d7da9332a71f8e06f1c4de
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Aug 25 17:19:12 2010 -0400
+
+    use forward declarations where possible
+
+commit 793c950d2159c4c8e47f44aec94d36c4e720d6e9
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Aug 25 17:12:58 2010 -0400
+
+    use unsigned ints for clip number
+
+commit 782177b8042770f02268878e692d2ade3d3c312e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 17:03:44 2010 -0400
+
+    updated TODO
+
+commit eabe1d82de77300982be566ff49dee1b894bc69c
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Aug 25 17:01:56 2010 -0400
+
+    application: keep free function out of global namespace
+
+commit ea8c5498dfe9b48cea57477f760dd7a696da3f7c
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Aug 25 16:52:48 2010 -0400
+
+    application: use pointers instead of references, and iterators instead of raw for loops
+
+commit cc184c1fea59b5141dfb419999a9b6360d3e287f
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Aug 25 16:26:33 2010 -0400
+
+    application: fixed memory leak
+    
+    make sure we delete unordered map clips_ in destructor
+
+commit 5f4973be15353c2913e042c56c8231bed48da948
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Aug 25 16:19:14 2010 -0400
+
+    clip: catch out_of_range in get_image
+    
+    we should still figure out why the call to get_image in gui.cpp is
+    sometimes out_of_range when we delete frames
+
+commit f17983f2577c443fa7dbb3a9cbdba5ccd54b8a22
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Aug 25 16:04:41 2010 -0400
+
+    use scoped_ptr instead of shared_ptr where possible.
+    
+    limit scope of using declarations
+
+commit f58f70787bbbcae4a23c1ebc0c7eb36592b4de15
+Merge: 1e19dd4 ef47a14
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Aug 25 15:36:28 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 1e19dd4dfc92e0467e04a1f71719f0cf55d2dfaa
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Aug 25 15:35:57 2010 -0400
+
+    clip: slight syntax cleanup
+
+commit ef47a142f523a622b7d031a520df2cf15ac96b66
+Merge: 677a1a3 0071ccc
+Author: Tristan Matthews <le.businessman@gmail.com>
+Date:   Wed Aug 25 12:14:07 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+    
+    Conflicts:
+    	src/application.h
+
+commit 677a1a337e855101b1ac505a01ea3e08ec8e57ae
+Author: Tristan Matthews <le.businessman@gmail.com>
+Date:   Wed Aug 25 12:06:19 2010 -0400
+
+    use meyer singleton, guarantees a threadsafe ctor
+
+commit 0071cccafc8e3333cc6ede1895a9607b5b2dc6c8
+Merge: c7a4301 a06e330
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 12:03:06 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit c7a4301d791cebe034643d39661a1bae87f41a61
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 12:02:51 2010 -0400
+
+    Application::get_gui returns a pointer
+
+commit a06e33016166389c0ddef08b4819943f1a97e583
+Merge: 1eb5ce0 9a32ca4
+Author: Tristan Matthews <le.businessman@gmail.com>
+Date:   Wed Aug 25 12:01:59 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 1eb5ce0f9f4ae6795868e7a5e204c5b31c5cfcf6
+Author: Tristan Matthews <le.businessman@gmail.com>
+Date:   Wed Aug 25 12:01:43 2010 -0400
+
+    removed unused parameters, added extra warning flags
+
+commit 9a32ca4d4d4c3056cba90ea42852642362fc58a9
+Merge: 62289a0 44a5cb9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 11:45:25 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 62289a01c103999b12d7727daad74f1eaf53a2fd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 11:43:28 2010 -0400
+
+    Implemented methods of the controller - not used yet
+
+commit 44a5cb9c0cdb2f34d57e252ce9c444b71b1f3666
+Author: Tristan Matthews <le.businessman@gmail.com>
+Date:   Wed Aug 25 11:42:39 2010 -0400
+
+    constructor invocation cleanup
+    
+    removed extraneous parentheses when calling new
+    application.cpp:137: create objects on the stack when possible
+
+commit 69ea7f7c5360b353c8c22ea45766a391027841aa
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 25 10:25:40 2010 -0400
+
+    adding controller.cpp
+
+commit 5d8031057ddeeb86b00c1ceaa68c55d58ce64963
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 13:11:26 2010 -0400
+
+    updated version to 1.9.3 - not yet released
+
+commit 609ee5cab83f6ade6b7a15faf0d4a97ca429c9a1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 12:06:59 2010 -0400
+
+    fixed make distcheck
+
+commit 1eed16d2f7bd8e01f8006632ee49e0fe0cd65c69
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 24 11:18:44 2010 -0400
+
+    updated ChangeLog and RELEASE notes
+
 commit 52f83c2b2c27e1eda3f3279475d54e83152b39fb
 Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Tue Aug 24 11:05:57 2010 -0400

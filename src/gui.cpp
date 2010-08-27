@@ -93,6 +93,7 @@ void Gui::showCursor()
  * 0, 1, 2, 3, 4, 5, 6, 7, 8, 9: choose a clip
  * Ctrl-q: quit
  * Ctrl-s: save
+ * period: toggles the layout
  */
 
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
