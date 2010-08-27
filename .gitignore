@@ -59,4 +59,3 @@ src/protomidi
 # doxygen stuff
 src/doxyfile
 src/html
-src/latex

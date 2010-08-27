@@ -1,4 +1,12 @@
 bin_PROGRAMS = toonloop
+EXTRA_DIST = doxyfile.in
+
+html-local: doxygen
+doxygen:
+	@if [ -z `which doxygen` ]; then echo "No Doxygen!"; else doxygen; fi
+clean-local:
+	rm -rf html
+
 # noinst_PROGRAMS = 
 
 headers = \
