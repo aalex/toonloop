@@ -11,17 +11,15 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * osc: cannot validate sending port
+ * video: support different sizes (currently only 640x480)
+ * osc: cannot validate sending port. Sending OSC is not possible right now.
  * osc: Send an OSC message upon frame/clip events, and /toon/playback/begin
  * osc: Support the --osc-send-port option
  * edit: Support the same writehead-motion editing controls as in version 1.x: left, right, enter
  * edit: Support playback directions: forward, backward, ping-pong
  * video: do not crash if the v4l2 device is busy
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
- * press 'p' to pause playback.
- * press 'o' to toggle the onion skinning on/off.
- * Left:      Play backward
- * Right:     Play forward
+
 
 OSC Messages to implement
 -------------------------
@@ -61,6 +59,10 @@ Once those tasks are done, the features to be implemented in branch 2.x are:
  * edit: add an option to delete JPEG images when deleted from a clip
  * edit: record video (every frame in a row)
  * edit: support playing back a single clip or all of them
+ * press 'p' to pause playback.
+ * press 'o' to toggle the onion skinning on/off.
+ * Left:      Play backward
+ * Right:     Play forward
 
 
 To be done for version 2.2 : Towards professional features
