@@ -26,12 +26,14 @@
 #include <boost/signals2.hpp>
 #include <stk/RtMidi.h>
 
+class Application;
+
 /** MIDI input using RtMidi allowing a pedal to control frame grabbing.
  */
 class MidiInput
 {
     public:
-        MidiInput();
+        MidiInput(Application *owner);
         bool open(unsigned int port);
         ~MidiInput();
         void enumerate_devices() const;
@@ -41,6 +43,8 @@ class MidiInput
         bool verbose_;
         void set_verbose(bool verbose);
     private:
+        Application *owner_;
+        void on_pedal_down();
         unsigned int port_;
         unsigned int ports_count_;
         RtMidiIn *midi_in_;

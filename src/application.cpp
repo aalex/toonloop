@@ -100,20 +100,14 @@ unsigned int Application::get_current_clip_number()
     return selected_clip_;
 }
 
-void Application::on_pedal_down()
-{
-    if (config_->get_verbose())
-        std::cout << "on_pedal_down" << std::endl;
-    pipeline_->grab_frame();
-}
-
+/** Should be called only via calling the Controller::choose_clip method.
+ */
 void Application::set_current_clip_number(unsigned int clipnumber)
 {
     selected_clip_ = clipnumber;
     if (config_->get_verbose())
         std::cout << "current clip is " << selected_clip_ << std::endl;
 }
-
 /**
  * Parses the command line and runs the application.
  */
@@ -170,7 +164,7 @@ void Application::run(int argc, char *argv[])
     }
     if (options["list-midi-inputs"].as<bool>())
     {
-        MidiInput tmp_midi_input; 
+        MidiInput tmp_midi_input(this); 
         tmp_midi_input.enumerate_devices();
         return; 
     }
@@ -297,8 +291,7 @@ void Application::run(int argc, char *argv[])
     pipeline_.reset(new Pipeline(this));
     // Start MIDI
     // std::cout << "Starting MIDI input." << std::endl;
-    midi_input_.reset(new MidiInput);
-    midi_input_->pedal_down_signal_.connect(boost::bind(&Application::on_pedal_down, this));
+    midi_input_.reset(new MidiInput(this));
     midi_input_->enumerate_devices();
     if (config_->get_midi_input_number() != MIDI_INPUT_NONE)
     {

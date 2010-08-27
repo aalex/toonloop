@@ -47,16 +47,24 @@ class Application
         void run(int argc, char *argv[]);
         void quit();
         Gui *get_gui();
+        /** Returns the video Pipeline */
         Pipeline *get_pipeline();
+        /** Returns the MIDI input manager */
         MidiInput *get_midi_input();
+        /** Returns the Controller for actions and events */
         Controller *get_controller();
+        /** Returns the Configuration for the application */
         Configuration *get_configuration();
+        /** Returns the movie saving - using mencoder */
         MovieSaver *get_movie_saver();
+        /** Deprecated singleton tool */
         static Application& get_instance();
+        /** Returns the currently selected clip */
         Clip* get_current_clip();
+        /** Returns the currently selected clip number */
         unsigned int get_current_clip_number();
+        /** Should be only called directly by Controller::choose_clip */
         void set_current_clip_number(unsigned int clipnumber);
-        void on_pedal_down();
 
     private:
         Application();
