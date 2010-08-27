@@ -16,6 +16,7 @@ New features:
     * documented key strokes
     * Tab changes the playback direction
     * The r key clears the current clip
+    * Changed for an icon that is visible on a black or white background
 
 Bug fixes: 
     * removed unused shader.cpp
@@ -32,3 +33,4 @@ Bug fixes:
     * removed unused parameters, added extra warning flags
     * constructor invocation cleanup. removed extraneous parentheses when calling new
     * application.cpp:137: create objects on the stack when possible
+    * Fixed a bug with first image same as before after the clip is cleared
