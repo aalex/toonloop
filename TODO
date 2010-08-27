@@ -12,8 +12,6 @@ Things to do in priority
 Right now, here is the list of tasks to prioritize: 
 
  * osc: cannot validate sending port
- * signals: Pipeline::grab_frame should be called by Application::add_image
- * signals: Create signals for added and removed frames
  * osc: Send an OSC message upon frame/clip events, and /toon/playback/begin
  * osc: Support the --osc-send-port option
  * edit: Support the same writehead-motion editing controls as in version 1.x: left, right, enter
@@ -23,7 +21,6 @@ Right now, here is the list of tasks to prioritize:
  * Press 'r' to reset and start the current sequence. 
  * press 'p' to pause playback.
  * press 'o' to toggle the onion skinning on/off.
- * Press '.' to change the graphical theme.
  * Press TAB to change the playback direction.
  * Left:      Play backward
  * Right:     Play forward
@@ -156,3 +153,6 @@ Done
  * DONE: osc: Support the --osc-receive-port option
  * DONE: remove the --keep-in-ram related code
  * DONE: Use FPS as a speed unit. Skip frames if needed.
+ * DONE: Press '.' to change the graphical theme.
+ * DONE: signals: Pipeline::grab_frame should be called by Controller::add_image
+ * DONE: signals: Create signals for added and removed frames
