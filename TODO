@@ -18,10 +18,8 @@ Right now, here is the list of tasks to prioritize:
  * edit: Support playback directions: forward, backward, ping-pong
  * video: do not crash if the v4l2 device is busy
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
- * Press 'r' to reset and start the current sequence. 
  * press 'p' to pause playback.
  * press 'o' to toggle the onion skinning on/off.
- * Press TAB to change the playback direction.
  * Left:      Play backward
  * Right:     Play forward
 
@@ -156,3 +154,5 @@ Done
  * DONE: Press '.' to change the graphical theme.
  * DONE: signals: Pipeline::grab_frame should be called by Controller::add_image
  * DONE: signals: Create signals for added and removed frames
+ * DONE: Press TAB to change the playback direction.
+ * DONE: Press 'r' to clip the current clip

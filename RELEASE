@@ -15,6 +15,7 @@ New features:
     * adding file OSC, which documents the OSC messages send/received
     * documented key strokes
     * Tab changes the playback direction
+    * The r key clears the current clip
 
 Bug fixes: 
     * removed unused shader.cpp

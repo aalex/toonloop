@@ -88,6 +88,12 @@ class Controller
          * Arguments: clip number, string direction. (FORWARD, BACKWARD, YOYO)
          */
         boost::signals2::signal<void (unsigned int, std::string)> clip_direction_changed_signal_;
+
+        /** 
+         * Called when a clip is cleared of all its images.
+         * Argument: clip number
+         */
+        boost::signals2::signal<void (unsigned int)> clip_cleared_signal_;
         /**
          * Adds a frame to the current clip.
          */
@@ -149,6 +155,12 @@ class Controller
          * Triggers the clip_direction_changed_signal_
          */
         void change_current_clip_direction();
+        /**
+         * Clears the current clip of all its images.
+         *
+         * Triggers the clip_cleared_signal_
+         */
+        void clear_current_clip();
 
     private:
         Application* owner_;

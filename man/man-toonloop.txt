@@ -39,6 +39,7 @@ Toonloop interactive keyboard controls :
  - ctrl-s saves the current clip as a movie file
  - period toggles the layout
  - Tab changes the playback direction
+ - r: clears the current clip
 
 
 [HISTORY]

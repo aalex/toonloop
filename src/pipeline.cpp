@@ -120,6 +120,8 @@ void Pipeline::grab_frame()
     int h = gdk_pixbuf_get_height(pixbuf);
 
     /* if this is the first frame grabbed, set frame properties in clip */
+    // TODO:2010-08-27:aalex:Use image size, not clip size. 
+    // A clip may contain images that are not the same size.
     if (! thisclip->get_has_recorded_frame()) 
     {
         // TODO: each image should be a different size, if that's what it is.

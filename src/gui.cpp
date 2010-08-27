@@ -118,6 +118,9 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             //TODO:2010-08-27:aalex:Create Controller:toggle_layout
             context->toggle_layout();
             break;
+        case GDK_r:
+            context->owner_->get_controller()->clear_current_clip();
+            break;
         case GDK_BackSpace:
             context->owner_->get_controller()->remove_frame();
             break;

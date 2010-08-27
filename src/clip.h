@@ -74,6 +74,7 @@ class Clip
         std::string get_directory_path() const { return directory_path_; } 
         std::string get_image_file_extension() const { return ".jpg"; };
         std::string get_image_full_path(Image* image) const;
+        void clear_all_images();
     private:
         unsigned int id_;
         unsigned int playhead_;

@@ -209,3 +209,9 @@ void Controller::change_current_clip_direction()
     clip_direction_changed_signal_(current_clip->get_id(), signal_arg);
 }
 
+void Controller::clear_current_clip()
+{
+    Clip *current_clip = owner_->get_current_clip();
+    current_clip->clear_all_images();
+    clip_cleared_signal_(current_clip->get_id());
+}

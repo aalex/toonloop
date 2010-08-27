@@ -283,3 +283,10 @@ void Clip::set_has_recorded_frame()
     has_recorded_a_frame_ = true;
 }
 
+void Clip::clear_all_images()
+{
+    images_.clear();
+    playhead_ = 0;
+    writehead_ = 0;
+}
+
