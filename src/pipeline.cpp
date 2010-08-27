@@ -87,7 +87,7 @@ void Pipeline::end_stream_cb(GstBus* /*bus*/, GstMessage* message, GstElement* /
  */
 void Pipeline::remove_frame()
 {
-    Clip *thisclip = Application::get_instance().get_current_clip();
+    Clip *thisclip = owner_->get_current_clip();
 
     //thisclip->lock_mutex();
     //int num_deleted;
@@ -104,8 +104,8 @@ void Pipeline::remove_frame()
 void Pipeline::grab_frame()
 {
     GdkPixbuf* pixbuf;
-    Clip *thisclip = Application::get_instance().get_current_clip();
-    bool is_verbose = Application::get_instance().get_configuration()->get_verbose();
+    Clip *thisclip = owner_->get_current_clip();
+    bool is_verbose = owner_->get_configuration()->get_verbose();
     //thisclip->lock_mutex();
     int current_clip_id = thisclip->get_id();
     g_object_get(G_OBJECT(gdkpixbufsink_), "last-pixbuf", &pixbuf, NULL);
@@ -130,19 +130,18 @@ void Pipeline::grab_frame()
         thisclip->set_has_recorded_frame();
     }
 
-    int image_number = thisclip->frame_add();
-
-    Image *thisimage = thisclip->get_image(image_number);
-    if (thisimage == 0)
+    int new_image_number = thisclip->frame_add();
+    Image *new_image = thisclip->get_image(new_image_number);
+    if (new_image == 0)
     {
-        std::cerr << "No image at " << image_number << std::endl;
+        // This is very unlikely to happen
+        std::cerr << "No image at " << new_image_number << std::endl;
         gdk_pixbuf_unref(pixbuf);
         return;
     }
-
     if (is_verbose)
-        std::cout << "Current clip: " << current_clip_id << ". Image number: " << image_number << std::endl;
-    std::string file_name = thisclip->get_image_full_path(thisimage);
+        std::cout << "Grab a frame. Current clip: " << current_clip_id << ". Image number: " << new_image_number << std::endl;
+    std::string file_name = thisclip->get_image_full_path(new_image);
     // We need 3 textures: 
     //  * the onionskin of the last frame grabbed. (or at the writehead position)
     //  * the frame at the playhead position

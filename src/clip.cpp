@@ -121,21 +121,20 @@ unsigned int Clip::frame_add()
 unsigned int Clip::frame_remove()
 {
     unsigned int how_many_deleted = 0;
-    //int len = size();
-    //unsigned int len = writehead_;
-    if (images_.empty()) // TODO: ! images_.empty()
-    {
-        std::cout << "Cannot delete a frame since writehead is at the beginning of the clip." << std::endl;
-    } 
-    else if (images_.empty()) 
+    if (images_.empty()) 
     {
         std::cout << "Cannot delete a frame since the clip is empty." << std::endl;
     } 
+    else if (size() == 1 && writehead_ == 1)
+    {
+        clear_all_images(); // takes care of writehead_
+    }
     else if (writehead_ > images_.size()) 
     {
         std::cout << "Cannot delete a frame since the writehead points to a " <<
             "non-existing frame index " << writehead_ << " while the clip has only " << 
-            images_.size() << " images." << std::endl;
+        images_.size() << " images." << std::endl;
+        //TODO:2010-08-27:aalex:Move the writehead to the end of clip and erase a frame anyways.
     } 
     else 
     {

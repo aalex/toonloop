@@ -110,7 +110,7 @@ void Controller::save_current_clip()
 
 void Controller::update_playback_image()
 {
-    static int prev_image_number = -1;
+    static std::string prev_image_name = "";
     static Clip *prevclip = NULL;
     static Timer playback_timer = Timer(); // TODO: move to Clip
 
@@ -142,7 +142,7 @@ void Controller::update_playback_image()
         // Aug 25 2010:tmatth:FIXME: when deleting frames, image_number can be invalid
         Image* thisimage = thisclip->get_image(image_number);
 
-        if ((prevclip != thisclip) or (prev_image_number != image_number))
+        if ((prevclip != thisclip) or (prev_image_name != thisimage->get_name()))
               need_refresh = true;
         if (prevclip != thisclip) 
             prevclip = thisclip;
@@ -156,9 +156,9 @@ void Controller::update_playback_image()
                 std::string image_full_path = thisclip->get_image_full_path(thisimage);
                 if (fs::exists(image_full_path))
                     next_image_to_play_signal_(thisclip->get_id(), image_number, image_full_path);
+                prev_image_name = thisimage->get_name();
             }
         }
-        prev_image_number = image_number;
     } 
 
 }
