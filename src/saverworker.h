@@ -18,6 +18,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef __SAVERWORKER_H__
 #define __SAVERWORKER_H__
 
@@ -27,6 +28,8 @@
 // forward declarations
 class MovieSaver;
 
+/** Takes care of saving a movie in a thread.
+ */
 class SaverWorker
 {
     public:

@@ -18,12 +18,16 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+
 #ifndef _MIDI_H_
 #define _MIDI_H_
 
 #include <boost/signals2.hpp>
 #include <stk/RtMidi.h>
 
+/** MIDI input using RtMidi allowing a pedal to control frame grabbing.
+ */
 class MidiInput
 {
     public:

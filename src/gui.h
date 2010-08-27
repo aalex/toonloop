@@ -18,6 +18,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef __GUI_H__
 #define __GUI_H__
 
@@ -31,6 +32,8 @@
 const int WINWIDTH = 640;
 const int WINHEIGHT = 480;
 
+/** This graphical user interface uses GTK and Clutter-GST.
+ */
 class Gui
 {
     public:

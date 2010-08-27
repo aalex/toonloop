@@ -18,10 +18,14 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef __IMAGE_H__
 #define __IMAGE_H__
 
 #include <string>
+
+/** An Image is just a file name.
+ */
 
 class Image 
 {

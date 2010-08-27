@@ -22,7 +22,11 @@
 #define __TIMER_H__
 
 #include "timing.h"
-
+/**
+ * Times events. 
+ *
+ * Useful when you want to create recurrent events or so.
+ */
 class Timer
 {
     private:

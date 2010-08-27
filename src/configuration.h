@@ -19,6 +19,10 @@
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Configuration for Toonloop.
+ */
+
 #ifndef __CONFIGURATION_H__
 #define __CONFIGURATION_H__
 
@@ -47,8 +51,7 @@ const std::string MOVIES_DIRECTORY = "movies";
 const std::string DEFAULT_PROJECT_HOME = "~/Documents/toonloop/default";
 
 const std::string OSC_PORT_NONE = "";
-/**
- * Contains the configuration options for the whole application.
+/** Contains the configuration options for Toonloop.
  */
 class Configuration
 {

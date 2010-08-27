@@ -18,6 +18,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef __CLIP_H__
 #define __CLIP_H__
 
@@ -41,6 +42,8 @@ enum direction
     BACK_AND_FORTH
 };
 
+/** The Clip class contains a list of image paths.
+ */
 class Clip 
 {
     public:

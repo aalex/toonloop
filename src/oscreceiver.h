@@ -4,6 +4,8 @@
 #include "lo/lo.h"
 #include <string>
 
+/** General-purpose wrapper around liblo to receive OSC messages.
+ */
 class OscReceiver {
     public:
         OscReceiver(const std::string &port);

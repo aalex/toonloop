@@ -1,3 +1,5 @@
+/** General-purpose wrapper around liblo to send OSC messages.
+ */
 #ifndef _OSC_SENDER_H_
 #define _OSC_SENDER_H_
 

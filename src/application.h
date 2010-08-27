@@ -39,6 +39,8 @@ static const unsigned int MAX_CLIPS = 10;
 
 namespace po = boost::program_options;
 
+/** The Application class: starts Toonloop.
+ */
 class Application 
 {
     public:

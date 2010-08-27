@@ -18,6 +18,11 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * The Controller contains most actions and events for Toonloop.
+ */
+
 #ifndef __CONTROLLER_H__
 #define __CONTROLLER_H__
 
@@ -28,7 +33,8 @@
 // Forward declaration
 class Application;
 
-/**
+/** The Controller contains most actions and events for Toonloop.
+ *
  * The Controller contains the methods that any class should call
  * in order to create Toonloop animations. It also contains the signals 
  * to which they should connect their slots in order to subscribe to 

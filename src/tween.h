@@ -29,7 +29,10 @@ enum tween_type
 };
 
 // TODO add more tweentypes
-
+/** Motion tweening to create motion interpolation.
+ */
+//TODO: Clutter probably offers us better stuff.
+ 
 class Tween
 {
 	// FIXME TODO add start time / current time

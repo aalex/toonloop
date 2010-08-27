@@ -158,6 +158,7 @@ AC_SUBST(CXXFLAGS, " -O2 -Wall -Werror -Wextra -Wfatal-errors")
 AC_CONFIG_FILES([
     Makefile
     src/Makefile
+    src/doxyfile
     man/Makefile
     tests/Makefile
     pixmaps/Makefile

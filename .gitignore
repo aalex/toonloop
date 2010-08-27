@@ -56,3 +56,7 @@ src/core
 # misc built files
 proto/spawn
 src/protomidi
+# doxygen stuff
+src/doxyfile
+src/html
+src/latex

@@ -18,6 +18,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef __OSC_INTERFACE_H__
 #define __OSC_INTERFACE_H__
 
@@ -26,7 +27,8 @@
 #include "./oscsender.h"
 
 class Application;
-
+/** Open Sound Control sending and receiving for Toonloop.
+ */
 class OscInterface 
 {
     public:

@@ -18,6 +18,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef __PIPELINE_H__
 #define __PIPELINE_H__
 
@@ -28,7 +29,8 @@
 #include "image.h"
 
 class Application;
-
+/** GStreamer video pipeline for grabbing images from a camera.
+ */
 class Pipeline
 {
     public:

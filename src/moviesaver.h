@@ -18,6 +18,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef __MOVIESAVER_H__
 #define __MOVIESAVER_H__
 
@@ -28,8 +29,7 @@
 #include "clip.h"
 #include "saverworker.h"
 
-/**
- * We store there a snapshot of the info about a clip to save.
+/** We store there a snapshot of the info about a clip to save.
  */
 struct SavingTask
 {
@@ -37,7 +37,8 @@ struct SavingTask
     int clip_id_;
     int fps_;
 };
-
+/** Saves one clip at a time to a movie in a thread.
+ */
 class MovieSaver
 {
     public:
