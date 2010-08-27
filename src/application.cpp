@@ -253,7 +253,7 @@ void Application::run(int argc, char *argv[])
     if (config_->get_osc_send_port() != OSC_PORT_NONE)
     {
         //TODO:2010-08-26:aalex:Replace atoi by something more sturdy
-        int osc_send_port_num = atoi(config_->get_osc_recv_port().c_str());
+        int osc_send_port_num = atoi(config_->get_osc_send_port().c_str());
         std::cout << "OSC send port " << osc_send_port_num << std::endl; 
         if (osc_send_port_num == 0)
         {
