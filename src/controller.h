@@ -36,13 +36,15 @@ class Application;
 /** The Controller contains most actions and events for Toonloop.
  *
  * The Controller contains the methods that any class should call
- * in order to create Toonloop animations. It also contains the signals 
- * to which they should connect their slots in order to subscribe to 
- * the events notifications. 
+ * in order to create Toonloop animations. 
+ *
+ * It also contains the signals to which they should connect their 
+ * slots in order to subscribe to the events notifications. 
  */
 class Controller
 {
     public:
+        //FIXME: does this member need to be public?
         Controller(Application* owner);
         /** 
          * Called when a frame is added to a clip.
@@ -167,7 +169,7 @@ class Controller
 };
 // TODO: 
 // /** 
-// * Saves a clip
+// * Saves a clip by number
 // */
 // void save_clip(int clip_number);
 #endif 

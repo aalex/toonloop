@@ -87,13 +87,16 @@ void OscInterface::connect_signals_to_sending_slots()
 int OscInterface::pingCb(
         const char *path, 
         const char * /*types*/, lo_arg ** /*argv*/,
-        int /*argc*/, void * /*data*/, void * /*user_data*/)
+        int /*argc*/, void * /*data*/, void *user_data)
 { 
 #ifdef CONFIG_DEBUG
     std::cout << "Got " << path << std::endl << std::endl;
 #endif
     UNUSED(path);
     std::cout << "Got ping" << std::endl;
+    OscInterface* context = static_cast<OscInterface*>(user_data);
+    if (context->sending_enabled_)
+        context->sender_.sendMessage("/pong", "", LO_ARGS_END);
     return 0;
 } 
 
@@ -121,7 +124,9 @@ int OscInterface::addFrameCb(
     context->owner_->get_pipeline()->grab_frame();
     return 0;
 }
-
+/**
+ * Handles /toon/frame/remove ,ii
+ */
 int OscInterface::removeFrameCb(
         const char * /*path*/,
         const char * /*types*/, 
@@ -135,12 +140,11 @@ int OscInterface::removeFrameCb(
     context->owner_->get_pipeline()->remove_frame();
     return 0;
 }
-/**
- * Handles /toon/quit
+// TODO:2010-08-15:aalex:Should be able to disable this handler
+/** Handles /toon/quit
  *
  * Quits the application.
  */
-// TODO:2010-08-15:aalex:Should be able to disable this handler
 int OscInterface::quitCb(
         const char * /*path*/,
         const char * /*types*/, 
@@ -154,11 +158,13 @@ int OscInterface::quitCb(
     context->owner_->quit();
     return 0;
 }
-
+/** Destructor 
+ */
 OscInterface::~OscInterface()
 {
 }
-
+/** Starts listening if enabled
+ */
 void OscInterface::start()
 {
     if (receiving_enabled_)
@@ -168,25 +174,28 @@ void OscInterface::start()
         receiver_.listen(); // start listening in separate thread
     }
 }
-
+/** Slot for Controller::add_frame_signal_ 
+ *
+ * Sends /toon/frame/add i:clip_number i:frame_number
+ */
 void OscInterface::on_add_frame(unsigned int clip_number, unsigned int frame_number)
 {
-    UNUSED(clip_number);
-    UNUSED(frame_number);
-    LOG_DEBUG("OSC: on_add_frame");
+    sender_.sendMessage("/toon/frame/add", "ii", clip_number, frame_number, LO_ARGS_END);
 }
+/** Slot for Controller::remove_frame_signal_ 
+ *
+ * Sends /toon/frame/remove i:clip_number i:frame_number
+ */
 void OscInterface::on_remove_frame(unsigned int clip_number, unsigned int frame_number)
 {
-    UNUSED(clip_number);
-    UNUSED(frame_number);
-    LOG_DEBUG("OSC: on_remove_frame");
+    sender_.sendMessage("/toon/frame/remove", "ii", clip_number, frame_number, LO_ARGS_END);
 }
+/** Slot for Controller::next_image_to_play_signal_
+ *
+ * Sends /toon/clip/playhead i:clip_number i:image_number s:file_name
+ */
 void OscInterface::on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name)
 {
-    UNUSED(clip_number);
-    UNUSED(image_number);
-    UNUSED(file_name);
-    // TODO: remove this OSC logging
-    LOG_DEBUG("OSC: on_next_image_to_play");
+    sender_.sendMessage("/toon/clip/playhead", "iis", clip_number, image_number, file_name.c_str(), LO_ARGS_END);
 }
 

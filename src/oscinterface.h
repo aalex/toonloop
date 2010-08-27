@@ -39,27 +39,15 @@ class OscInterface
                     const std::string &send_addr); 
             ~OscInterface();
             void start();
-            /**
-             * Slot for the Controller's add_frame_signal_ signal.
-             */
             void on_add_frame(unsigned int clip_number, unsigned int frame_number);
-            /**
-             * Slot for the Controller's remove_frame_signal_ signal.
-             */
             void on_remove_frame(unsigned int clip_number, unsigned int frame_number);
-            /**
-             * Slot for the Controller's next_image_to_play_signal_ signal.
-             */
             void on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name);
-    private:
         OscReceiver receiver_;
         OscSender sender_;
+    private:
         bool sending_enabled_;
         bool receiving_enabled_;
         Application* owner_;
-        //boost::mutex tryToSubscribeMutex_;
-        //bool tryToSubscribe_;   // FIXME: should this be protected by a mutex?
-        //void subscribe();
         static int pingCb(const char *path, 
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
