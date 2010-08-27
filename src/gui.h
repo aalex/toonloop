@@ -46,14 +46,8 @@ class Gui
         void resize_actors();
         float video_input_width_;
         float video_input_height_;
-        void switch_to_clip_number(unsigned int key_val);
         void on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name);
         Application* owner_;
-    private:
-        GtkWidget *window_;
-        GtkWidget *clutter_widget_;
-        GtkWidget *vbox_;
-        bool isFullscreen_;
         static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer user_data);
         static gboolean key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data);
 
@@ -63,6 +57,11 @@ class Gui
         void toggleFullscreen(GtkWidget* widget);
         void makeFullscreen(GtkWidget* widget);
         void makeUnfullscreen(GtkWidget* widget);
+        bool isFullscreen_;
+    private:
+        GtkWidget *window_;
+        GtkWidget *clutter_widget_;
+        GtkWidget *vbox_;
         void hideCursor();
         void showCursor();
 

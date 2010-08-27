@@ -25,8 +25,6 @@
 #include <boost/signals2.hpp>
 #include <string>
 
-namespace s2 = boost::signals2;
-
 // Forward declaration
 class Application;
 
@@ -44,28 +42,28 @@ class Controller
          * Called when a frame is added to a clip.
          * Arguments: clip number, new frame number.
          */
-        s2::signal<void (unsigned int, unsigned int)> add_frame_signal_;
+        boost::signals2::signal<void (unsigned int, unsigned int)> add_frame_signal_;
         /** 
          * Called when a frame is removed from a clip.
          * Arguments: clip number, deleted frame number.
          */
-        s2::signal<void (unsigned int, unsigned int)> remove_frame_signal_;
+        boost::signals2::signal<void (unsigned int, unsigned int)> remove_frame_signal_;
         /** 
          * Called when a clip is chosen.
          * Arguments: clip number.
          */
-        s2::signal<void (unsigned int)> choose_clip_signal_;
+        boost::signals2::signal<void (unsigned int)> choose_clip_signal_;
         /** 
          * Called when the FPS of a clip changes.
          * Arguments: clip number, FPS.
          */
-        s2::signal<void (unsigned int, unsigned int)> clip_fps_changed_signal_;
+        boost::signals2::signal<void (unsigned int, unsigned int)> clip_fps_changed_signal_;
         /** 
          * Called when a clip is saved.
          * Arguments: clip number, file name.
          */
         //TODO: make the string &const
-        s2::signal<void (unsigned int, std::string)> save_clip_signal_;
+        boost::signals2::signal<void (unsigned int, std::string)> save_clip_signal_;
 
 
         /**
@@ -74,11 +72,11 @@ class Controller
          * Arguments: clip number, image number, file name.
          */
         // TODO:2010-08-26:aalex:Make the file name string &const?
-        s2::signal<void (unsigned int, unsigned int, std::string)> next_image_to_play_signal_;
+        boost::signals2::signal<void (unsigned int, unsigned int, std::string)> next_image_to_play_signal_;
         /**
          * Called when there is no image to play
          */
-        s2::signal<void ()> no_image_to_play_signal_;
+        boost::signals2::signal<void ()> no_image_to_play_signal_;
         /**
          * Adds a frame to the current clip.
          */

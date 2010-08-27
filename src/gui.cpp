@@ -39,6 +39,9 @@
 
 namespace fs = boost::filesystem;
 
+/**
+ * In fullscreen mode, hides the cursor. In windowed mode, shows the cursor.
+ */
 gboolean Gui::on_window_state_event(GtkWidget* /*widget*/, GdkEventWindowState *event, gpointer user_data)
 {
     Gui *context = static_cast<Gui*>(user_data);
@@ -49,7 +52,9 @@ gboolean Gui::on_window_state_event(GtkWidget* /*widget*/, GdkEventWindowState *
         context->showCursor();
     return TRUE;
 }
-
+/**
+ * In fullscreen mode, hides the cursor.
+ */
 void Gui::hideCursor()
 {
     // FIXME: this is because gtk doesn't support GDK_BLANK_CURSOR before gtk-2.16
@@ -66,6 +71,9 @@ void Gui::hideCursor()
     gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), cursor);
 }
 
+/**
+ * In windowed mode, shows the cursor.
+ */
 void Gui::showCursor()
 {
     /// sets to default
@@ -128,8 +136,16 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
         case GDK_7:
         case GDK_8:
         case GDK_9:
-            context->switch_to_clip_number(event->keyval);
+        {   // need to use brackets when declaring variable inside case
+            //* Switch the current clip according to a gdk key value from 0 to 9
+            //* keyval should be one of :
+            //* GDK_0 GDK_1 GDK_2 GDK_3 GDK_4 GDK_5 GDK_6 GDK_7 GDK_8 GDK_9
+            //* Of course, any other value might lead to a crash.
+            // FIXME:2010-08-17:aalex:Doing arithmetics with a gdk keyval is a hack
+            unsigned int index = (event->keyval & 0x0F);
+            context->owner_->get_controller()->choose_clip(index);
             break;
+        }
         case GDK_q:
             // Quit application on ctrl-q, this quits the main loop
             // (if there is one)
@@ -154,44 +170,43 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
     return TRUE;
 }
 /**
- * Switch the current clip according to a gdk key value from 0 to 9.
- *
- * keyval should be one of :
- * GDK_0 GDK_1 GDK_2 GDK_3 GDK_4 GDK_5 GDK_6 GDK_7 GDK_8 GDK_9
- * Of course, any other value might lead to a crash.
+ * Called when the window is deleted. Quits the application.
  */
-void Gui::switch_to_clip_number(unsigned int key_val) 
-{
-    // FIXME:2010-08-17:aalex:Doing arithmetics with a gdk keyval is a hack
-    unsigned int index = key_val & 0x0F;
-    owner_->get_controller()->choose_clip(index);
-}
-
 void Gui::on_delete_event(GtkWidget* /*widget*/, GdkEvent* /*event*/, gpointer user_data)
 {
     Gui *context = static_cast<Gui*>(user_data);
     g_print("Window has been deleted.\n");
     context->owner_->quit();
 }
-
+/**
+ * Toggles fullscreen mode on/off.
+ */
 void Gui::toggleFullscreen(GtkWidget *widget)
 {
     // toggle fullscreen state
     isFullscreen_ ? makeUnfullscreen(widget) : makeFullscreen(widget);
 }
-
+/** 
+ * Makes the window fullscreen.
+ */
 void Gui::makeFullscreen(GtkWidget *widget)
 {
     gtk_window_stick(GTK_WINDOW(widget)); // window is visible on all workspaces
     gtk_window_fullscreen(GTK_WINDOW(widget));
 }
-
+/**
+ * Makes the window not fullscreen.
+ */
 void Gui::makeUnfullscreen(GtkWidget *widget)
 {
     gtk_window_unstick(GTK_WINDOW(widget)); // window is not visible on all workspaces
     gtk_window_unfullscreen(GTK_WINDOW(widget));
 }
-
+/**
+ * Slot for the Controller's next_image_to_play_signal_ signal.
+ *
+ * Called when it's time to update the image to play back.
+ */
 void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*image_number*/, std::string file_name)
 {
     GError *error = NULL;
@@ -207,9 +222,9 @@ void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*imag
     }
 }
 /** 
- * Timeline handler.
  * Called on every frame. 
  *
+ * (Clutter Timeline handler)
  * Times the playback frames and display it if it's time to do so.
  *
  * Prints the rendering FPS information.
@@ -251,6 +266,8 @@ void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpoint
 
 /**
  * Called when the stage size has changed.
+ *
+ * Calls Gui::resize_actors
  */
 void on_stage_allocation_changed(ClutterActor * /*stage*/, 
         ClutterActorBox * /*box*/, 
@@ -304,6 +321,8 @@ void Gui::resize_actors() {
 }
 /**
  * Called when the size of the input image has changed.
+ *
+ * Useful to update the layout. Calls Gui::resize_actors.
  */
 void on_live_input_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data) {
     //g_print("on_live_input_texture_size_changed\n");
@@ -319,6 +338,11 @@ void on_live_input_texture_size_changed(ClutterTexture *texture, gfloat width, g
     gui->resize_actors();
 }
 
+/**
+ * Called when the size of the image to play back has changed.
+ *
+ * Useful to update the layout. Calls Gui::resize_actors.
+ */
 void on_playback_texture_size_changed(ClutterTexture *texture, 
         gfloat /*width*/, gfloat /*height*/, gpointer user_data) 
 {
@@ -332,6 +356,10 @@ void on_playback_texture_size_changed(ClutterTexture *texture,
     gui->resize_actors();
 }
 /**
+ * Graphical user interface for Toonloop. 
+ *
+ * Here we create the window and a Clutter stage with actors.
+ *
  * Exits the application if OpenGL needs are not met.
  */
 Gui::Gui(Application* owner) :
@@ -428,6 +456,12 @@ Gui::Gui(Application* owner) :
         toggleFullscreen(window_);
 }
 
+/**
+ * Returns the live input image texture. 
+ *
+ * Called from the Pipeline in order to get the video sink element that allows
+ * use to view some GStreamer video on a Clutter actor.
+ */
 ClutterActor* Gui::get_live_input_texture()
 {
     return live_input_texture_;
