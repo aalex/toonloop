@@ -28,10 +28,9 @@
 #include <tr1/memory>
 #include <boost/thread/mutex.hpp>
 
-/**
- * A clip is a list of images.
- */
 // FIXME: vector is not thread safe. You need to protect it with a mutex or such.
+/** Each clip needs a unique ID.
+ */
 Clip::Clip(unsigned int id)
 {
     // FIXME: How to use a 2-int vector?
@@ -42,6 +41,8 @@ Clip::Clip(unsigned int id)
     playhead_ = 0;
     playhead_fps_ = 12; // some default for now
     has_recorded_a_frame_ = false;
+    direction_ = DIRECTION_FORWARD;
+    yoyo_sub_direction_ = DIRECTION_FORWARD;
     //mutex_;
 }
 
@@ -159,14 +160,50 @@ unsigned int Clip::get_writehead() const
 
 unsigned int Clip::iterate_playhead()
 {
-    //int len = size();
-    unsigned int len = writehead_;
-    // TODO: implement BACK_AND_FORTH and BACKWARD directions
-    if (len == 0 or playhead_ >= len - 1) // >= ?
+    unsigned int len = size();
+    if (len == 0)
         playhead_ = 0;
     else 
-        ++playhead_;
-    
+    {
+        // clip has at leat 1 of length
+        switch (direction_)
+        {
+        case DIRECTION_FORWARD:
+            if (playhead_ >= len - 1)
+                playhead_ = 0;
+            else 
+                ++playhead_;
+            break;
+        case DIRECTION_BACKWARD:
+            if (playhead_ == 0)
+                playhead_ = len - 1;
+            else 
+                --playhead_;
+            break;
+        // a slightly more complex type is the yoyo:
+        case DIRECTION_YOYO:
+            if (yoyo_sub_direction_ == DIRECTION_BACKWARD)
+            {
+                if (playhead_ == 0)
+                {
+                    playhead_ = 1;
+                    yoyo_sub_direction_ = DIRECTION_FORWARD;
+                } else 
+                    --playhead_;
+            } else {
+                if (playhead_ >= len - 1)
+                {
+                    if (len == 1)
+                        playhead_ = 0;
+                    else
+                        playhead_ = len - 2;
+                    yoyo_sub_direction_ = DIRECTION_BACKWARD;
+                } else 
+                    ++playhead_;
+            }
+            break;
+        } // switch
+    } // else
     return playhead_;
 }
 
@@ -226,15 +263,15 @@ void Clip::decrease_playhead_fps()
     }
 }
 
-void Clip::lock_mutex()
-{
-    mutex_.lock();
-}
-
-void Clip::unlock_mutex()
-{
-    mutex_.unlock();
-}
+// void Clip::lock_mutex()
+// {
+//     mutex_.lock();
+// }
+// 
+// void Clip::unlock_mutex()
+// {
+//     mutex_.unlock();
+// }
 
 bool Clip::get_has_recorded_frame() const
 {

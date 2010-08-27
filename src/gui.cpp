@@ -94,6 +94,7 @@ void Gui::showCursor()
  * Ctrl-q: quit
  * Ctrl-s: save
  * period: toggles the layout
+ * Tab: changes the playback direction
  */
 
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
@@ -110,6 +111,9 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             break;
         //case GDK_Left:
         //case GDK_Right:
+        case GDK_Tab:
+            context->owner_->get_controller()->change_current_clip_direction();
+            break;
         case GDK_period:
             //TODO:2010-08-27:aalex:Create Controller:toggle_layout
             context->toggle_layout();

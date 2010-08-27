@@ -111,6 +111,7 @@ Page down          : next clip
 Page up            : previous clip
 Number from 0 to 9 : switch to a specific clip
 Ctrl-s             : saves the current clip as a movie file
+Tab                : changes the playback direction
 
 Toonloop saves the clip in its project directory. The default project directory is the ~/Documents/toonloop/default/ directory, where "~" is your HOME directory. 
 

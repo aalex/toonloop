@@ -184,3 +184,28 @@ void Controller::set_playhead_fps(unsigned int fps)
     current_clip->set_playhead_fps(fps);
     clip_fps_changed_signal_(current_clip->get_id(), current_clip->get_playhead_fps());
 }
+void Controller::change_current_clip_direction()
+{
+    Clip *current_clip = owner_->get_current_clip();
+    clip_direction current = current_clip->get_direction();
+    clip_direction change_to = DIRECTION_FORWARD; // default
+    std::string signal_arg = "FORWARD";
+    switch (current)
+    {
+        case DIRECTION_FORWARD:
+            change_to = DIRECTION_BACKWARD;
+            signal_arg = "BACKWARD";
+            break;
+        case DIRECTION_BACKWARD:
+            change_to = DIRECTION_YOYO;
+            signal_arg = "YOYO";
+            break;
+        case DIRECTION_YOYO:
+            change_to = DIRECTION_FORWARD;
+            signal_arg = "FORWARD";
+            break;
+    }
+    current_clip->set_direction(change_to);
+    clip_direction_changed_signal_(current_clip->get_id(), signal_arg);
+}
+

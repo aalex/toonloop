@@ -89,11 +89,11 @@ void Pipeline::remove_frame()
 {
     Clip *thisclip = Application::get_instance().get_current_clip();
 
-    thisclip->lock_mutex();
+    //thisclip->lock_mutex();
     //int num_deleted;
     //num_deleted = 
     thisclip->frame_remove();
-    thisclip->unlock_mutex();
+    //thisclip->unlock_mutex();
     //if (num_deleted > 0)
     //    std::cout << "Deleted " << num_deleted << " frames in clip " << thisclip->get_id() << std::endl; 
 }

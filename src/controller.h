@@ -83,6 +83,11 @@ class Controller
          * Called when there is no image to play
          */
         boost::signals2::signal<void ()> no_image_to_play_signal_;
+        /** 
+         * Called when the direction of a clip changes
+         * Arguments: clip number, string direction. (FORWARD, BACKWARD, YOYO)
+         */
+        boost::signals2::signal<void (unsigned int, std::string)> clip_direction_changed_signal_;
         /**
          * Adds a frame to the current clip.
          */
@@ -137,6 +142,13 @@ class Controller
          * Sets the FPS of the current clip's playhead.
          */
         void set_playhead_fps(unsigned int fps);
+        /**
+         * Changes the playback direction of the current clip's playhead.
+         *
+         * Will navigate through FORWARD, BACKWARD and YOYO directions.
+         * Triggers the clip_direction_changed_signal_
+         */
+        void change_current_clip_direction();
 
     private:
         Application* owner_;
