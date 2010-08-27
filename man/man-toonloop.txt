@@ -74,4 +74,4 @@ You should have received a copy of the gnu general public license
 along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 
 [SEE ALSO]
-gst-launch(1), sooperlooper(1), lunch(1)
+gst-launch(1), sooperlooper(1), lunch(1), mencoder(1)
