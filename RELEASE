@@ -3,7 +3,6 @@
 This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. 
 
 Know bugs:
-    * Setting up the OSC sender port doesn't work, though
     * need to remove the getInstance singleton static method
     * we should still figure out why the call to get_image in gui.cpp is sometimes out_of_range when we delete frames
 
@@ -35,3 +34,4 @@ Bug fixes:
     * constructor invocation cleanup. removed extraneous parentheses when calling new
     * application.cpp:137: create objects on the stack when possible
     * Fixed a bug with first image same as before after the clip is cleared
+    * Setting up the OSC sender port doesn't work
