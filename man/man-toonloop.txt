@@ -41,6 +41,12 @@ Toonloop interactive keyboard controls :
  - Tab changes the playback direction
  - r: clears the current clip
 
+[OSC INTERFACE]
+
+Toonloop can send and receive messages using the Open Sound Protocol. 
+
+The list of messages it handles and might send is available in the OSC file that is in the project directory.
+
 
 [HISTORY]
 2008 - Version 0.x written by Alexandre Quessy in Processing/Java

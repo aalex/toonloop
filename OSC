@@ -13,5 +13,10 @@ Messages Toonloop can receive
 Messages sent by Toonloop
 -------------------------
 
-Toonloop does not send any message for now.
+Toonloop might send the following messages:
+
+ * /pong
+ * /toon/frame/add i:clip_number i:frame_number
+ * /toon/frame/remove i:clip_number i:frame_number
+ * /toon/clip/playhead i:clip_number i:image_number s:file_name
 
