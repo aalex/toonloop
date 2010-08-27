@@ -29,6 +29,7 @@ Toonloop 1.9.x has been built successfully on Debian squeeze and Ubuntu 10.04 Lu
 
 Here is the list of Debian package that you will need to build Toonloop 2.x. 
 
+ doxygen,
  ffmpeg,
  gettext,
  gstreamer0.10-alsa,
@@ -65,7 +66,6 @@ Here is the list of Debian package that you will need to build Toonloop 2.x.
 The packages listed below are not used yet, but we plan to use them 
 soon.
 
- doxygen,
  libxml++2.6-2,
  libxml++2.6-dev,
 
@@ -115,6 +115,14 @@ Tab                : changes the playback direction
 r                  : clear the current clip
 
 Toonloop saves the clip in its project directory. The default project directory is the ~/Documents/toonloop/default/ directory, where "~" is your HOME directory. 
+
+
+DEVELOPERS DOCUMENTATION
+------------------------
+
+To build the HTML documentation, make sure you have doxygen installed, then:
+
+ make html
 
 
 Additional Configuration Notes
