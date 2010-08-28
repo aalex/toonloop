@@ -25,10 +25,10 @@
 // gint gint gchar
 int main(int argc, char* argv[])
 {
-
+    Application app;
     try 
     {
-        Application::get_instance().run(argc, argv);
+        app.run(argc, argv);
     }
     catch(const std::exception& e) 
     {

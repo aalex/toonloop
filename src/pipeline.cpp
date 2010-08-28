@@ -77,7 +77,7 @@ void Pipeline::end_stream_cb(GstBus* /*bus*/, GstMessage* message, GstElement* /
         //gst_element_set_state(pipeline, GST_STATE_NULL);
         //gst_object_unref(pipeline);
         //FIXME: causes a segfault
-        //Application::get_instance().quit();
+        // context->owner_->quit();
     }
 }
 
@@ -382,7 +382,7 @@ Pipeline::Pipeline(Application* owner) :
         }
         g_print("-----------------------------------\n");
         exit(1);
-        //FIXME: causes a segfault: Application::get_instance().quit();
+        //FIXME: causes a segfault: context->owner_->quit();
     }
 
 }

@@ -54,10 +54,8 @@ void Clip::set_directory_path(const std::string &directory_path)
 // TODO: make sure the number of consecutive slashes in the path is ok
 std::string Clip::get_image_full_path(Image* image) const
 {
-    //std::string project_path = Application::get_instance().get_configuration().get_project_home();
     std::string project_path = get_directory_path();
     std::string image_name = image->get_name() + get_image_file_extension(); //".jpg";
-    //std::string file_name = fs::path(project_path) / image_name; 
     // TODO: use boost:file_system to append paths
     return project_path + "/" + IMAGES_DIRECTORY + "/" + image_name; 
 }

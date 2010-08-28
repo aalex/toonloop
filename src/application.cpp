@@ -360,13 +360,6 @@ MidiInput* Application::get_midi_input()
     return midi_input_.get();
 }
 
-Application& Application::get_instance()
-{
-    // TODO:2010-08-05:aalex:Get rid of the singleton pattern
-    // We might want many loopers!
-    static Application instance_; 
-    return instance_;
-}
 MovieSaver* Application::get_movie_saver() 
 {
     return movie_saver_.get();

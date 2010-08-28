@@ -2,11 +2,6 @@
 
 This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. At this point, it's almost feature-complete with a basic GUI for live performances.
 
-Know bugs:
-    * need to remove the getInstance singleton static method
-    * we should still figure out why the call to get_image in gui.cpp is sometimes out_of_range when we delete frames
-    * The user cannot use gstreamer-properties to choose a camera, but must provide a command-line argument to Toonloop.
-
 New features:
     * Created the Controller class
     * Hitting the period key toggles the layout
@@ -37,4 +32,9 @@ Bug fixes:
     * Fixed a bug with first image same as before after the clip is cleared
     * Setting up the OSC sender port doesn't work
     * No more crash when we delete an image sometimes.
+    * removed the Application::get_instance singleton static method
+
+Know bugs:
+    * we should still figure out why the call to get_image in gui.cpp is sometimes out_of_range when we delete frames
+    * The user cannot use gstreamer-properties to choose a camera, but must provide a command-line argument to Toonloop.
 

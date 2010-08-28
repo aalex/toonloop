@@ -37,13 +37,13 @@ class Pipeline;
 // FIXME:2010-08-17:aalex:We should allow more than 10 clips
 static const unsigned int MAX_CLIPS = 10;
 
-namespace po = boost::program_options;
-
 /** The Application class: starts Toonloop.
  */
 class Application 
 {
     public:
+        Application();
+        ~Application();
         void run(int argc, char *argv[]);
         void quit();
         Gui *get_gui();
@@ -57,8 +57,6 @@ class Application
         Configuration *get_configuration();
         /** Returns the movie saving - using mencoder */
         MovieSaver *get_movie_saver();
-        /** Deprecated singleton tool */
-        static Application& get_instance();
         /** Returns the currently selected clip */
         Clip* get_current_clip();
         /** Returns the currently selected clip number */
@@ -67,8 +65,6 @@ class Application
         void set_current_clip_number(unsigned int clipnumber);
 
     private:
-        Application();
-        ~Application();
         void update_project_home_for_each_clip();
         bool setup_project_home(const std::string& project_home);
         boost::scoped_ptr<Controller> controller_;
