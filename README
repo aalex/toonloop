@@ -29,7 +29,6 @@ Toonloop 1.9.x has been built successfully on Debian squeeze and Ubuntu 10.04 Lu
 
 Here is the list of Debian package that you will need to build Toonloop 2.x. 
 
- doxygen,
  ffmpeg,
  gettext,
  gstreamer0.10-alsa,
