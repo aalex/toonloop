@@ -82,6 +82,68 @@ void OscInterface::connect_signals_to_sending_slots()
         &OscInterface::on_remove_frame, this, _1, _2));
     controller->next_image_to_play_signal_.connect(boost::bind(
         &OscInterface::on_next_image_to_play, this, _1, _2, _3));
+    // new ones:
+    controller->choose_clip_signal_.connect(boost::bind(
+        &OscInterface::on_choose_clip, this, _1));
+    controller->clip_fps_changed_signal_.connect(boost::bind(
+        &OscInterface::on_clip_fps_changed, this, _1, _2));
+    controller->save_clip_signal_.connect(boost::bind(
+        &OscInterface::on_clip_saved, this, _1, _2));
+    controller->no_image_to_play_signal_.connect(boost::bind(
+        &OscInterface::on_no_image_to_play, this));
+    controller->clip_direction_changed_signal_.connect(boost::bind(
+        &OscInterface::on_clip_direction_changed, this, _1, _2));
+    controller->clip_cleared_signal_.connect(boost::bind(
+        &OscInterface::on_clip_cleared, this, _1));
+
+}
+/** Slot for Controller::choose_clip_signal_
+ *
+ * Send /toon/clip/select i:clip_number
+ * */
+void OscInterface::on_choose_clip(unsigned int clip_number)
+{
+    sender_.sendMessage("/toon/clip/select", "i", (int) clip_number, LO_ARGS_END);
+}
+/** Slot for Controller::clip_fps_changed_signal_
+ *
+ * Send /toon/clip/fps i:clip_number i:fps
+ * */
+void OscInterface::on_clip_fps_changed(unsigned int clip_number, unsigned int fps)
+{
+    sender_.sendMessage("/toon/clip/fps", "ii", (int) clip_number, fps, LO_ARGS_END);
+}
+/** Slot for Controller::save_clip_signal_
+ *
+ * Send /toon/clip/saved i:clip_number s:file_name
+ * */
+void OscInterface::on_clip_saved(unsigned int clip_number, std::string file_name)
+{
+    sender_.sendMessage("/toon/clip/saved", "is", (int) clip_number, file_name.c_str(), LO_ARGS_END);
+}
+/** Slot for Controller::no_image_to_play_signal_
+ *
+ * Send /toon/playhead/none
+ * */
+void OscInterface::on_no_image_to_play()
+{
+    sender_.sendMessage("/toon/playhead/none", "", LO_ARGS_END);
+}
+/** Slot for Controller::clip_direction_changed_signal_
+ *
+ * Send /toon/clip/direction i:clip_number s:direction
+ * */
+void OscInterface::on_clip_direction_changed(unsigned clip_number, std::string direction)
+{
+    sender_.sendMessage("/toon/clip/direction", "ii", (int) clip_number, direction.c_str(), LO_ARGS_END);
+}
+/** Slot for Controller::clip_cleared_signal_
+ *
+ * Send /toon/clip/cleared i:clip_number
+ * */
+void OscInterface::on_clip_cleared(unsigned int clip_number)
+{
+    sender_.sendMessage("/toon/clip/cleared", "i", (int) clip_number, LO_ARGS_END);
 }
 
 int OscInterface::pingCb(

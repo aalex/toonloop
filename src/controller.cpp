@@ -141,26 +141,29 @@ void Controller::update_playback_image()
         
         // Aug 25 2010:tmatth:FIXME: when deleting frames, image_number can be invalid
         Image* thisimage = thisclip->get_image(image_number);
-
-        if ((prevclip != thisclip) or (prev_image_name != thisimage->get_name()))
-              need_refresh = true;
-        if (prevclip != thisclip) 
-            prevclip = thisclip;
-        
-        if (thisimage == NULL)
-            std::cout << "No image at index" << image_number << "." << std::endl;
-        else 
+        if (thisimage == 0)
         {
-            if (need_refresh)
+            std::cerr << "Controller::update_playback_image: The image is NULL!" << std::endl;
+        } else {
+            if ((prevclip != thisclip) or (prev_image_name != thisimage->get_name()))
+                  need_refresh = true;
+            if (prevclip != thisclip) 
+                prevclip = thisclip;
+            
+            if (thisimage == NULL)
+                std::cout << "No image at index" << image_number << "." << std::endl;
+            else 
             {
-                std::string image_full_path = thisclip->get_image_full_path(thisimage);
-                if (fs::exists(image_full_path))
-                    next_image_to_play_signal_(thisclip->get_id(), image_number, image_full_path);
-                prev_image_name = thisimage->get_name();
-            }
+                if (need_refresh)
+                {
+                    std::string image_full_path = thisclip->get_image_full_path(thisimage);
+                    if (fs::exists(image_full_path))
+                        next_image_to_play_signal_(thisclip->get_id(), image_number, image_full_path);
+                    prev_image_name = thisimage->get_name();
+                }
+            } 
         }
-    } 
-
+    }
 }
 
 void Controller::increase_playhead_fps()

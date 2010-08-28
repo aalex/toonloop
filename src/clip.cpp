@@ -136,6 +136,10 @@ unsigned int Clip::frame_remove()
         images_.size() << " images." << std::endl;
         //TODO:2010-08-27:aalex:Move the writehead to the end of clip and erase a frame anyways.
     } 
+    else if (writehead_ == 0)
+    {
+        std::cout << "Cannot delete a frame since writehead is at 0" << std::endl;
+    }
     else 
     {
         std::cout << "Deleting image at position " << (writehead_ - 1) << "/" << images_.size() << std::endl;
@@ -237,7 +241,7 @@ Image* Clip::get_image(unsigned int index) const
     {
         // Aug 25 2010:tmatth:FIXME we should actually prevent callers' 
         // logic from trying to get invalid framenumbers
-        std::cerr << "Got exception " << e.what() << std::endl;
+        std::cerr << "Clip::get_image: Got exception " << e.what() << std::endl;
         return 0;
     }
 }

@@ -32,16 +32,23 @@ class Application;
 class OscInterface 
 {
     public:
-            OscInterface(
-                    Application* owner, 
-                    const std::string &listen_port,
-                    const std::string &send_port,
-                    const std::string &send_addr); 
-            ~OscInterface();
-            void start();
-            void on_add_frame(unsigned int clip_number, unsigned int frame_number);
-            void on_remove_frame(unsigned int clip_number, unsigned int frame_number);
-            void on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name);
+        OscInterface(
+                Application* owner, 
+                const std::string &listen_port,
+                const std::string &send_port,
+                const std::string &send_addr); 
+        ~OscInterface();
+        void start();
+        void on_add_frame(unsigned int clip_number, unsigned int frame_number);
+        void on_remove_frame(unsigned int clip_number, unsigned int frame_number);
+        void on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name);
+
+        void on_choose_clip(unsigned int clip_number);
+        void on_clip_fps_changed(unsigned int clip_number, unsigned int fps);
+        void on_clip_saved(unsigned int clip_number, std::string file_name);
+        void on_no_image_to_play();
+        void on_clip_direction_changed(unsigned clip_number, std::string direction);
+        void on_clip_cleared(unsigned int clip_number);
         OscReceiver receiver_;
         OscSender sender_;
     private:

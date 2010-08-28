@@ -1,3 +1,111 @@
+commit 1ba720f36de953e65dfac6bbfdd5a78d141cfe03
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 19:39:34 2010 -0400
+
+    updated OSC API in the doc files
+
+commit 8a1e0a4efa53b0f64b3997f93b94906a4cfed03d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 19:36:34 2010 -0400
+
+    sending some OSC messages
+
+commit 075d789bee0bb315dc561922fb69e2222dcd534e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 19:14:54 2010 -0400
+
+    updated RELEASE notes
+
+commit b4776bd331ce19979fb147fe4b4c73a914c29447
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 19:14:24 2010 -0400
+
+    Fixed bug with OSC send port
+
+commit 240e118e30ae6d3cd617377fe855ead154e39336
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 19:12:32 2010 -0400
+
+    updated RELEASE
+
+commit 3dc3cca8fb5bc7f94ac4e572d83a6799a25e6f50
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 19:08:24 2010 -0400
+
+    added doc/toonloop.svg
+
+commit 2cee053179a69d168fb850e556321a11d96d36c0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 18:25:35 2010 -0400
+
+    Updated the icon
+
+commit b9fd48460b58ec43e065f463ee305abb56fe4e90
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 17:58:43 2010 -0400
+
+    Fixed a bug with first image same than before once a clip is cleared
+
+commit b7cee90a2441e924ad33b196e8af44ee964b868d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 16:43:39 2010 -0400
+
+    updated README
+
+commit 882267c369013c8410f9354748c6899c88f2a409
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 16:42:22 2010 -0400
+
+    added make html target - using doxygen
+
+commit 5f69eaf1b658de6ed47512acb1e49b66d2b84238
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 16:05:45 2010 -0400
+
+    updated TODO
+
+commit ee11917f2e89d32ea7178d1f05f99ada4373579f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 16:02:52 2010 -0400
+
+    fixed typos
+
+commit efb3d7e7752a60885b3ecc5e0296569f21534d6a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 15:57:58 2010 -0400
+
+    updated man page
+
+commit 339debec99c3e3d2902da6b6a9e8de508377b295
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 15:52:43 2010 -0400
+
+    Hitting r clears the current clip
+
+commit 64afbd20bb31864711667a2e6cdefeb8a28405c8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 15:40:26 2010 -0400
+
+    updated RELEASE
+
+commit 2f8eb7e5b34c63c3cdf64b578a7adcb7cd2538fd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 15:40:03 2010 -0400
+
+    Tab changes the playback direction
+
+commit 8f8996822a4305d8eea5bfb1b4a47e5fef3bb6b2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 14:02:51 2010 -0400
+
+    updated TODO
+
+commit 130eeb86d1517d0345e6352f648dfb7226d02310
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 14:00:41 2010 -0400
+
+    more doc about the new features
+
 commit 8dd2848c52282e4dbdfc3c92f727539af7dbd9f6
 Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Fri Aug 27 13:52:13 2010 -0400
