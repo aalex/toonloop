@@ -33,8 +33,8 @@ Bug fixes:
     * Setting up the OSC sender port doesn't work
     * No more crash when we delete an image sometimes.
     * removed the Application::get_instance singleton static method
+    * Figured out why the call to get_image in gui.cpp is sometimes out_of_range playhead when we delete frames
 
 Know bugs:
-    * we should still figure out why the call to get_image in gui.cpp is sometimes out_of_range when we delete frames
     * The user cannot use gstreamer-properties to choose a camera, but must provide a command-line argument to Toonloop.
 
