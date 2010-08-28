@@ -294,7 +294,7 @@ Pipeline::Pipeline(Application* owner) :
             is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
             if (!is_linked) 
             { 
-                std::cout << "Failed to link video source. Trying an other framerate." << std::endl;
+                std::cout << "Failed to link video source. Trying another framerate." << std::endl;
                 ++frame_rate_index;
                 if (frame_rate_index >= 10) 
                 {
