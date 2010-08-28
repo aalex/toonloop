@@ -2,9 +2,9 @@
 Exec=toonloop 
 Type=Application
 Terminal=false
-Name=Toonloop Live Animation System
-Name[fr]=Système d'animation en direct Toonloop
-Comment=The Toonloop Live Stop Motion Animation System
-Comment[fr]=Système d'animation image par image en direct Toonloop
+Name=Toonloop
+Name[fr]=Toonloop
+Comment=Toonloop Live Animation Editor
+Comment[fr]=Editeur d'animation en direct Toonloop
 Categories=AudioVideo;Video;AudioVideoEditing;
-Icon=toonloop.png
+Icon=toonloop
