@@ -125,7 +125,7 @@ unsigned int Clip::frame_remove()
     } 
     else if (size() == 1 && writehead_ == 1)
     {
-        clear_all_images(); // takes care of writehead_
+        clear_all_images(); // takes care of writehead_ and playhead_
     }
     else if (writehead_ > images_.size()) 
     {
@@ -140,10 +140,18 @@ unsigned int Clip::frame_remove()
     }
     else 
     {
-        std::cout << "Deleting image at position " << (writehead_ - 1) << "/" << images_.size() << std::endl;
+        std::cout << "Deleting image at position " << (writehead_ - 1) << "/" << (images_.size()  - 1) << std::endl;
         images_.erase(images_.begin() + (writehead_ - 1));
-        --writehead_;
         how_many_deleted = 1;
+        // let's decrement the writehead and playhead
+        --writehead_;
+        if (playhead_ >= size())
+        {
+            if (size() == 0)
+                playhead_ = 0;
+            else
+                playhead_ = size() - 1;
+        }
     }
     return how_many_deleted;
 }
