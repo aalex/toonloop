@@ -104,18 +104,25 @@ void Pipeline::remove_frame()
 void Pipeline::grab_frame()
 {
     GdkPixbuf* pixbuf;
-    Clip *thisclip = owner_->get_current_clip();
-    bool is_verbose = owner_->get_configuration()->get_verbose();
-    //thisclip->lock_mutex();
-    int current_clip_id = thisclip->get_id();
     g_object_get(G_OBJECT(gdkpixbufsink_), "last-pixbuf", &pixbuf, NULL);
     if (! GDK_IS_PIXBUF(pixbuf))
     {
         std::cout << "No picture yet to grab!" << std::endl;
         //thisclip->unlock_mutex();
-        return;
-    }
+    } else {
 
+        save_image_to_current_clip(pixbuf);
+    }
+    g_object_unref(pixbuf);
+}
+
+
+void Pipeline::save_image_to_current_clip(GdkPixbuf *pixbuf)
+{
+    Clip *thisclip = owner_->get_current_clip();
+    bool is_verbose = owner_->get_configuration()->get_verbose();
+    //thisclip->lock_mutex();
+    int current_clip_id = thisclip->get_id();
     int w = gdk_pixbuf_get_width(pixbuf);
     int h = gdk_pixbuf_get_height(pixbuf);
 
@@ -154,7 +161,6 @@ void Pipeline::grab_frame()
         if (is_verbose)
             g_print("Image %s saved\n", file_name.c_str());
     }
-    g_object_unref(pixbuf);
     //thisclip->unlock_mutex();
 }
 

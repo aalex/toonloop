@@ -22,6 +22,7 @@
 #ifndef __PIPELINE_H__
 #define __PIPELINE_H__
 
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <string>
@@ -48,6 +49,7 @@ class Pipeline
         GstState state_;
         static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);
         std::string guess_source_caps(unsigned int framerateIndex) const;
+        void save_image_to_current_clip(GdkPixbuf *pixbuf);
 };
 
 #endif // __PIPELINE_H__
