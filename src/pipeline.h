@@ -48,6 +48,7 @@ class Pipeline
         GstPipeline* pipeline_;
         GstState state_;
         static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);
+        static void on_new_live_pixbuf(GstBus* bus, GstMessage* message, GstElement* pipeline);
         std::string guess_source_caps(unsigned int framerateIndex) const;
         void save_image_to_current_clip(GdkPixbuf *pixbuf);
 };

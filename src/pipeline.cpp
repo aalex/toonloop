@@ -81,6 +81,11 @@ void Pipeline::end_stream_cb(GstBus* /*bus*/, GstMessage* message, GstElement* /
     }
 }
 
+void Pipeline::on_new_live_pixbuf(GstBus* /*bus*/, GstMessage* /*message*/, GstElement* /*pipeline*/)
+{
+    std::cout << "on_new_live_pixbuf" << std::endl;
+}
+
 /** 
  * Adds an image to the current clip.
  * TODO: should be moved out of here, to application. 
@@ -110,13 +115,18 @@ void Pipeline::grab_frame()
         std::cout << "No picture yet to grab!" << std::endl;
         //thisclip->unlock_mutex();
     } else {
-
         save_image_to_current_clip(pixbuf);
     }
     g_object_unref(pixbuf);
 }
-
-
+/**
+ * Saves a GdkPixbuf image to the current clip.
+ *
+ * Needed, because the image might come from the last grabbed
+ * frame, or the recording of every frame might be automatic. (video)
+ *
+ * The gdkpixbufsink element posts messages containing the pixbuf.
+ */
 void Pipeline::save_image_to_current_clip(GdkPixbuf *pixbuf)
 {
     Clip *thisclip = owner_->get_current_clip();
@@ -358,6 +368,7 @@ Pipeline::Pipeline(Application* owner) :
     g_signal_connect(bus, "message::error", G_CALLBACK(end_stream_cb), this);
     g_signal_connect(bus, "message::warning", G_CALLBACK(end_stream_cb), this);
     g_signal_connect(bus, "message::eos", G_CALLBACK(end_stream_cb), this);
+    g_signal_connect(bus, "message::preroll-pixbuf", G_CALLBACK(on_new_live_pixbuf), this);
     gst_object_unref(bus);
 
     // TODO:2010-08-06:aalex:We could rely on gstremer-properties to configure the video source.
