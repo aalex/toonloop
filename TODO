@@ -63,17 +63,16 @@ Once those tasks are done, the features to be implemented in branch 2.x are:
  * Left:      Play backward
  * Right:     Play forward
  * <li>Press 'i' to print current loop frame number, number of frames in loop and global framerate.</li>
- * <li>Press 'h' to print a help message.</li>
- * <li>Press 'p' to pause playback.</li>
- * <li>Press 'o' to toggle the onion skinning on/off.</li>
- * <li>Press 'b' to take a snapshot as the new background image.</li>
- * <li>Press 'n' to select the next effect available.</li>
- * <li>Press the Left arrow to move the write head to the left. (towards the beginning)</li>
- * <li>Press the Right arrow to move the write head to the right. (towards the end)</li>
- * <li>Press Return to move the write head to the last frame. (at the end)</li>
- * <li>Press 'a' to toggle on/off the auto recording. (it records one frame on every frame) It is an intervalometer. Best used to create timelapse clips automatically.</li>
- * <li>Press 'k' or 'j' to increase or decrease the auto recording rate.</li>
-
+ * Press 'h' to show some help 
+ * Press 'p' to pause playback.
+ * Press 'o' to toggle the onion skinning on/off.
+ * Press 'b' to take a snapshot as the new background image.
+ * Press 'n' to select the next effect available.
+ * Press the Left arrow to move the write head to the left. (towards the beginning)
+ * Press the Right arrow to move the write head to the right. (towards the end)
+ * Press Return to move the write head to the last frame. (at the end)
+ * Press 'a' to toggle on/off the auto recording. (it records one frame on every frame) It is an intervalometer. Best used to create timelapse clips automatically.
+ * Press 'k' or 'j' to increase or decrease the auto recording rate.
 
 
 To be done for version 2.2 : Towards professional features
