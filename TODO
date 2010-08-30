@@ -16,6 +16,8 @@ Right now, here is the list of tasks to prioritize:
  * edit: Support playback directions: forward, backward, ping-pong
  * video: do not crash if the v4l2 device is busy
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
+ * video: grab video
+ * save: use g_get_tmp_dir
 
 
 OSC Messages to implement
