@@ -4,10 +4,10 @@
 This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. 
 
 New features:
-    * 
+    * Video grabbing (can record every incoming frame in a row)
 
 Bug fixes: 
-    * 
+    * avoid casting NULL to gboolean
 
 Know bugs:
     * The user cannot use gstreamer-properties to choose a camera, but must provide a command-line argument to Toonloop.

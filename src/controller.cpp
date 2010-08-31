@@ -234,3 +234,4 @@ void Controller::clear_current_clip()
     current_clip->clear_all_images();
     clip_cleared_signal_(current_clip->get_id());
 }
+
