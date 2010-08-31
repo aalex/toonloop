@@ -271,7 +271,7 @@ Pipeline::Pipeline(Application* owner) :
     gst_bin_add(GST_BIN(pipeline_), gdkpixbufsink_);
 
     // link pads:
-    gboolean is_linked = NULL;
+    gboolean is_linked = FALSE; 
     bool source_is_linked = false;
     int frame_rate_index = 0;
     if (config->videoSource() == std::string("test") || config->videoSource() == std::string("x")) 
