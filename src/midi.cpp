@@ -38,6 +38,8 @@
  * The program change should allow the user to choose another instrument. 
  * This way, the Roland GFC-50 allows to select any of ten clips.
  * The MIDI spec allows for 128 programs, numbered 0-127.
+ *
+ * Main volume is control 7. It controls the playback speed.
  */
 void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char > *message, void *user_data )
 {
@@ -66,6 +68,8 @@ void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char >
             else
                 context->on_ctrl_80_changed(false);
         } 
+        else if ((int)message->at(1) == 7) // 7: volume expression pedal
+            context->on_volume_control((int)message->at(2));
     }
     else if (message->size() >= 2)
     {
@@ -97,8 +101,23 @@ bool MidiInput::is_open() const
 {
     return opened_;
 }
+/** Called when the main volume pedal value is changed.
+ *
+ * Volume is from 0 to 127.
+ *
+ * The volume control in MIDI is number 7.
+ */
+void MidiInput::on_volume_control(int volume)
+{
+    if (owner_->get_configuration()->get_verbose())
+        std::cout << "on_volume_control" << volume << std::endl;
+    unsigned int fps = volume / 4;
+    owner_->get_controller()->set_playhead_fps(fps);
+}
 
 /** Called when a sustain MIDI pedal goes down.
+ *
+ * Sustain pedal is control 64.
  */
 void MidiInput::on_pedal_down()
 {
@@ -130,6 +149,7 @@ MidiInput::MidiInput(Application* owner) :
         owner_(owner)
 {
     verbose_ = false;
+    //verbose_ = true;
     midi_in_ = 0;
     // RtMidiIn constructor
     try {

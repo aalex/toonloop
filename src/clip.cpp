@@ -67,6 +67,8 @@ unsigned int Clip::get_playhead_fps() const
 
 void Clip::set_playhead_fps(unsigned int fps)
 {
+    if (fps > MAX_FPS)
+        fps = MAX_FPS;
     playhead_fps_ = fps;
 }
 

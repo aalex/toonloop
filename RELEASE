@@ -7,6 +7,7 @@ New features:
     * Video grabbing (can record every incoming frame in a row)
     * MIDI control 80 controls video grabbing
     * MIDI program change chooses the current clip
+    * MIDI volume control (7) changes the playback speed
 
 Bug fixes: 
     * avoid casting NULL to gboolean
