@@ -48,13 +48,21 @@ void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char >
     }
     if (message->size() >= 3)
     {
-        if ((int)message->at(1) == 64)
+        if ((int)message->at(1) == 64) // 64: sustain pedal
             if ((int)message->at(2) == 127) 
             {
                 if (context->verbose_)
                     std::cout << "Sustain pedal is down."  << std::endl;
                 context->on_pedal_down();
                 context->pedal_down_signal_();
+            }
+            // we might want pedal up signal too (0)
+        if ((int)message->at(1) == 80) // 80: general-purpose control. The Roland GFC-50 provides an on/off pedal input with that number
+            if ((int)message->at(2) == 127) 
+            {
+                if (context->verbose_)
+                    std::cout << "Pedal #80 is down."  << std::endl;
+                context->on_pedal_down();
             }
             // we might want pedal up signal too (0)
     }
@@ -89,6 +97,14 @@ void MidiInput::on_pedal_down()
     if (owner_->get_configuration()->get_verbose())
         std::cout << "on_pedal_down" << std::endl;
     owner_->get_controller()->add_frame();
+}
+/** Called when a control #80's value changes.
+ */
+void MidiInput::on_ctrl_80_changed(bool is_on)
+{
+    if (owner_->get_configuration()->get_verbose())
+        std::cout << "control #80's value changed:" << is_on << std::endl;
+    owner_->get_controller()->enable_video_grabbing(is_on);
 }
 
 MidiInput::MidiInput(Application* owner) : 

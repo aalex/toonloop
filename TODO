@@ -45,6 +45,7 @@ To be done for Version 2.0
 
 Once those tasks are done, the features to be implemented in branch 2.x are:
 
+ * API: figure out the best OSC API, as well as the keyboard GUI controls
  * Press 'a' to toggle on/off the intervalometer. Best used to create timelapse clips automatically.
  * Press 'i' to print current loop frame number, number of frames in loop and global framerate.
  * Press 'h' to show some help 

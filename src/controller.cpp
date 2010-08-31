@@ -169,17 +169,37 @@ void Controller::update_playback_image()
 void Controller::toggle_video_grabbing()
 {
     Pipeline *pipeline = owner_->get_pipeline();
+    if (pipeline->get_record_all_frames())
+    {
+        enable_video_grabbing(false);
+    } else {
+        enable_video_grabbing(true);
+    }
+}
+
+void Controller::enable_video_grabbing(bool enable)
+{
+    Pipeline *pipeline = owner_->get_pipeline();
     Clip *current_clip = owner_->get_current_clip();
     if (pipeline->get_record_all_frames())
     {
-        pipeline->set_record_all_frames(false);
+        if (!enable)
+        {
+            pipeline->set_record_all_frames(false);
+            //FIXME: This should be a property of Clip, not of Pipeline
+            //TODO: rename pipeline::get_record_all_frames to a better name
+            clip_videograb_changed_signal_(current_clip->get_id(), false);
+        } else
+            std::cout << "Video grabbing was already disabled." << std::endl;
 
     } else {
-        pipeline->set_record_all_frames(true);
+        if (enable)
+        {
+            pipeline->set_record_all_frames(true);
+            clip_videograb_changed_signal_(current_clip->get_id(), true);
+        } else
+            std::cout << "Video grabbing was already enabled." << std::endl;
     }
-    //FIXME: This should be a property of Clip, not of Pipeline
-    //TODO: rename pipeline::get_record_all_frames to a better name
-    clip_videograb_changed_signal_(current_clip->get_id(), pipeline->get_record_all_frames());
 }
 
 void Controller::increase_playhead_fps()

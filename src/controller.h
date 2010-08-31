@@ -177,6 +177,12 @@ class Controller
          * Triggers the clip_videograb_changed_signal_
          */
         void toggle_video_grabbing();
+        /**
+         * Enables or not the grabbing of every consecutive frame.
+         *
+         * Triggers the clip_videograb_changed_signal_
+         */
+        void enable_video_grabbing(bool enable);
 
     private:
         Application* owner_;
