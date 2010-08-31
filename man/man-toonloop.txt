@@ -29,24 +29,41 @@ Note that if Toonloop crashes at startup, you should verify that your camera /de
 Toonloop is an interactive software. While it runs, the user can control it using keyboard keys. Here is the list of keystrokes to control Toonloop.
 
 Toonloop interactive keyboard controls :
- - Press the SPACE bar to grab a frame.
+ - Press the SPACE bar to grab a single image.
  - ESC key switches fullscreen mode.
  - DELETE key erases the last captured frame.
- - ctrl-q quits
+ - Ctrl-q quits
  - Page-down to switch to the next clip
  - Page-up to switch to the previous clip
  - Number from 0 to 9 to switch to a specific clip
  - ctrl-s saves the current clip as a movie file
  - period toggles the layout
  - Tab changes the playback direction
- - r: clears the current clip
- - Caps lock: toggle video grabbing
+ - Ctrl-r: clears the current clip.
+ - Caps lock: toggle video grabbing.
 
 [OSC INTERFACE]
 
 Toonloop can send and receive messages using the Open Sound Protocol. 
 
 The list of messages it handles and might send is available in the OSC file that is in the project directory.
+
+
+[MIDI INTERFACE]
+Toonloop can be used with MIDI control devices. Here is the list of controls it supports: 
+
+ - 64: (sustain pedal) Grabs a still image
+ - 80: Grabs video
+ - Program change: choose a clip
+ - 7: (main volume) changes playback speed
+
+The Roland GFC-50 Foot Controller is a nice MIDI device that is useful to
+control Toonloop. The sustain pedal controls single-image grabbing,
+the pedal control number 80 toggles video recording on and off, the
+volume pedal controls the playback speed and the 10 program changes
+select the clip that is currently edited and played back. See
+http://www.bosscorp.co.jp/products/en/GFC-50/ for some information
+about this device.
 
 
 [HISTORY]
