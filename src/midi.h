@@ -23,7 +23,7 @@
 #ifndef _MIDI_H_
 #define _MIDI_H_
 
-#include <boost/signals2.hpp>
+//#include <boost/signals2.hpp>
 #include <stk/RtMidi.h>
 
 class Application;
@@ -39,7 +39,7 @@ class MidiInput
         void enumerate_devices() const;
         static void input_message_cb(double delta_time, std::vector<unsigned char> *message, void *user_data);
         bool is_open() const;
-        boost::signals2::signal<void ()> pedal_down_signal_;
+        //boost::signals2::signal<void ()> pedal_down_signal_;
         bool verbose_;
         void set_verbose(bool verbose);
     private:

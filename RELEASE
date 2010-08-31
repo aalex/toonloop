@@ -5,6 +5,7 @@ This release is an unstable version in the 1.9 series. This version contains new
 
 New features:
     * Video grabbing (can record every incoming frame in a row)
+    * MIDI control 80 controls video grabbing
 
 Bug fixes: 
     * avoid casting NULL to gboolean

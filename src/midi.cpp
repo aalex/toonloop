@@ -21,7 +21,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <stk/RtMidi.h>
-#include <boost/signals2.hpp>
 #include "application.h"
 #include "configuration.h"
 #include "controller.h"
@@ -49,22 +48,17 @@ void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char >
     if (message->size() >= 3)
     {
         if ((int)message->at(1) == 64) // 64: sustain pedal
+        {
             if ((int)message->at(2) == 127) 
-            {
-                if (context->verbose_)
-                    std::cout << "Sustain pedal is down."  << std::endl;
                 context->on_pedal_down();
-                context->pedal_down_signal_();
-            }
-            // we might want pedal up signal too (0)
-        if ((int)message->at(1) == 80) // 80: general-purpose control. The Roland GFC-50 provides an on/off pedal input with that number
+        }
+        else if ((int)message->at(1) == 80) // 80: general-purpose control. The Roland GFC-50 provides an on/off pedal input with that number
+        {
             if ((int)message->at(2) == 127) 
-            {
-                if (context->verbose_)
-                    std::cout << "Pedal #80 is down."  << std::endl;
-                context->on_pedal_down();
-            }
-            // we might want pedal up signal too (0)
+                context->on_ctrl_80_changed(true);
+            else
+                context->on_ctrl_80_changed(false);
+        }
     }
 }
 
