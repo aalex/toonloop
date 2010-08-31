@@ -1,0 +1,41 @@
+ * DONE: Choose whether to use SDL, GTK, GTKglext, wxWidgets, or the generic one in the gst-plugins-gl/tests/examples. (We chose Clutter-GST)
+ * WONTFIX: If we choose Gtkglext, we must port the src/sdlshare.cpp GST-OpenGL prototype to Gtkglext. (or choose something else, but the fullscreen mode in SDL on GNU/Linux is very bad. Maybe we can test the newest SDL to see if it's better.)
+ * DONE: Get the pipeline that takes snapshots with gtkpixbufsink done. 
+ * DONE: prototype: Load images in a gdkpixbuf to create an OpenGL texture and display it.
+ * DONE: creates directories (using boost::filesystem)
+ * DONE: Use boost::program_options in a similar way to Toonloop 1.x. 
+ * DONE: Be able to choose the camera input, or the test source. We had to detect the supported FPS by the camera. 
+ * DONE: Encapsulate the pipeline and the OpenGL rendering in a class.
+ * DONE: Resize render area when window is resized.
+ * DONE: Use GLEW to check for the OpenGL extensions needed to use shaders.
+ * DONE: Save the images in the right directory, with unique names.
+ * DONE: Save image files at snapshot time and play from disk.
+ * DONE: Create an OSC input/output manager in a thread. (using liblo) See  http://bitbucket.org/tmatth/dystophonia
+ * DONE: Drop gst-gl-plugins and use GtkGlext or a drawing area with an OpenGL context**
+ * DONE: Fix the crash due to multiple threads modifying the image data**
+ * DONE: Use GLEW correctly
+ * DONE: Update textures rather than creating new. Use glTexSubImage2D rather than glTexImage2D after the first.
+ * DONE: Support many clips
+ * DONE: Switch between clips with the number keys
+ * DONE: Create a MIDI input manager using RtMidi, which comes with STK.
+ * DONE: Use boost::signals2
+ * DONE: Creating symbolic links to each image file in a temporary directory for the conversion to a movie.
+ * DONE: Get the process manager to call mencoder in a thread, create a clip out of images and tell us when it's done. (see src/subprocess.cpp in branch 2.x and toon/mencoder.py in branch 1.x)
+ * DONE: saving: Use the FPS of the current clip for the saved movie
+ * DONE: saving: use glib's subprocess functions
+ * DONE: saving: Create a directory for movies and one for images, in the project dir.
+ * DONE: osc: Support the --osc-receive-port option
+ * DONE: remove the --keep-in-ram related code
+ * DONE: Use FPS as a speed unit. Skip frames if needed.
+ * DONE: Press '.' to change the graphical theme.
+ * DONE: signals: Pipeline::grab_frame should be called by Controller::add_image
+ * DONE: signals: Create signals for added and removed frames
+ * DONE: Press TAB to change the playback direction.
+ * DONE: Press 'r' to clip the current clip
+ * DONE: osc: cannot validate sending port. Sending OSC is not possible right now.
+ * DONE: osc: Send an OSC message upon frame/clip events, and /toon/playback/begin
+ * DONE: osc: Support the --osc-send-port option
+ * DONE: video: grab video
+ * DONE: edit: Support playback directions: forward, backward, ping-pong
+ * DONE: save: use g_get_tmp_dir
+
