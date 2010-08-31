@@ -51,7 +51,7 @@ void SaverWorker::operator()()
     
     // TODO: create symlinks
     std::string datetime_started = timing::get_iso_datetime_for_now();
-    fs::path directory = fs::path("/tmp/toonloop-" + datetime_started);
+    fs::path directory = fs::path(g_get_tmp_dir()) / fs::path("toonloop-" + datetime_started);
     std::cout << "----------------------------------" << std::endl;
     std::cout << "tmp dir: " << directory.string() << std::endl;
     std::cout << "----------------------------------" << std::endl;

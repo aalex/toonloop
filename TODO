@@ -13,10 +13,8 @@ Right now, here is the list of tasks to prioritize:
 
  * video: support different sizes (currently only 640x480)
  * edit: Support the same writehead-motion editing controls as in version 1.x: left, right, enter
- * edit: Support playback directions: forward, backward, ping-pong
- * video: do not crash if the v4l2 device is busy
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
- * save: use g_get_tmp_dir
+ * video: do not crash if the v4l2 device is busy
 
 
 OSC Messages to implement
@@ -171,3 +169,5 @@ Done
  * DONE: osc: Send an OSC message upon frame/clip events, and /toon/playback/begin
  * DONE: osc: Support the --osc-send-port option
  * DONE: video: grab video
+ * DONE: edit: Support playback directions: forward, backward, ping-pong
+ * DONE: save: use g_get_tmp_dir
