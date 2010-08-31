@@ -40,7 +40,7 @@ bool run_command(std::string command)
         g_warning("Failed to execute command \"%s\", exited: %i, status: %i, stderr: %s, stdout: %s\n", command.c_str(), WIFEXITED(status), WEXITSTATUS(status), stderr_message ? : "", stdout_message ? : "");
     } else {
         g_print("Successfully ran command \"%s\"\n", command.c_str());
-        std::cout << "Its output is : " << stdout_message << std::endl;
+        //std::cout << "Its output is : " << stdout_message << std::endl;
         ret = true;
     }
     if (error)

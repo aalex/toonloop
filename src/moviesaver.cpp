@@ -39,18 +39,18 @@ MovieSaver::MovieSaver() : // const Clip &clip?
 // TODO: store tasks and defer them to later.
 bool MovieSaver::add_saving_task(Clip& clip)
 {
-    std::cout << "MovieSaver::add_saving_task" << std::endl;
+    //std::cout << "MovieSaver::add_saving_task" << std::endl;
     if (is_busy()) {
         std::cout << "The MovieSaver is busy !" << std::endl;
         return false; // failed adding task
     } // else:
     is_busy_ = true;
-    std::cout << "The MovieSaver is available" << std::endl;
+    //std::cout << "The MovieSaver is available" << std::endl;
 
     // gather info about this clip:
     current_task_.clip_id_ = clip.get_id();
     current_task_.fps_ = clip.get_playhead_fps();
-    std::cout << "MovieSaver Clip ID is " << current_task_.clip_id_ << " and it has " << clip.size() << " images" << std::endl;  
+    //std::cout << "MovieSaver Clip ID is " << current_task_.clip_id_ << " and it has " << clip.size() << " images" << std::endl;  
 
     // load image names
     current_task_.image_paths_.clear();
@@ -63,14 +63,14 @@ bool MovieSaver::add_saving_task(Clip& clip)
         // TODO: store the SavingTaskInfo in a struct
         // Will containt the image_paths, file_extension and format, plus the path to the image directory, etc.
         image_path = clip.get_image_full_path(clip.get_image(i));
-        std::cout << "Clip has image " << image_path << std::endl;
+        //std::cout << "Clip has image " << image_path << std::endl;
         current_task_.image_paths_.push_back(image_path);
     }
     //clip.unlock_mutex();
     // See saverworker.h
     //will call worker_.operator()() in a thread 
 
-    std::cout << "Starting thread to save movie #" << current_task_.clip_id_ << std::endl;
+    //std::cout << "Starting thread to save movie #" << current_task_.clip_id_ << std::endl;
     worker_thread_ = boost::thread(worker_);
     return true;
 }
@@ -91,7 +91,7 @@ void MovieSaver::set_result_directory(std::string path)
 bool MovieSaver::is_busy()
 {
     if (is_busy_) {
-        std::cout << "The MovieSaver is busy saving !" << std::endl;
+        //std::cout << "The MovieSaver is busy saving !" << std::endl;
         bool joined = false;
         boost::posix_time::millisec wait_time(0);
         joined = worker_thread_.timed_join(wait_time);
@@ -101,7 +101,7 @@ bool MovieSaver::is_busy()
             is_busy_ = false;
             return false;
         } else {
-            std::cout << "Did not join" << std::endl;
+            std::cout << "The MovieSaver thread did not join. It's still busy." << std::endl;
             return true;
         }
     } else {

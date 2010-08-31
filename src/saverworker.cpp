@@ -45,20 +45,20 @@ void SaverWorker::operator()()
     fps_os << owner_->current_task_.fps_;
     std::string fps = fps_os.str();
     // TODO: image paths and clip id be attribute of this
-    int num_images = owner_->current_task_.image_paths_.size();
-    int clip_id = owner_->current_task_.clip_id_;
-    std::cout << "In the saving thread for clip #" << clip_id << " with " << num_images << " images" << std::endl; // TODO
+    //int num_images = owner_->current_task_.image_paths_.size();
+    //int clip_id = owner_->current_task_.clip_id_;
+    //std::cout << "In the saving thread for clip #" << clip_id << " with " << num_images << " images" << std::endl; // TODO
     
     // TODO: create symlinks
     std::string datetime_started = timing::get_iso_datetime_for_now();
     fs::path directory = fs::path(g_get_tmp_dir()) / fs::path("toonloop-" + datetime_started);
-    std::cout << "----------------------------------" << std::endl;
-    std::cout << "tmp dir: " << directory.string() << std::endl;
-    std::cout << "----------------------------------" << std::endl;
+    //std::cout << "----------------------------------" << std::endl;
+    //std::cout << "tmp dir: " << directory.string() << std::endl;
+    //std::cout << "----------------------------------" << std::endl;
 
     if (!fs::exists(directory)) 
     { 
-        std::cout << "creating directory " << directory.string() << std::endl;
+        //std::cout << "creating directory " << directory.string() << std::endl;
         bool success = fs::create_directory(directory);
         if (!success)
         {
@@ -67,7 +67,7 @@ void SaverWorker::operator()()
             return;
         }
     } else {
-        std::cout << "directory exists" << std::endl;
+        std::cout << "directory " << directory.string() << "already exists" << std::endl;
     }
     int BUFSIZE = 11;
     char buffer[BUFSIZE];
@@ -78,7 +78,7 @@ void SaverWorker::operator()()
         snprintf(buffer, BUFSIZE, "%06d.jpg", i);
         fs::path to_p = fs::path(owner_->current_task_.image_paths_[i]);
         fs::path from_p = directory / fs::path(buffer);
-        std::cout << " $ ln -s " << to_p.string() << " " << from_p.string() << std::endl;
+        //std::cout << " $ ln -s " << to_p.string() << " " << from_p.string() << std::endl;
 
         if (!fs::exists(to_p)) 
         { 
@@ -89,7 +89,7 @@ void SaverWorker::operator()()
             //int error_code = 
             try
             {
-                std::cout << "creating symlink" << std::endl;
+                //std::cout << "creating symlink" << std::endl;
                 fs::create_symlink(to_p, from_p);
             } catch(const fs::filesystem_error &e) {
                 std::cerr << "Error creating symlink: " << e.what() << std::endl;
@@ -98,7 +98,7 @@ void SaverWorker::operator()()
             }
             //if (error_code != 0)
             //    std::cout << "ERROR!" << std::endl;
-            std::cout << "Success creating symlink" << std::endl;
+            //std::cout << "Success creating symlink" << std::endl;
         }
     }
     fs::path output_movie = directory / fs::path("out.mov");
@@ -109,8 +109,8 @@ void SaverWorker::operator()()
     std::string command = std::string("mencoder mf://") + directory.string() + std::string("/*.jpg -quiet -mf w=640:h=480:fps=" + fps + ":type=jpg -ovc lavc -lavcopts vcodec=mjpeg -oac copy -of lavf -lavfopts format=mov -o ") + output_movie.string(); 
     std::cout << "Lauching $ " << command << std::endl;  
     bool ret_val = run_command(command); // blocking call
-    std::cout << "Done with $ " << command << std::endl;
-    std::cout << "Its return value is " << ret_val << std::endl;
+    //std::cout << "Done with $ " << command << std::endl;
+    std::cout << "Mencoder's return value was " << ret_val << std::endl;
     // rename movie file
     std::string final_movie = owner_->get_result_directory() + "/movie-" + datetime_started  + ".mov"; 
     try 
@@ -126,7 +126,7 @@ void SaverWorker::operator()()
     }   
     try
     {
-        std::cout << "remove directory tree" << std::endl;
+        //std::cout << "remove directory tree" << std::endl;
         fs::remove_all(directory);
     } catch(const fs::filesystem_error &e) {
         std::cerr << "Error removing directory tree: " << e.what() << std::endl;
