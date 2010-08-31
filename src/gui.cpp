@@ -93,8 +93,9 @@ void Gui::showCursor()
  * 0, 1, 2, 3, 4, 5, 6, 7, 8, 9: choose a clip
  * Ctrl-q: quit
  * Ctrl-s: save
- * period: toggles the layout
+ * period: toggle the layout
  * Tab: changes the playback direction
+ * Caps_Lock: Toggle video grabbing on/off
  */
 
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
@@ -103,6 +104,18 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
 
     switch (event->keyval)
     {
+        case GDK_Caps_Lock:
+        {
+            if ((event->state & GDK_LOCK_MASK) != 0)
+            {
+                std::cout << "Caps_Lock off" << std::endl;
+                context->owner_->get_controller()->toggle_video_grabbing();
+            } else {
+                std::cout << "Caps_Lock on" << std::endl;
+                context->owner_->get_controller()->toggle_video_grabbing();
+            }
+            break;
+        }
         case GDK_Up:
             context->owner_->get_controller()->increase_playhead_fps();
             break;

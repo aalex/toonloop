@@ -16,7 +16,6 @@ Right now, here is the list of tasks to prioritize:
  * edit: Support playback directions: forward, backward, ping-pong
  * video: do not crash if the v4l2 device is busy
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
- * video: grab video
  * save: use g_get_tmp_dir
 
 
@@ -168,6 +167,7 @@ Done
  * DONE: signals: Create signals for added and removed frames
  * DONE: Press TAB to change the playback direction.
  * DONE: Press 'r' to clip the current clip
- * osc: cannot validate sending port. Sending OSC is not possible right now.
- * osc: Send an OSC message upon frame/clip events, and /toon/playback/begin
- * osc: Support the --osc-send-port option
+ * DONE: osc: cannot validate sending port. Sending OSC is not possible right now.
+ * DONE: osc: Send an OSC message upon frame/clip events, and /toon/playback/begin
+ * DONE: osc: Support the --osc-send-port option
+ * DONE: video: grab video

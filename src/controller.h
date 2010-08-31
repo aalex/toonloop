@@ -96,6 +96,13 @@ class Controller
          * Argument: clip number
          */
         boost::signals2::signal<void (unsigned int)> clip_cleared_signal_;
+
+
+        /**
+         * Called when the auto video grabbing of every frame is toggled.
+         * Arguments: clip number, autograb is enabled
+         */
+        boost::signals2::signal<void (unsigned int, bool)>clip_videograb_changed_signal_;
         /**
          * Adds a frame to the current clip.
          */
@@ -163,6 +170,13 @@ class Controller
          * Triggers the clip_cleared_signal_
          */
         void clear_current_clip();
+
+        /**
+         * Toggles on/off the grabbing of every consecutive frame.
+         *
+         * Triggers the clip_videograb_changed_signal_
+         */
+        void toggle_video_grabbing();
 
     private:
         Application* owner_;

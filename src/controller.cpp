@@ -93,18 +93,18 @@ void Controller::choose_next_clip()
  */
 void Controller::save_current_clip()
 {
-    unsigned int current_clip = owner_->get_current_clip_number();
+    unsigned int current_clip_number = owner_->get_current_clip_number();
     //save_clip(current_clip);
-    std::cout << "Saving clip #" << current_clip << std::endl;
+    std::cout << "Saving clip #" << current_clip_number << std::endl;
     Clip* clip = owner_->get_current_clip();
     if (clip->size() == 0)
     {
-        std::cout << "Clip is empty: #" << current_clip << std::endl;
+        std::cout << "Clip is empty: #" << current_clip_number << std::endl;
         // return false;
     } else {
         owner_->get_movie_saver()->add_saving_task(*clip);
         //TODO: save_clip_signal_ should only be called when done saving.
-        save_clip_signal_(current_clip, "TODO: add file name");
+        save_clip_signal_(current_clip_number, "TODO: add file name");
     }
 }
 
@@ -164,6 +164,22 @@ void Controller::update_playback_image()
             } 
         }
     }
+}
+
+void Controller::toggle_video_grabbing()
+{
+    Pipeline *pipeline = owner_->get_pipeline();
+    Clip *current_clip = owner_->get_current_clip();
+    if (pipeline->get_record_all_frames())
+    {
+        pipeline->set_record_all_frames(false);
+
+    } else {
+        pipeline->set_record_all_frames(true);
+    }
+    //FIXME: This should be a property of Clip, not of Pipeline
+    //TODO: rename pipeline::get_record_all_frames to a better name
+    clip_videograb_changed_signal_(current_clip->get_id(), pipeline->get_record_all_frames());
 }
 
 void Controller::increase_playhead_fps()

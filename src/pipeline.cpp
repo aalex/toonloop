@@ -515,3 +515,8 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
     return capsStr.str();
 }
 
+void Pipeline::set_record_all_frames(bool enable)
+{
+    record_all_frames_enabled_ = enable;
+}
+

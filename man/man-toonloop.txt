@@ -40,6 +40,7 @@ Toonloop interactive keyboard controls :
  - period toggles the layout
  - Tab changes the playback direction
  - r: clears the current clip
+ - Caps lock: toggle video grabbing
 
 [OSC INTERFACE]
 
