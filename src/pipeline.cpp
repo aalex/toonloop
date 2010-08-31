@@ -38,6 +38,51 @@
 //const bool USE_SHADER = false;
 namespace fs = boost::filesystem;
 
+void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg,  gpointer user_data)
+{
+    Pipeline *context = static_cast<Pipeline*>(user_data);
+    switch (GST_MESSAGE_TYPE (msg)) {
+    case GST_MESSAGE_ELEMENT:
+    {
+        const GValue *val;
+        GdkPixbuf *pixbuf = NULL;
+  
+        /* only interested in element messages from our gdkpixbufsink */
+        if (msg->src != GST_OBJECT_CAST(context->gdkpixbufsink_))
+            break;
+  
+        /* only interested in these two messages */
+        if (!gst_structure_has_name(msg->structure, "preroll-pixbuf") &&
+                !gst_structure_has_name(msg->structure, "pixbuf")) 
+        {
+            break;
+        }
+  
+        //g_print("pixbuf\n");
+        val = gst_structure_get_value(msg->structure, "pixbuf");
+        g_return_if_fail(val != NULL);
+  
+        pixbuf = GDK_PIXBUF(g_value_dup_object(val));
+        if (context->get_record_all_frames())
+            context->save_image_to_current_clip(pixbuf);
+        g_object_unref(pixbuf);
+        break;
+    }
+    case GST_MESSAGE_ERROR:
+    {
+        GError *err = NULL;
+        gchar *dbg = NULL;
+        gst_message_parse_error(msg, &err, &dbg);
+        g_error("Error: %s\n%s\n", err->message, (dbg) ? dbg : "");
+        g_error_free(err);
+        g_free(dbg);
+        break;
+    }
+    default:
+        break;
+  }
+}
+
 /**
  * GST bus signal watch callback 
  */
@@ -193,7 +238,8 @@ void Pipeline::stop()
  * This pipeline grabs the video and render the OpenGL.
  */
 Pipeline::Pipeline(Application* owner) :
-        owner_(owner)
+        owner_(owner), 
+        record_all_frames_enabled_(false)
 {
     Configuration *config = owner_->get_configuration();
     //onionskin_texture_ = Texture();
@@ -368,7 +414,7 @@ Pipeline::Pipeline(Application* owner) :
     g_signal_connect(bus, "message::error", G_CALLBACK(end_stream_cb), this);
     g_signal_connect(bus, "message::warning", G_CALLBACK(end_stream_cb), this);
     g_signal_connect(bus, "message::eos", G_CALLBACK(end_stream_cb), this);
-    g_signal_connect(bus, "message::preroll-pixbuf", G_CALLBACK(on_new_live_pixbuf), this);
+    g_signal_connect(bus, "message", G_CALLBACK(bus_message_cb), this);
     gst_object_unref(bus);
 
     // TODO:2010-08-06:aalex:We could rely on gstremer-properties to configure the video source.

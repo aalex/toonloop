@@ -40,17 +40,21 @@ class Pipeline
         ~Pipeline();
         void grab_frame();
         void remove_frame();
+        void save_image_to_current_clip(GdkPixbuf *pixbuf);
+        GstElement* gdkpixbufsink_;
+        void set_record_all_frames(bool enable);
+        bool get_record_all_frames() { return record_all_frames_enabled_; }
     private:
         Application* owner_;
         GstElement* videosrc_;
         GstElement* videosink_;
-        GstElement* gdkpixbufsink_;
         GstPipeline* pipeline_;
         GstState state_;
+        bool record_all_frames_enabled_;
         static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);
         static void on_new_live_pixbuf(GstBus* bus, GstMessage* message, GstElement* pipeline);
         std::string guess_source_caps(unsigned int framerateIndex) const;
-        void save_image_to_current_clip(GdkPixbuf *pixbuf);
+        static void bus_message_cb(GstBus *bus, GstMessage *msg,  gpointer user_data);
 };
 
 #endif // __PIPELINE_H__
