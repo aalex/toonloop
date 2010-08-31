@@ -31,6 +31,13 @@
  * MIDI controller 64 is the sustain pedal controller. It looks like this:
  *   <channel and status> <controller> <value>
  * Where the controller number is 64 and the value is either 0 or 127.
+ *
+ * The MIDI controller 80 is also a pedal on the Roland GFC-50.
+ * It controls video grabbing.
+ *
+ * The program change should allow the user to choose another instrument. 
+ * This way, the Roland GFC-50 allows to select any of ten clips.
+ * The MIDI spec allows for 128 programs, numbered 0-127.
  */
 void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char > *message, void *user_data )
 {
@@ -58,6 +65,13 @@ void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char >
                 context->on_ctrl_80_changed(true);
             else
                 context->on_ctrl_80_changed(false);
+        } 
+    }
+    else if (message->size() >= 2)
+    {
+        if (((int)message->at(0) & 192) == 192)
+        {
+            context->on_program_change((int)message->at(1));
         }
     }
 }
@@ -99,6 +113,17 @@ void MidiInput::on_ctrl_80_changed(bool is_on)
     if (owner_->get_configuration()->get_verbose())
         std::cout << "control #80's value changed:" << is_on << std::endl;
     owner_->get_controller()->enable_video_grabbing(is_on);
+}
+/** Called when the user sends a program change message
+ */
+void MidiInput::on_program_change(int number)
+{
+    if (number >= 10)
+        std::cout << "Cannot choose a clip greater or equal to 10." << std::endl; 
+    else
+    {
+        owner_->get_controller()->choose_clip(number);
+    }
 }
 
 MidiInput::MidiInput(Application* owner) : 

@@ -46,6 +46,7 @@ class MidiInput
         Application *owner_;
         void on_pedal_down();
         void on_ctrl_80_changed(bool is_on);
+        void on_program_change(int number);
         unsigned int port_;
         unsigned int ports_count_;
         RtMidiIn *midi_in_;
