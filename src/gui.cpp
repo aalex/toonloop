@@ -438,7 +438,7 @@ Gui::Gui(Application* owner) :
     // TODO:2010-08-06:aalex:make window size configurable
     gtk_widget_set_size_request(window_, WINWIDTH, WINHEIGHT); 
     gtk_window_move(GTK_WINDOW(window_), 300, 10); // TODO: make configurable
-    gtk_window_set_title(GTK_WINDOW(window_), std::string(std::string("Toonloop ") + std::string(PACKAGE_VERSION)).c_str());
+    gtk_window_set_title(GTK_WINDOW(window_), "Toonloop " PACKAGE_VERSION);
     // Set window icon
     fs::path iconPath(std::string(PIXMAPS_DIR) + "/toonloop.png");
     if (fs::exists(iconPath))
@@ -526,7 +526,7 @@ Gui::Gui(Application* owner) :
  * Called from the Pipeline in order to get the video sink element that allows
  * use to view some GStreamer video on a Clutter actor.
  */
-ClutterActor* Gui::get_live_input_texture()
+ClutterActor* Gui::get_live_input_texture() const
 {
     return live_input_texture_;
 }

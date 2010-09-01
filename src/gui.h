@@ -42,7 +42,7 @@ enum layout_number {
 class Gui
 {
     public:
-        ClutterActor* get_live_input_texture();
+        ClutterActor* get_live_input_texture() const;
         Gui(Application* owner); 
         ~Gui() {};
         void toggleFullscreen() { toggleFullscreen(window_); } // no argument version of the same method below.
