@@ -23,11 +23,11 @@
 #define __GUI_H__
 
 #include <GL/glx.h>
-#include <clutter-gtk/clutter-gtk.h>
 #include <clutter/clutter.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
-#include "application.h"
+
+class Application;
 
 const int WINWIDTH = 640;
 const int WINHEIGHT = 480;
@@ -46,30 +46,30 @@ class Gui
         Gui(Application* owner); 
         ~Gui() {};
         void toggleFullscreen() { toggleFullscreen(window_); } // no argument version of the same method below.
-        ClutterActor *stage_;
-        //FIXME:2010-08-06:aalex:live_input_texture_ should not be public?
-        ClutterActor *live_input_texture_;
-        ClutterActor *playback_texture_;
-        ClutterTimeline *timeline_;
         void resize_actors();
+        void toggleFullscreen(GtkWidget* widget);
+        void makeFullscreen(GtkWidget* widget);
+        void makeUnfullscreen(GtkWidget* widget);
+        layout_number get_layout() const { return current_layout_; }
+        void set_layout(layout_number layout);
+        void toggle_layout();
+    private:
         float video_input_width_;
         float video_input_height_;
-        void on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name);
         Application* owner_;
+        bool isFullscreen_;
+        ClutterActor *stage_;
+        static void on_live_input_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data);
+        void on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name);
         static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer user_data);
         static gboolean key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data);
 
         static int on_window_state_event(_GtkWidget *widget, _GdkEventWindowState *event, gpointer user_data);
 
         static void on_render_frame(ClutterTimeline * timeline, gint msecs, gpointer user_data);
-        void toggleFullscreen(GtkWidget* widget);
-        void makeFullscreen(GtkWidget* widget);
-        void makeUnfullscreen(GtkWidget* widget);
-        bool isFullscreen_;
-        layout_number get_layout() { return current_layout_; }
-        void set_layout(layout_number layout);
-        void toggle_layout();
-    private:
+        ClutterActor *live_input_texture_;
+        ClutterActor *playback_texture_;
+        ClutterTimeline *timeline_;
         GtkWidget *window_;
         GtkWidget *clutter_widget_;
         GtkWidget *vbox_;

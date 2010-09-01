@@ -359,7 +359,8 @@ void Gui::resize_actors() {
  *
  * Makes the live input texture visible. 
  */
-void on_live_input_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data) {
+void Gui::on_live_input_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data) 
+{
     //g_print("on_live_input_texture_size_changed\n");
     Gui *gui = static_cast<Gui*>(user_data);
     gui->video_input_width_ = (float) width;
