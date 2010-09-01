@@ -30,9 +30,9 @@
 class Image 
 {
     public: 
-        Image(std::string name);
+        Image(const std::string &name);
         ~Image();
-        std::string get_name();
+        std::string get_name() const;
     private:
         std::string name_;
 };

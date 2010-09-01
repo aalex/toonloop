@@ -26,17 +26,14 @@
  * This Image class is just a container for a single string value.
  * Its the image saved as JPEG.
  */
-Image::Image(std::string name)
-{
-    name_ = name;
-}
+Image::Image(const std::string &name) : name_(name)
+{}
 
 Image::~Image()
 {
 }
 
-std::string Image::get_name()
+std::string Image::get_name() const
 {
     return name_;
 }
-
