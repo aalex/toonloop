@@ -22,7 +22,8 @@
 #define __COMMANDS_H__
 
 #include <string>
-
-bool run_command(std::string command);
+namespace subprocess {
+    bool run_command(const std::string &command);
+}
 
 #endif // __COMMANDS_H__

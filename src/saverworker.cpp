@@ -108,7 +108,7 @@ void SaverWorker::operator()()
     //  mencoder "mf://*.jpg" -mf fps=5 -o test.avi -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=800
     std::string command = std::string("mencoder mf://") + directory.string() + std::string("/*.jpg -quiet -mf w=640:h=480:fps=" + fps + ":type=jpg -ovc lavc -lavcopts vcodec=mjpeg -oac copy -of lavf -lavfopts format=mov -o ") + output_movie.string(); 
     std::cout << "Lauching $ " << command << std::endl;  
-    bool ret_val = run_command(command); // blocking call
+    bool ret_val = subprocess::run_command(command); // blocking call
     //std::cout << "Done with $ " << command << std::endl;
     std::cout << "Mencoder's return value was " << ret_val << std::endl;
     // rename movie file

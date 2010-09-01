@@ -24,10 +24,12 @@
 #include <glib/gstdio.h>
 #include <glib/gutils.h>
 #include <string>
+#include "subprocess.h"
+
 /**
  * Runs a command synchronously
  */
-bool run_command(std::string command)
+bool subprocess::run_command(const std::string &command)
 {
     GError *error = NULL;
     gint status = 0;
