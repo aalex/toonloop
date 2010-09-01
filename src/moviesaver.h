@@ -45,7 +45,7 @@ class MovieSaver
         MovieSaver();
         bool add_saving_task(Clip& clip);
         bool is_busy();
-        void set_result_directory(std::string path);
+        void set_result_directory(const std::string &path);
         std::string get_result_directory() { return result_directory_; } 
         SavingTask &get_current_task() { return current_task_; };
 

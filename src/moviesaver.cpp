@@ -78,7 +78,7 @@ bool MovieSaver::add_saving_task(Clip& clip)
 /**
  * Called at startup to set output directory for clips.
  */
-void MovieSaver::set_result_directory(std::string path) 
+void MovieSaver::set_result_directory(const std::string &path)
 {
     result_directory_ = path;
 }
