@@ -23,10 +23,8 @@
 #ifndef _MIDI_H_
 #define _MIDI_H_
 
-//#include <boost/signals2.hpp>
-#include <stk/RtMidi.h>
-
 class Application;
+class RtMidiIn;
 
 /** MIDI input using RtMidi allowing a pedal to control frame grabbing.
  */

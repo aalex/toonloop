@@ -102,7 +102,7 @@ void Clip::set_height(unsigned int height)
  */
 unsigned int Clip::frame_add()
 {
-    using namespace std::tr1; // shared_ptr
+    using std::tr1::shared_ptr;
 
     unsigned int assigned = writehead_;
     std::string name = timing::get_iso_datetime_for_now();
@@ -179,40 +179,43 @@ unsigned int Clip::iterate_playhead()
         // clip has at leat 1 of length
         switch (direction_)
         {
-        case DIRECTION_FORWARD:
-            if (playhead_ >= len - 1)
-                playhead_ = 0;
-            else 
-                ++playhead_;
-            break;
-        case DIRECTION_BACKWARD:
-            if (playhead_ == 0)
-                playhead_ = len - 1;
-            else 
-                --playhead_;
-            break;
-        // a slightly more complex type is the yoyo:
-        case DIRECTION_YOYO:
-            if (yoyo_sub_direction_ == DIRECTION_BACKWARD)
-            {
-                if (playhead_ == 0)
-                {
-                    playhead_ = 1;
-                    yoyo_sub_direction_ = DIRECTION_FORWARD;
-                } else 
-                    --playhead_;
-            } else {
+            case DIRECTION_FORWARD:
                 if (playhead_ >= len - 1)
-                {
-                    if (len == 1)
-                        playhead_ = 0;
-                    else
-                        playhead_ = len - 2;
-                    yoyo_sub_direction_ = DIRECTION_BACKWARD;
-                } else 
+                    playhead_ = 0;
+                else 
                     ++playhead_;
-            }
-            break;
+                break;
+            case DIRECTION_BACKWARD:
+                if (playhead_ == 0)
+                    playhead_ = len - 1;
+                else 
+                    --playhead_;
+                break;
+                // a slightly more complex type is the yoyo:
+            case DIRECTION_YOYO:
+                if (yoyo_sub_direction_ == DIRECTION_BACKWARD)
+                {
+                    if (playhead_ == 0)
+                    {
+                        playhead_ = 1;
+                        yoyo_sub_direction_ = DIRECTION_FORWARD;
+                    } else 
+                        --playhead_;
+                } 
+                else 
+                {
+                    if (playhead_ >= len - 1)
+                    {
+                        if (len == 1)
+                            playhead_ = 0;
+                        else
+                            playhead_ = len - 2;
+                        yoyo_sub_direction_ = DIRECTION_BACKWARD;
+                    } 
+                    else 
+                        ++playhead_;
+                }
+                break;
         } // switch
     } // else
     return playhead_;
@@ -220,8 +223,7 @@ unsigned int Clip::iterate_playhead()
 
 unsigned int Clip::size() const
 {
-    int ret = static_cast<unsigned int>(images_.size());
-    return ret;
+    return images_.size();
 }
 
 /**
