@@ -39,6 +39,7 @@ class OscInterface
                 const std::string &send_addr); 
         ~OscInterface();
         void start();
+    private:
         void on_add_frame(unsigned int clip_number, unsigned int frame_number);
         void on_remove_frame(unsigned int clip_number, unsigned int frame_number);
         void on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name);
@@ -51,7 +52,6 @@ class OscInterface
         void on_clip_cleared(unsigned int clip_number);
         OscReceiver receiver_;
         OscSender sender_;
-    private:
         bool sending_enabled_;
         bool receiving_enabled_;
         Application* owner_;
