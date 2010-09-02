@@ -1,12 +1,9 @@
-# ------------ some python files -------
 *.pyc
-# ------------ basic vim files -------
 .*.swp
-# toonloop custom files
 *.1
-
-#---------- cpp files
 *.o
+*.tar.gz
+*.html
 # autoconf generated
 *Makefile.in*
 *Makefile
@@ -51,11 +48,7 @@ tests/check_statesaving
 tests/check_midi
 # TODO:2010-08-05:aalex:How can we avoid automake to create make INSTALL a symlink?
 INSTALL
-*.tar.gz
 src/core
-# misc built files
-proto/spawn
-src/protomidi
 # doxygen stuff
 src/doxyfile
 src/html
