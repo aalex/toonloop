@@ -11,8 +11,13 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
+ * Left:      Play backward
+ * Right:     Play forward
+ * Press the Left arrow to move the write head to the left. (towards the beginning)
+ * Press the Right arrow to move the write head to the right. (towards the end)
+ * Press Return to move the write head to the last frame. (at the end)
+ * playback: allow to play all clips from 0 to 9
  * video: support different sizes (currently only 640x480)
- * edit: Support the same writehead-motion editing controls as in version 1.x: left, right, enter
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
  * video: do not crash if the v4l2 device is busy
  * Pixbuf saving: 
@@ -20,6 +25,8 @@ Right now, here is the list of tasks to prioritize:
    * #2: fork() then call gdk_pixbuf_save() in the child process. Use a pipe to handle the return value in the parent. Probably that the glib mainloop should shut itself down with pthread_atfork(). Look for screenshot_save_start() in gnome-utils/gnome-screenshot/screenshot-save.c
  * edit: Onion skin
  * edit: Allow to capture video at the camera's FPS. (not the clip's playhead only)
+ * saving: Save projects to XML
+ * saving: Load projects from XML
 
 OSC Messages to implement
 -------------------------
@@ -61,16 +68,7 @@ Once those tasks are done, the features to be implemented in branch 2.x are:
  * packaging: Improve STK packaging
  * edit: add an option to delete JPEG images when deleted from a clip
  * edit: support playing back a single clip or all of them
- * press 'p' to pause playback.
- * press 'o' to toggle the onion skinning on/off.
- * Left:      Play backward
- * Right:     Play forward
- * Press 'b' to take a snapshot as the new background image.
  * Press 'n' to select the next effect available.
- * Press the Left arrow to move the write head to the left. (towards the beginning)
- * Press the Right arrow to move the write head to the right. (towards the end)
- * Press Return to move the write head to the last frame. (at the end)
- * playback: allow to play all clips from 0 to 9
 
 
 To be done for version 2.2 : Towards professional features
@@ -90,7 +88,6 @@ To be done for version 2.2 : Towards professional features
  * two onion skin layers
  * Saving improvements. Add a level of indexation. 
  * Background images can be an other clip.
- * Save projects to Json
  * Load images to a clip.
  * Load a movie file to a clip.
  * Save background image when saving a clip.
