@@ -188,6 +188,16 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
                 context->owner_->get_controller()->save_current_clip();
             }
             break;
+        case GDK_a:
+            //std::cout << "Toggle intervalometer." << std::endl; 
+            context->owner_->get_controller()->toggle_intervalometer();
+            break;
+        case GDK_k:
+            context->owner_->get_controller()->increase_intervalometer_rate();
+            break;
+        case GDK_j:
+            context->owner_->get_controller()->decrease_intervalometer_rate();
+            break;
         default:
             break;
     }
