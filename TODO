@@ -18,9 +18,8 @@ Right now, here is the list of tasks to prioritize:
  * Pixbuf saving: 
    * #1: Write the pixbuf to a memory stream and then splice_async() it to the file. 
    * #2: fork() then call gdk_pixbuf_save() in the child process. Use a pipe to handle the return value in the parent. Probably that the glib mainloop should shut itself down with pthread_atfork(). Look for screenshot_save_start() in gnome-utils/gnome-screenshot/screenshot-save.c
- * edit: Intervalometer
  * edit: Onion skin
- * edit: Allow to capture video at the camera's FPS
+ * edit: Allow to capture video at the camera's FPS. (not the clip's playhead only)
 
 OSC Messages to implement
 -------------------------
@@ -135,3 +134,4 @@ Done
 
 See also the doc/DONE document.
 
+ * edit: Intervalometer
