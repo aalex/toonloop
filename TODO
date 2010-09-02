@@ -18,7 +18,9 @@ Right now, here is the list of tasks to prioritize:
  * Pixbuf saving: 
    * #1: Write the pixbuf to a memory stream and then splice_async() it to the file. 
    * #2: fork() then call gdk_pixbuf_save() in the child process. Use a pipe to handle the return value in the parent. Probably that the glib mainloop should shut itself down with pthread_atfork(). Look for screenshot_save_start() in gnome-utils/gnome-screenshot/screenshot-save.c
-
+ * edit: Intervalometer
+ * edit: Onion skin
+ * edit: Allow to capture video at the camera's FPS
 
 OSC Messages to implement
 -------------------------
@@ -59,8 +61,6 @@ Once those tasks are done, the features to be implemented in branch 2.x are:
  * themes: Create a single-image layout, combining the two image with the overlay blending mode.
  * gui: Display information in either a HUD, or a mx GUI in Clutter
  * packaging: Improve STK packaging
- * edit: Intervalometer
- * edit: Onion skin
  * edit: add an option to delete JPEG images when deleted from a clip
  * edit: support playing back a single clip or all of them
  * press 'p' to pause playback.
