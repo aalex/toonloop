@@ -255,3 +255,63 @@ void Controller::clear_current_clip()
     clip_cleared_signal_(current_clip->get_id());
 }
 
+
+void Controller::set_intervalometer_rate(float rate)
+{
+    Clip *current_clip = owner_->get_current_clip();
+    if (rate < 0.0f)
+        rate = 0.0f;
+    current_clip->set_intervalometer_rate(rate);
+    intervalometer_rate_changed_signal_(current_clip->get_id(), current_clip->get_intervalometer_rate());
+}
+
+void Controller::increase_intervalometer_rate()
+{
+    Clip *current_clip = owner_->get_current_clip();
+    float rate = current_clip->get_intervalometer_rate();
+    set_intervalometer_rate(rate + 1.0f);
+}
+
+void Controller::decrease_intervalometer_rate()
+{
+    Clip *current_clip = owner_->get_current_clip();
+    float rate = current_clip->get_intervalometer_rate();
+    if (rate > 1.0f)
+        set_intervalometer_rate(rate - 1.0f);
+    // else Already at its minimum!
+}
+
+void Controller::toggle_intervalometer()
+{
+    Pipeline *pipeline = owner_->get_pipeline();
+    if (pipeline->get_intervalometer_is_on())
+    {
+        enable_intervalometer(false);
+    } else {
+        enable_intervalometer(true);
+    }
+}
+
+void Controller::enable_intervalometer(bool enable)
+{
+    Pipeline *pipeline = owner_->get_pipeline();
+    Clip *current_clip = owner_->get_current_clip();
+    if (pipeline->get_intervalometer_is_on())
+    {
+        if (!enable)
+        {
+            pipeline->set_intervalometer_is_on(false);
+            //FIXME: This should be a property of Clip, not of Pipeline
+            intervalometer_toggled_signal_(current_clip->get_id(), false);
+        } else
+            std::cout << "Video grabbing was already disabled." << std::endl;
+
+    } else {
+        if (enable)
+        {
+            pipeline->set_intervalometer_is_on(true);
+            intervalometer_toggled_signal_(current_clip->get_id(), true);
+        } else
+            std::cout << "Video grabbing was already enabled." << std::endl;
+    }
+}

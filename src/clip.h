@@ -77,6 +77,9 @@ class Clip
         void clear_all_images();
         long get_last_time_grabbed_image() const { return last_time_grabbed_image_; }
         void set_last_time_grabbed_image(const long timestamp);
+        /** The intervalometer speed is in seconds */
+        float get_intervalometer_rate() const { return intervalometer_rate_; }
+        void set_intervalometer_rate(const float rate);
     private:
         unsigned int id_;
         unsigned int playhead_;
@@ -84,6 +87,7 @@ class Clip
         unsigned int width_;
         unsigned int height_;
         unsigned int nchannels_;
+        float intervalometer_rate_;
         clip_direction direction_;
         clip_direction yoyo_sub_direction_;
         //std::vector<int> intervalometer_rate_;

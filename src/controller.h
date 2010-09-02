@@ -103,6 +103,23 @@ class Controller
          * Arguments: clip number, autograb is enabled
          */
         boost::signals2::signal<void (unsigned int, bool)>clip_videograb_changed_signal_;
+
+
+        /**
+         * Called when a clip's intervalometer rate is changed. 
+         *
+         * Arguments: clip number, rate in seconds.
+         */
+        boost::signals2::signal<void (unsigned int, float)> intervalometer_rate_changed_signal_;
+
+        /**
+         * Called when a clip's intervalometer is enabled or not.
+         *
+         * Arguments: clip number, intervalometer is enabled.
+         */
+        boost::signals2::signal<void (unsigned int, bool)> intervalometer_toggled_signal_;
+
+
         /**
          * Adds a frame to the current clip.
          */
@@ -183,6 +200,38 @@ class Controller
          * Triggers the clip_videograb_changed_signal_
          */
         void enable_video_grabbing(bool enable);
+        /**
+         * Toggles on/off the intervalometer
+         *
+         * Triggers the intervalometer_toggled_signal_
+         */
+        void toggle_intervalometer();
+        /**
+         * Enables or not the intervalometer
+         *
+         * Triggers the intervalometer_toggled_signal_
+         */
+        void enable_intervalometer(bool enable);
+
+        /**
+         * Sets the intervalometer rate for the current clip.
+         *
+         * Triggers the intervalometer_rate_changed_signal_
+         */
+        void set_intervalometer_rate(float rate);
+
+        /**
+         * Increases the intervalometer rate for the current clip.
+         *
+         * Triggers the intervalometer_rate_changed_signal_
+         */
+        void increase_intervalometer_rate();
+        /**
+         * Decreases the intervalometer rate for the current clip.
+         *
+         * Triggers the intervalometer_rate_changed_signal_
+         */
+        void decrease_intervalometer_rate();
 
     private:
         Application* owner_;

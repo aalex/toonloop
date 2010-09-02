@@ -44,7 +44,13 @@ Clip::Clip(unsigned int id)
     direction_ = DIRECTION_FORWARD;
     yoyo_sub_direction_ = DIRECTION_FORWARD;
     last_time_grabbed_image_ = 0L;
+    intervalometer_rate_ = 10.0f; // 10 seconds is a reasonable default for a timelapse
     //mutex_;
+}
+
+void Clip::set_intervalometer_rate(const float rate)
+{
+    intervalometer_rate_ = rate;
 }
 
 void Clip::set_last_time_grabbed_image(const long timestamp)

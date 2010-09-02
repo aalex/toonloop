@@ -530,3 +530,8 @@ void Pipeline::set_record_all_frames(bool enable)
     record_all_frames_enabled_ = enable;
 }
 
+void Pipeline::set_intervalometer_is_on(bool enable)
+{
+    intervalometer_is_on_ = enable;
+}
+
