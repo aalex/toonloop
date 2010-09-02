@@ -8,8 +8,7 @@ New features:
     * MIDI control 80 controls video grabbing
     * MIDI program change chooses the current clip
     * MIDI volume control (7) changes the playback speed
-    * Press 'a' to toggle on/off the intervalometer. Best used to create timelapse clips automatically.
-    * Press 'k' or 'j' to increase or decrease the auto recording rate.
+    * Intervalometer
 
 Bug fixes: 
     * avoid casting NULL to gboolean

@@ -96,6 +96,9 @@ void Gui::showCursor()
  * period: toggle the layout
  * Tab: changes the playback direction
  * Caps_Lock: Toggle video grabbing on/off
+ * a: Toggles on/off the intervalometer
+ * k: increase intervalometer interval by 1 second
+ * j: decrease intervalometer interval by 1 second
  */
 
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)

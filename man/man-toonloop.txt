@@ -41,6 +41,9 @@ Toonloop interactive keyboard controls :
  - Tab changes the playback direction
  - Ctrl-r: clears the current clip.
  - Caps lock: toggle video grabbing.
+ - a: Toggles on/off the intervalometer
+ - k: increase intervalometer interval by 1 second
+ - j: decrease intervalometer interval by 1 second
 
 [OSC INTERFACE]
 

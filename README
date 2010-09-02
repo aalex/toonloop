@@ -113,6 +113,9 @@ Ctrl-s             : saves the current clip as a movie file
 Tab                : changes the playback direction
 r                  : clear the current clip
 Caps Lock          : toggle video grabbing
+a                  : Toggles on/off the intervalometer
+k                  : increase intervalometer interval by 1 second
+j                  : decrease intervalometer interval by 1 second
 
 Toonloop saves the clip in its project directory. The default project directory is the ~/Documents/toonloop/default/ directory, where "~" is your HOME directory. 
 
