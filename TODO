@@ -15,6 +15,9 @@ Right now, here is the list of tasks to prioritize:
  * edit: Support the same writehead-motion editing controls as in version 1.x: left, right, enter
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
  * video: do not crash if the v4l2 device is busy
+ * Pixbuf saving: 
+   * #1: Write the pixbuf to a memory stream and then splice_async() it to the file. 
+   * #2: fork() then call gdk_pixbuf_save() in the child process. Use a pipe to handle the return value in the parent. Probably that the glib mainloop should shut itself down with pthread_atfork(). Look for screenshot_save_start() in gnome-utils/gnome-screenshot/screenshot-save.c
 
 
 OSC Messages to implement
