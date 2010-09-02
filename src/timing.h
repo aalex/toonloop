@@ -25,6 +25,9 @@
 
 namespace timing 
 {
+    /** By how much divide timestamp obtained with get_timestamp_now in order to get seconds.
+    */
+    const long TIMESTAMP_PRECISION = 1000000L;
     std::string get_iso_datetime_for_now();
     long get_timestamp_now();
     //float get_time_now();

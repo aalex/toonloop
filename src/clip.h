@@ -75,6 +75,8 @@ class Clip
         std::string get_image_file_extension() const { return ".jpg"; };
         std::string get_image_full_path(Image* image) const;
         void clear_all_images();
+        long get_last_time_grabbed_image() const { return last_time_grabbed_image_; }
+        void set_last_time_grabbed_image(const long timestamp);
     private:
         unsigned int id_;
         unsigned int playhead_;
@@ -96,6 +98,11 @@ class Clip
         //boost::mutex mutex_;
         std::string directory_path_;
         std::string file_extension_;
+        /** Used to store time stamp of when grabbed last image.
+         *
+         * Useful for either the intervalometer, or the video grabbing.
+         */
+        long last_time_grabbed_image_;
 };
 
 #endif // __CLIP_H__

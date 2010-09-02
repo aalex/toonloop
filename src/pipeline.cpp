@@ -63,8 +63,18 @@ void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg,  gpointer user_d
         g_return_if_fail(val != NULL);
   
         pixbuf = GDK_PIXBUF(g_value_dup_object(val));
-        if (context->get_record_all_frames())
-            context->save_image_to_current_clip(pixbuf);
+        if (context->get_record_all_frames()) // if video grabbing is enabled
+        {
+            Clip *current_clip = context->owner_->get_current_clip();
+            long last_time_grabbed = current_clip->get_last_time_grabbed_image();
+            long now = timing::get_timestamp_now();
+            long time_between_frames = long(1.0 / float(current_clip->get_playhead_fps()) * timing::TIMESTAMP_PRECISION);
+            if ((now - last_time_grabbed) > time_between_frames)
+            {
+                context->save_image_to_current_clip(pixbuf);
+                current_clip->set_last_time_grabbed_image(now);
+            }
+        }
         g_object_unref(pixbuf);
         break;
     }

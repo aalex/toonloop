@@ -43,7 +43,13 @@ Clip::Clip(unsigned int id)
     has_recorded_a_frame_ = false;
     direction_ = DIRECTION_FORWARD;
     yoyo_sub_direction_ = DIRECTION_FORWARD;
+    last_time_grabbed_image_ = 0L;
     //mutex_;
+}
+
+void Clip::set_last_time_grabbed_image(const long timestamp)
+{
+    last_time_grabbed_image_ = timestamp;
 }
 
 void Clip::set_directory_path(const std::string &directory_path)
@@ -96,6 +102,7 @@ void Clip::set_height(unsigned int height)
 {
     height_ = height;
 }
+// TODO:2010-09-02:aalex:Maybe Clip::frame_add should take the image file name as argument.
 /**
  * Adds an image to the clip.
  * Returns the its index.
