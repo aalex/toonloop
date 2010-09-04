@@ -9,6 +9,8 @@ New features:
     * MIDI program change chooses the current clip
     * MIDI volume control (7) changes the playback speed
     * Intervalometer
+    * Left:      Play backward
+    * Right:     Play forward
 
 Bug fixes: 
     * avoid casting NULL to gboolean

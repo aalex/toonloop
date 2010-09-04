@@ -11,10 +11,8 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * Left:      Play backward
- * Right:     Play forward
- * Press the Left arrow to move the write head to the left. (towards the beginning)
- * Press the Right arrow to move the write head to the right. (towards the end)
+ * Press the comma (",") to move the write head to the left. (towards the beginning)
+ * Press the dot (".") to move the write head to the right. (towards the end)
  * Press Return to move the write head to the last frame. (at the end)
  * playback: allow to play all clips from 0 to 9
  * video: support different sizes (currently only 640x480)
