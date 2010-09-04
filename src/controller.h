@@ -29,6 +29,7 @@
 #include <boost/bind.hpp>
 #include <boost/signals2.hpp>
 #include <string>
+#include "clip.h" // for clip_direction enum
 
 // Forward declaration
 class Application;
@@ -181,6 +182,12 @@ class Controller
          * Triggers the clip_direction_changed_signal_
          */
         void change_current_clip_direction();
+        /**
+         * Sets the playback direction of the current clip's playhead.
+         *
+         * Triggers the clip_direction_changed_signal_
+         */
+        void set_current_clip_direction(clip_direction direction);
         /**
          * Clears the current clip of all its images.
          *

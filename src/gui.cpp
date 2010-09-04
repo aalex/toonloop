@@ -125,8 +125,12 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
         case GDK_Down:
             context->owner_->get_controller()->decrease_playhead_fps();
             break;
-        //case GDK_Left:
-        //case GDK_Right:
+        case GDK_Left:
+            context->owner_->get_controller()->set_current_clip_direction(DIRECTION_BACKWARD);
+            break;
+        case GDK_Right:
+            context->owner_->get_controller()->set_current_clip_direction(DIRECTION_FORWARD);
+            break;
         case GDK_Tab:
             context->owner_->get_controller()->change_current_clip_direction();
             break;
