@@ -116,7 +116,15 @@ void Clip::set_height(unsigned int height)
 unsigned int Clip::frame_add()
 {
     using std::tr1::shared_ptr;
-
+    if (writehead_ > size())
+    {
+        // Should not occur
+        std::cout << "ERROR: The writehead points to a " <<
+            "non-existing frame index " << writehead_ << " while the clip has only " << 
+            images_.size() << " images." << std::endl;
+        writehead_ = size();
+        std::cout << "Set the writehead position to " << writehead_ << std::endl;
+    }
     unsigned int assigned = writehead_;
     std::string name = timing::get_iso_datetime_for_now();
     //images_.push_back(shared_ptr<Image>(new Image(name)));
@@ -125,6 +133,18 @@ unsigned int Clip::frame_add()
     writehead_++;
     return assigned;
 }
+
+/**
+ * Sets the write head position
+ */
+void Clip::set_writehead(unsigned int new_value)
+{
+    if (new_value > size())
+        writehead_ = size();
+    else
+        writehead_ = new_value;
+}
+
 
 /**
  * Delete an image for the clip.
@@ -142,19 +162,21 @@ unsigned int Clip::frame_remove()
     {
         clear_all_images(); // takes care of writehead_ and playhead_
     }
-    else if (writehead_ > images_.size()) 
-    {
-        std::cout << "Cannot delete a frame since the writehead points to a " <<
-            "non-existing frame index " << writehead_ << " while the clip has only " << 
-        images_.size() << " images." << std::endl;
-        //TODO:2010-08-27:aalex:Move the writehead to the end of clip and erase a frame anyways.
-    } 
     else if (writehead_ == 0)
     {
         std::cout << "Cannot delete a frame since writehead is at 0" << std::endl;
     }
     else 
     {
+        if (writehead_ > images_.size()) 
+        {
+            std::cout << "ERROR: The writehead points to a " <<
+                "non-existing frame index " << writehead_ << " while the clip has only " << 
+                images_.size() << " images." << std::endl;
+            //Move the writehead to the end of clip and erase a frame anyways.
+            writehead_ = size();
+            std::cout << "Set the writehead position to " << writehead_ << std::endl;
+        } 
         std::cout << "Deleting image at position " << (writehead_ - 1) << "/" << (images_.size()  - 1) << std::endl;
         images_.erase(images_.begin() + (writehead_ - 1));
         how_many_deleted = 1;

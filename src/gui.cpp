@@ -93,12 +93,16 @@ void Gui::showCursor()
  * 0, 1, 2, 3, 4, 5, 6, 7, 8, 9: choose a clip
  * Ctrl-q: quit
  * Ctrl-s: save
- * period: toggle the layout
+ * minus: toggle the layout
  * Tab: changes the playback direction
  * Caps_Lock: Toggle video grabbing on/off
  * a: Toggles on/off the intervalometer
  * k: increase intervalometer interval by 1 second
  * j: decrease intervalometer interval by 1 second
+ * period: move writehead to the next image
+ * comma: move writehead to the previous image
+ * slash: move writehead to the last image
+ * semicolon: move writehead to the first image
  */
 
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
@@ -134,7 +138,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
         case GDK_Tab:
             context->owner_->get_controller()->change_current_clip_direction();
             break;
-        case GDK_period:
+        case GDK_minus:
             //TODO:2010-08-27:aalex:Create Controller:toggle_layout
             context->toggle_layout();
             break;
@@ -204,6 +208,18 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             break;
         case GDK_j:
             context->owner_->get_controller()->decrease_intervalometer_rate();
+            break;
+        case GDK_comma:
+            context->owner_->get_controller()->move_writehead_to_previous();
+            break;
+        case GDK_period:
+            context->owner_->get_controller()->move_writehead_to_next();
+            break;
+        case GDK_slash:
+            context->owner_->get_controller()->move_writehead_to_last();
+            break;
+        case GDK_semicolon:
+            context->owner_->get_controller()->move_writehead_to_first();
             break;
         default:
             break;

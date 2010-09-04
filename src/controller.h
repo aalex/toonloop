@@ -121,6 +121,13 @@ class Controller
         boost::signals2::signal<void (unsigned int, bool)> intervalometer_toggled_signal_;
 
 
+        // TODO: the writehead_moved_signal_ should be triggered when we add or remove an image.
+        /**
+         * Called when the writehead position changes
+         *
+         * Arguments: clip number, writehead position.
+         */
+        boost::signals2::signal<void (unsigned int, unsigned int)> writehead_moved_signal_;
         /**
          * Adds a frame to the current clip.
          */
@@ -239,6 +246,36 @@ class Controller
          * Triggers the intervalometer_rate_changed_signal_
          */
         void decrease_intervalometer_rate();
+        /**
+         * Moves the writehead of the current clip to the next image.
+         * 
+         * Triggers the writehead_moved_signal_
+         */
+        void move_writehead_to_next();
+        /**
+         * Moves the writehead of the current clip to the previous image.
+         * 
+         * Triggers the writehead_moved_signal_
+         */
+        void move_writehead_to_previous();
+        /**
+         * Moves the writehead of the current clip to the last image.
+         * 
+         * Triggers the writehead_moved_signal_
+         */
+        void move_writehead_to_last();
+        /**
+         * Moves the writehead of the current clip to its first image.
+         * 
+         * Triggers the writehead_moved_signal_
+         */
+        void move_writehead_to_first();
+        /**
+         * Moves the writehead of the current clip to a given image.
+         * 
+         * Triggers the writehead_moved_signal_
+         */
+        void move_writehead_to(unsigned int position);
 
     private:
         Application* owner_;

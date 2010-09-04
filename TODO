@@ -11,9 +11,7 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * Press the comma (",") to move the write head to the left. (towards the beginning)
- * Press the dot (".") to move the write head to the right. (towards the end)
- * Press Return to move the write head to the last frame. (at the end)
+ * Make sure the keystroke instructions are in only one place.
  * playback: allow to play all clips from 0 to 9
  * video: support different sizes (currently only 640x480)
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
@@ -130,3 +128,6 @@ Done
 See also the doc/DONE document.
 
  * edit: Intervalometer
+ * Press the comma (",") to move the write head to the left. (towards the beginning)
+ * Press the dot (".") to move the write head to the right. (towards the end)
+ * Press slash to move the write head to the last frame. (at the end)

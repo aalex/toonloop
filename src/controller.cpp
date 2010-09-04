@@ -346,3 +346,41 @@ void Controller::enable_intervalometer(bool enable)
             std::cout << "Video grabbing was already enabled." << std::endl;
     }
 }
+
+void Controller::move_writehead_to_next()
+{
+    Clip *current_clip = owner_->get_current_clip();
+    move_writehead_to(current_clip->get_writehead() + 1);
+}
+
+void Controller::move_writehead_to_previous()
+{
+    Clip *current_clip = owner_->get_current_clip();
+    unsigned int current_position = current_clip->get_writehead();
+    if (current_position != 0)
+        move_writehead_to(current_position - 1);
+}
+
+
+void Controller::move_writehead_to_last()
+{
+    Clip *current_clip = owner_->get_current_clip();
+    move_writehead_to(current_clip->size());
+}
+
+
+void Controller::move_writehead_to_first()
+{
+    move_writehead_to(0);
+}
+
+void Controller::move_writehead_to(unsigned int position)
+{
+    Clip *current_clip = owner_->get_current_clip();
+    if (current_clip->get_writehead() != position)
+    {
+        current_clip->set_writehead(position);
+        writehead_moved_signal_(current_clip->get_id(), current_clip->get_writehead());
+    }
+}
+

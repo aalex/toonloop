@@ -277,6 +277,9 @@ Pipeline::Pipeline(Application* owner) :
         record_all_frames_enabled_(false)
 {
     Configuration *config = owner_->get_configuration();
+
+    set_intervalometer_is_on(false);
+    
     //onionskin_texture_ = Texture();
     //playback_texture_ = Texture();
     pipeline_ = NULL;

@@ -56,6 +56,7 @@ class Clip
         Image* get_image(unsigned int index) const;
         unsigned int get_playhead() const;
         unsigned int get_writehead() const;
+        void set_writehead(unsigned int new_value);
         void set_width(unsigned int width);
         void set_height(unsigned int height);
         void set_direction(clip_direction direction) { direction_ = direction; }
