@@ -15,7 +15,6 @@ Right now, here is the list of tasks to prioritize:
  * playback: allow to play all clips from 0 to 9
  * video: support different sizes (currently only 640x480)
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
- * video: do not crash if the v4l2 device is busy
  * Pixbuf saving: 
    * #1: Write the pixbuf to a memory stream and then splice_async() it to the file. 
    * #2: fork() then call gdk_pixbuf_save() in the child process. Use a pipe to handle the return value in the parent. Probably that the glib mainloop should shut itself down with pthread_atfork(). Look for screenshot_save_start() in gnome-utils/gnome-screenshot/screenshot-save.c
@@ -52,6 +51,7 @@ To be done for Version 2.0
 
 Once those tasks are done, the features to be implemented in branch 2.x are:
 
+ * video: do not crash if the v4l2 device is busy
  * API: figure out the best OSC API, as well as the keyboard GUI controls
  * Press 'i' to print current loop frame number, number of frames in loop and global framerate.
  * Press 'h' to show some help 
