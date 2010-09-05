@@ -38,9 +38,10 @@ Commit any pending changes.
  $ ./autogen.sh
  $ ./configure
  $ make
- $ make dist
+ $ make distcheck
 
-Update the version number in configure.ac to the next release to come.
+Create the tag in git.
+Update the version number in configure.ac to the next release to come. Make a new commit. 
 
 
 The RELEASE notes and the NEWS file
