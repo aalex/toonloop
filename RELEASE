@@ -1,4 +1,4 @@
-2010-0?-??: Toonloop 1.9.4
+2010-09-05: Toonloop 1.9.4
 --------------------------
 
 This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. 
@@ -19,5 +19,4 @@ Bug fixes:
     * more private data, fewer public functions
     * pass more string as a const reference, not by value
     * removed some redundant include statements
-
 
