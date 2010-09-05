@@ -147,5 +147,5 @@ You might need to properly configure your V4L2 video device::
 If you use two displays, you might want to use 2 separate X screens::
 
   sudo nvidia-settings
-  DISPLAY=:0.1 ./toonloop.py
+  DISPLAY=:0.1 toonloop --fullscreen
 
