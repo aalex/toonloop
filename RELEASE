@@ -3,6 +3,8 @@
 
 This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. 
 
+Warning: some key strokes to control Toonloop have changed since the 1.9.3 release. See the README, the man page, or the Doxygen-generated documentation about the Gui class for the new keys to controls Toonloop.
+
 New features:
     * Video grabbing (can record every incoming frame in a row, at playback FPS)
     * MIDI control 80 controls video grabbing
