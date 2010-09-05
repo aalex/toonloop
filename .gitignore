@@ -52,3 +52,4 @@ src/core
 # doxygen stuff
 src/doxyfile
 src/html
+toonloop-*.*.*
