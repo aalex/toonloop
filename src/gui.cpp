@@ -116,10 +116,10 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             if ((event->state & GDK_LOCK_MASK) != 0)
             {
                 std::cout << "Caps_Lock off" << std::endl;
-                context->owner_->get_controller()->toggle_video_grabbing();
+                context->owner_->get_controller()->enable_video_grabbing(false);
             } else {
                 std::cout << "Caps_Lock on" << std::endl;
-                context->owner_->get_controller()->toggle_video_grabbing();
+                context->owner_->get_controller()->enable_video_grabbing(true);
             }
             break;
         }
