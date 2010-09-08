@@ -29,6 +29,7 @@
 #include <boost/bind.hpp>
 #include <boost/signals2.hpp>
 #include <string>
+#include "clip.h" // for clip_direction enum
 
 // Forward declaration
 class Application;
@@ -103,6 +104,30 @@ class Controller
          * Arguments: clip number, autograb is enabled
          */
         boost::signals2::signal<void (unsigned int, bool)>clip_videograb_changed_signal_;
+
+
+        /**
+         * Called when a clip's intervalometer rate is changed. 
+         *
+         * Arguments: clip number, rate in seconds.
+         */
+        boost::signals2::signal<void (unsigned int, float)> intervalometer_rate_changed_signal_;
+
+        /**
+         * Called when a clip's intervalometer is enabled or not.
+         *
+         * Arguments: clip number, intervalometer is enabled.
+         */
+        boost::signals2::signal<void (unsigned int, bool)> intervalometer_toggled_signal_;
+
+
+        // TODO: the writehead_moved_signal_ should be triggered when we add or remove an image.
+        /**
+         * Called when the writehead position changes
+         *
+         * Arguments: clip number, writehead position.
+         */
+        boost::signals2::signal<void (unsigned int, unsigned int)> writehead_moved_signal_;
         /**
          * Adds a frame to the current clip.
          */
@@ -165,6 +190,12 @@ class Controller
          */
         void change_current_clip_direction();
         /**
+         * Sets the playback direction of the current clip's playhead.
+         *
+         * Triggers the clip_direction_changed_signal_
+         */
+        void set_current_clip_direction(clip_direction direction);
+        /**
          * Clears the current clip of all its images.
          *
          * Triggers the clip_cleared_signal_
@@ -183,6 +214,68 @@ class Controller
          * Triggers the clip_videograb_changed_signal_
          */
         void enable_video_grabbing(bool enable);
+        /**
+         * Toggles on/off the intervalometer
+         *
+         * Triggers the intervalometer_toggled_signal_
+         */
+        void toggle_intervalometer();
+        /**
+         * Enables or not the intervalometer
+         *
+         * Triggers the intervalometer_toggled_signal_
+         */
+        void enable_intervalometer(bool enable);
+
+        /**
+         * Sets the intervalometer rate for the current clip.
+         *
+         * Triggers the intervalometer_rate_changed_signal_
+         */
+        void set_intervalometer_rate(float rate);
+
+        /**
+         * Increases the intervalometer rate for the current clip.
+         *
+         * Triggers the intervalometer_rate_changed_signal_
+         */
+        void increase_intervalometer_rate();
+        /**
+         * Decreases the intervalometer rate for the current clip.
+         *
+         * Triggers the intervalometer_rate_changed_signal_
+         */
+        void decrease_intervalometer_rate();
+        /**
+         * Moves the writehead of the current clip to the next image.
+         * 
+         * Triggers the writehead_moved_signal_
+         */
+        void move_writehead_to_next();
+        /**
+         * Moves the writehead of the current clip to the previous image.
+         * 
+         * Triggers the writehead_moved_signal_
+         */
+        void move_writehead_to_previous();
+        /**
+         * Moves the writehead of the current clip to the last image.
+         * 
+         * Triggers the writehead_moved_signal_
+         */
+        void move_writehead_to_last();
+        /**
+         * Moves the writehead of the current clip to its first image.
+         * 
+         * Triggers the writehead_moved_signal_
+         */
+        void move_writehead_to_first();
+        /**
+         * Moves the writehead of the current clip to a given image.
+         * 
+         * Triggers the writehead_moved_signal_
+         */
+        void move_writehead_to(unsigned int position);
 
     private:
         Application* owner_;

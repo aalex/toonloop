@@ -56,6 +56,7 @@ class Clip
         Image* get_image(unsigned int index) const;
         unsigned int get_playhead() const;
         unsigned int get_writehead() const;
+        void set_writehead(unsigned int new_value);
         void set_width(unsigned int width);
         void set_height(unsigned int height);
         void set_direction(clip_direction direction) { direction_ = direction; }
@@ -75,6 +76,11 @@ class Clip
         std::string get_image_file_extension() const { return ".jpg"; };
         std::string get_image_full_path(Image* image) const;
         void clear_all_images();
+        long get_last_time_grabbed_image() const { return last_time_grabbed_image_; }
+        void set_last_time_grabbed_image(const long timestamp);
+        /** The intervalometer speed is in seconds */
+        float get_intervalometer_rate() const { return intervalometer_rate_; }
+        void set_intervalometer_rate(const float rate);
     private:
         unsigned int id_;
         unsigned int playhead_;
@@ -82,6 +88,7 @@ class Clip
         unsigned int width_;
         unsigned int height_;
         unsigned int nchannels_;
+        float intervalometer_rate_;
         clip_direction direction_;
         clip_direction yoyo_sub_direction_;
         //std::vector<int> intervalometer_rate_;
@@ -96,6 +103,11 @@ class Clip
         //boost::mutex mutex_;
         std::string directory_path_;
         std::string file_extension_;
+        /** Used to store time stamp of when grabbed last image.
+         *
+         * Useful for either the intervalometer, or the video grabbing.
+         */
+        long last_time_grabbed_image_;
 };
 
 #endif // __CLIP_H__

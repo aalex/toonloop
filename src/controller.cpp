@@ -223,6 +223,7 @@ void Controller::set_playhead_fps(unsigned int fps)
     current_clip->set_playhead_fps(fps);
     clip_fps_changed_signal_(current_clip->get_id(), current_clip->get_playhead_fps());
 }
+
 void Controller::change_current_clip_direction()
 {
     Clip *current_clip = owner_->get_current_clip();
@@ -248,10 +249,138 @@ void Controller::change_current_clip_direction()
     clip_direction_changed_signal_(current_clip->get_id(), signal_arg);
 }
 
+void Controller::set_current_clip_direction(clip_direction direction)
+{
+    Clip *current_clip = owner_->get_current_clip();
+    clip_direction current = current_clip->get_direction();
+    if (current != direction)
+    {
+        clip_direction change_to = DIRECTION_FORWARD; // default
+        //TODO: the clip_direction_changed_signal should accept a constant, not a string
+        // That will be way simpler
+        std::string signal_arg = "FORWARD";
+        switch (current)
+        {
+            case DIRECTION_FORWARD:
+                change_to = DIRECTION_BACKWARD;
+                signal_arg = "BACKWARD";
+                break;
+            case DIRECTION_BACKWARD:
+                change_to = DIRECTION_YOYO;
+                signal_arg = "YOYO";
+                break;
+            case DIRECTION_YOYO:
+                change_to = DIRECTION_FORWARD;
+                signal_arg = "FORWARD";
+                break;
+        }
+        current_clip->set_direction(change_to);
+        clip_direction_changed_signal_(current_clip->get_id(), signal_arg);
+    }
+}
+
 void Controller::clear_current_clip()
 {
     Clip *current_clip = owner_->get_current_clip();
     current_clip->clear_all_images();
     clip_cleared_signal_(current_clip->get_id());
+}
+
+
+void Controller::set_intervalometer_rate(float rate)
+{
+    Clip *current_clip = owner_->get_current_clip();
+    if (rate < 0.0f)
+        rate = 0.0f;
+    current_clip->set_intervalometer_rate(rate);
+    intervalometer_rate_changed_signal_(current_clip->get_id(), current_clip->get_intervalometer_rate());
+}
+
+void Controller::increase_intervalometer_rate()
+{
+    Clip *current_clip = owner_->get_current_clip();
+    float rate = current_clip->get_intervalometer_rate();
+    set_intervalometer_rate(rate + 1.0f);
+}
+
+void Controller::decrease_intervalometer_rate()
+{
+    Clip *current_clip = owner_->get_current_clip();
+    float rate = current_clip->get_intervalometer_rate();
+    if (rate > 1.0f)
+        set_intervalometer_rate(rate - 1.0f);
+    // else Already at its minimum!
+}
+
+void Controller::toggle_intervalometer()
+{
+    Pipeline *pipeline = owner_->get_pipeline();
+    if (pipeline->get_intervalometer_is_on())
+    {
+        enable_intervalometer(false);
+    } else {
+        enable_intervalometer(true);
+    }
+}
+
+void Controller::enable_intervalometer(bool enable)
+{
+    Pipeline *pipeline = owner_->get_pipeline();
+    Clip *current_clip = owner_->get_current_clip();
+    if (pipeline->get_intervalometer_is_on())
+    {
+        if (!enable)
+        {
+            pipeline->set_intervalometer_is_on(false);
+            //FIXME: This should be a property of Clip, not of Pipeline
+            intervalometer_toggled_signal_(current_clip->get_id(), false);
+        } else
+            std::cout << "Video grabbing was already disabled." << std::endl;
+
+    } else {
+        if (enable)
+        {
+            pipeline->set_intervalometer_is_on(true);
+            intervalometer_toggled_signal_(current_clip->get_id(), true);
+        } else
+            std::cout << "Video grabbing was already enabled." << std::endl;
+    }
+}
+
+void Controller::move_writehead_to_next()
+{
+    Clip *current_clip = owner_->get_current_clip();
+    move_writehead_to(current_clip->get_writehead() + 1);
+}
+
+void Controller::move_writehead_to_previous()
+{
+    Clip *current_clip = owner_->get_current_clip();
+    unsigned int current_position = current_clip->get_writehead();
+    if (current_position != 0)
+        move_writehead_to(current_position - 1);
+}
+
+
+void Controller::move_writehead_to_last()
+{
+    Clip *current_clip = owner_->get_current_clip();
+    move_writehead_to(current_clip->size());
+}
+
+
+void Controller::move_writehead_to_first()
+{
+    move_writehead_to(0);
+}
+
+void Controller::move_writehead_to(unsigned int position)
+{
+    Clip *current_clip = owner_->get_current_clip();
+    if (current_clip->get_writehead() != position)
+    {
+        current_clip->set_writehead(position);
+        writehead_moved_signal_(current_clip->get_id(), current_clip->get_writehead());
+    }
 }
 

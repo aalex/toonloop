@@ -1,3 +1,317 @@
+commit d6922b058e0067d574d6ec97a3cdc23a0526483a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Sep 4 18:38:34 2010 -0400
+
+    edited TODO
+
+commit 3d1d9347f3a23790f4e4808f26cf4ee83d1584ee
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Sep 4 18:31:15 2010 -0400
+
+    Implemented writehead motion controls
+
+commit 4136af568908f8ef8cd75fdbd059d1e8f18b7bed
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Sep 4 17:11:43 2010 -0400
+
+    updated RELEASE and TODO
+
+commit c735f09cd7a47b90147ef0e632cce3cede514c0a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Sep 4 17:02:17 2010 -0400
+
+    left and right changes clip playback direction
+
+commit 6270e66b962b5aadd00fc3cca7bbe0fba35a4deb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Sep 2 17:23:48 2010 -0400
+
+    updated TODO
+
+commit fcc03a7a36ad936d0192a683cb7b71fb2f11e006
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Sep 2 03:09:17 2010 -0400
+
+    updated TODO
+
+commit b39290011f113575ace4de1102717ae5e24d62de
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Sep 2 03:08:12 2010 -0400
+
+    updated doc about the intervalometer
+
+commit d2fbaf59c13a480f4b209c9a84f251aad2d32893
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Sep 2 03:06:09 2010 -0400
+
+    Intervalometer works!
+
+commit fb578368e72ebef749966eb6ced058395eaf496b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Sep 2 02:53:19 2010 -0400
+
+    towards an intervalometer
+
+commit 9552b75b5af01252a73e4e3c1973fb4ec4e8a633
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Sep 2 01:34:11 2010 -0400
+
+    updated TODO and RELEASE
+
+commit c58485bad9d48c0d24bb4bfd65df70c1f7fca395
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Sep 2 01:16:54 2010 -0400
+
+    updated TODO
+
+commit 443a2b709a9c53b8511447493872d0f1578b5a16
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Sep 2 01:05:22 2010 -0400
+
+    recording at playback FPS
+
+commit d528948e4112d538ed202cb1fa427e14acae0155
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Sep 2 00:47:44 2010 -0400
+
+    updated .gitignore
+
+commit 28ae501291b9f0cf330feef388b0d05ba46aab33
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Sep 1 16:33:38 2010 -0400
+
+    timing: removed redundant include statement
+
+commit 1cf1ccd58d487ceca944d2943f36615bae4a7156
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Sep 1 16:16:24 2010 -0400
+
+    oscinterface: no public data, fewer public functions
+    
+    made oscreceiver_ and oscsender_ private
+
+commit 62bd57c05b46307ca7ec4363d997e410ae40e1cc
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Sep 1 16:13:48 2010 -0400
+
+    subprocess: put run_command in own namespace
+    
+    keep it out of the global namespace
+
+commit ce2b65d94619090e2c4a0439e3acfeeb2a152c0f
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Sep 1 16:10:26 2010 -0400
+
+    moviesaver: pass string by const reference, not by value
+
+commit 3c31caafcb021d695f126ea9b95139ea5da69c2d
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Sep 1 16:02:19 2010 -0400
+
+    midi, clip: cleanup
+    
+    midi: use forward declaration
+    clip: removed extraneous static cast, reindented switch statement
+
+commit cc9f36f14e56c3bc1974d7c7da4f92eb95f91cfa
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Sep 1 15:27:49 2010 -0400
+
+    gui: simplify window-title assignment
+
+commit 4b9c9188605ed5492ccf8934936ac76fbd7df41a
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Sep 1 15:25:13 2010 -0400
+
+    gui: no more private data, fewer public functions
+
+commit 22433684c310636312731926927a099bdabd42d1
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Sep 1 15:14:19 2010 -0400
+
+    image: pass string as a const reference
+
+commit 5cff504de89f93d77b7bf5aa312e108fc2c65626
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 31 16:38:01 2010 -0400
+
+    the the
+
+commit 9996134dc42563c2670504d000ba9b154a240023
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 31 08:26:10 2010 -0400
+
+    updated man page
+
+commit 91a561b4667e0d5222dbd01360b70495f4f5bb01
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 31 02:35:30 2010 -0400
+
+    MIDI volume pedal changes playback speed
+
+commit 306039ea6b6c9a44882b14681f095b8f86f3cfe5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 31 02:13:38 2010 -0400
+
+    MIDI program change chooses the clip
+
+commit 7dd399c2a7aa54613a61a418daa27aa1cd18a2d8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 31 01:47:04 2010 -0400
+
+    MIDI control 80 controls video grabbing
+
+commit ddbcc32f8625d9ed0e1e885b61d1b1c7cfc85566
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 31 01:41:21 2010 -0400
+
+    MIDI Control 80 toggles video grabbing on/off
+
+commit f763da17e2ad3e99c60b6d7b30ec9e6582dd41dd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 31 01:40:45 2010 -0400
+
+    made saving less verbose
+
+commit 1a0d7c2ef134f344cb98ed06b76b745997b8caea
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 31 01:11:14 2010 -0400
+
+    adding doc/DONE
+
+commit 4dbabdf94ece67628267fbf8cafc9617a104ae01
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 31 01:06:04 2010 -0400
+
+    use g_get_tmp_dir()
+
+commit d8b840976e1884a6c9dd7beaed74ada749b56f01
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 31 01:01:46 2010 -0400
+
+    updated doc
+
+commit 73619168ee2c390c2f0ea39673bc4dd294bd591b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 31 00:52:54 2010 -0400
+
+    auto video grabbing works
+
+commit 41aea8c7e15e55387583cd5da2d9be84f89d412c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 31 00:12:43 2010 -0400
+
+    get the pixbuf on each frame
+
+commit 952075ee27837015519de81f4870452c8b0c78e2
+Merge: c79e208 ad44de7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 30 23:53:42 2010 -0400
+
+    Merge branch 'master' into video
+
+commit ad44de7a06ab691931f05c3e7604744a1268e054
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 30 12:39:59 2010 -0400
+
+    avoid casting NULL to gboolean
+
+commit 9ebe02f16e44ee45de78a8da01b996463157f69e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 30 12:36:48 2010 -0400
+
+    updated TODO
+
+commit e2f053e5a11c59d10d0fb71f89ac8da0fafbd863
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 29 22:53:38 2010 -0400
+
+    updated TODO
+
+commit c79e2085a7bb919202b9371aa942c2125670730a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 29 22:52:22 2010 -0400
+
+    Trying to get the bus pixbuf message
+
+commit 2f1ce70833bd77e66754b077adb4e8651f8346b1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Aug 29 17:50:02 2010 -0400
+
+    added Pipeline:save_image_to_current_clip
+
+commit 288d8305ba219e03047791bdc780c0a800097954
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Aug 28 01:27:08 2010 -0400
+
+    made the private members visible in doxygen
+
+commit 476e3c5da9f7d208f892b140dee289ae043a223f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Aug 28 01:09:31 2010 -0400
+
+    Simplified the name in .desktop file
+
+commit ba2afe3d18ed5ea27b470f22ed6e9cdd94dccc24
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 23:39:10 2010 -0400
+
+    more stuff in TODO
+
+commit b7276d9501fbcd3b51c11b8e1862f7776d10193e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 23:14:52 2010 -0400
+
+    fixed some lintian warnings
+
+commit 9a50ae6247b5bd86dcaa863d88729e3ebbaf2cd8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 21:53:39 2010 -0400
+
+    updated to 1.9.4 - not yet released
+
+commit a7317cd5f22f5f75c7c2be3ec294521cba33907c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 21:51:03 2010 -0400
+
+    updated RELEASE
+
+commit 0909f1e51d96eff7b174d709b5538309b74ef33d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 21:49:36 2010 -0400
+
+    Fixed the error with playhead when a frame was removed
+
+commit c8ccb19a76fd692ec886f65e34069122f9d229e9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 21:39:35 2010 -0400
+
+    updated README
+
+commit d80e19512a25ad200097475f3b017aec23c0a465
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 21:39:01 2010 -0400
+
+    updated TODO
+
+commit 65ca618423e00d2a9c5220534b260124edb5847c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 21:37:35 2010 -0400
+
+    Deleting some prototypes and a small script
+
+commit deccb320000659795f87660f8c61d7835b0006f5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 21:33:45 2010 -0400
+
+    got rid of the meyer singleton pattern
+
+commit 8501e38f87035073f8b9475e7770995a191c0170
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 27 21:26:19 2010 -0400
+
+    Added many OSC methods and fixed the crash when deleting frame sometimes
+
 commit 1ba720f36de953e65dfac6bbfdd5a78d141cfe03
 Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Fri Aug 27 19:39:34 2010 -0400

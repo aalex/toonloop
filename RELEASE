@@ -1,18 +1,11 @@
-2010-0?-??: Toonloop 1.9.4
+2010-0?-??: Toonloop 1.9.5
 --------------------------
 
 This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. 
 
 New features:
-    * Video grabbing (can record every incoming frame in a row)
-    * MIDI control 80 controls video grabbing
-    * MIDI program change chooses the current clip
-    * MIDI volume control (7) changes the playback speed
+    * 
 
 Bug fixes: 
-    * avoid casting NULL to gboolean
-    * use g_get_tmp_dir instead of "/tmp"
-
-Know bugs:
-    * The user cannot use gstreamer-properties to choose a camera, but must provide a command-line argument to Toonloop.
+    * 
 

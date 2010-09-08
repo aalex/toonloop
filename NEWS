@@ -1,6 +1,31 @@
 See the RELEASE file for the latest new features and bug fixes.
 See the ChangeLog file for a log of previous releases informations.
 
+2010-09-05: Toonloop 1.9.4
+--------------------------
+
+This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. 
+
+Warning: some key strokes to control Toonloop have changed since the 1.9.3 release. See the README, the man page, or the Doxygen-generated documentation about the Gui class for the new keys to controls Toonloop.
+
+New features:
+    * Video grabbing (can record every incoming frame in a row, at playback FPS)
+    * MIDI control 80 controls video grabbing
+    * MIDI program change chooses the current clip
+    * MIDI volume control (7) changes the playback speed
+    * Intervalometer
+    * Left:      Play backward
+    * Right:     Play forward
+
+Bug fixes: 
+    * avoid casting NULL to gboolean
+    * use g_get_tmp_dir instead of "/tmp"
+    * gui: simplify string handling for window-title assignment
+    * more private data, fewer public functions
+    * pass more string as a const reference, not by value
+    * removed some redundant include statements
+
+
 2010-08-27: Toonloop 1.9.3
 --------------------------
 

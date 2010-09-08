@@ -38,6 +38,13 @@
 //const bool USE_SHADER = false;
 namespace fs = boost::filesystem;
 
+/**
+ * Called every time there is a message on the GStreamer pipeline's bus.
+ *
+ * We are mostly interested in the new pixbug message.
+ * In that case, checks if the video recording or the intervalometer is enabled. 
+ * If so, grabs an image if it's time to do so.
+ */
 void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg,  gpointer user_data)
 {
     Pipeline *context = static_cast<Pipeline*>(user_data);
@@ -63,8 +70,39 @@ void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg,  gpointer user_d
         g_return_if_fail(val != NULL);
   
         pixbuf = GDK_PIXBUF(g_value_dup_object(val));
-        if (context->get_record_all_frames())
-            context->save_image_to_current_clip(pixbuf);
+        if (context->get_record_all_frames() || context->get_intervalometer_is_on()) // if video grabbing is enabled
+        {
+            Clip *current_clip = context->owner_->get_current_clip();
+            long last_time_grabbed = current_clip->get_last_time_grabbed_image();
+            long now = timing::get_timestamp_now();
+            bool must_grab_now = false;
+            // VIDEO RECORDING:
+            if (context->get_record_all_frames())
+            {
+                std::cout << "Video grabbing is on." << std::endl; 
+                long time_between_frames = long(1.0 / float(current_clip->get_playhead_fps()) * timing::TIMESTAMP_PRECISION);
+                std::cout << "now=" << now << " last_time_grabbed=" << last_time_grabbed << " time_between_frames" << time_between_frames << std::endl;
+                if ((now - last_time_grabbed) > time_between_frames)
+                {
+                    must_grab_now = true;
+                }
+            } // not mutually exclusive - why not have both on?
+            // INTERVALOMETER:
+            if (context->get_intervalometer_is_on())
+            {
+                long time_between_intervalometer_ticks = long(current_clip->get_intervalometer_rate() * timing::TIMESTAMP_PRECISION);
+                if ((now - last_time_grabbed) > time_between_intervalometer_ticks)
+                {
+                    must_grab_now = true;
+                }
+            }
+            if (must_grab_now)
+            {
+                std::cout << "Grabbing an image" << std::endl;
+                context->save_image_to_current_clip(pixbuf);
+                current_clip->set_last_time_grabbed_image(now);
+            }
+        }
         g_object_unref(pixbuf);
         break;
     }
@@ -242,6 +280,9 @@ Pipeline::Pipeline(Application* owner) :
         record_all_frames_enabled_(false)
 {
     Configuration *config = owner_->get_configuration();
+
+    set_intervalometer_is_on(false);
+    
     //onionskin_texture_ = Texture();
     //playback_texture_ = Texture();
     pipeline_ = NULL;
@@ -518,5 +559,10 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
 void Pipeline::set_record_all_frames(bool enable)
 {
     record_all_frames_enabled_ = enable;
+}
+
+void Pipeline::set_intervalometer_is_on(bool enable)
+{
+    intervalometer_is_on_ = enable;
 }
 

@@ -37,10 +37,17 @@ Toonloop interactive keyboard controls :
  - Page-up to switch to the previous clip
  - Number from 0 to 9 to switch to a specific clip
  - ctrl-s saves the current clip as a movie file
- - period toggles the layout
+ - minus toggles the layout
  - Tab changes the playback direction
  - Ctrl-r: clears the current clip.
  - Caps lock: toggle video grabbing.
+ - a: Toggles on/off the intervalometer
+ - k: increase intervalometer interval by 1 second
+ - j: decrease intervalometer interval by 1 second
+ - period: move writehead to the next image
+ - comma: move writehead to the previous image
+ - slash: move writehead to the last image
+ - semicolon: move writehead to the first image
 
 [OSC INTERFACE]
 
