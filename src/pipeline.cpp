@@ -418,9 +418,9 @@ Pipeline::Pipeline(Application* owner) :
     gst_object_unref(bus);
 
     // TODO:2010-08-06:aalex:We could rely on gstremer-properties to configure the video source.
-    if (config->videoSource() != std::string("test") && config->videoSource() != std::string("x"))
+    if (config->videoSource() != "test" and config->videoSource() != "x")
     {
-        std::string device_name = config->videoSource(); // "/dev/video0";
+        std::string device_name(config->videoSource()); // "/dev/video0";
         g_print("Using camera %s.\n", device_name.c_str());
         g_object_set(videosrc_, "device", device_name.c_str(), NULL); 
     }
