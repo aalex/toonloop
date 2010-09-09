@@ -11,6 +11,7 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
+ * Auto-record video sometimes doesn't work
  * Make sure the keystroke instructions are in only one place.
  * playback: allow to play all clips from 0 to 9
  * video: support different sizes (currently only 640x480)
