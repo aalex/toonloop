@@ -34,6 +34,7 @@ const int WINHEIGHT = 480;
 
 enum layout_number {
     LAYOUT_SPLITSCREEN,
+    LAYOUT_OVERLAY,
     LAYOUT_PLAYBACK_ONLY
 };
 

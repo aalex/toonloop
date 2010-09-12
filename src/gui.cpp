@@ -377,12 +377,21 @@ void Gui::resize_actors() {
         gfloat playback_tex_y = (stage_height / 4);
         clutter_actor_set_position(CLUTTER_ACTOR(playback_texture_), playback_tex_x, playback_tex_y);
         clutter_actor_set_size(CLUTTER_ACTOR(playback_texture_), playback_tex_width, playback_tex_height);
+        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
     } else if (current_layout_ == LAYOUT_PLAYBACK_ONLY) {
 
         clutter_actor_set_position(CLUTTER_ACTOR(playback_texture_), set_x, set_y);
         clutter_actor_set_size(CLUTTER_ACTOR(playback_texture_), set_width, set_height);
+        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
+    } else if (current_layout_ == LAYOUT_OVERLAY) {
+
+        clutter_actor_set_position(CLUTTER_ACTOR(playback_texture_), set_x, set_y);
+        clutter_actor_set_size(CLUTTER_ACTOR(playback_texture_), set_width, set_height);
+        clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), set_x, set_y);
+        clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), set_width, set_height);
+        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 100);
     } else {
-        std::cout << "Invlalid layout" << std::endl; // should not occur...
+        std::cout << "ERROR: Invalid layout" << std::endl; // should not occur...
     }
 }
 /**
@@ -410,11 +419,16 @@ void Gui::on_live_input_texture_size_changed(ClutterTexture *texture, gfloat wid
 }
 
 /**
- * Toggles the layout
+ * Toggles the layout.
  */
 void Gui::toggle_layout()
 {
-    current_layout_ == LAYOUT_PLAYBACK_ONLY ? set_layout(LAYOUT_SPLITSCREEN) : set_layout(LAYOUT_PLAYBACK_ONLY);
+    if (current_layout_ == LAYOUT_PLAYBACK_ONLY)
+        set_layout(LAYOUT_SPLITSCREEN);
+    else if (current_layout_ == LAYOUT_SPLITSCREEN)
+        set_layout(LAYOUT_OVERLAY);
+    else if (current_layout_ == LAYOUT_OVERLAY)
+        set_layout(LAYOUT_PLAYBACK_ONLY);
 }
 /**
  * Sets the current layout.
@@ -540,6 +554,7 @@ Gui::Gui(Application* owner) :
 
     clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_texture_));
+    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_), NULL);
   
     gtk_widget_show_all(window_);
 
