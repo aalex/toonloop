@@ -110,7 +110,8 @@ void SaverWorker::operator()()
     std::cout << "Lauching $ " << command << std::endl;  
     bool ret_val = subprocess::run_command(command); // blocking call
     //std::cout << "Done with $ " << command << std::endl;
-    std::cout << "Mencoder's return value was " << ret_val << std::endl;
+    if (ret_val != 0)
+        std::cout << "Mencoder's return value was " << ret_val << std::endl;
     // rename movie file
     std::string final_movie = owner_->get_result_directory() + "/movie-" + datetime_started  + ".mov"; 
     try 

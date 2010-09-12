@@ -97,7 +97,7 @@ bool MovieSaver::is_busy()
         joined = worker_thread_.timed_join(wait_time);
         if (joined)
         {
-            std::cout << "The MovieSaver thread joined" << std::endl;
+            // std::cout << "The MovieSaver thread joined" << std::endl;
             is_busy_ = false;
             return false;
         } else {

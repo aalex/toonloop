@@ -42,7 +42,8 @@ namespace fs = boost::filesystem;
 void Gui::set_overlay_opacity(int value)
 {
     overlay_opacity_ = value;
-    std::cout << "overlay opacity: " << overlay_opacity_ << std::endl;
+    if (owner_->get_configuration()->get_verbose())
+        std::cout << "overlay opacity: " << overlay_opacity_ << std::endl;
     if (current_layout_ == LAYOUT_OVERLAY)
         clutter_actor_set_opacity(CLUTTER_ACTOR(playback_texture_), overlay_opacity_);
 }
