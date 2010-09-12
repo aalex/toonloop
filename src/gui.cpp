@@ -582,6 +582,13 @@ Gui::Gui(Application* owner) :
     clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_texture_));
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_texture_), NULL);
+    
+    // TEXT
+
+    info_text_actor_ = clutter_text_new_with_text("", "Sans 16pt");
+    update_info_text();
+    clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_));
+    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_), NULL);
   
     gtk_widget_show_all(window_);
 
@@ -590,9 +597,15 @@ Gui::Gui(Application* owner) :
      * will call show on the stage.
      */
     clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
-    //clutter_actor_show_all(CLUTTER_ACTOR(playback_texture_));
+    clutter_actor_show_all(CLUTTER_ACTOR(playback_texture_));
+    clutter_actor_show_all(CLUTTER_ACTOR(info_text_actor_));
     if (owner_->get_configuration()->get_fullscreen())
         toggleFullscreen(window_);
+}
+
+void Gui::update_info_text()
+{
+    clutter_text_set_text(CLUTTER_TEXT(info_text_actor_), "Toonloop " PACKAGE_VERSION "\n");
 }
 
 /**

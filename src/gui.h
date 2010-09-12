@@ -71,12 +71,14 @@ class Gui
         void set_overlay_opacity(int value);
         ClutterActor *live_input_texture_;
         ClutterActor *playback_texture_;
+        ClutterActor *info_text_actor_;
         ClutterTimeline *timeline_;
         GtkWidget *window_;
         GtkWidget *clutter_widget_;
         GtkWidget *vbox_;
         void hideCursor();
         void showCursor();
+        void update_info_text();
         layout_number current_layout_;
         // TODO: overlay_opacity_ might disappear when we switch to an actual overlay blending mode
         int overlay_opacity_;
