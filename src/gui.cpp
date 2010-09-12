@@ -238,6 +238,13 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             if (context->overlay_opacity_ < 255)
                 context->set_overlay_opacity(context->overlay_opacity_ + 1);
             break;
+        case GDK_i:
+            context->enable_hud_ = ! context->enable_hud_;
+            if (context->enable_hud_)
+                clutter_actor_show(context->info_text_actor_);
+            else
+                clutter_actor_hide(context->info_text_actor_);
+            break;
         default:
             break;
     }
@@ -313,6 +320,8 @@ void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpoint
     Gui *context = static_cast<Gui*>(user_data);
     bool verbose = context->owner_->get_configuration()->get_verbose();
     Clip *thisclip = context->owner_->get_current_clip();
+    
+    context->update_info_text();
 
     fps_calculation_timer.tick();
     ++number_of_frames_in_last_second;
@@ -502,7 +511,8 @@ Gui::Gui(Application* owner) :
     owner_(owner),
     isFullscreen_(false),
     current_layout_(LAYOUT_SPLITSCREEN),
-    overlay_opacity_(175)
+    overlay_opacity_(175),
+    enable_hud_(false)
 {
     //video_xwindow_id_ = 0;
     owner_->get_controller()->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
@@ -585,7 +595,7 @@ Gui::Gui(Application* owner) :
     
     // TEXT
 
-    info_text_actor_ = clutter_text_new_with_text("", "Sans 16pt");
+    info_text_actor_ = clutter_text_new_full("", "Sans 16pt", clutter_color_new(255, 255, 255, 255));
     update_info_text();
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_));
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_), NULL);
@@ -598,14 +608,18 @@ Gui::Gui(Application* owner) :
      */
     clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
     clutter_actor_show_all(CLUTTER_ACTOR(playback_texture_));
-    clutter_actor_show_all(CLUTTER_ACTOR(info_text_actor_));
+    //NO: clutter_actor_show_all(CLUTTER_ACTOR(info_text_actor_));
+    clutter_actor_hide(info_text_actor_);
     if (owner_->get_configuration()->get_fullscreen())
         toggleFullscreen(window_);
 }
 
 void Gui::update_info_text()
 {
-    clutter_text_set_text(CLUTTER_TEXT(info_text_actor_), "Toonloop " PACKAGE_VERSION "\n");
+    std::ostringstream os;
+    os << "Toonloop " << PACKAGE_VERSION << std::endl;
+    os << "Current clip: " << owner_->get_current_clip()->get_id() << std::endl;
+    clutter_text_set_text(CLUTTER_TEXT(info_text_actor_), os.str().c_str());
 }
 
 /**

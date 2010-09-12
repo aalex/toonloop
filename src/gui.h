@@ -82,6 +82,7 @@ class Gui
         layout_number current_layout_;
         // TODO: overlay_opacity_ might disappear when we switch to an actual overlay blending mode
         int overlay_opacity_;
+        bool enable_hud_;
 };
 
 #endif // __GUI_H__
