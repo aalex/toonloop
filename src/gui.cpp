@@ -617,8 +617,13 @@ Gui::Gui(Application* owner) :
 void Gui::update_info_text()
 {
     std::ostringstream os;
+    Clip* current_clip = owner_->get_current_clip();
     os << "Toonloop " << PACKAGE_VERSION << std::endl;
-    os << "Current clip: " << owner_->get_current_clip()->get_id() << std::endl;
+    os << "Current clip: " << current_clip->get_id() << std::endl;
+    os << "FPS: " << current_clip->get_playhead_fps() << std::endl;
+    os << "Playhead: " << current_clip->get_playhead() << std::endl;
+    os << "Writehead: " << current_clip->get_writehead() << "/" << current_clip->size() << std::endl;
+    os << "Intervalometer rate: " << current_clip->get_intervalometer_rate() << std::endl;
     clutter_text_set_text(CLUTTER_TEXT(info_text_actor_), os.str().c_str());
 }
 
