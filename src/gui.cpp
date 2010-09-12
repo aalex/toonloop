@@ -39,6 +39,14 @@
 
 namespace fs = boost::filesystem;
 
+void Gui::set_overlay_opacity(int value)
+{
+    overlay_opacity_ = value;
+    std::cout << "overlay opacity: " << overlay_opacity_ << std::endl;
+    if (current_layout_ == LAYOUT_OVERLAY)
+        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_texture_), overlay_opacity_);
+}
+
 /**
  * In fullscreen mode, hides the cursor. In windowed mode, shows the cursor.
  */
@@ -221,6 +229,14 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
         case GDK_semicolon:
             context->owner_->get_controller()->move_writehead_to_first();
             break;
+        case GDK_bracketleft:
+            if (context->overlay_opacity_ > 0)
+                context->set_overlay_opacity(context->overlay_opacity_ - 1);
+            break;
+        case GDK_bracketright:
+            if (context->overlay_opacity_ < 255)
+                context->set_overlay_opacity(context->overlay_opacity_ + 1);
+            break;
         default:
             break;
     }
@@ -339,6 +355,9 @@ void on_stage_allocation_changed(ClutterActor * /*stage*/,
  * Called when it's time to resize the textures in the stage.
  *
  * Either the window has been resized, or the input image size has changed.
+ * 
+ * This is where the actors are resized according to the current layout.
+ * Also, the actor transparency and visibility vary in each layout.
  */
 void Gui::resize_actors() {
     // We could override the paint method of the stage
@@ -349,11 +368,14 @@ void Gui::resize_actors() {
     clutter_actor_get_size(stage_, &stage_width, &stage_height);
     
     set_height = (video_input_height_ * stage_width) / video_input_width_;
-    if (set_height <= stage_height) {
+    if (set_height <= stage_height) 
+    {
         set_width = stage_width;
         set_x = 0;
         set_y = (stage_height - set_height) / 2;
-    } else {
+    } 
+    else 
+    {
         set_width  = (video_input_width_ * stage_height) / video_input_height_;
         set_height = stage_height;
         set_x = (stage_width - set_width) / 2;
@@ -377,22 +399,25 @@ void Gui::resize_actors() {
         gfloat playback_tex_y = (stage_height / 4);
         clutter_actor_set_position(CLUTTER_ACTOR(playback_texture_), playback_tex_x, playback_tex_y);
         clutter_actor_set_size(CLUTTER_ACTOR(playback_texture_), playback_tex_width, playback_tex_height);
-        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
-    } else if (current_layout_ == LAYOUT_PLAYBACK_ONLY) {
+        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_texture_), 255);
+    } 
+    else if (current_layout_ == LAYOUT_PLAYBACK_ONLY) 
+    {
 
         clutter_actor_set_position(CLUTTER_ACTOR(playback_texture_), set_x, set_y);
         clutter_actor_set_size(CLUTTER_ACTOR(playback_texture_), set_width, set_height);
-        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
-    } else if (current_layout_ == LAYOUT_OVERLAY) {
-
+        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_texture_), 255);
+    } 
+    else if (current_layout_ == LAYOUT_OVERLAY) 
+    {
         clutter_actor_set_position(CLUTTER_ACTOR(playback_texture_), set_x, set_y);
         clutter_actor_set_size(CLUTTER_ACTOR(playback_texture_), set_width, set_height);
         clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), set_x, set_y);
         clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), set_width, set_height);
-        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 100);
-    } else {
+        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_texture_), overlay_opacity_);
+    } 
+    else 
         std::cout << "ERROR: Invalid layout" << std::endl; // should not occur...
-    }
 }
 /**
  * Called when the size of the input image has changed.
@@ -475,7 +500,8 @@ Gui::Gui(Application* owner) :
     video_input_height_(1),
     owner_(owner),
     isFullscreen_(false),
-    current_layout_(LAYOUT_SPLITSCREEN)
+    current_layout_(LAYOUT_SPLITSCREEN),
+    overlay_opacity_(175)
 {
     //video_xwindow_id_ = 0;
     owner_->get_controller()->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
@@ -554,7 +580,7 @@ Gui::Gui(Application* owner) :
 
     clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_texture_));
-    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_), NULL);
+    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_texture_), NULL);
   
     gtk_widget_show_all(window_);
 

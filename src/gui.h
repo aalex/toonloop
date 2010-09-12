@@ -68,6 +68,7 @@ class Gui
         static int on_window_state_event(_GtkWidget *widget, _GdkEventWindowState *event, gpointer user_data);
 
         static void on_render_frame(ClutterTimeline * timeline, gint msecs, gpointer user_data);
+        void set_overlay_opacity(int value);
         ClutterActor *live_input_texture_;
         ClutterActor *playback_texture_;
         ClutterTimeline *timeline_;
@@ -77,6 +78,8 @@ class Gui
         void hideCursor();
         void showCursor();
         layout_number current_layout_;
+        // TODO: overlay_opacity_ might disappear when we switch to an actual overlay blending mode
+        int overlay_opacity_;
 };
 
 #endif // __GUI_H__
