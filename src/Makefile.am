@@ -25,6 +25,7 @@ headers = \
     oscsender.h \
 	pipeline.h \
 	saverworker.h \
+	statesaving.h \
 	subprocess.h \
 	timer.h \
 	timing.h \
@@ -43,6 +44,7 @@ toonloop_SOURCES = \
 	moviesaver.cpp \
 	pipeline.cpp \
 	saverworker.cpp \
+	statesaving.cpp \
 	subprocess.cpp \
 	timer.cpp \
 	timing.cpp \
