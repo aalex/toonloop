@@ -239,6 +239,20 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             if (context->overlay_opacity_ < 255)
                 context->set_overlay_opacity(context->overlay_opacity_ + 1);
             break;
+        case GDK_parenleft:
+            if (context->duration_ratio_ > 0.0f)
+            {
+                context->duration_ratio_ = context->duration_ratio_ - 0.1;
+                std::cout << "Duration ratio: " << context->duration_ratio_ << std::endl;
+            }
+            break;
+        case GDK_parenright:
+            if (context->duration_ratio_ < 1.0f)
+            {
+                context->duration_ratio_ = context->duration_ratio_ + 0.1f;
+                std::cout << "Duration ratio: " << context->duration_ratio_ << std::endl;
+            }
+            break;
         case GDK_i:
             context->enable_hud_ = ! context->enable_hud_;
             if (context->enable_hud_)
@@ -291,7 +305,6 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
  */
 void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*image_number*/, std::string file_name)
 {
-    std::cout << "on_next_image_to_play" << std::endl;
     GError *error = NULL;
     gboolean success;
     // Rotate the textures
@@ -304,8 +317,16 @@ void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*imag
    
     // TODO: Handle the ClutterAnimation* 
     // Attach a callback to when it's done
-    clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 0);
-    clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(0)), CLUTTER_LINEAR, 100, "opacity", 255, NULL);  
+    if (duration_ratio_ >= 0.01f)
+    {
+        unsigned int fps = owner_->get_current_clip()->get_playhead_fps();
+        unsigned int duration = (unsigned int) ((1.0f / fps * duration_ratio_) * 1000);
+        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 0);
+        clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(0)), CLUTTER_LINEAR, duration, "opacity", 255, NULL);  
+    }
+    else
+        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 255);
+        
     // TODO: validate this path
     if (!success)
     {
@@ -533,7 +554,8 @@ Gui::Gui(Application* owner) :
     isFullscreen_(false),
     current_layout_(LAYOUT_SPLITSCREEN),
     overlay_opacity_(175),
-    enable_hud_(false)
+    enable_hud_(false),
+    duration_ratio_(1.0)
 {
     //video_xwindow_id_ = 0;
     owner_->get_controller()->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
