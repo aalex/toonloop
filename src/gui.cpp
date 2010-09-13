@@ -300,8 +300,8 @@ void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*imag
     //shared_ptr<ClutterActor> _tmp_shared_ptr = playback_textures_.back();
     //playback_textures_.insert(playback_textures_.begin(), _tmp_shared_ptr);
     //playback_textures_.pop_back();
-    success = clutter_texture_set_from_file(CLUTTER_TEXTURE(playback_textures_.at(0).get()), file_name.c_str(), &error);
-    clutter_container_raise_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0).get()), NULL);
+    success = clutter_texture_set_from_file(CLUTTER_TEXTURE(playback_textures_.at(0)), file_name.c_str(), &error);
+    clutter_container_raise_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)), NULL);
    
     // TODO: Handle the ClutterAnimation* 
     // Attach a callback to when it's done
@@ -438,7 +438,7 @@ void Gui::resize_actors() {
         clutter_actor_set_size(CLUTTER_ACTOR(playback_group_), set_width, set_height);
         clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), set_x, set_y);
         clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), set_width, set_height);
-        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_group_), overlay_opacity_);
+        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), overlay_opacity_);
     } 
     else 
         std::cout << "ERROR: Invalid layout" << std::endl; // should not occur...
@@ -587,14 +587,14 @@ Gui::Gui(Application* owner) :
     const unsigned int NUM_PLAYBACK_IMAGES = 30;
     for(unsigned int i = 0 ; i < NUM_PLAYBACK_IMAGES; i++)
     {
-        playback_textures_.insert(playback_textures_.begin(), shared_ptr<ClutterActor>(
+        playback_textures_.insert(playback_textures_.begin(), 
             (ClutterActor*)
             g_object_new(CLUTTER_TYPE_TEXTURE, 
                 "sync-size", FALSE, 
                 "disable-slicing", TRUE, 
-                NULL)));
-        clutter_container_add_actor(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0).get()));
-        g_signal_connect(CLUTTER_TEXTURE(playback_textures_.at(0).get()), "size-change", G_CALLBACK(on_playback_texture_size_changed), this);
+                NULL));
+        clutter_container_add_actor(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)));
+        g_signal_connect(CLUTTER_TEXTURE(playback_textures_.at(0)), "size-change", G_CALLBACK(on_playback_texture_size_changed), this);
         clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_), NULL);
     }
 
@@ -668,8 +668,9 @@ Gui::~Gui()
     std::cout << "~Gui" << std::endl;
     for (unsigned int i = 0; i < playback_textures_.size(); i++)
     {
-        ClutterActor* tmp = playback_textures_.back().get();
+        //ClutterActor* tmp = playback_textures_.back();
         playback_textures_.pop_back();
-        delete tmp;
+        g_print("TODO: clutter destroy texture\n");
+        
     }
 }

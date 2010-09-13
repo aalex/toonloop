@@ -73,7 +73,7 @@ class Gui
         void set_overlay_opacity(int value);
         ClutterActor *live_input_texture_;
         //ClutterActor *playback_texture_;
-        std::vector< std::tr1::shared_ptr<ClutterActor> > playback_textures_;
+        std::vector< ClutterActor* > playback_textures_;
         ClutterActor *info_text_actor_;
         ClutterTimeline *timeline_;
         GtkWidget *window_;
