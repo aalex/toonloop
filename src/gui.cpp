@@ -291,17 +291,16 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
  */
 void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*image_number*/, std::string file_name)
 {
+    std::cout << "on_next_image_to_play" << std::endl;
     GError *error = NULL;
     gboolean success;
     // Rotate the textures
     //ClutterActor* _tmp = playback_textures_.back().get();
     //shared_ptr<ClutterActor> tmp = shared_ptr<ClutterActor>();
-    shared_ptr<ClutterActor> _tmp_shared_ptr = playback_textures_.back();
-    playback_textures_.insert(playback_textures_.begin(), _tmp_shared_ptr);
-    playback_textures_.pop_back();
+    //shared_ptr<ClutterActor> _tmp_shared_ptr = playback_textures_.back();
+    //playback_textures_.insert(playback_textures_.begin(), _tmp_shared_ptr);
+    //playback_textures_.pop_back();
     success = clutter_texture_set_from_file(CLUTTER_TEXTURE(playback_textures_.at(0).get()), file_name.c_str(), &error);
-    clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0).get()), 255);
-    
     clutter_container_raise_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0).get()), NULL);
    
     // TODO: Handle the ClutterAnimation* 
