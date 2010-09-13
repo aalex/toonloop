@@ -295,18 +295,17 @@ void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*imag
     GError *error = NULL;
     gboolean success;
     // Rotate the textures
-    //ClutterActor* _tmp = playback_textures_.back().get();
-    //shared_ptr<ClutterActor> tmp = shared_ptr<ClutterActor>();
-    //shared_ptr<ClutterActor> _tmp_shared_ptr = playback_textures_.back();
-    //playback_textures_.insert(playback_textures_.begin(), _tmp_shared_ptr);
-    //playback_textures_.pop_back();
+    ClutterActor* _tmp = playback_textures_.back();
+    playback_textures_.insert(playback_textures_.begin() + 0, _tmp);
+    playback_textures_.pop_back();
+    // Load file
     success = clutter_texture_set_from_file(CLUTTER_TEXTURE(playback_textures_.at(0)), file_name.c_str(), &error);
     clutter_container_raise_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)), NULL);
    
     // TODO: Handle the ClutterAnimation* 
     // Attach a callback to when it's done
-    //clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0).get()), 0);
-    //clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(0).get()), CLUTTER_LINEAR, 100, "opacity", 255.0, NULL);  
+    clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 0);
+    clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(0)), CLUTTER_LINEAR, 100, "opacity", 255, NULL);  
     // TODO: validate this path
     if (!success)
     {
