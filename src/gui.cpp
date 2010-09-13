@@ -421,21 +421,29 @@ void Gui::resize_actors() {
         gfloat playback_tex_height = set_height / 2;
         gfloat playback_tex_x = (stage_width / 2);
         gfloat playback_tex_y = (stage_height / 4);
-        clutter_actor_set_position(CLUTTER_ACTOR(playback_group_), playback_tex_x, playback_tex_y);
-        clutter_actor_set_size(CLUTTER_ACTOR(playback_group_), playback_tex_width, playback_tex_height);
-        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_group_), 255);
+        for(unsigned int i = 0; i < playback_textures_.size(); i++)
+        {
+            clutter_actor_set_position(CLUTTER_ACTOR(playback_textures_.at(i)), playback_tex_x, playback_tex_y);
+            clutter_actor_set_size(CLUTTER_ACTOR(playback_textures_.at(i)), playback_tex_width, playback_tex_height);
+            clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(i)), 255);
+        }
     } 
     else if (current_layout_ == LAYOUT_PLAYBACK_ONLY) 
     {
-
-        clutter_actor_set_position(CLUTTER_ACTOR(playback_group_), set_x, set_y);
-        clutter_actor_set_size(CLUTTER_ACTOR(playback_group_), set_width, set_height);
-        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_group_), 255);
+        for(unsigned int i = 0; i < playback_textures_.size(); i++)
+        {
+            clutter_actor_set_position(CLUTTER_ACTOR(playback_textures_.at(i)), set_x, set_y);
+            clutter_actor_set_size(CLUTTER_ACTOR(playback_textures_.at(i)), set_width, set_height);
+            clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(i)), 255);
+        }
     } 
     else if (current_layout_ == LAYOUT_OVERLAY) 
     {
-        clutter_actor_set_position(CLUTTER_ACTOR(playback_group_), set_x, set_y);
-        clutter_actor_set_size(CLUTTER_ACTOR(playback_group_), set_width, set_height);
+        for(unsigned int i = 0; i < playback_textures_.size(); i++)
+        {
+            clutter_actor_set_position(CLUTTER_ACTOR(playback_textures_.at(i)), set_x, set_y);
+            clutter_actor_set_size(CLUTTER_ACTOR(playback_textures_.at(i)), set_width, set_height);
+        }
         clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), set_x, set_y);
         clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), set_width, set_height);
         clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), overlay_opacity_);
@@ -595,7 +603,7 @@ Gui::Gui(Application* owner) :
                 NULL));
         clutter_container_add_actor(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)));
         g_signal_connect(CLUTTER_TEXTURE(playback_textures_.at(0)), "size-change", G_CALLBACK(on_playback_texture_size_changed), this);
-        clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_), NULL);
+        clutter_container_raise_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)), NULL);
     }
 
     // Background color:
@@ -634,6 +642,11 @@ Gui::Gui(Application* owner) :
     clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
     clutter_actor_show_all(CLUTTER_ACTOR(playback_group_));
     //NO: clutter_actor_show_all(CLUTTER_ACTOR(info_text_actor_));
+    
+    for(unsigned int i = 0 ; i < NUM_PLAYBACK_IMAGES; i++)
+    {
+        clutter_actor_show_all(CLUTTER_ACTOR(playback_textures_.at(0)));
+    }
     clutter_actor_hide(info_text_actor_);
     if (owner_->get_configuration()->get_fullscreen())
         toggleFullscreen(window_);
