@@ -26,6 +26,7 @@
 #include <clutter/clutter.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
+#include <vector>
 
 class Application;
 
@@ -45,7 +46,7 @@ class Gui
     public:
         ClutterActor* get_live_input_texture() const;
         Gui(Application* owner); 
-        ~Gui() {};
+        ~Gui();
         void toggleFullscreen() { toggleFullscreen(window_); } // no argument version of the same method below.
         void resize_actors();
         void toggleFullscreen(GtkWidget* widget);
@@ -60,6 +61,7 @@ class Gui
         Application* owner_;
         bool isFullscreen_;
         ClutterActor *stage_;
+        ClutterActor *playback_group_;
         static void on_live_input_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data);
         void on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name);
         static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer user_data);
@@ -70,7 +72,8 @@ class Gui
         static void on_render_frame(ClutterTimeline * timeline, gint msecs, gpointer user_data);
         void set_overlay_opacity(int value);
         ClutterActor *live_input_texture_;
-        ClutterActor *playback_texture_;
+        //ClutterActor *playback_texture_;
+        std::vector< std::tr1::shared_ptr<ClutterActor> > playback_textures_;
         ClutterActor *info_text_actor_;
         ClutterTimeline *timeline_;
         GtkWidget *window_;

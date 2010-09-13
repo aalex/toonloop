@@ -38,6 +38,7 @@
 #include "timer.h"
 
 namespace fs = boost::filesystem;
+using std::tr1::shared_ptr;
 
 void Gui::set_overlay_opacity(int value)
 {
@@ -45,7 +46,7 @@ void Gui::set_overlay_opacity(int value)
     if (owner_->get_configuration()->get_verbose())
         std::cout << "overlay opacity: " << overlay_opacity_ << std::endl;
     if (current_layout_ == LAYOUT_OVERLAY)
-        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_texture_), overlay_opacity_);
+        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), overlay_opacity_);
 }
 
 /**
@@ -292,7 +293,21 @@ void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*imag
 {
     GError *error = NULL;
     gboolean success;
-    success = clutter_texture_set_from_file(CLUTTER_TEXTURE(playback_texture_), file_name.c_str(), &error);
+    // Rotate the textures
+    //ClutterActor* _tmp = playback_textures_.back().get();
+    //shared_ptr<ClutterActor> tmp = shared_ptr<ClutterActor>();
+    shared_ptr<ClutterActor> _tmp_shared_ptr = playback_textures_.back();
+    playback_textures_.insert(playback_textures_.begin(), _tmp_shared_ptr);
+    playback_textures_.pop_back();
+    success = clutter_texture_set_from_file(CLUTTER_TEXTURE(playback_textures_.at(0).get()), file_name.c_str(), &error);
+    clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0).get()), 255);
+    
+    clutter_container_raise_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0).get()), NULL);
+   
+    // TODO: Handle the ClutterAnimation* 
+    // Attach a callback to when it's done
+    //clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0).get()), 0);
+    //clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(0).get()), CLUTTER_LINEAR, 100, "opacity", 255.0, NULL);  
     // TODO: validate this path
     if (!success)
     {
@@ -339,11 +354,11 @@ void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpoint
     //TODO:2010-08-26:aalex:connect to Controller's on_no_image_to_play
     if(thisclip->size() > 0) 
     {     
-        if (! CLUTTER_ACTOR_IS_VISIBLE(context->playback_texture_))
-            clutter_actor_show_all(CLUTTER_ACTOR(context->playback_texture_));
+        if (! CLUTTER_ACTOR_IS_VISIBLE(context->playback_group_))
+            clutter_actor_show_all(CLUTTER_ACTOR(context->playback_group_));
     } else {
-        if (CLUTTER_ACTOR_IS_VISIBLE(context->playback_texture_))
-            clutter_actor_hide_all(CLUTTER_ACTOR(context->playback_texture_));
+        if (CLUTTER_ACTOR_IS_VISIBLE(context->playback_group_))
+            clutter_actor_hide_all(CLUTTER_ACTOR(context->playback_group_));
     }
 }
 
@@ -407,24 +422,24 @@ void Gui::resize_actors() {
         gfloat playback_tex_height = set_height / 2;
         gfloat playback_tex_x = (stage_width / 2);
         gfloat playback_tex_y = (stage_height / 4);
-        clutter_actor_set_position(CLUTTER_ACTOR(playback_texture_), playback_tex_x, playback_tex_y);
-        clutter_actor_set_size(CLUTTER_ACTOR(playback_texture_), playback_tex_width, playback_tex_height);
-        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_texture_), 255);
+        clutter_actor_set_position(CLUTTER_ACTOR(playback_group_), playback_tex_x, playback_tex_y);
+        clutter_actor_set_size(CLUTTER_ACTOR(playback_group_), playback_tex_width, playback_tex_height);
+        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_group_), 255);
     } 
     else if (current_layout_ == LAYOUT_PLAYBACK_ONLY) 
     {
 
-        clutter_actor_set_position(CLUTTER_ACTOR(playback_texture_), set_x, set_y);
-        clutter_actor_set_size(CLUTTER_ACTOR(playback_texture_), set_width, set_height);
-        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_texture_), 255);
+        clutter_actor_set_position(CLUTTER_ACTOR(playback_group_), set_x, set_y);
+        clutter_actor_set_size(CLUTTER_ACTOR(playback_group_), set_width, set_height);
+        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_group_), 255);
     } 
     else if (current_layout_ == LAYOUT_OVERLAY) 
     {
-        clutter_actor_set_position(CLUTTER_ACTOR(playback_texture_), set_x, set_y);
-        clutter_actor_set_size(CLUTTER_ACTOR(playback_texture_), set_width, set_height);
+        clutter_actor_set_position(CLUTTER_ACTOR(playback_group_), set_x, set_y);
+        clutter_actor_set_size(CLUTTER_ACTOR(playback_group_), set_width, set_height);
         clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), set_x, set_y);
         clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), set_width, set_height);
-        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_texture_), overlay_opacity_);
+        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_group_), overlay_opacity_);
     } 
     else 
         std::cout << "ERROR: Invalid layout" << std::endl; // should not occur...
@@ -567,11 +582,22 @@ Gui::Gui(Application* owner) :
         NULL);
     g_signal_connect(CLUTTER_TEXTURE(live_input_texture_), "size-change", G_CALLBACK(on_live_input_texture_size_changed), this);
 
-    playback_texture_ = (ClutterActor *) g_object_new(CLUTTER_TYPE_TEXTURE, 
-        "sync-size", FALSE, 
-        "disable-slicing", TRUE, 
-        NULL);
-    g_signal_connect(CLUTTER_TEXTURE(playback_texture_), "size-change", G_CALLBACK(on_playback_texture_size_changed), this);
+    playback_group_ = clutter_group_new();
+    clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_));
+    
+    const unsigned int NUM_PLAYBACK_IMAGES = 30;
+    for(unsigned int i = 0 ; i < NUM_PLAYBACK_IMAGES; i++)
+    {
+        playback_textures_.insert(playback_textures_.begin(), shared_ptr<ClutterActor>(
+            (ClutterActor*)
+            g_object_new(CLUTTER_TYPE_TEXTURE, 
+                "sync-size", FALSE, 
+                "disable-slicing", TRUE, 
+                NULL)));
+        clutter_container_add_actor(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0).get()));
+        g_signal_connect(CLUTTER_TEXTURE(playback_textures_.at(0).get()), "size-change", G_CALLBACK(on_playback_texture_size_changed), this);
+        clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_), NULL);
+    }
 
     // Background color:
     ClutterColor stage_color = { 0x00, 0x00, 0x00, 0xff };
@@ -590,12 +616,12 @@ Gui::Gui(Application* owner) :
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_));
 
     clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
-    clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_texture_));
-    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_texture_), NULL);
+    //clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_texture_));
+    //clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_texture_), NULL);
     
     // TEXT
 
-    info_text_actor_ = clutter_text_new_full("", "Sans 16pt", clutter_color_new(255, 255, 255, 255));
+    info_text_actor_ = clutter_text_new_full("", "Sans 16px", clutter_color_new(255, 255, 255, 255));
     update_info_text();
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_));
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_), NULL);
@@ -607,7 +633,7 @@ Gui::Gui(Application* owner) :
      * will call show on the stage.
      */
     clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
-    clutter_actor_show_all(CLUTTER_ACTOR(playback_texture_));
+    clutter_actor_show_all(CLUTTER_ACTOR(playback_group_));
     //NO: clutter_actor_show_all(CLUTTER_ACTOR(info_text_actor_));
     clutter_actor_hide(info_text_actor_);
     if (owner_->get_configuration()->get_fullscreen())
@@ -638,3 +664,13 @@ ClutterActor* Gui::get_live_input_texture() const
     return live_input_texture_;
 }
 
+Gui::~Gui()
+{
+    std::cout << "~Gui" << std::endl;
+    for (unsigned int i = 0; i < playback_textures_.size(); i++)
+    {
+        ClutterActor* tmp = playback_textures_.back().get();
+        playback_textures_.pop_back();
+        delete tmp;
+    }
+}
