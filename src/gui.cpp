@@ -39,6 +39,7 @@
 
 namespace fs = boost::filesystem;
 using std::tr1::shared_ptr;
+typedef std::vector<ClutterActor*>::iterator ActorIterator;
 
 void Gui::set_overlay_opacity(int value)
 {
@@ -441,28 +442,27 @@ void Gui::resize_actors() {
         gfloat playback_tex_height = set_height / 2;
         gfloat playback_tex_x = (stage_width / 2);
         gfloat playback_tex_y = (stage_height / 4);
-        for(unsigned int i = 0; i < playback_textures_.size(); i++)
+        for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
         {
-            clutter_actor_set_position(CLUTTER_ACTOR(playback_textures_.at(i)), playback_tex_x, playback_tex_y);
-            clutter_actor_set_size(CLUTTER_ACTOR(playback_textures_.at(i)), playback_tex_width, playback_tex_height);
-            clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(i)), 255);
+            clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
+            clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
+            clutter_actor_set_opacity(CLUTTER_ACTOR(*iter), 255);
         }
     } 
     else if (current_layout_ == LAYOUT_PLAYBACK_ONLY) 
     {
-        for(unsigned int i = 0; i < playback_textures_.size(); i++)
-        {
-            clutter_actor_set_position(CLUTTER_ACTOR(playback_textures_.at(i)), set_x, set_y);
-            clutter_actor_set_size(CLUTTER_ACTOR(playback_textures_.at(i)), set_width, set_height);
-            clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(i)), 255);
+        for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
+            clutter_actor_set_position(CLUTTER_ACTOR(*iter), set_x, set_y);
+            clutter_actor_set_size(CLUTTER_ACTOR(*iter), set_width, set_height);
+            clutter_actor_set_opacity(CLUTTER_ACTOR(*iter), 255);
         }
     } 
     else if (current_layout_ == LAYOUT_OVERLAY) 
     {
-        for(unsigned int i = 0; i < playback_textures_.size(); i++)
+        for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
         {
-            clutter_actor_set_position(CLUTTER_ACTOR(playback_textures_.at(i)), set_x, set_y);
-            clutter_actor_set_size(CLUTTER_ACTOR(playback_textures_.at(i)), set_width, set_height);
+            clutter_actor_set_position(CLUTTER_ACTOR(*iter), set_x, set_y);
+            clutter_actor_set_size(CLUTTER_ACTOR(*iter), set_width, set_height);
         }
         clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), set_x, set_y);
         clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), set_width, set_height);
@@ -623,6 +623,7 @@ Gui::Gui(Application* owner) :
                 "disable-slicing", TRUE, 
                 NULL));
         clutter_container_add_actor(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)));
+        // FIXME:2010-09-14:aalex:It's OK to detect playback image change but it should be done at the last minute before drawing each.
         g_signal_connect(CLUTTER_TEXTURE(playback_textures_.at(0)), "size-change", G_CALLBACK(on_playback_texture_size_changed), this);
         clutter_container_raise_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)), NULL);
     }
@@ -700,11 +701,13 @@ ClutterActor* Gui::get_live_input_texture() const
 Gui::~Gui()
 {
     std::cout << "~Gui" << std::endl;
+    //TODO:
+    //for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
+    //    //iter->
     for (unsigned int i = 0; i < playback_textures_.size(); i++)
     {
         //ClutterActor* tmp = playback_textures_.back();
         playback_textures_.pop_back();
-        g_print("TODO: clutter destroy texture\n");
-        
+        //g_print("TODO: clutter destroy texture\n");
     }
 }
