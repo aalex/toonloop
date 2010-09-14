@@ -18,6 +18,10 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * Graphical user interface made with Clutter 
+ */
 #include <boost/filesystem.hpp>
 #include <clutter-gst/clutter-gst.h>
 #include <clutter-gtk/clutter-gtk.h>
@@ -114,26 +118,29 @@ void Gui::showCursor()
 /**
  * Handles key pressed event.
  *
- * Up: increase playhead FPS
- * Down: decrease playhead FPS
- * Backscape: remove a frame
- * Escape or f: toggle full screen mode
- * Space: add a frame
- * Page Up: choose next clip
- * Page Down: choose previous clip
- * 0, 1, 2, 3, 4, 5, 6, 7, 8, 9: choose a clip
- * Ctrl-q: quit
- * Ctrl-s: save
- * minus: toggle the layout
- * Tab: changes the playback direction
- * Caps_Lock: Toggle video grabbing on/off
- * a: Toggles on/off the intervalometer
- * k: increase intervalometer interval by 1 second
- * j: decrease intervalometer interval by 1 second
- * period: move writehead to the next image
- * comma: move writehead to the previous image
- * slash: move writehead to the last image
- * semicolon: move writehead to the first image
+ * - Up: increase playhead FPS
+ * - Down: decrease playhead FPS
+ * - Backscape: remove a frame
+ * - Escape or f: toggle full screen mode
+ * - Space: add a frame
+ * - Page Up: choose next clip
+ * - Page Down: choose previous clip
+ * - 0, 1, 2, 3, 4, 5, 6, 7, 8, 9: choose a clip
+ * - Ctrl-q: quit
+ * - Ctrl-s: save
+ * - minus: toggle the layout
+ * - Tab: changes the playback direction
+ * - Caps_Lock: Toggle video grabbing on/off
+ * - a: Toggles on/off the intervalometer
+ * - k: increase intervalometer interval by 1 second
+ * - j: decrease intervalometer interval by 1 second
+ * - period: move writehead to the next image
+ * - comma: move writehead to the previous image
+ * - slash: move writehead to the last image
+ * - semicolon: move writehead to the first image
+ * - (): increase/decrease fading between images
+ * - o: toggles onion skinning
+ * - []: increase/decrease opacity of the live input image in the overlay layout.
  */
 
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
