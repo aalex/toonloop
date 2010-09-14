@@ -38,8 +38,8 @@ Controller::Controller(Application* owner) :
 }
 void Controller::add_frame()
 {
-    Clip* clip = owner_->get_current_clip();
-    LOG_DEBUG("add_frame to clip #" << clip->get_id());
+    //Clip* clip = owner_->get_current_clip();
+    //LOG_DEBUG("add_frame to clip #" << clip->get_id());
     //unsigned int new_frame_number = clip->get_writehead();
     owner_->get_pipeline()->grab_frame();
     //Moved the call to the add_frame_signal_ to pipeline::save_image_to_current_clip

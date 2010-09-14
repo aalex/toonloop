@@ -150,20 +150,21 @@ void Gui::showCursor()
  * - Page Down: choose previous clip
  * - 0, 1, 2, 3, 4, 5, 6, 7, 8, 9: choose a clip
  * - Ctrl-q: quit
- * - Ctrl-s: save
- * - minus: toggle the layout
+ * - s: save the current clip
+ * - period: toggle the layout
  * - Tab: changes the playback direction
  * - Caps_Lock: Toggle video grabbing on/off
  * - a: Toggles on/off the intervalometer
  * - k: increase intervalometer interval by 1 second
  * - j: decrease intervalometer interval by 1 second
- * - period: move writehead to the next image
- * - comma: move writehead to the previous image
- * - slash: move writehead to the last image
+ * - right: move writehead to the next image
+ * - left: move writehead to the previous image
+ * - return: move writehead to the last image
  * - semicolon: move writehead to the first image
  * - (): increase/decrease fading between images
  * - o: toggles onion skinning
  * - []: increase/decrease opacity of the live input image in the overlay layout.
+ * - TODO: Ctrl-s: save the whole project
  */
 
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
@@ -190,16 +191,16 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
         case GDK_Down:
             context->owner_->get_controller()->decrease_playhead_fps();
             break;
-        case GDK_Left:
-            context->owner_->get_controller()->set_current_clip_direction(DIRECTION_BACKWARD);
-            break;
-        case GDK_Right:
-            context->owner_->get_controller()->set_current_clip_direction(DIRECTION_FORWARD);
-            break;
+        //case GDK_Left:
+        //    context->owner_->get_controller()->set_current_clip_direction(DIRECTION_BACKWARD);
+        //    break;
+        //case GDK_Right:
+        //    context->owner_->get_controller()->set_current_clip_direction(DIRECTION_FORWARD);
+        //    break;
         case GDK_Tab:
             context->owner_->get_controller()->change_current_clip_direction();
             break;
-        case GDK_minus:
+        case GDK_period:
             //TODO:2010-08-27:aalex:Create Controller:toggle_layout
             context->toggle_layout();
             break;
@@ -256,9 +257,9 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             // (if there is one)
             if (event->state & GDK_CONTROL_MASK)
             {
-                g_print("Ctrl-S key pressed, saving.\n");
+                g_print("Ctrl-S key pressed, TODO: save the whole project.\n");
+            } else // no Ctrl pressed
                 context->owner_->get_controller()->save_current_clip();
-            }
             break;
         case GDK_a:
             //std::cout << "Toggle intervalometer." << std::endl; 
@@ -270,13 +271,13 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
         case GDK_j:
             context->owner_->get_controller()->decrease_intervalometer_rate();
             break;
-        case GDK_comma:
+        case GDK_Left:
             context->owner_->get_controller()->move_writehead_to_previous();
             break;
-        case GDK_period:
+        case GDK_Right:
             context->owner_->get_controller()->move_writehead_to_next();
             break;
-        case GDK_slash:
+        case GDK_Return:
             context->owner_->get_controller()->move_writehead_to_last();
             break;
         case GDK_semicolon:
