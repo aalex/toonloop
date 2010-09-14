@@ -40,9 +40,10 @@ void Controller::add_frame()
 {
     Clip* clip = owner_->get_current_clip();
     LOG_DEBUG("add_frame to clip #" << clip->get_id());
-    unsigned int new_frame_number = clip->get_writehead();
+    //unsigned int new_frame_number = clip->get_writehead();
     owner_->get_pipeline()->grab_frame();
-    add_frame_signal_(clip->get_id(), new_frame_number);
+    //Moved the call to the add_frame_signal_ to pipeline::save_image_to_current_clip
+    //add_frame_signal_(clip->get_id(), new_frame_number);
 }
 void Controller::remove_frame()
 {

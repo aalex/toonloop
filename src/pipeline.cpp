@@ -30,6 +30,7 @@
 #include "application.h"
 #include "clip.h"
 #include "configuration.h"
+#include "controller.h"
 #include "gui.h"
 #include "log.h" // TODO: make it async and implement THROW_ERROR
 #include "pipeline.h"
@@ -253,6 +254,7 @@ void Pipeline::save_image_to_current_clip(GdkPixbuf *pixbuf)
     } else {
         if (is_verbose)
             g_print("Image %s saved\n", file_name.c_str());
+        owner_->get_controller()->add_frame_signal_(current_clip_id, new_image_number);
     }
     //thisclip->unlock_mutex();
 }

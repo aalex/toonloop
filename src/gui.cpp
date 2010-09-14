@@ -50,6 +50,26 @@ void Gui::set_overlay_opacity(int value)
         clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), overlay_opacity_);
 }
 
+void Gui::enable_onionskin(bool value)
+{
+    onionskin_enabled_ = value;
+    // Now does the stuff. Only need to call either one of these two methods
+    set_onionskin_opacity(onionskin_opacity_);
+}
+
+void Gui::set_onionskin_opacity(int value)
+{
+    onionskin_opacity_ = value;
+    if (owner_->get_configuration()->get_verbose())
+    {
+        std::cout << "onionskin enabled: " << onionskin_enabled_ << std::endl;
+        std::cout << "onionskin opacity: " << onionskin_opacity_ << std::endl;
+    }
+    if (onionskin_enabled_)
+        clutter_actor_set_opacity(CLUTTER_ACTOR(onionskin_textures_.at(0)), onionskin_opacity_);
+    else
+        clutter_actor_set_opacity(CLUTTER_ACTOR(onionskin_textures_.at(0)), 0);
+}
 /**
  * In fullscreen mode, hides the cursor. In windowed mode, shows the cursor.
  */
@@ -261,6 +281,9 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             else
                 clutter_actor_hide(context->info_text_actor_);
             break;
+        case GDK_o:
+            context->enable_onionskin( ! context->onionskin_enabled_);
+            break;
         default:
             break;
     }
@@ -303,6 +326,10 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
  * Slot for the Controller's next_image_to_play_signal_ signal.
  *
  * Called when it's time to update the image to play back.
+ * 
+ * The next image to play is raised on top of the input image textures.
+ * If the duration_ratio_ (TO RENAME) is set, tweens its opacity from 0 to 255 in 
+ * as much ms there are between two frames currently. 
  */
 void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*image_number*/, std::string file_name)
 {
@@ -337,6 +364,41 @@ void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*imag
         //std::cout << "Loaded image " <<  image_full_path << std::endl;
     }
 }
+
+/**
+ * Slot for the Controller's add_frame_signal_ signal.
+ * 
+ * Updates the onionskin texture
+ */
+void Gui::on_frame_added(unsigned int /*clip_number*/, unsigned int image_number)
+{
+    GError *error = NULL;
+    gboolean success;
+    // Rotate the textures
+    ClutterActor* _tmp = onionskin_textures_.back();
+    onionskin_textures_.insert(onionskin_textures_.begin() + 0, _tmp);
+    onionskin_textures_.pop_back();
+    // Get image file name
+    Clip* clip = owner_->get_current_clip();
+    Image* image = clip->get_image(image_number);
+    if (image == 0)
+        std::cout << "Could not get a handle to any image!" << std::endl;
+    else
+    {
+        std::string file_name = clip->get_image_full_path(image);
+        // Load file
+        success = clutter_texture_set_from_file(CLUTTER_TEXTURE(onionskin_textures_.at(0)), file_name.c_str(), &error);
+        clutter_container_raise_child(CLUTTER_CONTAINER(onionskin_group_), CLUTTER_ACTOR(onionskin_textures_.at(0)), NULL);
+        if (!success)
+        {
+            std::cerr << "Failed to load pixbuf file: " << file_name << " " << error->message << std::endl;
+            g_error_free(error);
+        } else {
+            //std::cout << "Loaded image " <<  image_full_path << std::endl;
+        }
+    }
+}
+
 /** 
  * Called on every frame. 
  *
@@ -448,18 +510,34 @@ void Gui::resize_actors() {
             clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
             clutter_actor_set_opacity(CLUTTER_ACTOR(*iter), 255);
         }
+        for (ActorIterator iter = onionskin_textures_.begin(); iter != onionskin_textures_.end(); ++iter)
+        {
+            clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
+            clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
+        }
     } 
     else if (current_layout_ == LAYOUT_PLAYBACK_ONLY) 
     {
         for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
+        {
             clutter_actor_set_position(CLUTTER_ACTOR(*iter), set_x, set_y);
             clutter_actor_set_size(CLUTTER_ACTOR(*iter), set_width, set_height);
             clutter_actor_set_opacity(CLUTTER_ACTOR(*iter), 255);
+        }
+        for (ActorIterator iter = onionskin_textures_.begin(); iter != onionskin_textures_.end(); ++iter)
+        {
+            clutter_actor_set_position(CLUTTER_ACTOR(*iter), set_x, set_y);
+            clutter_actor_set_size(CLUTTER_ACTOR(*iter), set_width, set_height);
         }
     } 
     else if (current_layout_ == LAYOUT_OVERLAY) 
     {
         for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
+        {
+            clutter_actor_set_position(CLUTTER_ACTOR(*iter), set_x, set_y);
+            clutter_actor_set_size(CLUTTER_ACTOR(*iter), set_width, set_height);
+        }
+        for (ActorIterator iter = onionskin_textures_.begin(); iter != onionskin_textures_.end(); ++iter)
         {
             clutter_actor_set_position(CLUTTER_ACTOR(*iter), set_x, set_y);
             clutter_actor_set_size(CLUTTER_ACTOR(*iter), set_width, set_height);
@@ -554,11 +632,14 @@ Gui::Gui(Application* owner) :
     isFullscreen_(false),
     current_layout_(LAYOUT_SPLITSCREEN),
     overlay_opacity_(175),
+    onionskin_opacity_(100),
+    onionskin_enabled_(false),
     enable_hud_(false),
     duration_ratio_(1.0)
 {
     //video_xwindow_id_ = 0;
     owner_->get_controller()->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
+    owner_->get_controller()->add_frame_signal_.connect(boost::bind(&Gui::on_frame_added, this, _1, _2));
     //TODO: owner_->get_controller()->no_image_to_play_signals_.connect(boost::bind(&Gui::on_no_image_to_play, this))
     // Main GTK window
     window_ = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -610,6 +691,7 @@ Gui::Gui(Application* owner) :
         NULL);
     g_signal_connect(CLUTTER_TEXTURE(live_input_texture_), "size-change", G_CALLBACK(on_live_input_texture_size_changed), this);
 
+    // Playback textures:
     playback_group_ = clutter_group_new();
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_));
     
@@ -628,12 +710,30 @@ Gui::Gui(Application* owner) :
         clutter_container_raise_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)), NULL);
     }
 
+    // Onionskin textures:
+    onionskin_group_ = clutter_group_new();
+    clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(onionskin_group_));
+    const unsigned int NUM_ONIONSKIN_IMAGES = 1;
+    for(unsigned int i = 0 ; i < NUM_ONIONSKIN_IMAGES; i++)
+    {
+        onionskin_textures_.insert(onionskin_textures_.begin(), 
+            (ClutterActor*)
+            g_object_new(CLUTTER_TYPE_TEXTURE, 
+                "sync-size", FALSE, 
+                "disable-slicing", TRUE, 
+                NULL));
+        clutter_container_add_actor(CLUTTER_CONTAINER(onionskin_group_), CLUTTER_ACTOR(onionskin_textures_.at(0)));
+        clutter_container_raise_child(CLUTTER_CONTAINER(onionskin_group_), CLUTTER_ACTOR(onionskin_textures_.at(0)), NULL);
+    }
+    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_), NULL);
+    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(onionskin_group_), NULL);
+
     // Background color:
     ClutterColor stage_color = { 0x00, 0x00, 0x00, 0xff };
     clutter_stage_set_color(CLUTTER_STAGE(stage_), &stage_color);
 
     /* Create a timeline to manage animation */
-    timeline_ = clutter_timeline_new(6000);
+    timeline_ = clutter_timeline_new(6000); // time here doesn't matter
     g_object_set(timeline_, "loop", TRUE, NULL);   /* have it loop */
     /* fire a callback for frame change */
     g_signal_connect(timeline_, "new-frame", G_CALLBACK(on_render_frame), this);
@@ -643,13 +743,9 @@ Gui::Gui(Application* owner) :
     /* of course, we need to show the texture in the stage. */
 
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_));
-
     clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
-    //clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_texture_));
-    //clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_texture_), NULL);
     
     // TEXT
-
     info_text_actor_ = clutter_text_new_full("", "Sans 16px", clutter_color_new(255, 255, 255, 255));
     update_info_text();
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_));
@@ -663,12 +759,13 @@ Gui::Gui(Application* owner) :
      */
     clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
     clutter_actor_show_all(CLUTTER_ACTOR(playback_group_));
+    clutter_actor_show_all(CLUTTER_ACTOR(onionskin_group_));
     //NO: clutter_actor_show_all(CLUTTER_ACTOR(info_text_actor_));
     
-    for(unsigned int i = 0 ; i < NUM_PLAYBACK_IMAGES; i++)
-    {
-        clutter_actor_show_all(CLUTTER_ACTOR(playback_textures_.at(0)));
-    }
+    for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
+        clutter_actor_show_all(CLUTTER_ACTOR(*iter));
+    for (ActorIterator iter = onionskin_textures_.begin(); iter != onionskin_textures_.end(); ++iter)
+        clutter_actor_show_all(CLUTTER_ACTOR(*iter));
     clutter_actor_hide(info_text_actor_);
     if (owner_->get_configuration()->get_fullscreen())
         toggleFullscreen(window_);
