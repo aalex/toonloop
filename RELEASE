@@ -9,6 +9,7 @@ New features:
     * onion skinning: Press 'o' to toggle the onion skinning on/off.
     * caps lock: Allow to capture video at the camera's FPS. (not the clip's playhead only)
     * fade each image into the next.
+    * added the --enable-mouse-controls option
 
 Bug fixes: 
     * removed some useless includes

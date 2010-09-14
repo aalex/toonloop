@@ -16,7 +16,6 @@ Right now, here is the list of tasks to prioritize:
  * onionskin: allow to change its opacity
  * onionskin: avoid a white image when none has been taken
  * onionskin: load the image just before writehead's position
- * mouse: support mouse controls (disabled by default)
 
 OSC Messages to implement
 -------------------------
@@ -124,4 +123,4 @@ Done
 ----
 
 See also the doc/DONE document.
-
+ * mouse: support mouse controls (disabled by default)
