@@ -13,16 +13,9 @@ Right now, here is the list of tasks to prioritize:
 
  * Auto-record video sometimes doesn't work
  * Make sure the keystroke instructions are in only one place.
- * playback: allow to play all clips from 0 to 9
- * video: support different sizes (currently only 640x480)
- * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
- * Pixbuf saving: 
-   * #1: Write the pixbuf to a memory stream and then splice_async() it to the file. 
-   * #2: fork() then call gdk_pixbuf_save() in the child process. Use a pipe to handle the return value in the parent. Probably that the glib mainloop should shut itself down with pthread_atfork(). Look for screenshot_save_start() in gnome-utils/gnome-screenshot/screenshot-save.c
- * edit: Onion skin
- * edit: Allow to capture video at the camera's FPS. (not the clip's playhead only)
- * saving: Save projects to XML
- * saving: Load projects from XML
+ * onionskin: allow to change its opacity
+ * onionskin: avoid a white image when none has been taken
+ * onionskin: load the image just before writehead's position
 
 OSC Messages to implement
 -------------------------
@@ -47,28 +40,31 @@ Sending:
 Road map
 --------
 
-To be done for Version 2.0
+To be done for Version 2.2
 --------------------------
 
 Once those tasks are done, the features to be implemented in branch 2.x are:
 
+ * playback: allow to play all clips from 0 to 9
+ * video: support different sizes (currently only 640x480)
  * video: do not crash if the v4l2 device is busy
+ * Pixbuf saving: 
+   * #1: Write the pixbuf to a memory stream and then splice_async() it to the file. 
+   * #2: fork() then call gdk_pixbuf_save() in the child process. Use a pipe to handle the return value in the parent. Probably that the glib mainloop should shut itself down with pthread_atfork(). Look for screenshot_save_start() in gnome-utils/gnome-screenshot/screenshot-save.c
  * API: figure out the best OSC API, as well as the keyboard GUI controls
- * Press 'i' to print current loop frame number, number of frames in loop and global framerate.
  * Press 'h' to show some help 
  * Press 'p' to pause playback.
- * Press 'o' to toggle the onion skinning on/off.
  * packaging: fix make check. Re-add previous tests, including headers from src
- * themes: Support layouts
- * themes: Create a single-image layout, combining the two image with the overlay blending mode.
- * gui: Display information in either a HUD, or a mx GUI in Clutter
  * packaging: Improve STK packaging
  * edit: add an option to delete JPEG images when deleted from a clip
  * edit: support playing back a single clip or all of them
  * Press 'n' to select the next effect available.
+ * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
+ * saving: Save projects to XML
+ * saving: Load projects from XML
 
 
-To be done for version 2.2 : Towards professional features
+To be done later on : Towards professional features
 ----------------------------------------------------------
 
  * saving: Support saving in AVI
@@ -98,8 +94,8 @@ To be done for version 2.2 : Towards professional features
  * midi: MIDI learn for controls
 
 
-Other Ideas for Future Directions
----------------------------------
+Ideas for Future Directions
+---------------------------
 
  * Multi layers (multi clips at a time)
  * Advanced GUI for controlling clips and sequences
@@ -128,7 +124,3 @@ Done
 
 See also the doc/DONE document.
 
- * edit: Intervalometer
- * Press the comma (",") to move the write head to the left. (towards the beginning)
- * Press the dot (".") to move the write head to the right. (towards the end)
- * Press slash to move the write head to the last frame. (at the end)

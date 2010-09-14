@@ -4,7 +4,11 @@
 This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. 
 
 New features:
-    * 
+    * layouts: Create a single-image layout, combining the two image with the overlay blending mode.
+    * gui: Press 'i' to print current loop frame number, number of frames in loop and global framerate.
+    * onion skinning: Press 'o' to toggle the onion skinning on/off.
+    * caps lock: Allow to capture video at the camera's FPS. (not the clip's playhead only)
+    * fade each image into the next.
 
 Bug fixes: 
     * 
