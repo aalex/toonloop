@@ -10,6 +10,10 @@ New features:
     * caps lock: Allow to capture video at the camera's FPS. (not the clip's playhead only)
     * fade each image into the next.
     * added the --enable-mouse-controls option
+    * left right: previous/next image to write
+    * enter: last image to write
+    * period: change layout
+    * support fade in that is longer than a frame duration
 
 Bug fixes: 
     * removed some useless includes
