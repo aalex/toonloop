@@ -299,7 +299,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             }
             break;
         case GDK_parenright:
-            if (context->duration_ratio_ < 1.0f)
+            if (context->duration_ratio_ < 10.0f)
             {
                 context->duration_ratio_ = context->duration_ratio_ + 0.1f;
                 std::cout << "Duration ratio: " << context->duration_ratio_ << std::endl;

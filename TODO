@@ -18,6 +18,7 @@ Right now, here is the list of tasks to prioritize:
  * onionskin: load the image just before writehead's position
  * BUG: the first playback image is white
  * BUG: the first live input image is white
+ * make onionskin and ripple/fade effect one-per-clip-based
 
 OSC Messages to implement
 -------------------------
