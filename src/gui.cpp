@@ -45,6 +45,29 @@ namespace fs = boost::filesystem;
 using std::tr1::shared_ptr;
 typedef std::vector<ClutterActor*>::iterator ActorIterator;
 
+gboolean Gui::on_mouse_button_event(GtkWidget* /* widget */, GdkEventButton *event, gpointer user_data)
+{
+    Gui *context = static_cast<Gui *>(user_data);
+    if (event->type == GDK_BUTTON_PRESS)
+    {
+        if (event->button == 1)
+        {
+            //std::cout << "Left mouse button clicked" << std::endl;
+            if (context->owner_->get_configuration()->get_mouse_controls_enabled())
+                context->owner_->get_controller()->add_frame();
+        }
+        else if (event->button == 2)
+        {
+            //std::cout << "Right mouse button clicked" << std::endl;
+        }
+    }
+    else if (event->type == GDK_BUTTON_RELEASE)
+    {
+        // TODO
+    }
+    return TRUE;
+}
+
 void Gui::set_overlay_opacity(int value)
 {
     overlay_opacity_ = value;
@@ -669,6 +692,8 @@ Gui::Gui(Application* owner) :
     g_signal_connect(G_OBJECT(window_), "delete-event", G_CALLBACK(on_delete_event), this);
 
     g_signal_connect(G_OBJECT(window_), "key-press-event", G_CALLBACK(key_press_event), this);
+    g_signal_connect(G_OBJECT(window_), "button-press-event", G_CALLBACK(on_mouse_button_event), this);
+    
     // add listener for window-state-event to detect fullscreenness
     g_signal_connect(G_OBJECT(window_), "window-state-event", G_CALLBACK(on_window_state_event), this);
 

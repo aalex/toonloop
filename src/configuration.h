@@ -77,6 +77,7 @@ class Configuration
         std::string get_osc_recv_port() const { return osc_recv_port_; }
         std::string get_osc_send_port() const { return osc_send_port_; }
         std::string get_osc_send_addr() const { return osc_send_addr_; }
+        bool get_mouse_controls_enabled() const { return mouse_controls_enabled_; }
     private:
         //int capture_frame_rate_;
         //int rendering_frame_rate_;
@@ -87,6 +88,7 @@ class Configuration
         bool fullscreen_;
         bool enable_effects_;
         bool verbose_;
+        bool mouse_controls_enabled_;
         int midi_input_number_;
         std::string osc_recv_port_;
         std::string osc_send_port_;

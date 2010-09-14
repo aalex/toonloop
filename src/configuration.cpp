@@ -35,6 +35,7 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     fullscreen_(options["fullscreen"].as<bool>()),
     enable_effects_(false),
     verbose_(options["verbose"].as<bool>()),
+    mouse_controls_enabled_(options["enable-mouse-controls"].as<bool>()),
     midi_input_number_(options.count("midi-input") ? options["midi-input"].as<int>() : MIDI_INPUT_NONE),
     osc_recv_port_(options.count("osc-receive-port") ? options["osc-receive-port"].as<std::string>() : OSC_PORT_NONE),
     osc_send_port_(options.count("osc-send-port") ? options["osc-send-port"].as<std::string>() : OSC_PORT_NONE),

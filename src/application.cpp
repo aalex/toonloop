@@ -140,6 +140,7 @@ void Application::run(int argc, char *argv[])
         ("osc-receive-port,p", po::value<std::string>(), "Sets the listening OSC port")
         ("osc-send-port,P", po::value<std::string>(), "Sets the port to send OSC messages to")
         ("osc-send-addr,a", po::value<std::string>()->default_value("localhost"), "Sets the IP address to send OSC messages to")
+        ("enable-mouse-controls,M", po::bool_switch(), "Enables simple controls with the mouse.")
         ; // <-- important semi-colon
     po::variables_map options;
     
