@@ -16,6 +16,8 @@ Right now, here is the list of tasks to prioritize:
  * onionskin: allow to change its opacity
  * onionskin: avoid a white image when none has been taken
  * onionskin: load the image just before writehead's position
+ * BUG: the first playback image is white
+ * BUG: the first live input image is white
 
 OSC Messages to implement
 -------------------------
@@ -45,6 +47,8 @@ To be done for Version 2.2
 
 Once those tasks are done, the features to be implemented in branch 2.x are:
 
+ * saving: Save projects to XML (statesaving.cpp doesn't work currently)
+ * saving: Load projects from XML
  * playback: allow to play all clips from 0 to 9
  * video: support different sizes (currently only 640x480)
  * video: do not crash if the v4l2 device is busy
@@ -60,8 +64,6 @@ Once those tasks are done, the features to be implemented in branch 2.x are:
  * edit: support playing back a single clip or all of them
  * Press 'n' to select the next effect available.
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
- * saving: Save projects to XML
- * saving: Load projects from XML
 
 
 To be done later on : Towards professional features
