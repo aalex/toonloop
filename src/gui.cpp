@@ -760,6 +760,7 @@ Gui::Gui(Application* owner) :
     clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
     clutter_actor_show_all(CLUTTER_ACTOR(playback_group_));
     clutter_actor_show_all(CLUTTER_ACTOR(onionskin_group_));
+    enable_onionskin(false); // hides it
     //NO: clutter_actor_show_all(CLUTTER_ACTOR(info_text_actor_));
     
     for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
