@@ -39,7 +39,7 @@ Toonloop interactive keyboard controls :
  - s: saves the current clip as a movie file
  - period: toggles the layout
  - Tab: changes the playback direction
- - Ctrl-r: clears the current clip.
+ - r: clears the current clip.
  - Caps lock: toggle video grabbing.
  - a: Toggles on/off the intervalometer
  - k: increase intervalometer interval by 1 second

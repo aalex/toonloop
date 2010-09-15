@@ -90,6 +90,9 @@ void Gui::set_overlay_opacity(int value)
         std::cout << "overlay opacity: " << overlay_opacity_ << std::endl;
     if (current_layout_ == LAYOUT_OVERLAY)
         clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), overlay_opacity_);
+    else
+        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
+        
 }
 
 void Gui::enable_onionskin(bool value)
@@ -165,6 +168,7 @@ void Gui::showCursor()
  * - Page Down: choose previous clip
  * - 0, 1, 2, 3, 4, 5, 6, 7, 8, 9: choose a clip
  * - Ctrl-q: quit
+ * - r: clears the contents of the current clip
  * - s: save the current clip
  * - period: toggle the layout
  * - Tab: changes the playback direction
@@ -220,6 +224,8 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             context->toggle_layout();
             break;
         case GDK_r:
+            // Ctrl-r or just r?
+            //if (event->state & GDK_CONTROL_MASK)
             context->owner_->get_controller()->clear_current_clip();
             break;
         case GDK_BackSpace:
@@ -255,7 +261,19 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             //* Of course, any other value might lead to a crash.
             // FIXME:2010-08-17:aalex:Doing arithmetics with a gdk keyval is a hack
             unsigned int index = (event->keyval & 0x0F);
-            context->owner_->get_controller()->choose_clip(index);
+            if (event->state & GDK_CONTROL_MASK)
+            {
+                if (index == 0)
+                    context->set_layout(LAYOUT_SPLITSCREEN);
+                else if (index == 1)
+                    context->set_layout(LAYOUT_PLAYBACK_ONLY);
+                else if (index == 2)
+                    context->set_layout(LAYOUT_OVERLAY);
+                else
+                    std::cout << "No more layouts." << std::endl;
+            }
+            else
+                context->owner_->get_controller()->choose_clip(index);
             break;
         }
         case GDK_q:
@@ -639,11 +657,10 @@ void Gui::set_layout(layout_number layout)
 {
     current_layout_ = layout; 
     if (current_layout_ == LAYOUT_PLAYBACK_ONLY)
-    {
         clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
-    } else if (current_layout_ == LAYOUT_SPLITSCREEN) {
+    else 
         clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
-    }
+    //else if (current_layout_ == LAYOUT_SPLITSCREEN) {
     resize_actors();
 }
 
@@ -677,11 +694,11 @@ Gui::Gui(Application* owner) :
     owner_(owner),
     isFullscreen_(false),
     current_layout_(LAYOUT_SPLITSCREEN),
-    overlay_opacity_(175),
-    onionskin_opacity_(100),
+    overlay_opacity_(50),
+    onionskin_opacity_(50),
     onionskin_enabled_(false),
     enable_hud_(false),
-    duration_ratio_(1.0)
+    duration_ratio_(0.0)
 {
     //video_xwindow_id_ = 0;
     owner_->get_controller()->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
