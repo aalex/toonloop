@@ -1,3 +1,227 @@
+commit 05ea764c28f89785ca923023d553c71c5ae891aa
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Sep 14 19:05:41 2010 -0400
+
+    updated RELEASE
+
+commit 22b4da914c92b670dd5f18cfba509f47643ce94b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Sep 14 18:28:56 2010 -0400
+
+    ripple effect, almost
+
+commit 7e5c64de6259c04d615c3bebd73465be13acfa8e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Sep 14 18:21:57 2010 -0400
+
+    changed the key controls a lot
+
+commit 4a0221ea24fa93b87b02e19faa371df97c07ce82
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Sep 14 06:38:20 2010 -0400
+
+    updated TODO
+
+commit 884e5596ec150a25a00d460eedbb60b1313e88d3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Sep 14 06:33:55 2010 -0400
+
+    updated TODO
+
+commit 4ba3dca575fb3400e8e733a537fe8b0ca692403c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Sep 14 06:33:17 2010 -0400
+
+    added --enable-mouse-controls option
+
+commit 559b273aaa81db283f22d91d22a7141ad54526dc
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Sep 14 06:11:18 2010 -0400
+
+    generally improved the documentation (esp. key strokes)
+
+commit ec833105250598ba7e88e0f18068b7c6dde83c39
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Sep 14 06:01:50 2010 -0400
+
+    updated TODO and RELEASE notes
+
+commit 09dac7462a0eb749f887d7bb5da799bcb50946bf
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Sep 14 06:01:31 2010 -0400
+
+    disable onionskin - do not show white rect
+
+commit 531216d7f2d9e33626c4c5ae5c4fd56d552c5bc1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Sep 14 05:48:49 2010 -0400
+
+    can now enable onionskin with the o key
+
+commit 36dbb4e5e208569d73da926f5f604234810f94d1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Sep 14 04:48:51 2010 -0400
+
+    using iterators, not ints to loop among playback textures
+
+commit 7ee00874c9c006e5ad91e1f97486a11c34e5b44e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 13 19:02:45 2010 -0400
+
+    can now change duration of fade
+
+commit 201d1874c6934be08d861d5502924fb3c7e5df15
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 13 18:45:16 2010 -0400
+
+    fade works
+
+commit ce5692f910f385c50a8bdbec7854a7afcbd82eea
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 13 18:38:41 2010 -0400
+
+    now i see something
+
+commit 3bfe6b5381ac8fb97b0633d0cee2794887f2db4a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 13 18:21:58 2010 -0400
+
+    no crash but dont see a thing
+
+commit d3289fcc172fef2d31dfc69b22ec5be4936d31c3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 13 18:13:59 2010 -0400
+
+    It crashes and don't show anything
+
+commit 031ab085c9144820aebe1abdb5dd6c08d2c6f6ce
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 13 18:04:34 2010 -0400
+
+    trying to sort the vector of images
+
+commit 70fde5a3a59273cc01240ef7d344b0056d4c59c1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 13 05:41:57 2010 -0400
+
+    changed the figlet ascii art banner
+
+commit cf983c0284b08324fa281cd423481b7bfd44155c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Sep 12 09:52:24 2010 -0400
+
+    a lot more info in the HUD
+
+commit 8c336d27e1bee84fa3acadae671aaff786b92b93
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Sep 12 09:48:12 2010 -0400
+
+    showing a HUD text
+
+commit a75b481c7e42db111a13d067a2738347e1094b80
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Sep 12 09:33:20 2010 -0400
+
+    Trying to show some text over the video
+
+commit c045c67c5daebc061ed2f363adb7d80ad5d22034
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Sep 12 09:17:55 2010 -0400
+
+    decreased verbosity a bit
+
+commit 20293001a80d5fb0da2a2c738b6928a22e9f454c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Sep 12 07:54:10 2010 -0400
+
+    can change overlay opacity with the square brackets
+
+commit 50b28334c915d6159c19bb8509e85d6416e80bc0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Sep 12 07:35:06 2010 -0400
+
+    Added the OVERLAY layout
+
+commit b6f66ff7849f943f8004f4c90be8c6ba2e1345c3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Sep 11 20:16:59 2010 -0400
+
+    Adding statesaving.cpp to the build system
+
+commit 2cb4ebbb38fd232526c4e43e2f5319b94bf87c97
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Sep 11 20:04:01 2010 -0400
+
+    adding statesaving.cpp
+
+commit 38774474775fc85936d4ce62b88e9e9d5bb5980c
+Merge: cc7afc0 b10ecda
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Sep 9 19:53:31 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit cc7afc02ffaa7733d5d2ae84cb29e8a698420f18
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Sep 9 19:50:52 2010 -0400
+
+    added a TODO
+
+commit b10ecda4ee0dffbd9280d7be0afe892595813793
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Sep 8 13:47:38 2010 -0400
+
+    saverworker: remove unnecessary includes
+
+commit 134937fc787962956b07f30eb26d105c16ee6566
+Merge: d8867fb e0ab97f
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Sep 8 13:43:28 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit d8867fb6892fe666d4dee6cdcda7b1f6482153d7
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Sep 8 13:43:24 2010 -0400
+
+    pipeline: simplify string utilization
+
+commit e0ab97f935fde3569cba2659787caef3f62ce62a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Sep 7 19:14:50 2010 -0400
+
+    made video grabbing more verbose
+
+commit 55dddc67562fe7cbd112f20cfb1451ba70a818b1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Sep 5 17:53:18 2010 -0400
+
+    Incremented version to 1.9.5 - not yet released
+
+commit c071af533551f7c63ad5f9ecc0600a75a856da95
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Sep 5 17:47:23 2010 -0400
+
+    updated CONTRIBUTING
+
+commit 1dac6b01589aa4b8e1c91c7637bfccf26898edf6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Sep 5 17:44:51 2010 -0400
+
+    updated RELEASE with a warning about changes
+
+commit ea7bd8e4a9c18914294bf9e72c88225cd53e9d8a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Sep 5 17:42:57 2010 -0400
+
+    updated .gitignore
+
+commit aa7d41856fb786cb0880913f95196cae3c99c4e6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Sep 5 17:42:03 2010 -0400
+
+    updated ChangeLog and RELEASE
+
 commit d6922b058e0067d574d6ec97a3cdc23a0526483a
 Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Sat Sep 4 18:38:34 2010 -0400
