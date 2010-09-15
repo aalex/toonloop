@@ -50,20 +50,35 @@ gboolean Gui::on_mouse_button_event(GtkWidget* /* widget */, GdkEventButton *eve
     Gui *context = static_cast<Gui *>(user_data);
     if (event->type == GDK_BUTTON_PRESS)
     {
-        if (event->button == 1)
-        {
-            //std::cout << "Left mouse button clicked" << std::endl;
-            if (context->owner_->get_configuration()->get_mouse_controls_enabled())
-                context->owner_->get_controller()->add_frame();
-        }
-        else if (event->button == 2)
-        {
-            //std::cout << "Right mouse button clicked" << std::endl;
-        }
+        context->owner_->get_controller()->add_frame();
+        //context->owner_->get_controller()->enable_video_grabbing(true);
+        // if (event->button == 1) // left click
+        // {
+        //     if (context->owner_->get_configuration()->get_mouse_controls_enabled())
+        //         context->owner_->get_controller()->add_frame();
+        // }
+        // else if (event->button == 2) // right click
+        // {
+        //     if (context->owner_->get_configuration()->get_mouse_controls_enabled())
+        //         context->owner_->get_controller()->add_frame();
+        // }
     }
     else if (event->type == GDK_BUTTON_RELEASE)
     {
-        // TODO
+        //context->owner_->get_controller()->enable_video_grabbing(false);
+        //if (event->button == 1)
+        //{
+        //    //std::cout << "Left mouse button clicked" << std::endl;
+        //    if (context->owner_->get_configuration()->get_mouse_controls_enabled())
+        //        context->owner_->get_controller()->add_frame();
+        //}
+        //else if (event->button == 2)
+        //{
+        //    //std::cout << "Right mouse button clicked" << std::endl;
+        //    //std::cout << "Left mouse button clicked" << std::endl;
+        //    if (context->owner_->get_configuration()->get_mouse_controls_enabled())
+        //        context->owner_->get_controller()->add_frame();
+        //}
     }
     return TRUE;
 }
