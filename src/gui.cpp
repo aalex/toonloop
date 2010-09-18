@@ -534,93 +534,90 @@ void on_stage_allocation_changed(ClutterActor * /*stage*/,
  */
 void Gui::resize_actors() 
 {
+    // Hide or show the live input:
     if (current_layout_ == LAYOUT_PLAYBACK_ONLY)
+    {
         clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
-    else 
+    }
+    else if (current_layout_ == LAYOUT_OVERLAY)
+    {    
         clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
-    //else if (current_layout_ == LAYOUT_SPLITSCREEN) {
-    // We could override the paint method of the stage
-    // Or put everything in a container which has an apply_transform()
-    gfloat set_x, set_y, set_width, set_height;
+        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), overlay_opacity_);
+    } 
+    else  // LAYOUT_SPLITSCREEN
+    {
+        clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
+        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
+    }
+        
+    // Figure out the size of the area on which we draw things
+    gfloat area_x, area_y, area_width, area_height;
     gfloat stage_width, stage_height;
 
     clutter_actor_get_size(stage_, &stage_width, &stage_height);
-    
-    set_height = (video_input_height_ * stage_width) / video_input_width_;
-    if (set_height <= stage_height) 
+    area_height = (video_input_height_ * stage_width) / video_input_width_;
+    if (area_height <= stage_height) 
     {
-        set_width = stage_width;
-        set_x = 0;
-        set_y = (stage_height - set_height) / 2;
+        area_width = stage_width;
+        area_x = 0;
+        area_y = (stage_height - area_height) / 2;
     } 
     else 
     {
-        set_width  = (video_input_width_ * stage_height) / video_input_height_;
-        set_height = stage_height;
-        set_x = (stage_width - set_width) / 2;
-        set_y = 0;
+        area_width  = (video_input_width_ * stage_height) / video_input_height_;
+        area_height = stage_height;
+        area_x = (stage_width - area_width) / 2;
+        area_y = 0;
     }
+    // Checks if we are using the whole drawing area, or parts of it for each actor:
+    gfloat live_tex_width = area_width;
+    gfloat live_tex_height = area_height;
+    gfloat live_tex_x = area_x;
+    gfloat live_tex_y = area_y;
+    gfloat playback_tex_width = area_width;
+    gfloat playback_tex_height = area_height;
+    gfloat playback_tex_x = area_x;
+    gfloat playback_tex_y = area_y;
+    // Position actors in the stage:
     if (current_layout_ == LAYOUT_SPLITSCREEN)
     {
-        // Now that we know the ratio of stuff, 
-        // Set the live texture size and position:
-        gfloat live_tex_width = set_width / 2;
-        gfloat live_tex_height = set_height / 2;
-        gfloat live_tex_x = set_x;
-        gfloat live_tex_y = (stage_height / 4);
-        clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), live_tex_x, live_tex_y);
-        clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), live_tex_width, live_tex_height);
+        // live texture size and position:
+        live_tex_width = area_width / 2;
+        live_tex_height = area_height / 2;
+        live_tex_x = area_x;
+        live_tex_y = (stage_height / 4);
 
-        // Set the playback texture size and position:
-        gfloat playback_tex_width = set_width / 2;
-        gfloat playback_tex_height = set_height / 2;
-        gfloat playback_tex_x = (stage_width / 2);
-        gfloat playback_tex_y = (stage_height / 4);
-        for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
-        {
-            clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
-            clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
-            clutter_actor_set_opacity(CLUTTER_ACTOR(*iter), 255);
-        }
-        for (ActorIterator iter = onionskin_textures_.begin(); iter != onionskin_textures_.end(); ++iter)
-        {
-            clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
-            clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
-        }
-        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
+        // playback texture size and position:
+        playback_tex_width = area_width / 2;
+        playback_tex_height = area_height / 2;
+        playback_tex_x = (stage_width / 2);
+        playback_tex_y = (stage_height / 4);
     } 
     else if (current_layout_ == LAYOUT_PLAYBACK_ONLY) 
     {
-        for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
-        {
-            clutter_actor_set_position(CLUTTER_ACTOR(*iter), set_x, set_y);
-            clutter_actor_set_size(CLUTTER_ACTOR(*iter), set_width, set_height);
-            clutter_actor_set_opacity(CLUTTER_ACTOR(*iter), 255);
-        }
-        for (ActorIterator iter = onionskin_textures_.begin(); iter != onionskin_textures_.end(); ++iter)
-        {
-            clutter_actor_set_position(CLUTTER_ACTOR(*iter), set_x, set_y);
-            clutter_actor_set_size(CLUTTER_ACTOR(*iter), set_width, set_height);
-        }
+        // all actors are full screen
     } 
     else if (current_layout_ == LAYOUT_OVERLAY) 
     {
-        for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
-        {
-            clutter_actor_set_position(CLUTTER_ACTOR(*iter), set_x, set_y);
-            clutter_actor_set_size(CLUTTER_ACTOR(*iter), set_width, set_height);
-        }
-        for (ActorIterator iter = onionskin_textures_.begin(); iter != onionskin_textures_.end(); ++iter)
-        {
-            clutter_actor_set_position(CLUTTER_ACTOR(*iter), set_x, set_y);
-            clutter_actor_set_size(CLUTTER_ACTOR(*iter), set_width, set_height);
-        }
-        clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), set_x, set_y);
-        clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), set_width, set_height);
-        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), overlay_opacity_);
+        // all actors are full screen
     } 
     else 
         std::cout << "ERROR: Invalid layout" << std::endl; // should not occur...
+    
+    // Now, set actually everything:
+    clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), live_tex_x, live_tex_y);
+    clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), live_tex_width, live_tex_height);
+    for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
+    {
+        clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
+        clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
+        clutter_actor_set_opacity(CLUTTER_ACTOR(*iter), 255);
+    }
+    for (ActorIterator iter = onionskin_textures_.begin(); iter != onionskin_textures_.end(); ++iter)
+    {
+        clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
+        clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
+    }
 }
 /**
  * Called when the size of the input image has changed.
