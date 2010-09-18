@@ -578,6 +578,7 @@ void Gui::resize_actors()
     gfloat playback_tex_height = area_height;
     gfloat playback_tex_x = area_x;
     gfloat playback_tex_y = area_y;
+    gdouble rotation = 0;
     // Position actors in the stage:
     if (current_layout_ == LAYOUT_SPLITSCREEN)
     {
@@ -607,16 +608,20 @@ void Gui::resize_actors()
     // Now, set actually everything:
     clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), live_tex_x, live_tex_y);
     clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), live_tex_width, live_tex_height);
+    clutter_actor_set_rotation(CLUTTER_ACTOR(live_input_texture_), CLUTTER_Z_AXIS, rotation, live_tex_width / 2, live_tex_height / 2, 0.0f);
+    
     for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
     {
         clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
         clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
         clutter_actor_set_opacity(CLUTTER_ACTOR(*iter), 255);
+        clutter_actor_set_rotation(CLUTTER_ACTOR(*iter), CLUTTER_Z_AXIS, rotation, playback_tex_width / 2, playback_tex_height / 2, 0.0f);
     }
     for (ActorIterator iter = onionskin_textures_.begin(); iter != onionskin_textures_.end(); ++iter)
     {
         clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
         clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
+        clutter_actor_set_rotation(CLUTTER_ACTOR(*iter), CLUTTER_Z_AXIS, rotation, playback_tex_width / 2, playback_tex_height / 2, 0.0f);
     }
 }
 /**
