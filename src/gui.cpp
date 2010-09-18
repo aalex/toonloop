@@ -579,6 +579,7 @@ void Gui::resize_actors() {
             clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
             clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
         }
+        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
     } 
     else if (current_layout_ == LAYOUT_PLAYBACK_ONLY) 
     {

@@ -19,6 +19,7 @@ Right now, here is the list of tasks to prioritize:
  * BUG: the first playback image is white
  * BUG: the first live input image is white
  * make onionskin and ripple/fade effect one-per-clip-based
+ * simplify what is shown and how depending on the layout. 
 
 OSC Messages to implement
 -------------------------
