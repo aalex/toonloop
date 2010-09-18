@@ -110,6 +110,7 @@ void Gui::set_onionskin_opacity(int value)
         std::cout << "onionskin enabled: " << onionskin_enabled_ << std::endl;
         std::cout << "onionskin opacity: " << onionskin_opacity_ << std::endl;
     }
+    // TODO:2010-09-18:aalex:Hide the actors instead of making them transparent.
     if (onionskin_enabled_)
         clutter_actor_set_opacity(CLUTTER_ACTOR(onionskin_textures_.at(0)), onionskin_opacity_);
     else
@@ -134,7 +135,6 @@ gboolean Gui::on_window_state_event(GtkWidget* /*widget*/, GdkEventWindowState *
 void Gui::hideCursor()
 {
     // FIXME: this is because gtk doesn't support GDK_BLANK_CURSOR before gtk-2.16
-    // FIXME:2010-08-06:aalex:Hiding the cursor is currently broken
     char invisible_cursor_bits[] = { 0x0 };
     static GdkCursor* cursor = 0;
     if (cursor == 0)
@@ -188,6 +188,8 @@ void Gui::showCursor()
 
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
+    // TODO:2010-09-18:aalex:Use the accelerators to allow the user to configure the controls
+    // TODO:2010-09-18:aalex:Use Clutter for mouse and keyboard controls
     Gui *context = static_cast<Gui*>(user_data);
 
     switch (event->keyval)
@@ -196,10 +198,10 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
         {
             if ((event->state & GDK_LOCK_MASK) != 0)
             {
-                std::cout << "Caps_Lock off" << std::endl;
+                std::cout << "Caps_Lock off." << std::endl;
                 context->owner_->get_controller()->enable_video_grabbing(false);
             } else {
-                std::cout << "Caps_Lock on" << std::endl;
+                std::cout << "Caps_Lock on. Recording video." << std::endl;
                 context->owner_->get_controller()->enable_video_grabbing(true);
             }
             break;
@@ -210,10 +212,10 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
         case GDK_Down:
             context->owner_->get_controller()->decrease_playhead_fps();
             break;
-        //case GDK_Left:
+        //case GDK_XXX:
         //    context->owner_->get_controller()->set_current_clip_direction(DIRECTION_BACKWARD);
         //    break;
-        //case GDK_Right:
+        //case GDK_XXX:
         //    context->owner_->get_controller()->set_current_clip_direction(DIRECTION_FORWARD);
         //    break;
         case GDK_Tab:
@@ -530,7 +532,13 @@ void on_stage_allocation_changed(ClutterActor * /*stage*/,
  * This is where the actors are resized according to the current layout.
  * Also, the actor transparency and visibility vary in each layout.
  */
-void Gui::resize_actors() {
+void Gui::resize_actors() 
+{
+    if (current_layout_ == LAYOUT_PLAYBACK_ONLY)
+        clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
+    else 
+        clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
+    //else if (current_layout_ == LAYOUT_SPLITSCREEN) {
     // We could override the paint method of the stage
     // Or put everything in a container which has an apply_transform()
     gfloat set_x, set_y, set_width, set_height;
@@ -657,11 +665,6 @@ void Gui::toggle_layout()
 void Gui::set_layout(layout_number layout)
 {
     current_layout_ = layout; 
-    if (current_layout_ == LAYOUT_PLAYBACK_ONLY)
-        clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
-    else 
-        clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
-    //else if (current_layout_ == LAYOUT_SPLITSCREEN) {
     resize_actors();
 }
 
