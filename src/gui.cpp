@@ -48,37 +48,11 @@ typedef std::vector<ClutterActor*>::iterator ActorIterator;
 gboolean Gui::on_mouse_button_event(GtkWidget* /* widget */, GdkEventButton *event, gpointer user_data)
 {
     Gui *context = static_cast<Gui *>(user_data);
+    // Before 2010-09-20 we tried to start/stop video recording but it was buggy
     if (event->type == GDK_BUTTON_PRESS)
     {
-        context->owner_->get_controller()->add_frame();
-        //context->owner_->get_controller()->enable_video_grabbing(true);
-        // if (event->button == 1) // left click
-        // {
-        //     if (context->owner_->get_configuration()->get_mouse_controls_enabled())
-        //         context->owner_->get_controller()->add_frame();
-        // }
-        // else if (event->button == 2) // right click
-        // {
-        //     if (context->owner_->get_configuration()->get_mouse_controls_enabled())
-        //         context->owner_->get_controller()->add_frame();
-        // }
-    }
-    else if (event->type == GDK_BUTTON_RELEASE)
-    {
-        //context->owner_->get_controller()->enable_video_grabbing(false);
-        //if (event->button == 1)
-        //{
-        //    //std::cout << "Left mouse button clicked" << std::endl;
-        //    if (context->owner_->get_configuration()->get_mouse_controls_enabled())
-        //        context->owner_->get_controller()->add_frame();
-        //}
-        //else if (event->button == 2)
-        //{
-        //    //std::cout << "Right mouse button clicked" << std::endl;
-        //    //std::cout << "Left mouse button clicked" << std::endl;
-        //    if (context->owner_->get_configuration()->get_mouse_controls_enabled())
-        //        context->owner_->get_controller()->add_frame();
-        //}
+        if (context->owner_->get_configuration()->get_mouse_controls_enabled())
+            context->owner_->get_controller()->add_frame();
     }
     return TRUE;
 }
@@ -92,7 +66,6 @@ void Gui::set_overlay_opacity(int value)
         clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), overlay_opacity_);
     else
         clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
-        
 }
 
 void Gui::enable_onionskin(bool value)
@@ -502,6 +475,7 @@ void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpoint
     //TODO:2010-08-26:aalex:connect to Controller's on_no_image_to_play
     if(thisclip->size() > 0) 
     {     
+        // do we really need to check an actor is visible before showing it?
         if (! CLUTTER_ACTOR_IS_VISIBLE(context->playback_group_))
             clutter_actor_show_all(CLUTTER_ACTOR(context->playback_group_));
     } else {
@@ -729,7 +703,6 @@ Gui::Gui(Application* owner) :
     gtk_window_set_geometry_hints(GTK_WINDOW(window_), window_, &geometry, GDK_HINT_MIN_SIZE);
     // connect window signals:
     g_signal_connect(G_OBJECT(window_), "delete-event", G_CALLBACK(on_delete_event), this);
-
     g_signal_connect(G_OBJECT(window_), "key-press-event", G_CALLBACK(key_press_event), this);
     g_signal_connect(G_OBJECT(window_), "button-press-event", G_CALLBACK(on_mouse_button_event), this);
     
@@ -812,7 +785,6 @@ Gui::Gui(Application* owner) :
     clutter_timeline_start(timeline_);
 
     /* of course, we need to show the texture in the stage. */
-
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_));
     clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
     
@@ -822,23 +794,19 @@ Gui::Gui(Application* owner) :
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_));
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_), NULL);
   
-    gtk_widget_show_all(window_);
-
     /* Only show the actors after parent show otherwise it will just be
      * unrealized when the clutter foreign window is set. widget_show
      * will call show on the stage.
      */
-    clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
-    clutter_actor_show_all(CLUTTER_ACTOR(playback_group_));
-    clutter_actor_show_all(CLUTTER_ACTOR(onionskin_group_));
-    enable_onionskin(false); // hides it
-    //NO: clutter_actor_show_all(CLUTTER_ACTOR(info_text_actor_));
+    gtk_widget_show_all(window_);
     
-    for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
-        clutter_actor_show_all(CLUTTER_ACTOR(*iter));
-    for (ActorIterator iter = onionskin_textures_.begin(); iter != onionskin_textures_.end(); ++iter)
-        clutter_actor_show_all(CLUTTER_ACTOR(*iter));
+    // Set visibility for other things
+    enable_onionskin(false); // hides it
     clutter_actor_hide(info_text_actor_);
+    // shown when we get first live image size, and we play the first image
+    clutter_actor_hide(live_input_texture_); 
+    clutter_actor_hide_all(CLUTTER_ACTOR(playback_group_));
+    // Makes fullscreen if needed
     if (owner_->get_configuration()->get_fullscreen())
         toggleFullscreen(window_);
 }
