@@ -446,8 +446,9 @@ void Gui::on_frame_added(unsigned int /*clip_number*/, unsigned int image_number
  * (Clutter Timeline handler)
  * Times the playback frames and display it if it's time to do so.
  *
- * Prints the rendering FPS information.
+ * Prints the rendering FPS information. 
  * Calls Controller::update_playback_image
+ * We could draw some stuff using OpenGL in this callback.
  */
 void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpointer user_data)
 {
@@ -484,6 +485,10 @@ void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpoint
         if (CLUTTER_ACTOR_IS_VISIBLE(context->playback_group_))
             clutter_actor_hide_all(CLUTTER_ACTOR(context->playback_group_));
     }
+    // // This is just a test
+    // static float rot = 0.0f;
+    // rot += 1.0f;
+    // clutter_actor_set_rotation(CLUTTER_ACTOR(context->live_input_texture_), CLUTTER_Z_AXIS, rot, 160.0f, 120.0f, 0.0f);
 }
 
 /**
@@ -586,14 +591,13 @@ void Gui::resize_actors()
         // live texture size and position:
         live_tex_width = area_width / 2.0f * (4.0 / 3.0);
         live_tex_height = area_width / 2.0f;
-        live_tex_x = area_x; // to the left
-        //std::cout << "area_x : " << area_x << std::endl;
+        live_tex_x = area_x - ((live_tex_width - live_tex_height) / 2); // to the left
         live_tex_y = area_y + (area_height - live_tex_height) / 2.0f; // TOP 
 
         // playback texture size and position: (some are copied from live tex)
         playback_tex_width = live_tex_width;
         playback_tex_height = live_tex_height;
-        playback_tex_x = area_x + (area_width / 2.0f); // in the middle
+        playback_tex_x = area_width / 2.0f - ((live_tex_width - live_tex_height) / 2); // in the middle
         playback_tex_y = live_tex_y;
         
         // rotation: 
@@ -618,7 +622,7 @@ void Gui::resize_actors()
     {
         clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
         clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
-        clutter_actor_set_rotation(CLUTTER_ACTOR(*iter), CLUTTER_Z_AXIS, rotation, playback_tex_width / 2, playback_tex_height / 2, 0.0f);
+        clutter_actor_set_rotation(CLUTTER_ACTOR(*iter), CLUTTER_Z_AXIS, rotation, playback_tex_width / 2.0f, playback_tex_height / 2.0f, 0.0f);
     }
 }
 /**
