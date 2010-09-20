@@ -581,18 +581,20 @@ void Gui::resize_actors()
 
     else if (current_layout_ == LAYOUT_PORTRAIT)
     {
+        // portrait:
         //TODO:2010-09-20:aalex:Those dimensions are not right at all
         // live texture size and position:
-        live_tex_width = area_height * 0.66666f; //?
+        live_tex_width = area_width / 2.0f * (4.0 / 3.0);
         live_tex_height = area_width / 2.0f;
         live_tex_x = area_x; // to the left
-        live_tex_y = (area_height / 6.0f);
+        //std::cout << "area_x : " << area_x << std::endl;
+        live_tex_y = area_y + (area_height - live_tex_height) / 2.0f; // TOP 
 
-        // playback texture size and position:
-        playback_tex_width = area_height * 0.66666f; // ??
-        playback_tex_height = area_width / 2.0f;
-        playback_tex_x = (stage_width / 2.0f); // in the middle
-        playback_tex_y = (area_height / 6.0f);
+        // playback texture size and position: (some are copied from live tex)
+        playback_tex_width = live_tex_width;
+        playback_tex_height = live_tex_height;
+        playback_tex_x = area_x + (area_width / 2.0f); // in the middle
+        playback_tex_y = live_tex_y;
         
         // rotation: 
         rotation = 90.0f;
@@ -603,14 +605,14 @@ void Gui::resize_actors()
     // Now, set actually everything:
     clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), live_tex_x, live_tex_y);
     clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), live_tex_width, live_tex_height);
-    clutter_actor_set_rotation(CLUTTER_ACTOR(live_input_texture_), CLUTTER_Z_AXIS, rotation, live_tex_width / 2, live_tex_height / 2, 0.0f);
+    clutter_actor_set_rotation(CLUTTER_ACTOR(live_input_texture_), CLUTTER_Z_AXIS, rotation, live_tex_width / 2.0f, live_tex_height / 2.0f, 0.0f);
     
     for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
     {
         clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
         clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
         clutter_actor_set_opacity(CLUTTER_ACTOR(*iter), 255);
-        clutter_actor_set_rotation(CLUTTER_ACTOR(*iter), CLUTTER_Z_AXIS, rotation, playback_tex_width / 2, playback_tex_height / 2, 0.0f);
+        clutter_actor_set_rotation(CLUTTER_ACTOR(*iter), CLUTTER_Z_AXIS, rotation, playback_tex_width / 2.0f, playback_tex_height / 2.0f, 0.0f);
     }
     for (ActorIterator iter = onionskin_textures_.begin(); iter != onionskin_textures_.end(); ++iter)
     {
