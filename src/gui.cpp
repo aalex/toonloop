@@ -235,20 +235,22 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             //* GDK_0 GDK_1 GDK_2 GDK_3 GDK_4 GDK_5 GDK_6 GDK_7 GDK_8 GDK_9
             //* Of course, any other value might lead to a crash.
             // FIXME:2010-08-17:aalex:Doing arithmetics with a gdk keyval is a hack
-            unsigned int index = (event->keyval & 0x0F);
+            unsigned int number_pressed = (event->keyval & 0x0F);
             if (event->state & GDK_CONTROL_MASK)
             {
-                if (index == 0)
+                if (number_pressed == 0)
                     context->set_layout(LAYOUT_SPLITSCREEN);
-                else if (index == 1)
+                else if (number_pressed == 1)
                     context->set_layout(LAYOUT_PLAYBACK_ONLY);
-                else if (index == 2)
+                else if (number_pressed == 2)
                     context->set_layout(LAYOUT_OVERLAY);
+                else if (number_pressed == 3)
+                    context->set_layout(LAYOUT_PORTRAIT);
                 else
-                    std::cout << "No more layouts." << std::endl;
+                    std::cout << "No layout with number " << number_pressed << std::endl;
             }
             else
-                context->owner_->get_controller()->choose_clip(index);
+                context->owner_->get_controller()->choose_clip(number_pressed);
             break;
         }
         case GDK_q:
@@ -518,7 +520,7 @@ void Gui::resize_actors()
         clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
         clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), overlay_opacity_);
     } 
-    else  // LAYOUT_SPLITSCREEN
+    else  // LAYOUT_SPLITSCREEN or LAYOUT_PORTRAIT
     {
         clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
         clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
@@ -576,6 +578,25 @@ void Gui::resize_actors()
     {
         // all actors are full screen
     } 
+
+    else if (current_layout_ == LAYOUT_PORTRAIT)
+    {
+        //TODO:2010-09-20:aalex:Those dimensions are not right at all
+        // live texture size and position:
+        live_tex_width = area_height * 0.66666f; //?
+        live_tex_height = area_width / 2.0f;
+        live_tex_x = area_x; // to the left
+        live_tex_y = (area_height / 6.0f);
+
+        // playback texture size and position:
+        playback_tex_width = area_height * 0.66666f; // ??
+        playback_tex_height = area_width / 2.0f;
+        playback_tex_x = (stage_width / 2.0f); // in the middle
+        playback_tex_y = (area_height / 6.0f);
+        
+        // rotation: 
+        rotation = 90.0f;
+    }
     else 
         std::cout << "ERROR: Invalid layout" << std::endl; // should not occur...
     
@@ -632,6 +653,8 @@ void Gui::toggle_layout()
     else if (current_layout_ == LAYOUT_SPLITSCREEN)
         set_layout(LAYOUT_OVERLAY);
     else if (current_layout_ == LAYOUT_OVERLAY)
+        set_layout(LAYOUT_PORTRAIT);
+    else if (current_layout_ == LAYOUT_PORTRAIT)
         set_layout(LAYOUT_PLAYBACK_ONLY);
 }
 /**
