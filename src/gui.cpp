@@ -162,7 +162,7 @@ void Gui::showCursor()
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
     // TODO:2010-09-18:aalex:Use the accelerators to allow the user to configure the controls
-    // TODO:2010-09-18:aalex:Use Clutter for mouse and keyboard controls
+    // TODO:2010-09-18:aalex:Use Clutter for mouse and keyboard controls (ClutterBindingPool)
     Gui *context = static_cast<Gui*>(user_data);
 
     switch (event->keyval)
