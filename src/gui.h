@@ -36,7 +36,8 @@ const int WINHEIGHT = 480;
 enum layout_number {
     LAYOUT_SPLITSCREEN,
     LAYOUT_OVERLAY,
-    LAYOUT_PLAYBACK_ONLY
+    LAYOUT_PLAYBACK_ONLY,
+    LAYOUT_PORTRAIT
 };
 
 /** This graphical user interface uses GTK and Clutter-GST.
@@ -94,7 +95,7 @@ class Gui
         bool onionskin_enabled_;
         bool enable_hud_;
         // TODO: rename to fade_duration_ratio
-        float duration_ratio_; // RENAME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        float fade_duration_ratio_; // RENAME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 };
 
 #endif // __GUI_H__
