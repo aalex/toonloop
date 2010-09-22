@@ -597,6 +597,7 @@ void Gui::resize_actors()
         // playback texture size and position: (some are copied from live tex)
         playback_tex_width = live_tex_width;
         playback_tex_height = live_tex_height;
+        // FIXME: The following looks OK when the window ration is 4:3 or smaller, but not when bigger than that. 
         playback_tex_x = area_width / 2.0f - ((live_tex_width - live_tex_height) / 2); // in the middle
         playback_tex_y = live_tex_y;
         
