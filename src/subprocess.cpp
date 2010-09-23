@@ -19,10 +19,7 @@
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <cstdlib>
-#include <iostream>
 #include <glib.h>
-#include <glib/gstdio.h>
-#include <glib/gutils.h>
 #include <string>
 #include "subprocess.h"
 
@@ -35,21 +32,21 @@ bool subprocess::run_command(const std::string &command)
     gint status = 0;
     gchar *stdout_message = NULL;
     gchar *stderr_message = NULL;
-    gboolean ret = false;
+    gboolean ret = FALSE;
     
     ret = g_spawn_command_line_sync(command.c_str(), &stdout_message, &stderr_message, &status, &error);
-    if ((error && (0 != error->code)) || ! WIFEXITED(status) || WEXITSTATUS(status)) {
+    if ((error and (error->code != 0)) or ! WIFEXITED(status) or WEXITSTATUS(status)) {
         g_warning("Failed to execute command \"%s\", exited: %i, status: %i, stderr: %s, stdout: %s\n", command.c_str(), WIFEXITED(status), WEXITSTATUS(status), stderr_message ? : "", stdout_message ? : "");
     } else {
         g_print("Successfully ran command \"%s\"\n", command.c_str());
         //std::cout << "Its output is : " << stdout_message << std::endl;
-        ret = true;
+        ret = TRUE;
     }
     if (error)
         g_error_free (error);
     g_free(stdout_message);
     g_free(stderr_message);
-    return ret == true;
+    return ret == TRUE;
 }
 
 
