@@ -413,6 +413,8 @@ void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*imag
  */
 void Gui::on_frame_added(unsigned int /*clip_number*/, unsigned int image_number)
 {
+    if (owner_->get_configuration()->get_verbose())
+        std::cout << "Gui::on_frame_added" << std::endl;
     GError *error = NULL;
     gboolean success;
     // Rotate the textures
