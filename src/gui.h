@@ -30,21 +30,17 @@
 
 class Application;
 
-const int WINWIDTH = 640;
-const int WINHEIGHT = 480;
-
-enum layout_number {
-    LAYOUT_SPLITSCREEN,
-    LAYOUT_OVERLAY,
-    LAYOUT_PLAYBACK_ONLY,
-    LAYOUT_PORTRAIT
-};
-
 /** This graphical user interface uses GTK and Clutter-GST.
  */
 class Gui
 {
     public:
+        enum layout_number {
+            LAYOUT_SPLITSCREEN,
+            LAYOUT_OVERLAY,
+            LAYOUT_PLAYBACK_ONLY,
+            LAYOUT_PORTRAIT
+        };
         ClutterActor* get_live_input_texture() const;
         Gui(Application* owner); 
         ~Gui();
@@ -96,6 +92,8 @@ class Gui
         bool enable_hud_;
         // TODO: rename to fade_duration_ratio
         float fade_duration_ratio_; // RENAME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        static const int WINWIDTH = 640;
+        static const int WINHEIGHT = 480;
 };
 
 #endif // __GUI_H__
