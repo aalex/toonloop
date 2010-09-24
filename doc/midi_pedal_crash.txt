@@ -1,0 +1,75 @@
+In Toonloop version 1.9.5 and up, adding an image with the MIDI sustain pedal makes the app crash with a segfault. 
+
+Since Toonloop 1.9.5, we have a list of images for the onion skinning effect and for the playback. This allows us to display many images, to create some kind of motion blur or visual delay. 
+
+Moving the images around in those lists might not be thread safe. 
+
+The MIDI input might be in a thread, and we call the Controller::add_frame method, which in turn calls Pipeline::grab_frame method, which calls Pipeline::save_image_to_current_clip. This finally triggers the Controller::add_frame_signal_ signal. One of the slots that is subscribed to this signal is Gui::on_frame_added. This loads the image at index 0 of the onion skinning vector on images. 
+
+How to recreate the symptoms:
+
+Plug in a MIDI device. 
+
+You can list input MIDI devices for Toonloop:
+
+{{{
+ $ toonloop --list-midi-inputs
+}}}
+
+Once you know which device to choose, run Toonloop with the MIDI input enabled:
+{{{
+ $ toonloop --midi-input 1 --verbose
+}}}
+
+Here is how to run it with GDB:
+{{{
+ $ gdp ./src/toonloop 
+ (gdb) run --midi-input 1 --verbose
+}}}
+
+A frame is added when we press the sustain pedal. That is control #64 with a value that is not zero. When you press the sustain pedal, Toonloop crashes. It is not the case in Toonloop 1.9.4.
+
+{{{
+on_pedal_down
+Grab a frame. Current clip: 0. Image number: 0
+Failed to load pixbuf file: /home/aalex/Documents/toonloop/default/images/20100924T125425.062812.jpg Image file '/home/aalex/Documents/toonloop/default/images/20100924T125425.062812.jpg' contains no data
+Image /home/aalex/Documents/toonloop/default/images/20100924T125425.062812.jpg saved
+Gui::on_frame_added
+
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 0xb5bd1b70 (LWP 7688)]
+0x0093b406 in glTexImage2D () from /usr/lib/nvidia-current/libGL.so.1
+}}}
+
+Here is how to get the traceback:
+{{{
+(gdb) bt
+}}}
+
+Output:
+
+{{{
+#0  0x0093b406 in glTexImage2D () from /usr/lib/nvidia-current/libGL.so.1
+#1  0x00483927 in ?? () from /usr/lib/libclutter-glx-1.0.so.0
+#2  0x00478cb9 in ?? () from /usr/lib/libclutter-glx-1.0.so.0
+#3  0x004793b6 in ?? () from /usr/lib/libclutter-glx-1.0.so.0
+#4  0x0047789b in cogl_texture_new_from_bitmap ()
+   from /usr/lib/libclutter-glx-1.0.so.0
+#5  0x00477983 in cogl_texture_new_from_file ()
+   from /usr/lib/libclutter-glx-1.0.so.0
+#6  0x00456c95 in clutter_texture_set_from_file ()
+   from /usr/lib/libclutter-glx-1.0.so.0
+#7  0x0807b14e in Gui::on_frame_added(unsigned int, unsigned int) ()
+#8  0x080776d5 in boost::signals2::detail::signal2_impl<void, unsigned int, unsigned int, boost::signals2::optional_last_value<void>, int, std::less<int>, boost::function<void ()(unsigned int, unsigned int)>, boost::function<void ()(boost::signals2::connection const&, unsigned int, unsigned int)>, boost::signals2::mutex>::operator()(unsigned int, unsigned int) ()
+#9  0x080866d1 in Pipeline::save_image_to_current_clip(_GdkPixbuf*) ()
+#10 0x0808916e in Pipeline::grab_frame() ()
+#11 0x00f4be6f in alsaMidiHandler () from /usr/lib/libstk.so.0
+#12 0x00eb696e in start_thread (arg=0xb5bd1b70) at pthread_create.c:300
+#13 0x0119da4e in clone () at ../sysdeps/unix/sysv/linux/i386/clone.S:130
+}}}
+
+How to quit:
+
+{{{
+(gdb) quit
+}}}
