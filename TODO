@@ -11,6 +11,7 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
+ * Onion skinning is disabled since it crashes when used with a MIDI pedal.
  * Auto-record video sometimes doesn't work
  * Make sure the keystroke instructions are in only one place.
  * onionskin: allow to change its opacity
