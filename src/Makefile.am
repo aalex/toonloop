@@ -12,6 +12,7 @@ clean-local:
 headers = \
 	application.h \
 	clip.h \
+	concurrentqueue.h \
 	config.h \
 	configuration.h \
 	controller.h \
