@@ -20,6 +20,7 @@ headers = \
 	gui.h \
 	image.h \
 	log.h \
+	message.h \
 	midi.h \
 	moviesaver.h \
     oscinterface.h \
