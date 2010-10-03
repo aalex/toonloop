@@ -8,6 +8,7 @@ clean-local:
 	rm -rf html
 
 # noinst_PROGRAMS = 
+# FIXME: We should not add all the .h files here
 
 headers = \
 	application.h \
