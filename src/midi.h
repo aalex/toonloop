@@ -45,14 +45,10 @@ class MidiInput
         bool verbose_;
         /** Sets it verbose or not. */
         void set_verbose(bool verbose);
-        /** Flushes the messages from the queue. */
+        /** Flushes the messages from the asynchronous messaging queue. */
         void consume_messages();
     private:
         Application *owner_;
-        //void on_pedal_down();
-        //void on_ctrl_80_changed(bool is_on);
-        //void on_program_change(int number);
-        //void on_volume_control(int volume);
         void push_message(Message message);
         unsigned int port_;
         unsigned int ports_count_;

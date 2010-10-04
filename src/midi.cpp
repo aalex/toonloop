@@ -30,18 +30,20 @@
 /**
  * Callback for incoming MIDI messages.  Called in its thread.
  * 
- * MIDI controller 64 is the sustain pedal controller. It looks like this:
+ * - Pressing the sustain pedal down grabs a frame.
+ *   MIDI controller 64 is the sustain pedal controller. It looks like this:
  *   <channel and status> <controller> <value>
- * Where the controller number is 64 and the value is either 0 or 127.
+ *   Where the controller number is 64 and the value is either 0 or 127.
  *
- * The MIDI controller 80 is also a pedal on the Roland GFC-50.
- * It controls video grabbing.
+ * - The MIDI controller 80 is also a pedal on the Roland GFC-50.
+ *   It controls video grabbing. (on / off)
  *
- * The program change should allow the user to choose another instrument. 
- * This way, the Roland GFC-50 allows to select any of ten clips.
- * The MIDI spec allows for 128 programs, numbered 0-127.
+ * - The program change should allow the user to choose another instrument. 
+ *   This way, the Roland GFC-50 allows to select any of ten clips.
+ *   The MIDI spec allows for 128 programs, numbered 0-127.
  *
- * Main volume is control 7. It controls the playback speed.
+ * - Main volume is control 7. It controls the playback speed.
+ *   Volume is from 0 to 127.
  */
 void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char > *message, void *user_data )
 {
@@ -112,19 +114,6 @@ bool MidiInput::is_open() const
 {
     return opened_;
 }
-///** Called when the main volume pedal value is changed.
-// *
-// * Volume is from 0 to 127.
-// *
-// * The volume control in MIDI is number 7.
-// */
-//void MidiInput::on_volume_control(int volume)
-//{
-//    if (owner_->get_configuration()->get_verbose())
-//        std::cout << "on_volume_control" << volume << std::endl;
-//    unsigned int fps = volume / 4;
-//    owner_->get_controller()->set_playhead_fps(fps);
-//}
 
 void MidiInput::push_message(Message message)
 {
@@ -169,36 +158,6 @@ void MidiInput::consume_messages()
         }
     }
 }
-
-///** Called when a sustain MIDI pedal goes down.
-// *
-// * Sustain pedal is control 64.
-// */
-//void MidiInput::on_pedal_down()
-//{
-//    if (owner_->get_configuration()->get_verbose())
-//        std::cout << "on_pedal_down" << std::endl;
-//    owner_->get_controller()->add_frame();
-//}
-// /** Called when a control #80's value changes.
-//  */
-// void MidiInput::on_ctrl_80_changed(bool is_on)
-// {
-//     if (owner_->get_configuration()->get_verbose())
-//         std::cout << "control #80's value changed:" << is_on << std::endl;
-//     owner_->get_controller()->enable_video_grabbing(is_on);
-// }
-/** Called when the user sends a program change message
- */
-//void MidiInput::on_program_change(unsigned int number)
-//{
-//    if (number >= 10)
-//        std::cout << "Cannot choose a clip greater or equal to 10." << std::endl; 
-//    else
-//    {
-//        owner_->get_controller()->choose_clip(number);
-//    }
-//}
 
 MidiInput::MidiInput(Application* owner) : 
         owner_(owner),
@@ -249,6 +208,8 @@ bool MidiInput::open(unsigned int port)
     // Set our callback function.  This should be done immediately after
     // opening the port to avoid having incoming messages written to the
     // queue instead of sent to the callback function.
+    // TODO:2010-10-03:aalex:Pass only a pointer to the concurrent queue, no the whole MidiInput instance, 
+    // which is not thread safe
     midi_in_->setCallback(&input_message_cb, (void *) this);
     // Don't ignore sysex, timing, or active sensing messages.
     //midi_in_->ignoreTypes(false, false, false);

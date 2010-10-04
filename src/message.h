@@ -30,16 +30,17 @@ class Message
         {
             ADD_IMAGE,
             REMOVE_IMAGE,
+            VIDEO_RECORD_ON,
+            VIDEO_RECORD_OFF,
+            SELECT_CLIP
+            // TODO: implement the other messages:
             //SAVE_CLIP,
             //SAVE_PROJECT,
             //MOVE_WRITEHEAD_LEFT,
             //MOVE_WRITEHEAD_RIGHT,
             //MOVE_WRITEHEAD_BEGINNING,
             //MOVE_WRITEHEAD_END,
-            VIDEO_RECORD_ON,
-            VIDEO_RECORD_OFF,
             //SET_PLAYHEAD_FPS,
-            SELECT_CLIP
         };
         // Constructor with no arg
         Message() : 
@@ -64,6 +65,7 @@ class Message
         Command get_command() { return command_; }
     private:
         Command command_;
+        // TODO:2010-10-03:aalex:Maybe sometimes the value will not be an unsigned int.
         unsigned int value_;
 };
 
