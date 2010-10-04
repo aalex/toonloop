@@ -6,6 +6,7 @@ This release is an unstable version in the 1.9 series. This version contains new
 New features:
     * Added the --width and --height options
     * Using an asynchronous messaging queue for the MIDI controls
+    * New portrait layout
 
 Bug fixes: 
     * Attenuated the undesired white flash on startup
