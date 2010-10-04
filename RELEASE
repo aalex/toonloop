@@ -12,4 +12,5 @@ Bug fixes:
     * Attenuated the undesired white flash on startup
     * half-loaded images when frames are taken with the MIDI pedal
     * onion skinning crashes when the Controller::add_frame_signal_ is triggered by the MIDI pedal. 
+    * onion skinning must be over the live input, not the playback
 

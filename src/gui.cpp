@@ -614,10 +614,12 @@ void Gui::resize_actors()
         std::cout << "ERROR: Invalid layout" << std::endl; // should not occur...
     
     // Now, set actually everything:
+    // Live input:
     clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), live_tex_x, live_tex_y);
     clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), live_tex_width, live_tex_height);
     clutter_actor_set_rotation(CLUTTER_ACTOR(live_input_texture_), CLUTTER_Z_AXIS, rotation, live_tex_width / 2.0f, live_tex_height / 2.0f, 0.0f);
     
+    // Playback:
     for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
     {
         clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
@@ -625,11 +627,12 @@ void Gui::resize_actors()
         clutter_actor_set_opacity(CLUTTER_ACTOR(*iter), 255);
         clutter_actor_set_rotation(CLUTTER_ACTOR(*iter), CLUTTER_Z_AXIS, rotation, playback_tex_width / 2.0f, playback_tex_height / 2.0f, 0.0f);
     }
+    // Onion skin: same as live input
     for (ActorIterator iter = onionskin_textures_.begin(); iter != onionskin_textures_.end(); ++iter)
     {
-        clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
-        clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
-        clutter_actor_set_rotation(CLUTTER_ACTOR(*iter), CLUTTER_Z_AXIS, rotation, playback_tex_width / 2.0f, playback_tex_height / 2.0f, 0.0f);
+        clutter_actor_set_position(CLUTTER_ACTOR(*iter), live_tex_x, live_tex_y);
+        clutter_actor_set_size(CLUTTER_ACTOR(*iter), live_tex_width, live_tex_height);
+        clutter_actor_set_rotation(CLUTTER_ACTOR(*iter), CLUTTER_Z_AXIS, rotation, live_tex_width / 2.0f, live_tex_height / 2.0f, 0.0f);
     }
 }
 /**
@@ -805,8 +808,6 @@ Gui::Gui(Application* owner) :
         clutter_container_add_actor(CLUTTER_CONTAINER(onionskin_group_), CLUTTER_ACTOR(onionskin_textures_.at(0)));
         clutter_container_raise_child(CLUTTER_CONTAINER(onionskin_group_), CLUTTER_ACTOR(onionskin_textures_.at(0)), NULL);
     }
-    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_), NULL);
-    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(onionskin_group_), NULL);
 
     // Background color:
     ClutterColor stage_color = { 0x00, 0x00, 0x00, 0xff };
@@ -828,6 +829,9 @@ Gui::Gui(Application* owner) :
     info_text_actor_ = clutter_text_new_full("", "Sans 16px", clutter_color_new(255, 255, 255, 255));
     update_info_text();
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_));
+    // Sort actors and groups:
+    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_), NULL);
+    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(onionskin_group_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_), NULL);
   
     /* Only show the actors after parent show otherwise it will just be
