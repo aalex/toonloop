@@ -23,6 +23,7 @@ Right now, here is the list of tasks to prioritize:
  * onionskin: allow to change its opacity
  * onionskin: load the image just before writehead's position
  * make onionskin and ripple/fade effect one-per-clip-based
+ * Remove dependency to GTK. (GUI controls should use Clutter)
 
 We should also try to fix the following issues: 
 
