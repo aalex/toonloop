@@ -464,6 +464,8 @@ void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpoint
     static Timer fps_calculation_timer = Timer();
     
     Gui *context = static_cast<Gui*>(user_data);
+
+    context->owner_->check_for_messages();
     bool verbose = context->owner_->get_configuration()->get_verbose();
     Clip *thisclip = context->owner_->get_current_clip();
     

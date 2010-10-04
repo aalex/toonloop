@@ -63,6 +63,8 @@ class Application
         unsigned int get_current_clip_number();
         /** Should be only called directly by Controller::choose_clip */
         void set_current_clip_number(unsigned int clipnumber);
+        /** Checks for asynchronous messages and treat them */
+        void check_for_messages();
 
     private:
         void update_project_home_for_each_clip();

@@ -373,3 +373,8 @@ void Application::quit()
     gtk_main_quit();
 }
 
+void Application::check_for_messages()
+{
+    // TODO: move message handling here.
+    get_midi_input()->consume_messages();    
+}
