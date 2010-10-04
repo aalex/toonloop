@@ -141,6 +141,8 @@ void Application::run(int argc, char *argv[])
         ("osc-send-port,P", po::value<std::string>(), "Sets the port to send OSC messages to")
         ("osc-send-addr,a", po::value<std::string>()->default_value("localhost"), "Sets the IP address to send OSC messages to")
         ("enable-mouse-controls,M", po::bool_switch(), "Enables simple controls with the mouse.")
+        ("width", po::value<int>()->default_value(DEFAULT_CAPTURE_WIDTH), "Image capture width")
+        ("height", po::value<int>()->default_value(DEFAULT_CAPTURE_HEIGHT), "Image capture height")
         ; // <-- important semi-colon
     po::variables_map options;
     

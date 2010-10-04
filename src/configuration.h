@@ -78,6 +78,8 @@ class Configuration
         std::string get_osc_send_port() const { return osc_send_port_; }
         std::string get_osc_send_addr() const { return osc_send_addr_; }
         bool get_mouse_controls_enabled() const { return mouse_controls_enabled_; }
+        int get_capture_width() const { return capture_width_; }
+        int get_capture_height() const { return capture_height_; }
     private:
         //int capture_frame_rate_;
         //int rendering_frame_rate_;
@@ -93,6 +95,8 @@ class Configuration
         std::string osc_recv_port_;
         std::string osc_send_port_;
         std::string osc_send_addr_;
+        int capture_width_;
+        int capture_height_;
 };
 #endif // __CONFIGURATION_H__
 

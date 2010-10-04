@@ -48,6 +48,8 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     // video_source_ = options["video-source"].as<std::string>();
     if (midi_input_number_ != MIDI_INPUT_NONE) // Means disabled
         std::cout << "Using MIDI input " << midi_input_number_ << std::endl;
+    capture_width_ = options["width"].as<int>();
+    capture_height_ = options["height"].as<int>();
 }
 
 void Configuration::set_project_home(const std::string &project_home)
