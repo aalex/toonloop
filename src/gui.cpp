@@ -323,8 +323,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
                 clutter_actor_hide(context->info_text_actor_);
             break;
         case GDK_o:
-            //context->enable_onionskin( ! context->onionskin_enabled_);
-            std::cout << "Onion skinning is disabled for now." << std::endl;
+            context->enable_onionskin( ! context->onionskin_enabled_);
             break;
         default:
             break;
@@ -427,14 +426,13 @@ void Gui::on_frame_added(unsigned int /*clip_number*/, unsigned int image_number
         std::cout << "Could not get a handle to any image!" << std::endl;
     else
     {
-    // FIXME:2010-09-24:aalex: onion skinning crashes when the Controller::add_frame_signal_ is triggered by the MIDI pedal. 
-#if 0
         GError *error = NULL;
         gboolean success;
         std::string file_name = clip->get_image_full_path(image);
         // Load file
         //std::cout << "Loading " << file_name << " for onion skin" << std::endl;
         success = clutter_texture_set_from_file(CLUTTER_TEXTURE(onionskin_textures_.at(0)), file_name.c_str(), &error);
+        // If ever we have many onion skins, we might raise the latest one:
         // //clutter_container_raise_child(CLUTTER_CONTAINER(onionskin_group_), CLUTTER_ACTOR(onionskin_textures_.at(0)), NULL);
         if (!success)
         {
@@ -443,7 +441,6 @@ void Gui::on_frame_added(unsigned int /*clip_number*/, unsigned int image_number
         } else {
             //std::cout << "Loaded image " <<  image_full_path << std::endl;
         }
-#endif 
     }
 }
 

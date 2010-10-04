@@ -1,11 +1,14 @@
-2010-0?-??: Toonloop 1.9.6
+2010-??-??: Toonloop 1.9.6
 --------------------------
 
 This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. 
 
 New features:
-    * 
+    * Added the --width and --height options
+    * Using an asynchronous messaging queue for the MIDI controls
 
 Bug fixes: 
     * Attenuated the undesired white flash on startup
+    * half-loaded images when frames are taken with the MIDI pedal
+    * onion skinning crashes when the Controller::add_frame_signal_ is triggered by the MIDI pedal. 
 
