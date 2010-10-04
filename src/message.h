@@ -30,23 +30,29 @@ class Message
         {
             ADD_IMAGE,
             REMOVE_IMAGE,
-            SAVE_CLIP,
-            SAVE_PROJECT,
-            MOVE_WRITEHEAD_LEFT,
-            MOVE_WRITEHEAD_RIGHT,
-            MOVE_WRITEHEAD_BEGINNING,
-            MOVE_WRITEHEAD_END,
+            //SAVE_CLIP,
+            //SAVE_PROJECT,
+            //MOVE_WRITEHEAD_LEFT,
+            //MOVE_WRITEHEAD_RIGHT,
+            //MOVE_WRITEHEAD_BEGINNING,
+            //MOVE_WRITEHEAD_END,
+            VIDEO_RECORD_ON,
+            VIDEO_RECORD_OFF,
+            //SET_PLAYHEAD_FPS,
             SELECT_CLIP
         };
+        // Constructor with no arg
+        Message() : 
+            command_(), value_(0) {}
         /**
          * Constructor. One must provide at least a command id.
          */
-        MTMessage(Command c) : 
+        Message(Command c) : 
             command_(c), value_(0) {}
         /**
          * Constructor for commands which accept a unsigned int as an argument.
          */
-        MTMessage(MTCommand c, unsigned int value):
+        Message(Command c, unsigned int value) :
             command_(c), value_(value) {}
         /** 
          * Returns the value. Useful for the SELECT_CLIP command.

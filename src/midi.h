@@ -19,9 +19,11 @@
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef _MIDI_H_
 #define _MIDI_H_
+
+#include "concurrentqueue.h"
+#include "message.h"
 
 class Application;
 class RtMidiIn;
@@ -31,25 +33,32 @@ class RtMidiIn;
 class MidiInput
 {
     public:
+        /** Contructor. */
         MidiInput(Application *owner);
+        /** Opens a MIDI source device. */
         bool open(unsigned int port);
         ~MidiInput();
+        /** Enumerates the list of MIDI source devices. */
         void enumerate_devices() const;
         static void input_message_cb(double delta_time, std::vector<unsigned char> *message, void *user_data);
         bool is_open() const;
-        //boost::signals2::signal<void ()> pedal_down_signal_;
         bool verbose_;
+        /** Sets it verbose or not. */
         void set_verbose(bool verbose);
+        /** Flushes the messages from the queue. */
+        void consume_messages();
     private:
         Application *owner_;
-        void on_pedal_down();
-        void on_ctrl_80_changed(bool is_on);
-        void on_program_change(int number);
-        void on_volume_control(int volume);
+        //void on_pedal_down();
+        //void on_ctrl_80_changed(bool is_on);
+        //void on_program_change(int number);
+        //void on_volume_control(int volume);
+        void push_message(Message message);
         unsigned int port_;
         unsigned int ports_count_;
         RtMidiIn *midi_in_;
         bool opened_;
+        ConcurrentQueue<Message> messaging_queue_;
 };
 
 #endif // _MIDI_H_
