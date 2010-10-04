@@ -48,6 +48,9 @@ Toonloop interactive keyboard controls :
  - left: move writehead to the previous image
  - return: move writehead to the last image
  - semicolon: move writehead to the first image
+ - o: enable/disable onion skinning
+ - (): decrease/increase frame blending in playback
+ - []: increase/decrease opacity of the live input image in the overlay layout.
 
 [OSC INTERFACE]
 
