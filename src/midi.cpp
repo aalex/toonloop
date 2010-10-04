@@ -225,5 +225,7 @@ void MidiInput::set_verbose(bool verbose)
 }
 
 MidiInput::~MidiInput()
-{}
+{
+    delete midi_in_;
+}
 
