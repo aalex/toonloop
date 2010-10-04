@@ -11,6 +11,7 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
+ * Use boost::any for the message args. See http://www.boost.org/doc/libs/1_43_0/doc/html/any/s02.html
  * Add the --layout option
  * Add the --intervalometer-rate option
  * Add the --enable-intervalometer option
