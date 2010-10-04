@@ -367,29 +367,23 @@ Pipeline::Pipeline(Application* owner) :
     {
         if (config->videoSource() == std::string("x")) 
         {
-            g_object_set(G_OBJECT(videosrc_), "endx", 640, NULL);
-            g_object_set(G_OBJECT(videosrc_), "endy", 480, NULL);
-            //std::cout << "Calling gst_caps_from_string" << std::endl;
+            g_object_set(G_OBJECT(videosrc_), "endx", config->get_capture_width(), NULL);
+            g_object_set(G_OBJECT(videosrc_), "endy", config->get_capture_height(), NULL);
             GstCaps *the_caps = gst_caps_from_string("video/x-raw-rgb, framerate=30/1");
             g_object_set(capsfilter0, "caps", the_caps, NULL);
             gst_caps_unref(the_caps);
             
         } else {
-            //std::cout << "Using 640x480 @ 30 FPS for the videotestsrc." << std::endl;
-            //g_object_set(capsfilter0, "caps", gst_caps_from_string("video/x-raw-yuv, width=640, height=480, framerate=30/1"));
-            //std::cout << "Calling gst_caps_from_string" << std::endl;
+            //TODO:2010-10-04:aalex:Use config.get_capture_* for test source as well
             GstCaps *the_caps = gst_caps_from_string("video/x-raw-yuv, width=640, height=480, framerate=30/1");
-            //std::cout << "Calling g_object_set on the caps." << std::endl;
             g_object_set(capsfilter0, "caps", the_caps, NULL);
             gst_caps_unref(the_caps);
-            //std::cout << "set the caps for the testsrc" << std::endl;
         }
         is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
         if (!is_linked) {
             g_print("Could not link %s to %s.\n", "videosrc_", "capfilter0"); 
             exit(1); 
         }
-        //std::cout << "videosrc is linked" << std::endl;
         source_is_linked = true;
     } else {
         // Guess the right FPS to use with the video capture device
@@ -495,7 +489,9 @@ Pipeline::Pipeline(Application* owner) :
 
 // Desctructor. TODO: do we need to free anything?
 Pipeline::~Pipeline() {}
-
+/**
+ * Tries to guess the frame rate for a V4L2 source.
+ */
 std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
 {
     LOG_DEBUG("Trying to guess source FPS " << framerateIndex);
@@ -544,10 +540,11 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
     //capsSuffix += config_.pixelAspectRatio();
     //capsSuffix += "4:3";
     
+    Configuration *config = owner_->get_configuration();
     capsStr << "video/x-raw-yuv, width=" 
-        << "640" //<< config_.captureWidth() 
+        << config->get_capture_width() 
         << ", height="
-        << "480" //<< config_.captureHeight()
+        << config->get_capture_height()
         << ", framerate="
         << capsSuffix;
     LOG_DEBUG("Video source caps are " << capsStr.str());
