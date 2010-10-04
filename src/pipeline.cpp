@@ -178,11 +178,9 @@ void Pipeline::remove_frame()
 {
     Clip *thisclip = owner_->get_current_clip();
 
-    //thisclip->lock_mutex();
     //int num_deleted;
     //num_deleted = 
     thisclip->frame_remove();
-    //thisclip->unlock_mutex();
     //if (num_deleted > 0)
     //    std::cout << "Deleted " << num_deleted << " frames in clip " << thisclip->get_id() << std::endl; 
 }
@@ -197,7 +195,6 @@ void Pipeline::grab_frame()
     if (! GDK_IS_PIXBUF(pixbuf))
     {
         std::cout << "No picture yet to grab!" << std::endl;
-        //thisclip->unlock_mutex();
     } else {
         save_image_to_current_clip(pixbuf);
     }
@@ -215,7 +212,6 @@ void Pipeline::save_image_to_current_clip(GdkPixbuf *pixbuf)
 {
     Clip *thisclip = owner_->get_current_clip();
     bool is_verbose = owner_->get_configuration()->get_verbose();
-    //thisclip->lock_mutex();
     int current_clip_id = thisclip->get_id();
     int w = gdk_pixbuf_get_width(pixbuf);
     int h = gdk_pixbuf_get_height(pixbuf);
@@ -256,7 +252,6 @@ void Pipeline::save_image_to_current_clip(GdkPixbuf *pixbuf)
             g_print("Image %s saved\n", file_name.c_str());
         owner_->get_controller()->add_frame_signal_(current_clip_id, new_image_number);
     }
-    //thisclip->unlock_mutex();
 }
 
 /**
@@ -282,15 +277,12 @@ Pipeline::Pipeline(Application* owner) :
         record_all_frames_enabled_(false)
 {
     Configuration *config = owner_->get_configuration();
-
     set_intervalometer_is_on(false);
-    
-    //onionskin_texture_ = Texture();
-    //playback_texture_ = Texture();
     pipeline_ = NULL;
     pipeline_ = GST_PIPELINE(gst_pipeline_new("pipeline"));
     
     // Video source element
+    // TODO: add more input types like in Ekiga
     if (config->videoSource() == "test")
     {
         std::cout << "Video source: videotestsrc" << std::endl;
@@ -305,29 +297,12 @@ Pipeline::Pipeline(Application* owner) :
     {
         std::cout << "Video source: v4l2src" << std::endl;
         videosrc_  = gst_element_factory_make("v4l2src", "videosrc0"); 
-        // TODO: add more input types like in Ekiga
     }
-    g_assert(videosrc_); 
     // TODO: use something else than g_assert to see if we could create the elements.
+    g_assert(videosrc_); 
     
-    // capsfilter element #0
-        // Possible values for the capture FPS:
-        // 25/1 
-        // 30000/1001
-        // 30/1
-    GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
     // capsfilter0, for the capture FPS and size
-    
-    // TODO: we should use the capture_frame_rate, not the rendering frame rate!
-    // There are 3 FPS values to consider.
-    //GstCaps *caps = gst_caps_new_simple("video/x-raw-yuv", // TODO: rgb ?
-    //                                    "width", G_TYPE_INT, 640, // TODO: make configurable!
-    //                                    "height", G_TYPE_INT, 480,
-    //                                    "framerate", GST_TYPE_FRACTION, config.get_capture_fps() * 1000, 1001,
-    //                                    NULL); 
-    //std::cout << "Video capture caps: " << 640 << "x" << 480 << " @ " << config.get_capture_fps() << std::endl;
-    //g_object_set(capsfilter0, "caps", caps, NULL);
-    //gst_caps_unref(caps);
+    GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
 
     // ffmpegcolorspace0 element
     GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
@@ -346,7 +321,6 @@ Pipeline::Pipeline(Application* owner) :
     g_assert(queue1);
     gdkpixbufsink_ = gst_element_factory_make("gdkpixbufsink", "gdkpixbufsink0");
     g_assert(gdkpixbufsink_);
-    //gst_caps_unref(outcaps);
 
     // add elements
     gst_bin_add(GST_BIN(pipeline_), videosrc_); // capture
@@ -405,8 +379,7 @@ Pipeline::Pipeline(Application* owner) :
             }
         }
     }
-    //std::cout << "Figured out the caps of the video source." << std::endl;
-    //std::cout << "Will now link capfilter0--ffmpegcolorspace0--tee." << std::endl;
+    //Will now link capfilter0--ffmpegcolorspace0--tee.
     is_linked = gst_element_link_pads(capsfilter0, "src", ffmpegcolorspace0, "sink");
     if (!is_linked) {
         g_print("Could not link %s to %s.\n", "capsfilter0", "ffmpegcolorspace0"); 
@@ -417,7 +390,7 @@ Pipeline::Pipeline(Application* owner) :
         g_print("Could not link %s to %s.\n", "ffmpegcolorspace0", "tee0"); 
         exit(1);
     }
-    //std::cout << "Will now link tee--queue--videosink." << std::endl;
+    //Will now link tee--queue--videosink.
     is_linked = gst_element_link_pads(tee0, "src0", queue0, "sink");
     if (!is_linked) {
         g_print("Could not link %s to %s.\n", "tee0", "sink"); 
@@ -432,7 +405,7 @@ Pipeline::Pipeline(Application* owner) :
     }
 
     // output 1: the GdkPixbuf sink
-    //std::cout << "Will now link tee--queue--pixbufsink." << std::endl;
+    //Will now link tee--queue--pixbufsink.
     is_linked = gst_element_link_pads(tee0, "src1", queue1, "sink");
     if (!is_linked) { 
         g_print("Could not link %s to %s.\n", "tee0", "queue1"); 
@@ -457,11 +430,10 @@ Pipeline::Pipeline(Application* owner) :
     // TODO:2010-08-06:aalex:We could rely on gstremer-properties to configure the video source.
     if (config->videoSource() != "test" and config->videoSource() != "x")
     {
-        std::string device_name(config->videoSource()); // "/dev/video0";
+        std::string device_name(config->videoSource());
         g_print("Using camera %s.\n", device_name.c_str());
         g_object_set(videosrc_, "device", device_name.c_str(), NULL); 
     }
-    // make it play !!
 
     /* run */
     GstStateChangeReturn ret;
@@ -531,11 +503,11 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
     capsSuffix += "/";
     capsSuffix += boost::lexical_cast<std::string>(framerate_denominator);
 
-    // TODO: 
+    // TODO: handle interlaced video capture stream
     //if (v4l2util::isInterlaced(deviceStr()))
     //    capsSuffix +=", interlaced=true";
 
-    // TODO:
+    // TODO: handle aspect ratio
     //capsSuffix += ", pixel-aspect-ratio=";
     //capsSuffix += config_.pixelAspectRatio();
     //capsSuffix += "4:3";
@@ -551,7 +523,6 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
     ret = gst_element_set_state(videosrc_, GST_STATE_NULL);
     if (ret not_eq GST_STATE_CHANGE_SUCCESS)
         THROW_ERROR("Could not change v4l2src state to NULL");
-
     return capsStr.str();
 }
 

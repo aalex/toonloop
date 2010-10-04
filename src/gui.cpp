@@ -156,11 +156,11 @@ void Gui::showCursor()
  * - (): increase/decrease fading between images
  * - o: toggles onion skinning
  * - []: increase/decrease opacity of the live input image in the overlay layout.
- * - TODO: Ctrl-s: save the whole project
  */
 
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
+    // TODO: Ctrl-s: save the whole project
     // TODO:2010-09-18:aalex:Use the accelerators to allow the user to configure the controls
     // TODO:2010-09-18:aalex:Use Clutter for mouse and keyboard controls (ClutterBindingPool)
     Gui *context = static_cast<Gui*>(user_data);
