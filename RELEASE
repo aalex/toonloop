@@ -1,7 +1,7 @@
-2010-??-??: Toonloop 1.9.6
+2010-10-04: Toonloop 1.9.6
 --------------------------
 
-This release is an unstable version in the 1.9 series. This version contains new features preparing the 2.0 stable series. 
+This release is an unstable version in the 1.9 series. This version contains new features and bug fixes preparing the 2.0 stable series. 
 
 New features:
     * Added the --width and --height options
@@ -15,4 +15,5 @@ Bug fixes:
     * onion skinning must be over the live input, not the playback
     * Both ctrl-S and S saves the current clips to a movie
     * simplify what is shown and how depending on the layout. 
+    * midi.cpp: delete dynamically allocated RTMidi object in destructor.
 
