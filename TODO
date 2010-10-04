@@ -11,16 +11,27 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * Onion skinning is disabled since it crashes when used with a MIDI pedal.
+ * Add the --layout option
+ * Add the --intervalometer-rate option
+ * Add the --enable-intervalometer option
+ * Add the --default-fps option
+ * Add easy controls for playback direction.
+ * Add easy controls for layout.
+ * Create a simpler HUD with position of writehead and playhead.
+ * Allow to move playhead to the beginning of a clip when we switch to it.
+ * Allow more then ten clips.
+ * onionskin: allow to change its opacity
+ * onionskin: load the image just before writehead's position
+ * make onionskin and ripple/fade effect one-per-clip-based
+
+We should also try to fix the following issues: 
+
  * Auto-record video sometimes doesn't work
  * Make sure the keystroke instructions are in only one place.
- * onionskin: allow to change its opacity
  * onionskin: avoid a white image when none has been taken
- * onionskin: load the image just before writehead's position
  * BUG: the first playback image is white
  * BUG: the first live input image is white
- * make onionskin and ripple/fade effect one-per-clip-based
- * simplify what is shown and how depending on the layout. 
+
 
 OSC Messages to implement
 -------------------------
@@ -129,3 +140,6 @@ Done
 
 See also the doc/DONE document.
  * mouse: support mouse controls (disabled by default)
+ * Onion skinning is disabled since it crashes when used with a MIDI pedal.
+ * simplify what is shown and how depending on the layout. 
+

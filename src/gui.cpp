@@ -268,6 +268,8 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             if (event->state & GDK_CONTROL_MASK)
             {
                 g_print("Ctrl-S key pressed, TODO: save the whole project.\n");
+                // For now, we save the clip anyways
+                context->owner_->get_controller()->save_current_clip();
             } else // no Ctrl pressed
                 context->owner_->get_controller()->save_current_clip();
             break;

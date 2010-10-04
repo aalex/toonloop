@@ -6,7 +6,7 @@
                                     |_|    
 
 This is Toonloop version 1.9.x. It is a complete rewrite of the application in 
-C++ with Gstreamer. It is still in an alpha stage. 
+C++ with Gstreamer. It is in a beta stage. 
 
 
 Basic Tools for Compiling

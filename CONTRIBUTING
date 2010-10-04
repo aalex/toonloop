@@ -75,6 +75,7 @@ It's simpler to keep bugs in tickets, but tasks in a TODO file.
 
 This README.txt file is for developers. The installations instructions are one level higher, in the README file.
 
+
 List of C++ files in Toonloop 2.x
 ---------------------------------
 
@@ -92,7 +93,6 @@ Here is a short description of each header file:
  * pipeline.h : Where most is done. The GST pipeline, writing images to disk, video capture, etc.
  * subprocess.h : Tool to call processes.
  * timing.h : Tools to measure time and format dates.
- * tween.h : Tool to create motion interpolation. (in-betweens)
  * v4l2util.h : Tools to poll V4L2 video devices.
 
 
@@ -105,7 +105,35 @@ Toonloop version 0.x was written in Processing. It is Java. The GNU/Linux versio
 
 In Python, Toonloop 1.x is relying on the Pygame library for the video capture. Was is most annoying is that Pygame's video capture library is far from complete and the development is slow. Also, Pygame's release process could be improved. The packaging is done faster for Ubuntu than for Debian. I never got to install the 1.9 version on a Mac OS X system. Finally, SDL handles pretty badly the fullscreen mode. After working with Gstreamer for an other project, I decided to use it for the video capture in Toonloop 2.x. 
 
-Gstreamer offers us many means to catpure video. It's currently the best cross-platform video capture library. Vicap might comes second. VLC is pretty good too. I wanted to use OpenGL in order to do nice compositing, like the overlay mode, only possible efficiently with GLSL shaders. C++ is harder than Python and Java, and can lead to errors such as memory leak or segmentation faults, but it is also a lot faster when it's time to load an image's pixels. A lower-level approach gives more control to the developer. 
+GStreamer offers us many means to capture video. It's currently the best cross-platform video capture library. Vicap might comes second. VLC is pretty good too. I wanted to use OpenGL in order to do nice compositing, like the overlay mode, only possible efficiently with GLSL shaders. C++ is harder than Python and Java, and can lead to errors such as memory leak or segmentation faults, but it is also a lot faster when it's time to load an image's pixels. A lower-level approach gives more control to the developer. 
+
+
+Coding style
+------------
+
+Let's now describe a bit the C++ coding style in Toonloop.
+
+ * variables should be lowercase words, separated by underscores. Like "egg_spam".
+ * Class attributes should be lowercase words, separated by underscores, with a trailing underscore. Like "egg_spam_".
+ * Class names should be camel case. Like "EggSpam".
+ * File names should be lowercase, and the words should be stuck together. Like "eggspam.cpp" and "eggspam.h".
+ * The file name should be named after the single class it contents, if possible. 
+ * If a file contains no class, but only functions, they should enclosed be in a namespace.
+ * Try to comment the methods, attributes and classes you write. Use inline comments, plus the Doxygen-style headers.
+ * Try to explain what a thing does in how you name it.
+ * Indent with four spaces. No tabs.
+ * No need to use curly braces with if, for, do, and while statements if they contain only one line of code. (but indent it)
+ * Since this is C++, use 0, not NULL.
+ * Similarly, use true/false, not TRUE/FALSE.
+
+
+Libraries we use
+----------------
+
+ * Use boost::signals2 to subscribe to events.
+ * Use boost::filesystem for file-related operations.
+ * Use Clutter for anything that is related to OpenGL.
+ * Use the ConcurrentQueue class for asynchronous messaging between threads.
 
 
 Image number maths

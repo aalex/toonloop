@@ -13,4 +13,6 @@ Bug fixes:
     * half-loaded images when frames are taken with the MIDI pedal
     * onion skinning crashes when the Controller::add_frame_signal_ is triggered by the MIDI pedal. 
     * onion skinning must be over the live input, not the playback
+    * Both ctrl-S and S saves the current clips to a movie
+    * simplify what is shown and how depending on the layout. 
 
