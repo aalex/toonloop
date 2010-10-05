@@ -5,6 +5,8 @@ This release is an unstable version in the 1.9 series. This version contains new
 
 New features:
     * Add the --max-images-per-clip option. Default is 0. (infinity)
+    * Add the --intervalometer-rate option
+    * Add the --enable-intervalometer option
 
 Bug fixes: 
     * 

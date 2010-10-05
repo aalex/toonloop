@@ -11,8 +11,7 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * Add the --intervalometer-rate option
- * Add the --enable-intervalometer option
+ * The first image that is grabbed with the intervalometer is black.
  * Allow more than ten clips.
  * Add the --layout option
  * Add the --default-fps option

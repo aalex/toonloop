@@ -51,6 +51,7 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     capture_width_ = options["width"].as<int>();
     capture_height_ = options["height"].as<int>();
     max_images_per_clip_ = options["max-images-per-clip"].as<int>();
+    default_intervalometer_rate_ = options["intervalometer-rate"].as<int>();
 }
 
 void Configuration::set_project_home(const std::string &project_home)

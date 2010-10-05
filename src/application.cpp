@@ -143,7 +143,9 @@ void Application::run(int argc, char *argv[])
         ("enable-mouse-controls,M", po::bool_switch(), "Enables simple controls with the mouse.")
         ("width", po::value<int>()->default_value(DEFAULT_CAPTURE_WIDTH), "Image capture width")
         ("height", po::value<int>()->default_value(DEFAULT_CAPTURE_HEIGHT), "Image capture height")
-        ("max-images-per-clip", po::value<int>()->default_value(0), "If no zero, sets a maximum number of images per clip. The first image is then removed when one is added.")
+        ("max-images-per-clip", po::value<int>()->default_value(0), "If not zero, sets a maximum number of images per clip. The first image is then removed when one is added.")
+        ("enable-intervalometer", po::bool_switch(), "Enables the intervalometer for the default clip at startup.")
+        ("intervalometer-rate", po::value<int>()->default_value(10), "Sets the default intervalometer rate.")
         ; // <-- important semi-colon
     po::variables_map options;
     
@@ -305,6 +307,11 @@ void Application::run(int argc, char *argv[])
         else
             std::cout << "MIDI: Failed to open port " << config_->get_midi_input_number() << std::endl;
     }
+    // Sets the intervalometer stuff.
+    for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
+        iter->second->set_intervalometer_rate(config_->get_default_intervalometer_rate());
+    if (options["enable-intervalometer"].as<bool>())
+        get_controller()->toggle_intervalometer();
     std::cout << "Running toonloop" << std::endl;
     gtk_main();
 }
