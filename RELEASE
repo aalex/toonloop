@@ -4,7 +4,7 @@
 This release is an unstable version in the 1.9 series. This version contains new features and bug fixes preparing the 2.0 stable series. 
 
 New features:
-    * 
+    * Add the --max-images-per-clip option. Default is 0. (infinity)
 
 Bug fixes: 
     * 

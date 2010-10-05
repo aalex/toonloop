@@ -11,25 +11,24 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * Use boost::any for the message args. See http://www.boost.org/doc/libs/1_43_0/doc/html/any/s02.html
- * Add the --layout option
  * Add the --intervalometer-rate option
  * Add the --enable-intervalometer option
+ * Allow more than ten clips.
+ * Add the --layout option
  * Add the --default-fps option
- * Add easy controls for playback direction.
- * Add easy controls for layout.
+ * Add direct controls for playback direction.
+ * Add direct controls for layout.
  * Create a simpler HUD with position of writehead and playhead.
  * Allow to move playhead to the beginning of a clip when we switch to it.
- * Allow more then ten clips.
  * onionskin: allow to change its opacity
  * onionskin: load the image just before writehead's position
  * make onionskin and ripple/fade effect one-per-clip-based
- * Remove dependency to GTK. (GUI controls should use Clutter)
  * Add the --video-source option. Default is v4l2
- * Add the --max-images-per-clip option. Default is 0. (infinity)
 
 We should also try to fix the following issues: 
 
+ * Use boost::any for the message args. See http://www.boost.org/doc/libs/1_43_0/doc/html/any/s02.html
+ * Remove dependency to GTK. (GUI controls should use Clutter)
  * Auto-record video sometimes doesn't work
  * Make sure the keystroke instructions are in only one place.
  * onionskin: avoid a white image when none has been taken
