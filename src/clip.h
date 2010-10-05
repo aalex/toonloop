@@ -22,7 +22,6 @@
 #ifndef __CLIP_H__
 #define __CLIP_H__
 
-// #include <boost/thread/mutex.hpp>
 #include <iostream>
 #include <map>
 #include <string>
@@ -67,8 +66,6 @@ class Clip
         void set_playhead_fps(unsigned int fps);
         void increase_playhead_fps();
         void decrease_playhead_fps();
-        //void lock_mutex();
-        //void unlock_mutex();
         void set_has_recorded_frame();
         bool get_has_recorded_frame() const;
         void set_directory_path(const std::string &directory_path);
@@ -100,7 +97,6 @@ class Clip
         std::vector< std::tr1::shared_ptr<Image> > images_;
         unsigned int playhead_fps_;
         bool has_recorded_a_frame_;
-        //boost::mutex mutex_;
         std::string directory_path_;
         std::string file_extension_;
         /** Used to store time stamp of when grabbed last image.

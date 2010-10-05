@@ -311,16 +311,6 @@ void Clip::decrease_playhead_fps()
     }
 }
 
-// void Clip::lock_mutex()
-// {
-//     mutex_.lock();
-// }
-// 
-// void Clip::unlock_mutex()
-// {
-//     mutex_.unlock();
-// }
-
 bool Clip::get_has_recorded_frame() const
 {
     return has_recorded_a_frame_;
