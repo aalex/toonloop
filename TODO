@@ -11,21 +11,21 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * The first image that is grabbed with the intervalometer is black.
- * Allow more than ten clips.
  * Add the --layout option
- * Add the --default-fps option
- * Add direct controls for playback direction.
- * Add direct controls for layout.
+ * Allow more than ten clips.
  * Create a simpler HUD with position of writehead and playhead.
- * Allow to move playhead to the beginning of a clip when we switch to it.
  * onionskin: allow to change its opacity
  * onionskin: load the image just before writehead's position
- * make onionskin and ripple/fade effect one-per-clip-based
- * Add the --video-source option. Default is v4l2
 
 We should also try to fix the following issues: 
 
+ * Allow to move playhead to the beginning of a clip when we switch to it.
+ * make onionskin and ripple/fade effect one-per-clip-based
+ * Add direct controls for playback direction.
+ * Add direct controls for layout.
+ * The first image that is grabbed with the intervalometer is black.
+ * Add the --video-source option. Default is v4l2
+ * Add the --default-fps option
  * Use boost::any for the message args. See http://www.boost.org/doc/libs/1_43_0/doc/html/any/s02.html
  * Remove dependency to GTK. (GUI controls should use Clutter)
  * Auto-record video sometimes doesn't work
