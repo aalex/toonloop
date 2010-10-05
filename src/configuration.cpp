@@ -50,6 +50,7 @@ Configuration::Configuration(const boost::program_options::variables_map &option
         std::cout << "Using MIDI input " << midi_input_number_ << std::endl;
     capture_width_ = options["width"].as<int>();
     capture_height_ = options["height"].as<int>();
+    max_images_per_clip_ = options["max-images-per-clip"].as<int>();
 }
 
 void Configuration::set_project_home(const std::string &project_home)

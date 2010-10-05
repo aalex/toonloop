@@ -251,6 +251,17 @@ void Pipeline::save_image_to_current_clip(GdkPixbuf *pixbuf)
         if (is_verbose)
             g_print("Image %s saved\n", file_name.c_str());
         owner_->get_controller()->add_frame_signal_(current_clip_id, new_image_number);
+        // Removes the first image if the maximum number of frames has been reached.
+        if (owner_->get_configuration()->get_max_images_per_clip() != 0)
+        {
+            unsigned int max_num = (unsigned int) owner_->get_configuration()->get_max_images_per_clip();
+            if (thisclip->size() > max_num)
+            {
+                thisclip->remove_first_image();
+                if (is_verbose)
+                    std::cout << "Removing the first image! Max of " << max_num << " has been reached." << std::endl;
+            }
+        }
     }
 }
 

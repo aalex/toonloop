@@ -115,7 +115,7 @@ void Application::run(int argc, char *argv[])
 {
     std::string video_source = "/dev/video0";
     std::string project_home = DEFAULT_PROJECT_HOME;
-    po::options_description desc("Toonloop live stop motion animation editor");
+    po::options_description desc("Toonloop live animation editor");
     // std::cout << "adding options" << std::endl;
     desc.add_options()
         ("help,h", "Show this help message and exit")
@@ -143,6 +143,7 @@ void Application::run(int argc, char *argv[])
         ("enable-mouse-controls,M", po::bool_switch(), "Enables simple controls with the mouse.")
         ("width", po::value<int>()->default_value(DEFAULT_CAPTURE_WIDTH), "Image capture width")
         ("height", po::value<int>()->default_value(DEFAULT_CAPTURE_HEIGHT), "Image capture height")
+        ("max-images-per-clip", po::value<int>()->default_value(0), "If no zero, sets a maximum number of images per clip. The first image is then removed when one is added.")
         ; // <-- important semi-colon
     po::variables_map options;
     
