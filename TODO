@@ -25,6 +25,8 @@ Right now, here is the list of tasks to prioritize:
  * onionskin: load the image just before writehead's position
  * make onionskin and ripple/fade effect one-per-clip-based
  * Remove dependency to GTK. (GUI controls should use Clutter)
+ * Add the --video-source option. Default is v4l2
+ * Add the --max-images-per-clip option. Default is 0. (infinity)
 
 We should also try to fix the following issues: 
 
