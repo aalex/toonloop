@@ -11,6 +11,7 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
+ * Use a messaging queue for the OSC callbacks
  * Add the --layout option
  * Allow more than ten clips.
  * Create a simpler HUD with position of writehead and playhead.
