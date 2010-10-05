@@ -78,6 +78,8 @@ class Clip
         /** The intervalometer speed is in seconds */
         float get_intervalometer_rate() const { return intervalometer_rate_; }
         void set_intervalometer_rate(const float rate);
+        bool remove_last_image();
+        bool remove_first_image();
     private:
         unsigned int id_;
         unsigned int playhead_;
@@ -104,6 +106,7 @@ class Clip
          * Useful for either the intervalometer, or the video grabbing.
          */
         long last_time_grabbed_image_;
+        void make_sure_playhead_and_writehead_are_valid();
 };
 
 #endif // __CLIP_H__

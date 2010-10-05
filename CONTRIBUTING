@@ -125,6 +125,7 @@ Let's now describe a bit the C++ coding style in Toonloop.
  * No need to use curly braces with if, for, do, and while statements if they contain only one line of code. (but indent it)
  * Since this is C++, use 0, not NULL.
  * Similarly, use true/false, not TRUE/FALSE.
+ * Declare local variables as close as possible to where they are used, not in the beginning of the method.
 
 
 Libraries we use

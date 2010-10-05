@@ -181,18 +181,56 @@ unsigned int Clip::frame_remove()
         images_.erase(images_.begin() + (writehead_ - 1));
         how_many_deleted = 1;
         // let's decrement the writehead and playhead
-        --writehead_;
-        if (playhead_ >= size())
-        {
-            if (size() == 0)
-                playhead_ = 0;
-            else
-                playhead_ = size() - 1;
-        }
+        if (writehead_ > 0)
+            --writehead_;
+        make_sure_playhead_and_writehead_are_valid();
     }
     return how_many_deleted;
 }
 
+
+void Clip::make_sure_playhead_and_writehead_are_valid()
+{
+    if (playhead_ >= size())
+    {
+        if (size() == 0)
+            playhead_ = 0;
+        else
+            playhead_ = size() - 1;
+    }
+    if (writehead_ > images_.size()) 
+        writehead_ = size();
+}
+
+bool Clip::remove_last_image()
+{
+    if (size() > 0)
+    {
+        images_.erase(images_.end());
+        // let's decrement the writehead and playhead
+        if (writehead_ > 0 && writehead_ >= size())
+            --writehead_;
+        make_sure_playhead_and_writehead_are_valid();
+        return true;
+    } 
+    else
+        return false;
+}
+
+bool Clip::remove_first_image()
+{
+    if (size() > 0)
+    {
+        images_.erase(images_.begin());
+        // let's decrement the writehead and playhead
+        if (writehead_ > 0)
+            --writehead_;
+        make_sure_playhead_and_writehead_are_valid();
+        return true;
+    }
+    else
+        return false;
+}
 
 unsigned int Clip::get_playhead() const
 {
