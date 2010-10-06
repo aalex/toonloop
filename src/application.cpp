@@ -148,6 +148,7 @@ void Application::run(int argc, char *argv[])
         ("enable-intervalometer", po::bool_switch(), "Enables the intervalometer for the default clip at startup.")
         ("intervalometer-rate", po::value<float>()->default_value(10.0), "Sets the default intervalometer rate.")
         ("layout", po::value<unsigned int>()->default_value(0), "Sets the layout number.") // TODO:2010-10-05:aalex:Print the NUM_LAYOUTS
+        ("remove-deleted-images", po::bool_switch(), "Enables the removal of useless image files.")
         ; // <-- important semi-colon
     po::variables_map options;
     
@@ -232,6 +233,8 @@ void Application::run(int argc, char *argv[])
     config_->set_project_home(project_home);
     update_project_home_for_each_clip();
     config_->set_video_source(video_source);
+    
+    
 
     // Start OSC
     if (config_->get_osc_recv_port() != OSC_PORT_NONE)
@@ -314,6 +317,10 @@ void Application::run(int argc, char *argv[])
         iter->second->set_intervalometer_rate(config_->get_default_intervalometer_rate());
     if (options["enable-intervalometer"].as<bool>())
         get_controller()->toggle_intervalometer();
+
+    // Sets the remove_deleted_images thing
+    for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
+        iter->second->set_remove_deleted_images(config_->get_remove_deleted_images());
     // Choose layout
     unsigned int layout = options["layout"].as<unsigned int>();
     if (layout < NUM_LAYOUTS)

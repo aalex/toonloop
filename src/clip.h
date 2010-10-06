@@ -80,6 +80,7 @@ class Clip
         void set_intervalometer_rate(const float rate);
         bool remove_last_image();
         bool remove_first_image();
+        void set_remove_deleted_images(bool enabled);
     private:
         unsigned int id_;
         unsigned int playhead_;
@@ -107,6 +108,8 @@ class Clip
          */
         long last_time_grabbed_image_;
         void make_sure_playhead_and_writehead_are_valid();
+        bool remove_deleted_images_;
+        void remove_image_file(unsigned int index);
 };
 
 #endif // __CLIP_H__

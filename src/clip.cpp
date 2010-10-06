@@ -23,10 +23,14 @@
 #include "configuration.h"
 #include "image.h"
 #include "timing.h"
+#include <boost/filesystem.hpp>
 #include <string>
 #include <iostream>
 #include <tr1/memory>
 #include <boost/thread/mutex.hpp>
+
+//typedef std::vector< std::tr1::shared_ptr<Image> >::iterator ImageIterator;
+namespace fs = boost::filesystem;
 
 // FIXME: vector is not thread safe. You need to protect it with a mutex or such.
 /** Each clip needs a unique ID.
@@ -145,7 +149,6 @@ void Clip::set_writehead(unsigned int new_value)
         writehead_ = new_value;
 }
 
-
 /**
  * Delete an image for the clip.
  * Returns how many images it has deleted. (0 or 1)
@@ -178,7 +181,12 @@ unsigned int Clip::frame_remove()
             std::cout << "Set the writehead position to " << writehead_ << std::endl;
         } 
         std::cout << "Deleting image at position " << (writehead_ - 1) << "/" << (images_.size()  - 1) << std::endl;
-        images_.erase(images_.begin() + (writehead_ - 1));
+        unsigned int pos = writehead_ - 1;
+        if (remove_deleted_images_)
+        {
+            remove_image_file(pos);
+        }
+        images_.erase(images_.begin() + (pos));
         how_many_deleted = 1;
         // let's decrement the writehead and playhead
         if (writehead_ > 0)
@@ -187,7 +195,6 @@ unsigned int Clip::frame_remove()
     }
     return how_many_deleted;
 }
-
 
 void Clip::make_sure_playhead_and_writehead_are_valid()
 {
@@ -361,8 +368,42 @@ void Clip::set_has_recorded_frame()
 
 void Clip::clear_all_images()
 {
+    if (remove_deleted_images_)
+    {
+        for (unsigned int i = 0; i < images_.size(); i++)
+            remove_image_file(i);
+    }
+    //for (ImageIterator iter = images_.begin(); iter != images_.end(); ++iter)
+    //    &(*iter)
+
+    //    std::string Clip::get_image_full_path(Image* image) const
     images_.clear();
     playhead_ = 0;
     writehead_ = 0;
+}
+
+void Clip::set_remove_deleted_images(bool enabled)
+{
+    // TODO:2010-10-06:aalex:If that option is changed globally, change it for each clip.
+    remove_deleted_images_ = enabled;
+}
+
+void Clip::remove_image_file(unsigned int index)
+{
+    Image* image = get_image(index);
+    if (image == 0)
+        std::cout << "Could not get a handle to any image!" << std::endl;
+    else
+    {
+        std::string file_name = get_image_full_path(image);
+        fs::path file_path = fs::path(file_name);
+        if (fs::exists(file_path))
+        {
+            fs::remove(file_path);
+            std::cout << "Removed file " << file_name << std::endl;
+        }
+        else
+            std::cout << "File " << file_name << " does not exist!" << std::endl;
+    }
 }
 

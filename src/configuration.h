@@ -82,6 +82,8 @@ class Configuration
         int get_capture_height() const { return capture_height_; }
         int get_max_images_per_clip() const { return max_images_per_clip_; }
         float get_default_intervalometer_rate() const { return default_intervalometer_rate_; }
+        bool get_remove_deleted_images() const { return remove_deleted_images_; }
+        
     private:
         //int capture_frame_rate_;
         //int rendering_frame_rate_;
@@ -101,6 +103,7 @@ class Configuration
         int capture_height_;
         int max_images_per_clip_;
         float default_intervalometer_rate_;
+        bool remove_deleted_images_;
 };
 #endif // __CONFIGURATION_H__
 

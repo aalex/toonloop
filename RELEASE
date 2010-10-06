@@ -9,6 +9,7 @@ New features:
     * Add the --enable-intervalometer option
     * Add the --layout option
     * Use a messaging queue for the OSC callbacks
+    * Added the --remove-deleted-images option
 
 
 Bug fixes: 
