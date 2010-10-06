@@ -3,20 +3,27 @@ Toonloop can send and receive OSC messages. Here is the list of messages it can 
 Messages Toonloop can receive
 -----------------------------
 
- * /ping : Answers with /pong
- * /pong
- * /toon/quit : Quits
- * /toon/frame/add : Grabs a frame
- * /toon/frame/remove : Removes a frame
+ * /ping: Answer with /pong
+ * /pong: Do nothing.
+ * /toon/quit: Quit
+ * /toon/frame/add: Grab a frame
+ * /toon/frame/remove: Remove a frame
 
 
 Messages sent by Toonloop
 -------------------------
 
-Toonloop might send the following messages:
+Toonloop sends the following OSC messages:
 
  * /pong
+ * /toon/clip/cleared i:clip_number
+ * /toon/clip/fps i:clip_number i:fps
+ * /toon/clip/playhead i:clip_number i:image_number s:file_name
+ * /toon/clip/saved i:clip_number s:file_name
+ * /toon/clip/select i:clip_number
  * /toon/frame/add i:clip_number i:frame_number
  * /toon/frame/remove i:clip_number i:frame_number
- * /toon/clip/playhead i:clip_number i:image_number s:file_name
+ * /toon/playhead/direction i:clip_number s:direction
+ * /toon/playhead/none
+
 
