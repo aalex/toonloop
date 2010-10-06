@@ -11,7 +11,6 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * Use a messaging queue for the OSC callbacks
  * Allow more than ten clips.
  * Create a simpler HUD with position of writehead and playhead.
  * onionskin: allow to change its opacity
@@ -145,4 +144,4 @@ See also the doc/DONE document.
  * Onion skinning is disabled since it crashes when used with a MIDI pedal.
  * simplify what is shown and how depending on the layout. 
  * Add the --layout option
-
+ * Use a messaging queue for the OSC callbacks

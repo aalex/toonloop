@@ -8,7 +8,9 @@ New features:
     * Add the --intervalometer-rate option
     * Add the --enable-intervalometer option
     * Add the --layout option
+    * Use a messaging queue for the OSC callbacks
+
 
 Bug fixes: 
-    * 
+    * Fixed a crash with the OSC interface.
 
