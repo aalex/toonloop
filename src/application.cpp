@@ -146,6 +146,7 @@ void Application::run(int argc, char *argv[])
         ("max-images-per-clip", po::value<int>()->default_value(0), "If not zero, sets a maximum number of images per clip. The first image is then removed when one is added.")
         ("enable-intervalometer", po::bool_switch(), "Enables the intervalometer for the default clip at startup.")
         ("intervalometer-rate", po::value<int>()->default_value(10), "Sets the default intervalometer rate.")
+        ("layout", po::value<std::string>()->default_value("splitscreen"), "Sets the layout. Values can also be overlay, playback-only and portrait.")
         ; // <-- important semi-colon
     po::variables_map options;
     
@@ -312,6 +313,16 @@ void Application::run(int argc, char *argv[])
         iter->second->set_intervalometer_rate(config_->get_default_intervalometer_rate());
     if (options["enable-intervalometer"].as<bool>())
         get_controller()->toggle_intervalometer();
+    // Choose layout
+    Gui::layout_number layout = Gui::LAYOUT_SPLITSCREEN;
+    if (options["layout"].as<std::string>() == "overlay")
+        layout = Gui::LAYOUT_OVERLAY;
+    else if (options["layout"].as<std::string>() == "playback-only")
+        layout = Gui::LAYOUT_PLAYBACK_ONLY;
+    else if (options["layout"].as<std::string>() == "portrait")
+        layout = Gui::LAYOUT_PORTRAIT;
+    gui_->set_layout(layout);
+    // Run the main loop
     std::cout << "Running toonloop" << std::endl;
     gtk_main();
 }
