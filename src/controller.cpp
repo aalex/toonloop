@@ -48,7 +48,7 @@ void Controller::add_frame()
 void Controller::remove_frame()
 {
     Clip* clip = owner_->get_current_clip();
-    LOG_DEBUG("remove frame from clip #" << clip->get_id());
+    //LOG_DEBUG("remove frame from clip #" << clip->get_id());
     int deleted_frame_number = clip->get_writehead() - 1;
     if (deleted_frame_number < 0)
         deleted_frame_number = 0;
@@ -66,7 +66,7 @@ void Controller::choose_clip(unsigned int clip_number)
     else 
     {
         owner_->set_current_clip_number(clip_number);
-        LOG_DEBUG("choose_clip #" << clip_number);
+        //LOG_DEBUG("choose_clip #" << clip_number);
         choose_clip_signal_(clip_number);
     }
 }
@@ -118,7 +118,6 @@ void Controller::update_playback_image()
     Clip *thisclip = owner_->get_current_clip();
     bool move_playhead = false;
     bool need_refresh = false;
-    
 
     playback_timer.tick();
 
@@ -361,7 +360,6 @@ void Controller::move_writehead_to_previous()
     if (current_position != 0)
         move_writehead_to(current_position - 1);
 }
-
 
 void Controller::move_writehead_to_last()
 {
