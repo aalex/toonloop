@@ -1,9 +1,9 @@
 [DESCRIPTION]
-Toonloop is a live stop motion animation software. It aims to show the creation process to the audience as well as the result of the creation. The frame by frame animation is made by adding frames one by one to a clip made of many frames. Clips are displayed in a never ending loop. 
+Toonloop is a live stop motion animation software. It aims to show the creation process to the audience as well as the result of the creation. The frame by frame animation is made by adding frames one by one to a clip made of many frames. Clips are displayed in a never ending loop. Toonloop can also grab video images continuously.
 
 Toonloop is a great tool for teaching new medias to children. It can also be used as a professionnal software for movie creators, though it is mainly intended to be used in a live kiosk of show. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop.
 
-Toonloop can be controlled using MIDI input, or the Open Sound Control protocol. Images are saved to the disk in the JPEG formant, and the clips are saved using the photo-JPEG video codec (using mencoder). 
+Toonloop can be controlled using MIDI input, or the Open Sound Control protocol. Images are saved to the disk in the JPEG format, and the clips are saved using the photo-JPEG video codec. (using mencoder)
 
 [SYNOPSIS]
 toonloop [options]
@@ -28,28 +28,29 @@ Note that if Toonloop crashes at startup, you should verify that your camera /de
 Toonloop is an interactive software. While it runs, the user can control it using keyboard keys. Here is the list of keystrokes to control Toonloop.
 
 Toonloop interactive keyboard controls :
- - SPACE: grab a single image.
- - ESC: switches fullscreen mode.
- - DELETE: erases the last captured frame.
- - Ctrl-q: quits
- - Page-down: switch to the next clip
- - Page-up: switch to the previous clip
- - Number from 0 to 9: switch to a specific clip
- - s: saves the current clip as a movie file
- - period: toggles the layout
- - Tab: changes the playback direction
- - r: clears the current clip.
- - Caps lock: toggle video grabbing.
- - a: Toggles on/off the intervalometer
- - k: increase intervalometer interval by 1 second
- - j: decrease intervalometer interval by 1 second
- - right: move writehead to the next image
- - left: move writehead to the previous image
- - return: move writehead to the last image
- - semicolon: move writehead to the first image
- - o: enable/disable onion skinning
- - (): decrease/increase frame blending in playback
- - []: increase/decrease opacity of the live input image in the overlay layout.
+ - Space: Grab a single image.
+ - Escape: Switch fullscreen mode.
+ - Delete: Erase the last captured frame.
+ - Ctrl-q: Quit.
+ - Page-down: Switch to the next clip.
+ - Page-up: Switch to the previous clip.
+ - Number from 0 to 9: Switch to a specific clip.
+ - Ctrl-number: Switch to a specific layout.
+ - s: Save the current clip as a movie file.
+ - period (.): Toggle the layout.
+ - Tab: Change the playback direction.
+ - r: Clear the current clip.
+ - Caps lock: Toggle video grabbing.
+ - a: Toggle on/off the intervalometer.
+ - k: Increase the intervalometer interval by 1 second.
+ - j: Decrease the intervalometer interval by 1 second.
+ - Right: Move writehead to the next image.
+ - Left: Move writehead to the previous image.
+ - Return: Move writehead to the last image.
+ - semicolon (;): Move writehead to the first image.
+ - o: Enable/disable onion skinning.
+ - (): Decrease/increase frame blending in playback layout.
+ - []: Increase/decrease opacity of the live input image in the overlay layout.
 
 [OSC INTERFACE]
 Toonloop can send and receive messages using the Open Sound Protocol. 
@@ -59,10 +60,10 @@ The list of messages it handles and might send is available in the OSC file that
 [MIDI INTERFACE]
 Toonloop can be used with MIDI control devices. Here is the list of controls it supports: 
 
- - 64: (sustain pedal) Grabs a still image
- - 80: Grabs video
+ - 64: (sustain pedal) Grab a still image
+ - 80: Grab video
  - Program change: choose a clip
- - 7: (main volume) changes playback speed
+ - 7: (main volume) change playback speed
 
 The Roland GFC-50 Foot Controller is a nice MIDI device that is useful to
 control Toonloop. The sustain pedal controls single-image grabbing,
@@ -84,10 +85,10 @@ Alexandre Quessy, Tristan Matthews and Vasilis Liaskovitis.
 
 Contributers include Tristan Matthews, Vasilis Liaskovitis, mose, Arjan Scherpenisse and the Society for Arts and Technology.
 
-Toonloop is an idea of Alexandre Quessy, and is his research project for his master at UQAM. It is similar to the live animation work of Pierre Hebert and Frédéric Back, respectively. Toonloop is released under the GNU GPL. 
+Toonloop is an idea of Alexandre Quessy, and is his research project for his master at UQAM. It is similar to the live animation work of Pierre Hebert, Frédéric Back and other artists. Toonloop is released under the GNU GPL. 
 
 [REPORTING BUGS]
-See http://www.toonloop.com for URL of the Toonloop mailing list.
+See http://www.toonloop.com for the URL of the Toonloop mailing list.
 
 [COPYRIGHT]
 Copyright 2010 Alexandre Quessy
