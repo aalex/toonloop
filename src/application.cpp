@@ -275,9 +275,9 @@ void Application::run(int argc, char *argv[])
         }
     } else
         std::cout << "OSC sender is disabled" << std::endl;
+    osc_.reset(new OscInterface(this, config_->get_osc_recv_port(), config_->get_osc_send_port(), config_->get_osc_send_addr()));
     if (config_->get_osc_recv_port() != OSC_PORT_NONE || config_->get_osc_send_port() != OSC_PORT_NONE)
     {
-        osc_.reset(new OscInterface(this, config_->get_osc_recv_port(), config_->get_osc_send_port(), config_->get_osc_send_addr()));
         osc_->start();
     }
 
@@ -315,8 +315,11 @@ void Application::run(int argc, char *argv[])
     if (options["enable-intervalometer"].as<bool>())
         get_controller()->toggle_intervalometer();
     // Choose layout
-    if (options["layout"].as<unsigned int>() < NUM_LAYOUTS)
-        gui_->set_layout((Gui::layout_number) options["layout"].as<unsigned int>());
+    unsigned int layout = options["layout"].as<unsigned int>();
+    if (layout < NUM_LAYOUTS)
+        gui_->set_layout((Gui::layout_number) layout);
+    else
+        std::cout << "There is no layout number " << layout << ". Using 0." << std::endl;
     // Run the main loop
     std::cout << "Running toonloop" << std::endl;
     gtk_main();

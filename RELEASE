@@ -12,5 +12,6 @@ New features:
 
 
 Bug fixes: 
-    * Fixed a crash with the OSC interface.
+    * Fixed a crash when the OSC interface was enabled.
+    * Fixed an crash when the OSC interface was disabled.
 
