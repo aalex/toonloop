@@ -23,8 +23,10 @@
 #define __OSC_INTERFACE_H__
 
 #include <string>
-#include "./oscreceiver.h"
-#include "./oscsender.h"
+#include "concurrentqueue.h"
+#include "message.h"
+#include "oscreceiver.h"
+#include "oscsender.h"
 
 class Application;
 /** Open Sound Control sending and receiving for Toonloop.
@@ -39,6 +41,8 @@ class OscInterface
                 const std::string &send_addr); 
         ~OscInterface();
         void start();
+        /** Flushes the messages from the asynchronous messaging queue. */
+        void consume_messages();
     private:
         void on_add_frame(unsigned int clip_number, unsigned int frame_number);
         void on_remove_frame(unsigned int clip_number, unsigned int frame_number);
@@ -71,6 +75,8 @@ class OscInterface
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
         void connect_signals_to_sending_slots();
+        void push_message(Message message);
+        ConcurrentQueue<Message> messaging_queue_;
 };
 
 #endif // __OSC_INTERFACE_H__

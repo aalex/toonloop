@@ -43,7 +43,8 @@ OscInterface::OscInterface(
     sender_(send_addr, send_port),
     sending_enabled_(false),
     receiving_enabled_(false),
-    owner_(owner)
+    owner_(owner),
+    messaging_queue_()
 {
     if (listen_port != OSC_PORT_NONE)
         receiving_enabled_ = true;
@@ -183,7 +184,7 @@ int OscInterface::addFrameCb(
 {
     std::cout << "Got /toon/frame/add" << std::endl;
     OscInterface* context = static_cast<OscInterface*>(user_data);
-    context->owner_->get_pipeline()->grab_frame();
+    context->push_message(Message(Message::ADD_IMAGE));
     return 0;
 }
 /**
@@ -199,7 +200,7 @@ int OscInterface::removeFrameCb(
 {
     std::cout << "Got /toon/frame/remove" << std::endl;
     OscInterface* context = static_cast<OscInterface*>(user_data);
-    context->owner_->get_pipeline()->remove_frame();
+    context->push_message(Message(Message::REMOVE_IMAGE));
     return 0;
 }
 // TODO:2010-08-15:aalex:Should be able to disable this handler
@@ -217,7 +218,7 @@ int OscInterface::quitCb(
 {
     std::cout << "Got /toon/quit" << std::endl;
     OscInterface* context = static_cast<OscInterface*>(user_data);
-    context->owner_->quit();
+    context->push_message(Message(Message::QUIT));
     return 0;
 }
 /** Destructor 
@@ -261,3 +262,28 @@ void OscInterface::on_next_image_to_play(unsigned int clip_number, unsigned int 
     sender_.sendMessage("/toon/clip/playhead", "iis", clip_number, image_number, file_name.c_str(), LO_ARGS_END);
 }
 
+/**
+ * Takes action!
+ *
+ * Should be called when it's time to take action, before rendering a frame, for example.
+ */
+void OscInterface::consume_messages()
+{
+    // TODO:2010-10-03:aalex:Move this handling to Application.
+    bool success = true;
+    while (success)
+    {
+        Message message;
+        success = messaging_queue_.try_pop(message);
+        if (success)
+        {
+            owner_->handle_message(message);
+        }
+    }
+}
+
+void OscInterface::push_message(Message message)
+{
+    // TODO: pass this message argument by reference?
+    messaging_queue_.push(message);
+}

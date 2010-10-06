@@ -382,6 +382,11 @@ MovieSaver* Application::get_movie_saver()
     return movie_saver_.get();
 }
 
+OscInterface* Application::get_osc_interface() 
+{
+    return osc_.get();
+}
+
 void Application::quit()
 {
     std::cout << "Quitting the application." << std::endl;
@@ -397,6 +402,7 @@ void Application::check_for_messages()
 {
     // TODO: move message handling here.
     get_midi_input()->consume_messages();    
+    get_osc_interface()->consume_messages();    
 }
 /**
  * Handles asynchronous messages.
@@ -420,6 +426,9 @@ void Application::handle_message(Message &message)
             break;
         case Message::SELECT_CLIP:
             get_controller()->choose_clip(value);
+            break;
+        case Message::QUIT:
+            quit();
             break;
     }
 }

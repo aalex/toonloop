@@ -32,7 +32,8 @@ class Message
             REMOVE_IMAGE,
             VIDEO_RECORD_ON,
             VIDEO_RECORD_OFF,
-            SELECT_CLIP
+            SELECT_CLIP,
+            QUIT
             // TODO: implement the other messages:
             //SAVE_CLIP,
             //SAVE_PROJECT,

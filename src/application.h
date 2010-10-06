@@ -69,6 +69,7 @@ class Application
         /** Checks for asynchronous messages and treat them */
         void check_for_messages();
         void handle_message(Message &message);
+        OscInterface* get_osc_interface();
 
     private:
         void update_project_home_for_each_clip();
