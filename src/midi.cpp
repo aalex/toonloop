@@ -143,7 +143,7 @@ void MidiInput::consume_messages()
                     owner_->get_controller()->add_frame();
                     break;
                 case Message::REMOVE_IMAGE:
-                    owner_->get_controller()->add_frame();
+                    owner_->get_controller()->remove_frame();
                     break;
                 case Message::VIDEO_RECORD_ON:
                     owner_->get_controller()->enable_video_grabbing(true);
