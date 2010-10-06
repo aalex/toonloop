@@ -81,7 +81,7 @@ class Configuration
         int get_capture_width() const { return capture_width_; }
         int get_capture_height() const { return capture_height_; }
         int get_max_images_per_clip() const { return max_images_per_clip_; }
-        int get_default_intervalometer_rate() const { return default_intervalometer_rate_; }
+        float get_default_intervalometer_rate() const { return default_intervalometer_rate_; }
     private:
         //int capture_frame_rate_;
         //int rendering_frame_rate_;
@@ -100,7 +100,7 @@ class Configuration
         int capture_width_;
         int capture_height_;
         int max_images_per_clip_;
-        int default_intervalometer_rate_;
+        float default_intervalometer_rate_;
 };
 #endif // __CONFIGURATION_H__
 

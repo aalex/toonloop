@@ -146,7 +146,7 @@ void Application::run(int argc, char *argv[])
         ("height", po::value<int>()->default_value(DEFAULT_CAPTURE_HEIGHT), "Image capture height")
         ("max-images-per-clip", po::value<int>()->default_value(0), "If not zero, sets a maximum number of images per clip. The first image is then removed when one is added.")
         ("enable-intervalometer", po::bool_switch(), "Enables the intervalometer for the default clip at startup.")
-        ("intervalometer-rate", po::value<int>()->default_value(10), "Sets the default intervalometer rate.")
+        ("intervalometer-rate", po::value<float>()->default_value(10.0), "Sets the default intervalometer rate.")
         ("layout", po::value<unsigned int>()->default_value(0), "Sets the layout number.") // TODO:2010-10-05:aalex:Print the NUM_LAYOUTS
         ; // <-- important semi-colon
     po::variables_map options;

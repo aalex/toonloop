@@ -829,7 +829,7 @@ Gui::Gui(Application* owner) :
     
     // TEXT
     info_text_actor_ = clutter_text_new_full("", "Sans 16px", clutter_color_new(255, 255, 255, 255));
-    update_info_text();
+    //update_info_text();
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_));
     // Sort actors and groups:
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_), NULL);
@@ -863,6 +863,8 @@ void Gui::update_info_text()
     os << "Playhead: " << current_clip->get_playhead() << std::endl;
     os << "Writehead: " << current_clip->get_writehead() << "/" << current_clip->size() << std::endl;
     os << "Intervalometer rate: " << current_clip->get_intervalometer_rate() << std::endl;
+    os << "Intervalometer enabled:" << owner_->get_pipeline()->get_intervalometer_is_on() << std::endl;
+    os << "Layout:" << current_layout_ << std::endl;
     clutter_text_set_text(CLUTTER_TEXT(info_text_actor_), os.str().c_str());
 }
 

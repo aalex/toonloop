@@ -43,7 +43,7 @@ Clip::Clip(unsigned int id)
     has_recorded_a_frame_ = false;
     direction_ = DIRECTION_FORWARD;
     yoyo_sub_direction_ = DIRECTION_FORWARD;
-    last_time_grabbed_image_ = 0L;
+    last_time_grabbed_image_ = timing::get_timestamp_now();
     intervalometer_rate_ = 10.0f; // 10 seconds is a reasonable default for a timelapse
     //mutex_;
 }

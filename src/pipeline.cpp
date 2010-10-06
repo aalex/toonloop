@@ -49,6 +49,7 @@ namespace fs = boost::filesystem;
 void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg,  gpointer user_data)
 {
     Pipeline *context = static_cast<Pipeline*>(user_data);
+    bool verbose = context->owner_->get_configuration()->get_verbose();
     switch (GST_MESSAGE_TYPE (msg)) {
     case GST_MESSAGE_ELEMENT:
     {
@@ -74,14 +75,14 @@ void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg,  gpointer user_d
         if (context->get_record_all_frames() || context->get_intervalometer_is_on()) // if video grabbing is enabled
         {
             Clip *current_clip = context->owner_->get_current_clip();
-            long last_time_grabbed = current_clip->get_last_time_grabbed_image();
-            long now = timing::get_timestamp_now();
+            unsigned long last_time_grabbed = current_clip->get_last_time_grabbed_image();
+            unsigned long now = timing::get_timestamp_now();
             bool must_grab_now = false;
             // VIDEO RECORDING:
             if (context->get_record_all_frames())
             {
                 std::cout << "Video grabbing is on." << std::endl; 
-                long time_between_frames = long(1.0 / float(current_clip->get_playhead_fps()) * timing::TIMESTAMP_PRECISION);
+                unsigned long time_between_frames = (unsigned long)(1.0f / float(current_clip->get_playhead_fps()) * timing::TIMESTAMP_PRECISION);
                 std::cout << "now=" << now << " last_time_grabbed=" << last_time_grabbed << " time_between_frames" << time_between_frames << std::endl;
                 if ((now - last_time_grabbed) > time_between_frames)
                 {
@@ -92,8 +93,13 @@ void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg,  gpointer user_d
             if (context->get_intervalometer_is_on())
             {
                 long time_between_intervalometer_ticks = long(current_clip->get_intervalometer_rate() * timing::TIMESTAMP_PRECISION);
-                if ((now - last_time_grabbed) > time_between_intervalometer_ticks)
+                long passed = (now - last_time_grabbed);
+                if (verbose)
+                    std::cout << "time between intervalometer ticks: " << passed << "/" << time_between_intervalometer_ticks << std::endl;
+                if (passed > time_between_intervalometer_ticks)
                 {
+                    if (verbose)
+                        std::cout << "Interval has passed. Time to grab." << std::endl;
                     must_grab_now = true;
                 }
             }
