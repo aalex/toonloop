@@ -11,6 +11,7 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
+ * When saving a movie, we should send the name of the saved file via OSC
  * Allow more than ten clips.
  * Create a simpler HUD with position of writehead and playhead.
  * onionskin: allow to change its opacity
