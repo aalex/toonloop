@@ -29,6 +29,7 @@ class Clip;
 class Configuration;
 class Controller;
 class Gui;
+class Message;
 class MidiInput;
 class MovieSaver;
 class OscInterface;
@@ -67,6 +68,7 @@ class Application
         void set_current_clip_number(unsigned int clipnumber);
         /** Checks for asynchronous messages and treat them */
         void check_for_messages();
+        void handle_message(Message &message);
 
     private:
         void update_project_home_for_each_clip();

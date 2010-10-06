@@ -136,25 +136,7 @@ void MidiInput::consume_messages()
         success = messaging_queue_.try_pop(message);
         if (success)
         {
-            unsigned int value = message.get_value();
-            switch (message.get_command())
-            {
-                case Message::ADD_IMAGE:
-                    owner_->get_controller()->add_frame();
-                    break;
-                case Message::REMOVE_IMAGE:
-                    owner_->get_controller()->remove_frame();
-                    break;
-                case Message::VIDEO_RECORD_ON:
-                    owner_->get_controller()->enable_video_grabbing(true);
-                    break;
-                case Message::VIDEO_RECORD_OFF:
-                    owner_->get_controller()->enable_video_grabbing(false);
-                    break;
-                case Message::SELECT_CLIP:
-                    owner_->get_controller()->choose_clip(value);
-                    break;
-            }
+            owner_->handle_message(message);
         }
     }
 }

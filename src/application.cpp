@@ -31,6 +31,7 @@
 
 #include "application.h"
 #include "controller.h"
+#include "message.h"
 #include "moviesaver.h"
 #include "oscinterface.h"
 #include "clip.h"
@@ -387,9 +388,39 @@ void Application::quit()
     pipeline_->stop();
     gtk_main_quit();
 }
-
+/**
+ * Checks for asynchronous messages.
+ * 
+ * Useful for the MIDI and OSC controls.
+ */
 void Application::check_for_messages()
 {
     // TODO: move message handling here.
     get_midi_input()->consume_messages();    
 }
+/**
+ * Handles asynchronous messages.
+ */
+void Application::handle_message(Message &message)
+{
+    unsigned int value = message.get_value();
+    switch (message.get_command())
+    {
+        case Message::ADD_IMAGE:
+            get_controller()->add_frame();
+            break;
+        case Message::REMOVE_IMAGE:
+            get_controller()->remove_frame();
+            break;
+        case Message::VIDEO_RECORD_ON:
+            get_controller()->enable_video_grabbing(true);
+            break;
+        case Message::VIDEO_RECORD_OFF:
+            get_controller()->enable_video_grabbing(false);
+            break;
+        case Message::SELECT_CLIP:
+            get_controller()->choose_clip(value);
+            break;
+    }
+}
+
