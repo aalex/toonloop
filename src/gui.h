@@ -30,6 +30,10 @@
 
 class Application;
 
+
+// TODO:2010-10-05:aalex:Should we put that in a namespace or in the Gui class?
+const unsigned int NUM_LAYOUTS = 4;
+
 /** This graphical user interface uses GTK and Clutter-GST.
  */
 class Gui
