@@ -5,8 +5,40 @@
   |_|\___/ \___/|_| |_|_|\___/ \___/| .__/ 
                                     |_|    
 
-This is Toonloop version 1.9.x. It is a complete rewrite of the application in 
-C++ with Gstreamer. It is in a beta stage. 
+Toonloop is a live stop motion animation software. It aims to show the creation process to the audience as well as the result of the creation. The frame by frame animation is made by adding frames one by one to a clip made of many frames. Clips are displayed in a never ending loop. Toonloop can also grab video images continuously.
+
+Toonloop is a great tool for teaching new medias to children. It can also be used as a professionnal software for movie creators, though it is mainly intended to be used in a live kiosk of show. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop.
+
+Toonloop can be controlled using MIDI input, or the Open Sound Control protocol. Images are saved to the disk in the JPEG format, and the clips are saved using the photo-JPEG video codec. (using mencoder)
+
+
+How to use Toonloop
+-------------------
+
+To make it short, press space to capture an image, it will be recorded 
+in your default directory (~/Documents/toonloop/default/) under jpg format.
+
+space              : capture an image
+delete             : remove last captured image
+esc                : switch fullscreen
+ctrl-q             : quit
+Page down          : next clip
+Page up            : previous clip
+Number from 0 to 9 : switch to a specific clip
+s                  : saves the current clip as a movie file
+Tab                : changes the playback direction
+r                  : clear the current clip
+Caps Lock          : toggle video grabbing
+a                  : Toggles on/off the intervalometer
+k                  : increase intervalometer interval by 1 second
+j                  : decrease intervalometer interval by 1 second
+period             : Toggles the layout
+right              : move writehead to the next image
+left               : move writehead to the previous image
+return             : move writehead to the last image
+semicolon          : move writehead to the first image
+
+Toonloop saves the clip in its project directory. The default project directory is the ~/Documents/toonloop/default/ directory, where "~" is your HOME directory. 
 
 
 Basic Tools for Compiling
@@ -97,33 +129,6 @@ You can also try the "test" and "x" video sources:
 See the toonloop(1) man page for details.
 
 
-How to use Toonloop
--------------------
-
-To make it short, press space to capture an image, it will be recorded 
-in your default directory (~/Documents/toonloop/default/) under jpg format.
-
-space              : capture an image
-delete             : remove last captured image
-esc                : switch fullscreen
-ctrl-q             : quit
-Page down          : next clip
-Page up            : previous clip
-Number from 0 to 9 : switch to a specific clip
-s                  : saves the current clip as a movie file
-Tab                : changes the playback direction
-r                  : clear the current clip
-Caps Lock          : toggle video grabbing
-a                  : Toggles on/off the intervalometer
-k                  : increase intervalometer interval by 1 second
-j                  : decrease intervalometer interval by 1 second
-period             : Toggles the layout
-right              : move writehead to the next image
-left               : move writehead to the previous image
-return             : move writehead to the last image
-semicolon          : move writehead to the first image
-
-Toonloop saves the clip in its project directory. The default project directory is the ~/Documents/toonloop/default/ directory, where "~" is your HOME directory. 
 
 
 DEVELOPERS DOCUMENTATION
