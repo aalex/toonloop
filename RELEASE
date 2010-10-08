@@ -1,7 +1,7 @@
-2010-1?-??: Toonloop 1.9.7
+2010-10-08: Toonloop 1.9.7
 --------------------------
 
-This release is an unstable version in the 1.9 series. This version contains new features and bug fixes preparing the 2.0 stable series. 
+This release is the first release candidate for the 2.0 series. This version contains new features and bug fixes. The command-line options and the interactive keyboard controls should not change much before the launching of the 2.0 stable version.
 
 New features:
     * Added the --max-images-per-clip option. Default is 0. (infinity)
