@@ -4,15 +4,16 @@
 This release is an unstable version in the 1.9 series. This version contains new features and bug fixes preparing the 2.0 stable series. 
 
 New features:
-    * Add the --max-images-per-clip option. Default is 0. (infinity)
-    * Add the --intervalometer-rate option
-    * Add the --enable-intervalometer option
-    * Add the --layout option
-    * Use a messaging queue for the OSC callbacks
+    * Added the --max-images-per-clip option. Default is 0. (infinity)
+    * Added the --intervalometer-rate option
+    * Added the --enable-intervalometer option
+    * Added the --layout option
+    * Using a messaging queue for the OSC callbacks
     * Added the --remove-deleted-images option
+    * Improved the man page
 
 
 Bug fixes: 
     * Fixed a crash when the OSC interface was enabled.
-    * Fixed an crash when the OSC interface was disabled.
+    * Then, fixed another crash when the OSC interface was not enabled.
 
