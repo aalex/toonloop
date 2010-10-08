@@ -13,6 +13,8 @@ Toonloop can be controlled using MIDI input, or the Open Sound Control protocol.
 
 See the RELEASE file for up-to-date information about this version of Toonloop.
 
+Most of the information on how to use it is in the toonloop(1) man page.
+
 How to use Toonloop
 -------------------
 
