@@ -1,28 +1,39 @@
 [DESCRIPTION]
 Toonloop is a live stop motion animation software. It aims to show the creation process to the audience as well as the result of the creation. The frame by frame animation is made by adding frames one by one to a clip made of many frames. Clips are displayed in a never ending loop. Toonloop can also grab video images continuously.
 
-Toonloop is a great tool for teaching new medias to children. It can also be used as a professionnal software for movie creators, though it is mainly intended to be used in a live kiosk of show. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop.
+Toonloop is a great tool for teaching new medias to children. It can also be used as a professionnal software for movie creators, though it is mainly intended to be used in a live kiosk of show. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop. To add an image to the current clip, simply press the space bar.
 
-Toonloop can be controlled using MIDI input, or the Open Sound Control protocol. Images are saved to the disk in the JPEG format, and the clips are saved using the photo-JPEG video codec. (using mencoder)
+Toonloop can be controlled using MIDI input, or the Open Sound Control protocol. (OSC) Images are saved to the disk in the JPEG format, and the clips are saved using the photo-JPEG video codec. (using mencoder)
 
 [SYNOPSIS]
 toonloop [options]
 
 [EXAMPLES]
+Choosing the video input can be tricky. The name of the GStreamer video source element is guessed from the --video-source option. (its short form is -d) If it's "/dev/video0" or "/dev/video1", Toonloop will use the v4l2src element. (a Video4Linux 2 video device) 
 
-To use a V4L2 video camera: 
+To use a V4L2 video camera:
 
  toonloop -d /dev/video0
 
-To use color bars:
+To display some color bars:
 
  toonloop -d test
 
-To grab snapshots from X11:
+To continuously grab screeshots from X11: (very slow)
 
  toonloop -d x
 
-Note that if Toonloop crashes at startup, you should verify that your camera /dev/video0 is really a V4L2 camera, and that it is present. You can use tools such as ivtv-utils, gst-launch or xawtv for that kind of work under GNU/Linux.
+Note that if Toonloop crashes at startup, you should verify that your camera /dev/video0 is really a V4L2 camera, and that it is present. The default width and height are 640x480. You might try to change those using the --width and --height options. You can use tools such as ivtv-utils, gst-launch, gst-inspect or xawtv to investigate about your video devices under GNU/Linux.
+
+Some Toonloop features are enabled only when a value is given for their option. It is the case for MIDI, OSC sending and OSC receiving.
+ - MIDI is enabled if the user specifies a --midi-input
+ - OSC sending is enabled if the user specifies a --osc-send-port
+ - OSC receiving is enabled if the user specifies a --osc-receive-port
+
+Here is how to launch a fullscreen timelapse:
+
+ toonloop --enable-intervalometer --intervalometer-rate 0.1 --playhead-fps 60 --max-images-per-clip 600 --remove-deleted-images --fullscreen --layout 2 --verbose
+
 
 [INTERACTIVE USAGE]
 Toonloop is an interactive software. While it runs, the user can control it using keyboard keys. Here is the list of keystrokes to control Toonloop.
@@ -55,7 +66,26 @@ Toonloop interactive keyboard controls :
 [OSC INTERFACE]
 Toonloop can send and receive messages using the Open Sound Protocol. 
 
-The list of messages it handles and might send is available in the OSC file that is in the project directory.
+Messages Toonloop can receive:
+
+ - /ping: Answer with /pong
+ - /pong: Do nothing.
+ - /toon/quit: Quit
+ - /toon/frame/add: Grab a frame
+ - /toon/frame/remove: Remove a frame
+
+Toonloop sends the following OSC messages:
+
+ - /pong
+ - /toon/clip/cleared i:clip_number
+ - /toon/clip/fps i:clip_number i:fps
+ - /toon/clip/playhead i:clip_number i:image_number s:file_name
+ - /toon/clip/saved i:clip_number s:file_name
+ - /toon/clip/select i:clip_number
+ - /toon/frame/add i:clip_number i:frame_number
+ - /toon/frame/remove i:clip_number i:frame_number
+ - /toon/playhead/direction i:clip_number s:direction
+ - /toon/playhead/none
 
 [MIDI INTERFACE]
 Toonloop can be used with MIDI control devices. Here is the list of controls it supports: 
@@ -65,13 +95,9 @@ Toonloop can be used with MIDI control devices. Here is the list of controls it 
  - Program change: choose a clip
  - 7: (main volume) change playback speed
 
-The Roland GFC-50 Foot Controller is a nice MIDI device that is useful to
-control Toonloop. The sustain pedal controls single-image grabbing,
-the pedal control number 80 toggles video recording on and off, the
-volume pedal controls the playback speed and the 10 program changes
-select the clip that is currently edited and played back. See
-http://www.bosscorp.co.jp/products/en/GFC-50/ for some information
-about this device.
+The sustain pedal controls single-image grabbing, the pedal control number 80 toggles video recording on and off, the volume pedal controls the playback speed and the 10 program changes select the clip that is currently edited and played back. 
+
+The Roland GFC-50 Foot Controller is a nice MIDI device that is useful to control Toonloop. 
 
 [AUTHOR]
 Alexandre Quessy, Tristan Matthews and Vasilis Liaskovitis.
@@ -108,4 +134,4 @@ You should have received a copy of the gnu general public license
 along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 
 [SEE ALSO]
-gst-launch(1), sooperlooper(1), lunch(1), mencoder(1)
+gstreamer-properties(1), gst-inspect(1), mencoder(1)
