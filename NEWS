@@ -2,6 +2,28 @@ See the RELEASE file for the latest new features and bug fixes.
 See the ChangeLog file for a log of previous releases informations.
 
 
+2010-10-08: Toonloop 2.0.0
+--------------------------
+
+This release is the first release of the 2.0 series! After eight months of development, Toonloop 2.0 is finally ready be released. A stable release means that the command-line options and the interactive keyboard controls should not change much for all tags with 2.0 as major-minor numbers. Some new features might be developped in that branch, but each release should be backward-compatible with their ancestor. The next unstable development branch is 2.1. The next stable series is 2.2.
+
+This version contains new features and bug fixes.
+
+New features:
+    * Added the --max-images-per-clip option. Default is 0. (infinity)
+    * Added the --intervalometer-rate option
+    * Added the --enable-intervalometer option
+    * Added the --layout option
+    * Using a messaging queue for the OSC callbacks
+    * Added the --remove-deleted-images option
+    * Improved the man page
+
+
+Bug fixes:
+    * Fixed a crash when the OSC interface was enabled.
+    * Then, fixed another crash when the OSC interface was not enabled.
+
+
 2010-10-04: Toonloop 1.9.6
 --------------------------
 
