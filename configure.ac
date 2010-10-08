@@ -27,11 +27,6 @@ AC_CHECK_FUNCS([inet_ntoa memset socket])
 AC_CHECK_LIB([pthread],[pthread_exit],[AC_SUBST([LIBTHREAD_CXXFLAGS],["-lpthread"])])
 AC_CHECK_LIB([m],[sin],[AC_SUBST([LIBM_CXXFLAGS],["-lm"])])
 
-# OpenGL
-# AX_CHECK_GL
-# AX_CHECK_GLU
-# AC_CHECK_LIB([GLEW], [glewInit],[AC_SUBST([GLEW_LIBS],["-lGLEW"])])
-
 # STK
 # TODO: print some message when configuring STK is OK
 AC_LANG_PUSH(C++)
