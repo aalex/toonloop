@@ -49,3 +49,10 @@
  * DONE: gui: Display information in either a HUD, or a mx GUI in Clutter
  * DONE: Press 'i' to print current loop frame number, number of frames in loop and global framerate.
  * DONE: Press 'o' to toggle the onion skinning on/off.
+ * mouse: support mouse controls (disabled by default)
+ * Onion skinning is disabled since it crashes when used with a MIDI pedal.
+ * simplify what is shown and how depending on the layout. 
+ * Add the --layout option
+ * Use a messaging queue for the OSC callbacks
+ * video: support different sizes (currently only 640x480)
+ * layout: portrait theme (rotation to the right)

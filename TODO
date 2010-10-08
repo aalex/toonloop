@@ -3,7 +3,7 @@ About this file
 
 Here we list taks to be done. Once they are done, they should go in the RELEASE notes. 
 
-Once the tag is done for the version number in the RELEASE notes, they are moved to the NEWS file, (most recent first) and we update the version number in the RELEASE notes and the configure.ac file, and we remove all the task that are done from the RELEASE notes. 
+Once the tag is done for the version number in the RELEASE notes, they are moved to the NEWS file, (most recent first) and we update the version number in the RELEASE notes and the configure.ac file, and we remove all the task that are done from the RELEASE notes. We often put the tasks that are done in the doc/DONE document.
 
 
 Things to do in priority
@@ -11,29 +11,30 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * When saving a movie, we should send the name of the saved file via OSC
- * Allow more than ten clips.
- * Create a simpler HUD with position of writehead and playhead.
+ * saving: When saving a movie, we should send the name of the saved file via OSC
+ * editing: Allow more than ten clips.
+ * gui: Create a simpler HUD with position of writehead and playhead.
  * onionskin: allow to change its opacity
  * onionskin: load the image just before writehead's position
 
 We should also try to fix the following issues: 
 
- * Allow to move playhead to the beginning of a clip when we switch to it.
- * make onionskin and ripple/fade effect one-per-clip-based
- * Add direct controls for playback direction.
- * Add direct controls for layout.
- * The first image that is grabbed with the intervalometer is black.
- * Add the --video-source option. Default is v4l2
- * Add the --default-fps option
- * Use boost::any for the message args. See http://www.boost.org/doc/libs/1_43_0/doc/html/any/s02.html
- * Remove dependency to GTK. (GUI controls should use Clutter)
- * Auto-record video sometimes doesn't work
- * Make sure the keystroke instructions are in only one place.
+ * playback: Allow to move playhead to the beginning of a clip when we switch to it.
+ * editing: make onionskin and ripple/fade effect one-per-clip-based
+ * controls: Add direct controls for playback direction.
+ * controls: Add direct controls for layout.
+ * editing: The first image that is grabbed with the intervalometer is black.
+ * cli: Add the --video-source option. Default is v4l2
+ * cli: Add the --default-fps option
+ * optimization: Use boost::any for the message args. See http://www.boost.org/doc/libs/1_43_0/doc/html/any/s02.html
+ * packaging: Remove dependency to GTK. (GUI controls should use Clutter)
+ * BUG: Auto-record video sometimes doesn't work
+ * doc: Make sure the keystroke instructions are in only one place.
  * onionskin: avoid a white image when none has been taken
  * BUG: the first playback image is white
  * BUG: the first live input image is white
-
+ * video: Support DV: gst-launch dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink
+ * video: Support HDV (hdvdec)
 
 OSC Messages to implement
 -------------------------
@@ -45,104 +46,67 @@ Receiving:
   *  /toon/clip/save
 
 Sending:
-  *  /toon/framerate <i>
   *  /toon/writehead <i>
-  *  /toon/playhead <i>
-  *  /toon/clip/index <i>
   *  /sampler/play/start <i>
   *  /sampler/play/stop <i>
   *  /sampler/record/start <i>
   *  /sampler/record/stop <i>
 
 
-Road map
---------
-
-To be done for Version 2.2
---------------------------
-
-Once those tasks are done, the features to be implemented in branch 2.x are:
+To be done later
+----------------
 
  * saving: Save projects to XML (statesaving.cpp doesn't work currently)
  * saving: Load projects from XML
  * playback: allow to play all clips from 0 to 9
- * video: support different sizes (currently only 640x480)
  * video: do not crash if the v4l2 device is busy
- * Pixbuf saving: 
-   * #1: Write the pixbuf to a memory stream and then splice_async() it to the file. 
-   * #2: fork() then call gdk_pixbuf_save() in the child process. Use a pipe to handle the return value in the parent. Probably that the glib mainloop should shut itself down with pthread_atfork(). Look for screenshot_save_start() in gnome-utils/gnome-screenshot/screenshot-save.c
- * API: figure out the best OSC API, as well as the keyboard GUI controls
- * Press 'h' to show some help 
- * Press 'p' to pause playback.
- * packaging: fix make check. Re-add previous tests, including headers from src
+ * optimization: Optimize the pixbuf saving either #1: Write the pixbuf to a memory stream and then splice_async() it to the file, or #2: fork(), then call gdk_pixbuf_save() in the child process. Use a pipe to handle the return value in the parent. Probably that the glib mainloop should shut itself down with pthread_atfork(). Look for screenshot_save_start() in gnome-utils/gnome-screenshot/screenshot-save.c
+ * osc: choose the best OSC API
+ * gui: choose the best keyboard controls
+ * gui: Press 'h' to show some help 
+ * controls: Press 'p' to pause playback.
+ * packaging: Re-add previous tests, including headers from src.
  * packaging: Improve STK packaging
  * edit: add an option to delete JPEG images when deleted from a clip
  * edit: support playing back a single clip or all of them
- * Press 'n' to select the next effect available.
+ * effects: Press 'n' to select the next effect available.
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
-
-
-To be done later on : Towards professional features
-----------------------------------------------------------
-
  * saving: Support saving in AVI
  * saving: create a subdir for each clip in images and movies dirs
  * Load/save a whole project (many clips)
- * themes: portrait theme (rotation to the right)
  * edit: mirror
  * video: Use the default GStreamer-properties camera when none is given
  * video: Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga.
- * display square to represent frames in timeline
- * GUI dialog which allows the user to choose the name of the saved clip.
- * Save all clips (all 10 from 0 to 9) with modifier (shift?)
- * playing two clips at a time
- * two onion skin layers
- * Saving improvements. Add a level of indexation. 
+ * gui: display square to represent frames in timeline
+ * gui: dialog which allows the user to choose the name of the saved clip.
+ * saving: Save all clips (all 10 from 0 to 9) with modifier (shift?)
+ * playback: playing two clips at a time
+ * onionskin: multiple onion skin layers
  * Background images can be an other clip.
- * Load images to a clip.
- * Load a movie file to a clip.
- * Save background image when saving a clip.
- * Basic sequences of clips.
- * Add PNG and TGA saving image formats.
+ * editing: Load images to a clip.
+ * editing: Load a movie file to a clip.
+ * playback: Basic sequences of clips.
+ * saving: Add PNG and TGA saving image formats.
  * gui: Clutter Mx GUI (buttons, sliders, menu, etc.) 
  * effects: Port the shaders from 1.x (See doc/effects.txt)
  * effects: one effect per clip
  * effects: Min/max values for effects attributes.
  * optimization: Read a few bytes from an image to trigger the kernel's read-ahead. (?)
  * midi: MIDI learn for controls
+ * playback: Multi layers (multi clips at a time)
+ * gui: Advanced GUI for controlling clips and sequences
+ * playback: Multi-layers sequences with blending mode
+ * effect: Rippling effect (strobing) effect (like in _Pas de deux_) Variable delay between each former frame. Variable number of former frames displayed
+ * playback: Variable frame duration in a shot (freeze frame) and speed tweening.
+ * effects: Color improvements (brightness, contrast, saturation)
+ * effects: masks (matte)
+ * effects: invert
+ * effects: diff
+ * effects: contour
+ * effects: threshold
+ * playback: translation *paths* 
+ * playback: multiple sequences at a time
+ * controls: plug with community vision, or opencv.
+ * controls: Joystick input.
+ * effects: Support for video mapping. (needs a matte + separating the rectangle in a grid of rectangles, with coordinates that are interpolated linearily)
 
-
-Ideas for Future Directions
----------------------------
-
- * Multi layers (multi clips at a time)
- * Advanced GUI for controlling clips and sequences
- * Multi-layers sequences with blending mode
- * Rippling effect (strobing) effect (like in _Pas de deux_)
-   * variable delay between each former frame
-   * variable number of former frames displayed
- * Variable frame duration in a shot (freeze frame) and speed tweening.
- * Color improvements (brightness, contrast, saturation)
- * masks (matte)
- * invert effect
- * diff effect
- * contour effect
- * threshold effect
- * translation *paths* and multiple sequences at a time
- * plug with community vision, or opencv.
- * Use a "Pixel Buffer Object" to move data into the texture  instead. You'll need the "ARB_pixel_buffer_object" extension.  This pages has a good description of what they are and how to use them:  http://www.songho.ca/opengl/gl_pbo.html
- * Joystick input.
- * Remote control input.
- * Update the Smooth and Tween classes to C++. Merge them with this project. http://code.google.com/p/libinteract/source/browse/#svn/trunk/trunk/general
- * Support for video mapping. (needs a matte + separating the rectangle in a grid of rectangles, with coordinates that are interpolated linearily)
-
-
-Done 
-----
-
-See also the doc/DONE document.
- * mouse: support mouse controls (disabled by default)
- * Onion skinning is disabled since it crashes when used with a MIDI pedal.
- * simplify what is shown and how depending on the layout. 
- * Add the --layout option
- * Use a messaging queue for the OSC callbacks
