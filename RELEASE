@@ -1,7 +1,9 @@
-2010-10-08: Toonloop 1.9.7
+2010-10-08: Toonloop 2.0.0
 --------------------------
 
-This release is the first release candidate for the 2.0 series. This version contains new features and bug fixes. The command-line options and the interactive keyboard controls should not change much before the launching of the 2.0 stable version.
+This release is the first release of the 2.0 series! After eight months of development, Toonloop 2.0 is finally ready be released. A stable release means that the command-line options and the interactive keyboard controls should not change much for all tags with 2.0 as major-minor numbers. Some new features might be developped in that branch, but each release should be backward-compatible with their ancestor. The next unstable development branch is 2.1. The next stable series is 2.2. 
+
+This version contains new features and bug fixes. 
 
 New features:
     * Added the --max-images-per-clip option. Default is 0. (infinity)
