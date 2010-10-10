@@ -14,6 +14,7 @@ Right now, here is the list of tasks to prioritize:
  * BUG: Auto-record video sometimes doesn't work
  * BUG: the first live input image is white
  * BUG: the first playback image is white
+ * BUG: Sometimes, in one-image clips, the playhead tries to change to 1. Clip::get_image: Got exception vector::_M_range_check \n Controller::update_playback_image: The image is NULL
  * controls: Add direct controls for playback direction.
  * doc: Make sure the keystroke instructions are in only one place.
  * editing: Allow more than ten clips.
@@ -45,6 +46,7 @@ To be done later
  * effects: Port the shaders from 1.x (See doc/effects.txt)
  * effects: Press 'n' to select the next effect available.
  * effects: Support for video mapping. (needs a matte + separating the rectangle in a grid of rectangles, with coordinates that are interpolated linearily)
+ * effects: additive blending mode
  * effects: contour
  * effects: diff
  * effects: invert
@@ -52,7 +54,7 @@ To be done later
  * effects: one effect per clip
  * effects: threshold
  * gui: Advanced GUI for controlling clips and sequences
- * gui: Clutter Mx GUI (buttons, sliders, menu, etc.) 
+ * gui: Clutter Mx GUI (buttons, sliders, etc.) 
  * gui: choose the best keyboard controls
  * gui: dialog which allows the user to choose the name of the saved clip.
  * gui: display square to represent frames in timeline
