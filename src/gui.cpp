@@ -318,11 +318,10 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             }
             break;
         case GDK_i:
-            context->enable_hud_ = ! context->enable_hud_;
-            if (context->enable_hud_)
-                clutter_actor_show(context->info_text_actor_);
-            else
-                clutter_actor_hide(context->info_text_actor_);
+            context->toggle_info();
+            break;
+        case GDK_F1:
+            context->toggle_help();
             break;
         case GDK_o:
             context->enable_onionskin( ! context->onionskin_enabled_);
@@ -332,6 +331,29 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
     }
     return TRUE;
 }
+/**
+ * Toggles the visibility of the info text.
+ */
+void Gui::toggle_info()
+{
+    enable_info_ = ! enable_info_;
+    if (enable_info_)
+        clutter_actor_show(info_text_actor_);
+    else
+        clutter_actor_hide(info_text_actor_);
+}
+/**
+ * Toggles the visibility of the info text.
+ */
+void Gui::toggle_help()
+{
+    enable_help_ = ! enable_help_;
+    if (enable_help_)
+        clutter_actor_show(help_text_actor_);
+    else
+        clutter_actor_hide(help_text_actor_);
+}
+
 /**
  * Called when the window is deleted. Quits the application.
  */
@@ -718,7 +740,8 @@ Gui::Gui(Application* owner) :
     overlay_opacity_(50),
     onionskin_opacity_(50),
     onionskin_enabled_(false),
-    enable_hud_(false),
+    enable_info_(false),
+    enable_help_(false),
     fade_duration_ratio_(0.0)
 {
     //video_xwindow_id_ = 0;
@@ -827,10 +850,38 @@ Gui::Gui(Application* owner) :
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_));
     clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
     
-    // TEXT
-    info_text_actor_ = clutter_text_new_full("", "Sans 16px", clutter_color_new(255, 255, 255, 255));
-    //update_info_text();
+    // INFO TEXT
+    info_text_actor_ = clutter_text_new_full("Sans 16px", "", clutter_color_new(255, 255, 255, 255));
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_));
+    // HELP TEXT
+    // TODO:2010-10-15:aalex:Internationalize the help text.
+    const std::string HELP_TEXT("Toonloop Interactive Controls (press F1 to hide)\n"
+        "\n - Space: Grab a single image."
+        "\n - Escape: Switch fullscreen mode."
+        "\n - Delete: Erase the last captured frame."
+        "\n - Ctrl-q: Quit."
+        "\n - Page-down: Switch to the next clip."
+        "\n - Page-up: Switch to the previous clip."
+        "\n - Number from 0 to 9: Switch to a specific clip."
+        "\n - Ctrl-number: Switch to a specific layout."
+        "\n - s: Save the current clip as a movie file."
+        "\n - period (.): Toggle the layout."
+        "\n - Tab: Change the playback direction."
+        "\n - r: Clear the current clip."
+        "\n - Caps lock: Toggle video grabbing."
+        "\n - a: Toggle on/off the intervalometer."
+        "\n - k: Increase the intervalometer interval by 1 second."
+        "\n - j: Decrease the intervalometer interval by 1 second."
+        "\n - Right: Move writehead to the next image."
+        "\n - Left: Move writehead to the previous image."
+        "\n - Return: Move writehead to the last image."
+        "\n - semicolon (;): Move writehead to the first image."
+        "\n - o: Enable/disable onion skinning."
+        "\n - (): Decrease/increase frame blending in playback layout."
+        "\n - []: Increase/decrease opacity of the live input image in the overlay layout."
+        );
+    help_text_actor_ = clutter_text_new_full("Sans 12px", HELP_TEXT.c_str(), clutter_color_new(255, 255, 255, 255));
+    clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(help_text_actor_));
     // Sort actors and groups:
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(onionskin_group_), NULL);
@@ -845,6 +896,7 @@ Gui::Gui(Application* owner) :
     // Set visibility for other things
     enable_onionskin(false); // hides it
     clutter_actor_hide(info_text_actor_);
+    clutter_actor_hide(help_text_actor_);
     // shown when we get first live image size, and we play the first image
     clutter_actor_hide(live_input_texture_); 
     clutter_actor_hide_all(CLUTTER_ACTOR(playback_group_));
@@ -857,7 +909,7 @@ void Gui::update_info_text()
 {
     std::ostringstream os;
     Clip* current_clip = owner_->get_current_clip();
-    os << "Toonloop " << PACKAGE_VERSION << std::endl;
+    os << "Toonloop " << PACKAGE_VERSION << " info (press i to hide)" << std::endl;
     os << "Current clip: " << current_clip->get_id() << std::endl;
     os << "FPS: " << current_clip->get_playhead_fps() << std::endl;
     os << "Playhead: " << current_clip->get_playhead() << std::endl;

@@ -34,6 +34,7 @@ class Application;
 // TODO:2010-10-05:aalex:Should we put that in a namespace or in the Gui class?
 const unsigned int NUM_LAYOUTS = 4;
 
+
 /** This graphical user interface uses GTK and Clutter-GST.
  */
 class Gui
@@ -72,6 +73,8 @@ class Gui
         void hideCursor();
         void showCursor();
         void update_info_text();
+        void toggle_info();
+        void toggle_help();
         
         float video_input_width_;
         float video_input_height_;
@@ -84,6 +87,7 @@ class Gui
         std::vector< ClutterActor* > playback_textures_;
         std::vector< ClutterActor* > onionskin_textures_;
         ClutterActor *info_text_actor_;
+        ClutterActor *help_text_actor_;
         ClutterTimeline *timeline_;
         GtkWidget *window_;
         GtkWidget *clutter_widget_;
@@ -93,7 +97,8 @@ class Gui
         int overlay_opacity_;
         int onionskin_opacity_;
         bool onionskin_enabled_;
-        bool enable_hud_;
+        bool enable_info_;
+        bool enable_help_;
         // TODO: rename to fade_duration_ratio
         float fade_duration_ratio_; // RENAME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         static const int WINWIDTH = 640;
