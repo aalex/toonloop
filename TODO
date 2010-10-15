@@ -11,6 +11,7 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
+ * BUG: Auto-record video sometimes keeps recording and is impossible to stop!
  * BUG: Auto-record video sometimes doesn't work
  * BUG: the first live input image is white
  * BUG: the first playback image is white
@@ -22,6 +23,7 @@ Right now, here is the list of tasks to prioritize:
  * editing: make onionskin and ripple/fade effect one-per-clip-based
  * gui: Create a simpler HUD with position of writehead and playhead.
  * gui: Press 'h' to show some help 
+ * gui: Support a separate window for the playback.
  * onionskin: allow to change its opacity
  * onionskin: avoid a white image when none has been taken
  * onionskin: load the image just before writehead's position
