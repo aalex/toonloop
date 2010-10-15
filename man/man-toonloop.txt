@@ -62,6 +62,7 @@ Toonloop interactive keyboard controls :
  - o: Enable/disable onion skinning.
  - (): Decrease/increase frame blending in playback layout.
  - []: Increase/decrease opacity of the live input image in the overlay layout.
+ - F1: Show help.
 
 [OSC INTERFACE]
 Toonloop can send and receive messages using the Open Sound Protocol. 

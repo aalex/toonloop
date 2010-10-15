@@ -879,6 +879,7 @@ Gui::Gui(Application* owner) :
         "\n - o: Enable/disable onion skinning."
         "\n - (): Decrease/increase frame blending in playback layout."
         "\n - []: Increase/decrease opacity of the live input image in the overlay layout."
+        "\n - F1: Show help."
         );
     help_text_actor_ = clutter_text_new_full("Sans 12px", HELP_TEXT.c_str(), clutter_color_new(255, 255, 255, 255));
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(help_text_actor_));

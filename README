@@ -40,6 +40,7 @@ right              : move writehead to the next image
 left               : move writehead to the previous image
 return             : move writehead to the last image
 semicolon          : move writehead to the first image
+F1                 : show help
 
 Toonloop saves the clip in its project directory. The default project directory is the ~/Documents/toonloop/default/ directory, where "~" is your HOME directory. 
 
