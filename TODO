@@ -31,6 +31,7 @@ Right now, here is the list of tasks to prioritize:
  * onionskin: load the image just before writehead's position
  * osc: When saving a movie, we should send the name of the saved file via OSC
  * packaging: Remove dependency to GTK. (GUI controls should use Clutter)
+ * packaging: add AM_MAINTAINER_MODE to configure.ac
 
 
 To be done later
