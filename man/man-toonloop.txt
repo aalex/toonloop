@@ -9,30 +9,30 @@ Toonloop can be controlled using MIDI input, or the Open Sound Control protocol.
 toonloop [options]
 
 [EXAMPLES]
-Choosing the video input can be tricky. The name of the GStreamer video source element is guessed from the --video-source option. (its short form is -d) If it's "/dev/video0" or "/dev/video1", Toonloop will use the v4l2src element. (a Video4Linux 2 video device) 
+Choosing the video input can be tricky. The name of the GStreamer video source element is guessed from the \-\-video-source option. (its short form is \-d) If it's "/dev/video0" or "/dev/video1", Toonloop will use the v4l2src element. (a Video4Linux 2 video device) 
 
 To use a V4L2 video camera:
 
- toonloop -d /dev/video0
+ toonloop \-d /dev/video0
 
 To display some color bars:
 
- toonloop -d test
+ toonloop \-d test
 
 To continuously grab screeshots from X11: (very slow)
 
- toonloop -d x
+ toonloop \-d x
 
-Note that if Toonloop crashes at startup, you should verify that your camera /dev/video0 is really a V4L2 camera, and that it is present. The default width and height are 640x480. You might try to change those using the --width and --height options. You can use tools such as ivtv-utils, gst-launch, gst-inspect or xawtv to investigate about your video devices under GNU/Linux.
+Note that if Toonloop crashes at startup, you should verify that your camera /dev/video0 is really a V4L2 camera, and that it is present. The default width and height are 640x480. You might try to change those using the \-\-width and \-\-height options. You can use tools such as ivtv\-utils, gst\-launch, gst\-inspect or xawtv to investigate about your video devices under GNU/Linux.
 
 Some Toonloop features are enabled only when a value is given for their option. It is the case for MIDI, OSC sending and OSC receiving.
- - MIDI is enabled if the user specifies a --midi-input
- - OSC sending is enabled if the user specifies a --osc-send-port
- - OSC receiving is enabled if the user specifies a --osc-receive-port
+ - MIDI is enabled if the user specifies a \-\-midi-input
+ - OSC sending is enabled if the user specifies a \-\-osc-send-port
+ - OSC receiving is enabled if the user specifies a \-\-osc-receive-port
 
 Here is how to launch a fullscreen timelapse:
 
- toonloop --enable-intervalometer --intervalometer-rate 0.1 --playhead-fps 60 --max-images-per-clip 600 --remove-deleted-images --fullscreen --layout 2 --verbose
+ toonloop \-\-enable-intervalometer \-\-intervalometer\-rate 0.1 \-\-playhead\-fps 60 \-\-max\-images\-per\-clip 600 \-\-remove\-deleted\-images \-\-fullscreen \-\-layout 2 \-\-verbose
 
 
 [INTERACTIVE USAGE]
@@ -135,4 +135,4 @@ You should have received a copy of the gnu general public license
 along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
 
 [SEE ALSO]
-gstreamer-properties(1), gst-inspect(1), mencoder(1)
+gstreamer\-properties(1), gst\-inspect(1), mencoder(1)
