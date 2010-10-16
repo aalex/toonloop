@@ -11,6 +11,8 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
+ * BUG: use dashes, not minus in man pages
+ * BUG: check for runtime dep (mencoder) in the executable.
  * BUG: Auto-record video sometimes keeps recording and is impossible to stop!
  * BUG: Auto-record video sometimes doesn't work
  * BUG: the first live input image is white
