@@ -116,8 +116,7 @@ void Application::run(int argc, char *argv[])
 {
     std::string video_source = "/dev/video0";
     std::string project_home = DEFAULT_PROJECT_HOME;
-    po::options_description desc("Toonloop live animation editor");
-    // std::cout << "adding options" << std::endl;
+    po::options_description desc("Options");
     desc.add_options()
         ("help,h", "Show this help message and exit")
         ("project-home,H", po::value<std::string>()->default_value(project_home), "Path to the saved files")
@@ -158,6 +157,8 @@ void Application::run(int argc, char *argv[])
     if (options.count("help"))
     {
         std::cout << desc << std::endl;
+        //std::cout << INTERACTIVE_HELP << std::endl;
+        //std::cout << std::endl;
         return;
     }
     if (options.count("version"))
@@ -234,8 +235,6 @@ void Application::run(int argc, char *argv[])
     update_project_home_for_each_clip();
     config_->set_video_source(video_source);
     
-    
-
     // Start OSC
     if (config_->get_osc_recv_port() != OSC_PORT_NONE)
     {

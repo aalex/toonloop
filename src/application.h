@@ -39,6 +39,34 @@ class Pipeline;
 static const unsigned int MAX_CLIPS = 10;
 static const int DEFAULT_CAPTURE_WIDTH = 640;
 static const int DEFAULT_CAPTURE_HEIGHT = 480;
+// TODO:2010-10-15:aalex:Internationalize the help text.
+static const std::string INTERACTIVE_HELP(
+    "Toonloop interactive controls:"
+    "\n  Space: Grab a single image."
+    "\n  Escape: Switch fullscreen mode."
+    "\n  Delete: Erase the last captured frame."
+    "\n  Ctrl-q: Quit."
+    "\n  Page-down: Switch to the next clip."
+    "\n  Page-up: Switch to the previous clip."
+    "\n  Number from 0 to 9: Switch to a specific clip."
+    "\n  Ctrl-number: Switch to a specific layout."
+    "\n  s: Save the current clip as a movie file."
+    "\n  period (.): Toggle the layout."
+    "\n  Tab: Change the playback direction."
+    "\n  r: Clear the current clip."
+    "\n  Caps lock: Toggle video grabbing."
+    "\n  a: Toggle on/off the intervalometer."
+    "\n  k: Increase the intervalometer interval by 1 second."
+    "\n  j: Decrease the intervalometer interval by 1 second."
+    "\n  Right: Move writehead to the next image."
+    "\n  Left: Move writehead to the previous image."
+    "\n  Return: Move writehead to the last image."
+    "\n  semicolon (;): Move writehead to the first image."
+    "\n  o: Enable/disable onion skinning."
+    "\n  (): Decrease/increase frame blending in playback layout."
+    "\n  []: Increase/decrease opacity of the live input image in the overlay layout."
+    "\n  F1: Show help."
+    );
 
 /** The Application class: starts Toonloop.
  */

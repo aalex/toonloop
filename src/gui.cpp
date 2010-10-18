@@ -854,33 +854,7 @@ Gui::Gui(Application* owner) :
     info_text_actor_ = clutter_text_new_full("Sans 16px", "", clutter_color_new(255, 255, 255, 255));
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_));
     // HELP TEXT
-    // TODO:2010-10-15:aalex:Internationalize the help text.
-    const std::string HELP_TEXT("Toonloop Interactive Controls (press F1 to hide)\n"
-        "\n - Space: Grab a single image."
-        "\n - Escape: Switch fullscreen mode."
-        "\n - Delete: Erase the last captured frame."
-        "\n - Ctrl-q: Quit."
-        "\n - Page-down: Switch to the next clip."
-        "\n - Page-up: Switch to the previous clip."
-        "\n - Number from 0 to 9: Switch to a specific clip."
-        "\n - Ctrl-number: Switch to a specific layout."
-        "\n - s: Save the current clip as a movie file."
-        "\n - period (.): Toggle the layout."
-        "\n - Tab: Change the playback direction."
-        "\n - r: Clear the current clip."
-        "\n - Caps lock: Toggle video grabbing."
-        "\n - a: Toggle on/off the intervalometer."
-        "\n - k: Increase the intervalometer interval by 1 second."
-        "\n - j: Decrease the intervalometer interval by 1 second."
-        "\n - Right: Move writehead to the next image."
-        "\n - Left: Move writehead to the previous image."
-        "\n - Return: Move writehead to the last image."
-        "\n - semicolon (;): Move writehead to the first image."
-        "\n - o: Enable/disable onion skinning."
-        "\n - (): Decrease/increase frame blending in playback layout."
-        "\n - []: Increase/decrease opacity of the live input image in the overlay layout."
-        "\n - F1: Show help."
-        );
+    std::string HELP_TEXT(INTERACTIVE_HELP + "(Press F1 to hide)");
     help_text_actor_ = clutter_text_new_full("Sans 12px", HELP_TEXT.c_str(), clutter_color_new(255, 255, 255, 255));
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(help_text_actor_));
     // Sort actors and groups:

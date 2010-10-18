@@ -20,11 +20,10 @@ Right now, here is the list of tasks to prioritize:
  * BUG: Sometimes, in one-image clips, the playhead tries to change to 1. Clip::get_image: Got exception vector::_M_range_check \n Controller::update_playback_image: The image is NULL
  * controls: Add direct controls for playback direction.
  * doc: Make sure the keystroke instructions are in only one place.
- * editing: Allow more than ten clips.
+ * editing: Paging could allow more than ten clips. Use <>
  * editing: The first image that is grabbed with the intervalometer is black.
  * editing: make onionskin and ripple/fade effect one-per-clip-based
  * gui: Create a simpler HUD with position of writehead and playhead.
- * gui: Press 'h' to show some help 
  * gui: Support a separate window for the playback.
  * onionskin: allow to change its opacity
  * onionskin: avoid a white image when none has been taken
