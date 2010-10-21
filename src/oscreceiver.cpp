@@ -15,10 +15,9 @@ OscReceiver::OscReceiver(const std::string &port) :
 
 OscReceiver::~OscReceiver()
 {
-    std::cout << "Freeing server thread\n";
+//    std::cout << "Freeing OSC server thread\n";
     lo_server_thread_free(server_);
 }
-
 
 void OscReceiver::addHandler(const char *path, const char *types, lo_method_handler handler, void *userData)
 {
@@ -31,7 +30,6 @@ void OscReceiver::listen()
     lo_server_thread_start(server_);
 
 }
-
 
 void OscReceiver::error(int num, const char *msg, const char *path)
 {

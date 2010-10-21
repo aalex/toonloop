@@ -164,6 +164,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
     // TODO:2010-09-18:aalex:Use the accelerators to allow the user to configure the controls
     // TODO:2010-09-18:aalex:Use Clutter for mouse and keyboard controls (ClutterBindingPool)
     Gui *context = static_cast<Gui*>(user_data);
+    bool verbose = context->owner_->get_configuration()->get_verbose();
 
     switch (event->keyval)
     {
@@ -258,7 +259,8 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             // (if there is one)
             if (event->state & GDK_CONTROL_MASK)
             {
-                g_print("Ctrl-Q key pressed, quitting.\n");
+                if (verbose)
+                    g_print("Ctrl-Q key pressed, quitting.\n");
                 context->owner_->quit();
             }
             break;
@@ -267,7 +269,8 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             // (if there is one)
             if (event->state & GDK_CONTROL_MASK)
             {
-                g_print("Ctrl-S key pressed, TODO: save the whole project.\n");
+                if (verbose)
+                    g_print("Ctrl-S key pressed, TODO: save the whole project.\n");
                 // For now, we save the clip anyways
                 context->owner_->get_controller()->save_current_clip();
             } else // no Ctrl pressed
@@ -908,7 +911,7 @@ ClutterActor* Gui::get_live_input_texture() const
 
 Gui::~Gui()
 {
-    std::cout << "~Gui" << std::endl;
+    //std::cout << "~Gui" << std::endl;
     //TODO:
     //for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
     //    //iter->

@@ -277,7 +277,8 @@ void Pipeline::save_image_to_current_clip(GdkPixbuf *pixbuf)
  */
 void Pipeline::stop()
 {
-    std::cout << "Stopping the GStreamer pipeline." << std::endl;
+    if (owner_->get_configuration()->get_verbose())
+        std::cout << "Stopping the GStreamer pipeline." << std::endl;
     // FIXME: a segfault occurs here!
     gst_element_set_state(GST_ELEMENT(pipeline_), GST_STATE_NULL);
     //std::cout << "Deleting the GStreamer pipeline." << std::endl;
@@ -294,6 +295,7 @@ Pipeline::Pipeline(Application* owner) :
         record_all_frames_enabled_(false)
 {
     Configuration *config = owner_->get_configuration();
+    bool verbose = config->get_verbose();
     set_intervalometer_is_on(false);
     pipeline_ = NULL;
     pipeline_ = GST_PIPELINE(gst_pipeline_new("pipeline"));
@@ -302,17 +304,20 @@ Pipeline::Pipeline(Application* owner) :
     // TODO: add more input types like in Ekiga
     if (config->videoSource() == "test")
     {
-        std::cout << "Video source: videotestsrc" << std::endl;
+        if (verbose)
+            std::cout << "Video source: videotestsrc" << std::endl;
         videosrc_  = gst_element_factory_make("videotestsrc", "videosrc0");
     } 
     else if (config->videoSource() == "x") 
     {
-        std::cout << "Video source: ximagesrc" << std::endl;
+        if (verbose)
+            std::cout << "Video source: ximagesrc" << std::endl;
         videosrc_  = gst_element_factory_make("ximagesrc", "videosrc0");
     } 
     else 
     {
-        std::cout << "Video source: v4l2src" << std::endl;
+        if (verbose)
+            std::cout << "Video source: v4l2src" << std::endl;
         videosrc_  = gst_element_factory_make("v4l2src", "videosrc0"); 
     }
     // TODO: use something else than g_assert to see if we could create the elements.
@@ -391,7 +396,8 @@ Pipeline::Pipeline(Application* owner) :
                     std::cout << "Giving up after 10 tries." << std::endl;
                 }
             } else {
-                std::cout << "Success." << std::endl;
+                if (verbose)
+                    std::cout << "Success." << std::endl;
                 source_is_linked = true;
             }
         }
@@ -434,7 +440,8 @@ Pipeline::Pipeline(Application* owner) :
         exit(1); 
     }
 
-    std::cout << "Will now setup the pipeline bus." << std::endl;
+    if (verbose)
+        std::cout << "Will now setup the pipeline bus." << std::endl;
     /* setup bus */
     GstBus* bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline_));
     gst_bus_add_signal_watch(bus);
@@ -448,7 +455,8 @@ Pipeline::Pipeline(Application* owner) :
     if (config->videoSource() != "test" and config->videoSource() != "x")
     {
         std::string device_name(config->videoSource());
-        g_print("Using camera %s.\n", device_name.c_str());
+        if (verbose)
+            g_print("Using camera %s.\n", device_name.c_str());
         g_object_set(videosrc_, "device", device_name.c_str(), NULL); 
     }
 
@@ -473,7 +481,6 @@ Pipeline::Pipeline(Application* owner) :
         exit(1);
         //FIXME: causes a segfault: context->owner_->quit();
     }
-
 }
 
 // Desctructor. TODO: do we need to free anything?
@@ -483,7 +490,9 @@ Pipeline::~Pipeline() {}
  */
 std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
 {
-    LOG_DEBUG("Trying to guess source FPS " << framerateIndex);
+    bool is_verbose = owner_->get_configuration()->get_verbose();
+    if (is_verbose)
+        LOG_DEBUG("Trying to guess source FPS " << framerateIndex);
 
     std::ostringstream capsStr;
     GstStateChangeReturn ret = gst_element_set_state(videosrc_, GST_STATE_READY);
@@ -493,7 +502,8 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
     GstCaps *caps = gst_pad_get_caps(srcPad);
     GstStructure *structure = gst_caps_get_structure(caps, 0);
     const GValue *val = gst_structure_get_value(structure, "framerate");
-    LOG_DEBUG("Caps structure from v4l2src srcpad: " << gst_structure_to_string(structure));
+    if (is_verbose)
+        LOG_DEBUG("Caps structure from v4l2src srcpad: " << gst_structure_to_string(structure));
     gint framerate_numerator, framerate_denominator; 
     if (GST_VALUE_HOLDS_LIST(val))
     {
@@ -536,7 +546,8 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
         << config->get_capture_height()
         << ", framerate="
         << capsSuffix;
-    LOG_DEBUG("Video source caps are " << capsStr.str());
+    if (is_verbose)
+        LOG_DEBUG("Video source caps are " << capsStr.str());
     ret = gst_element_set_state(videosrc_, GST_STATE_NULL);
     if (ret not_eq GST_STATE_CHANGE_SUCCESS)
         THROW_ERROR("Could not change v4l2src state to NULL");

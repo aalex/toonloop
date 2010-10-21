@@ -153,9 +153,13 @@ void Application::run(int argc, char *argv[])
     
     po::store(po::parse_command_line(argc, argv, desc), options);
     po::notify(options);
+
+    // tmp: 
+    bool verbose = options["verbose"].as<bool>();
     // Options that makes the program exit:
     if (options.count("help"))
     {
+        // TODO: also print clutter-gst command line help
         std::cout << desc << std::endl;
         //std::cout << INTERACTIVE_HELP << std::endl;
         //std::cout << std::endl;
@@ -192,14 +196,16 @@ void Application::run(int argc, char *argv[])
                 // exit(1); // exit with error
             }
         }
-        std::cout << "video-source is set to " << video_source << std::endl;
+        if (verbose)
+            std::cout << "video-source is set to " << video_source << std::endl;
     }
     if (options.count("project-home")) // of course it will be there.
     {
         project_home = options["project-home"].as<std::string>();
         if (project_home == DEFAULT_PROJECT_HOME) // FIXME: replace ~ by $HOME instead of hard-coding this
             project_home = std::string(std::getenv("HOME")) + "/Documents/toonloop/default";
-        std::cout << "project-home is set to " << project_home << std::endl;
+        if (verbose)
+            std::cout << "project-home is set to " << project_home << std::endl;
         if (! setup_project_home(project_home))
             exit(1);
 
@@ -212,7 +218,8 @@ void Application::run(int argc, char *argv[])
     if (options.count("intervalometer-interval"))
         std::cout << "The rate of the intervalometer is set to " << options["intervalometer-interval"].as<double>() << std::endl; 
 #endif
-    std::cout << "The initial frame rate for clip playhead is set to " << options["playhead-fps"].as<int>() << std::endl;
+    if (verbose)
+        std::cout << "The initial frame rate for clip playhead is set to " << options["playhead-fps"].as<int>() << std::endl;
     if (options.count("playhead-fps"))
     { 
         for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
@@ -221,8 +228,8 @@ void Application::run(int argc, char *argv[])
 
     if (options["fullscreen"].as<bool>())
     {
-        std::cout << "Fullscreen mode is on: " << std::endl;
-        std::cout << "Fullscreen mode is on: " << options["fullscreen"].as<bool>() << std::endl;
+        if (verbose)
+            std::cout << "Fullscreen mode is on: " << options["fullscreen"].as<bool>() << std::endl;
     }
     
     // Stores the options in the Configuration class.
@@ -257,9 +264,14 @@ void Application::run(int argc, char *argv[])
                 // Don't exit
             }
         }
-        std::cout << "Starting OSC receiver." << std::endl;
-    } else
-        std::cout << "OSC receiver is disabled" << std::endl;
+        if (verbose)
+            std::cout << "Starting OSC receiver." << std::endl;
+    } 
+    else 
+    {
+        if (verbose)
+            std::cout << "OSC receiver is disabled" << std::endl;
+    }
     if (config_->get_osc_send_port() != OSC_PORT_NONE)
     {
         //TODO:2010-08-26:aalex:Replace atoi by something more sturdy
@@ -275,8 +287,12 @@ void Application::run(int argc, char *argv[])
             std::cerr << "Sending port number " << config_->get_osc_send_port() <<  "is over the maximum of 65535." <<  std::endl;
             exit(1);
         }
-    } else
-        std::cout << "OSC sender is disabled" << std::endl;
+    } 
+    else 
+    {
+        if (verbose)
+            std::cout << "OSC sender is disabled" << std::endl;
+    }
     osc_.reset(new OscInterface(this, config_->get_osc_recv_port(), config_->get_osc_send_port(), config_->get_osc_send_addr()));
     if (config_->get_osc_recv_port() != OSC_PORT_NONE || config_->get_osc_send_port() != OSC_PORT_NONE)
     {
@@ -294,15 +310,18 @@ void Application::run(int argc, char *argv[])
         g_error("Unable to initialize Clutter: %s", error->message);
     clutter_gst_init(&argc, &argv);
     // start GUI
-    std::cout << "Starting GUI." << std::endl;
+    if (verbose)
+        std::cout << "Starting GUI." << std::endl;
     gui_.reset(new Gui(this));
     // start Pipeline
-    std::cout << "Starting pipeline." << std::endl;
+    if (verbose)
+        std::cout << "Starting pipeline." << std::endl;
     pipeline_.reset(new Pipeline(this));
     // Start MIDI
     // std::cout << "Starting MIDI input." << std::endl;
     midi_input_.reset(new MidiInput(this));
-    midi_input_->enumerate_devices();
+    if (verbose)
+        midi_input_->enumerate_devices();
     if (config_->get_midi_input_number() != MIDI_INPUT_NONE)
     {
         bool midi_ok = midi_input_->open(config_->get_midi_input_number());
@@ -327,7 +346,8 @@ void Application::run(int argc, char *argv[])
     else
         std::cout << "There is no layout number " << layout << ". Using 0." << std::endl;
     // Run the main loop
-    std::cout << "Running toonloop" << std::endl;
+    if (verbose)
+        std::cout << "Running toonloop" << std::endl;
     gtk_main();
 }
 /**
@@ -398,7 +418,8 @@ OscInterface* Application::get_osc_interface()
 
 void Application::quit()
 {
-    std::cout << "Quitting the application." << std::endl;
+    if (config_->get_verbose())
+        std::cout << "Quitting the application." << std::endl;
     pipeline_->stop();
     gtk_main_quit();
 }
