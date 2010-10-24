@@ -11,26 +11,35 @@ Things to do in priority
 
 Right now, here is the list of tasks to prioritize: 
 
- * BUG: use dashes, not minus in man pages
- * BUG: check for runtime dep (mencoder) in the executable.
- * BUG: Auto-record video sometimes keeps recording and is impossible to stop!
  * BUG: Auto-record video sometimes doesn't work
- * BUG: the first live input image is white
- * BUG: the first playback image is white
+ * BUG: Auto-record video sometimes keeps recording and is impossible to stop!
  * BUG: Sometimes, in one-image clips, the playhead tries to change to 1. Clip::get_image: Got exception vector::_M_range_check \n Controller::update_playback_image: The image is NULL
+ * BUG: check for runtime dep (mencoder) in the executable.
+ * BUG: the first live input image is white (hence the first recorded one if using timelapse)
+ * BUG: use dashes, not minus in man pages
+ * architecture: create the ToonLooper and ToonGrabber classes. (take those from gui and pipeline)
  * controls: Add direct controls for playback direction.
  * doc: Make sure the keystroke instructions are in only one place.
  * editing: Paging could allow more than ten clips. Use <>
  * editing: The first image that is grabbed with the intervalometer is black.
  * editing: make onionskin and ripple/fade effect one-per-clip-based
+ * effect: Rippling effect (strobing) effect (like in _Pas de deux_) Variable delay between each former frame. Variable number of former frames displayed
+ * effects: additive blending mode
+ * effects: adjust delay on the live input.
+ * effects: effect on the live input. 
+ * effects: one effect per clip
  * gui: Create a simpler HUD with position of writehead and playhead.
  * gui: Support a separate window for the playback.
  * onionskin: allow to change its opacity
  * onionskin: avoid a white image when none has been taken
  * onionskin: load the image just before writehead's position
  * osc: When saving a movie, we should send the name of the saved file via OSC
- * packaging: Remove dependency to GTK. (GUI controls should use Clutter)
  * packaging: add AM_MAINTAINER_MODE to configure.ac
+ * video: Support DV: gst-launch dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink
+ * video: Support HDV (hdvdec)
+ * video: Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga.
+ * video: Use the default GStreamer-properties camera when none is given
+
 
 
 To be done later
@@ -44,22 +53,17 @@ To be done later
  * edit: support playing back a single clip or all of them
  * editing: Load a movie file to a clip.
  * editing: Load images to a clip.
- * effect: Rippling effect (strobing) effect (like in _Pas de deux_) Variable delay between each former frame. Variable number of former frames displayed
  * effects: Color improvements (brightness, contrast, saturation)
  * effects: Min/max values for effects attributes.
  * effects: Port the shaders from 1.x (See doc/effects.txt)
- * effects: Press 'n' to select the next effect available.
  * effects: Support for video mapping. (needs a matte + separating the rectangle in a grid of rectangles, with coordinates that are interpolated linearily)
- * effects: additive blending mode
  * effects: contour
  * effects: diff
  * effects: invert
  * effects: masks (matte)
- * effects: one effect per clip
  * effects: threshold
  * gui: Advanced GUI for controlling clips and sequences
  * gui: Clutter Mx GUI (buttons, sliders, etc.) 
- * gui: choose the best keyboard controls
  * gui: dialog which allows the user to choose the name of the saved clip.
  * gui: display square to represent frames in timeline
  * midi: MIDI learn for controls
@@ -79,6 +83,7 @@ To be done later
  * osc: send  /toon/writehead <i>
  * packaging: Improve STK packaging
  * packaging: Re-add previous tests, including headers from src.
+ * packaging: Remove dependency to GTK. (GUI controls should use Clutter)
  * playback: Allow to move playhead to the beginning of a clip when we switch to it.
  * playback: Basic sequences of clips.
  * playback: Multi layers (multi clips at a time)
@@ -96,8 +101,4 @@ To be done later
  * saving: Save projects to XML (statesaving.cpp doesn't work currently)
  * saving: Support saving in AVI
  * saving: create a subdir for each clip in images and movies dirs
- * video: Support DV: gst-launch dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink
- * video: Support HDV (hdvdec)
- * video: Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga.
- * video: Use the default GStreamer-properties camera when none is given
  * video: do not crash if the v4l2 device is busy
