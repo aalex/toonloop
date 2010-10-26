@@ -21,6 +21,7 @@ _toonloop()
             --osc-send-port ) COMPREPLY=($(compgen -W "14444" -- $cur ) ) ;;
             --osc-receive-port ) COMPREPLY=($(compgen -W "14445" -- $cur ) ) ;;
             --max-images-per-clip ) COMPREPLY=($(compgen -W "0 1000" -- $cur ) ) ;;
+            --layout ) COMPREPLY=($(compgen -W "0 1 2 3" -- $cur ) ) ;;
             *) ;;
             esac
         fi
