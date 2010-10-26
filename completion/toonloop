@@ -1,0 +1,29 @@
+have toonloop &&
+_toonloop()
+{
+        local cur prev
+
+        COMPREPLY=()
+        cur=${COMP_WORDS[COMP_CWORD]}
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+        
+        if [[ "$cur" == -* ]]; then
+            COMPREPLY=($(compgen -W "$(toonloop --help | awk '/--/ { sub(/^.*--/, "--");sub(/[ =].*$/,"");print }')" -- $cur ) )
+        else
+            case "$prev" in
+            --videosource ) COMPREPLY=($(compgen -W "videotestsrc v4l2src v4lsrc dc1394src dv1394src filesrc" -- $cur ) ) ;;
+            --video-source ) COMPREPLY=($(compgen -W "$(toonloop --list-cameras | awk '/Video4/ { sub(/:/, "");print $3 }')" -- $cur ) ) ;;
+            --midi-input ) COMPREPLY=($(compgen -W "$(toonloop --list-midi-inputs | awk '/\*/ { sub(/:/, "");print $2 }')" -- $cur ) ) ;;
+            --osc-send-addr )  COMPREPLY=($(compgen -W "localhost" -- $cur ) ) ;;
+            --width ) COMPREPLY=($(compgen -W "640 320" -- $cur ) ) ;;
+            --height ) COMPREPLY=($(compgen -W "480 240" -- $cur ) ) ;;
+            --playhead-fps ) COMPREPLY=($(compgen -W "10 12 15 20 24" -- $cur ) ) ;;
+            --osc-send-port ) COMPREPLY=($(compgen -W "14444" -- $cur ) ) ;;
+            --osc-receive-port ) COMPREPLY=($(compgen -W "14445" -- $cur ) ) ;;
+            --max-images-per-clip ) COMPREPLY=($(compgen -W "0 1000" -- $cur ) ) ;;
+            *) ;;
+            esac
+        fi
+}
+complete -F _toonloop toonloop
+
