@@ -8,7 +8,9 @@ This version contains new features and bug fixes.
 New features:
     * Added a help text. (press F1)
     * Adding a bash completion file.
+    * Checking for mencoder at runtime
 
 Bug fixes: 
     * Decreased the verbosity a lot.
+    * Not checking for mencoder at build time anymore
 
