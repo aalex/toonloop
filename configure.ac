@@ -132,12 +132,6 @@ else
     HELP2MAN=:
 fi
 
-# external tools
-AC_CHECK_PROG(MENCODER, mencoder, yes, no)
-if test "$MENCODER" = no ; then
-    AC_MSG_ERROR([Cannot find mencoder.])
-fi
-
 AS_AC_EXPAND(DATADIR, $datadir)
 AC_MSG_NOTICE(Storing data files in $DATADIR)
 
