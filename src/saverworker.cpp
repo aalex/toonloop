@@ -112,6 +112,8 @@ void SaverWorker::operator()()
     //std::cout << "Done with $ " << command << std::endl;
     if (ret_val != 0)
         std::cout << "Mencoder's return value was " << ret_val << std::endl;
+    else
+        std::cout << "Success!" << std::endl;
     // rename movie file
     std::string final_movie = owner_->get_result_directory() + "/movie-" + datetime_started  + ".mov"; 
     try 

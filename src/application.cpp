@@ -40,6 +40,7 @@
 #include "gui.h"
 #include "midi.h"
 #include "pipeline.h"
+#include "subprocess.h"
 #include "v4l2util.h"
 
 namespace po = boost::program_options;
@@ -108,6 +109,14 @@ void Application::set_current_clip_number(unsigned int clipnumber)
     selected_clip_ = clipnumber;
     if (config_->get_verbose())
         std::cout << "current clip is " << selected_clip_ << std::endl;
+}
+
+static void check_for_mencoder()
+{
+    std::string command("mencoder -list-options");
+    bool ret = subprocess::run_command(command);
+    if (! ret)
+        g_critical("Could not find mencoder\n");
 }
 /**
  * Parses the command line and runs the application.
@@ -348,6 +357,9 @@ void Application::run(int argc, char *argv[])
     // Run the main loop
     if (verbose)
         std::cout << "Running toonloop" << std::endl;
+    // This call is blocking:
+    check_for_mencoder();
+    // Starts it all:
     gtk_main();
 }
 /**
