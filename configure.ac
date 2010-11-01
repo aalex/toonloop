@@ -154,6 +154,7 @@ AC_CONFIG_FILES([
     man/Makefile
     tests/Makefile
     pixmaps/Makefile
+    completion/Makefile
     ])
 AC_OUTPUT
 
