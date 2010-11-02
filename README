@@ -5,7 +5,7 @@
   |_|\___/ \___/|_| |_|_|\___/ \___/| .__/ 
                                     |_|    
 
-Toonloop is a live stop motion animation software. It aims to show the creation process to the audience as well as the result of the creation. The frame by frame animation is made by adding frames one by one to a clip made of many frames. Clips are displayed in a never ending loop. Toonloop can also grab video images continuously.
+Toonloop is a live animation software. It aims to show the creation process to the audience as well as the result of the creation. Frame by frame animation clips can made by adding images one by one. Clips are displayed in a never ending loop. Toonloop can also grab video images continuously.
 
 Toonloop is a great tool for teaching new medias to children. It can also be used as a professionnal software for movie creators, though it is mainly intended to be used in a live kiosk of show. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop.
 
