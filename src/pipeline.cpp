@@ -35,6 +35,7 @@
 #include "log.h" // TODO: make it async and implement THROW_ERROR
 #include "pipeline.h"
 #include "timing.h"
+#include "v4l2util.h"
 
 //const bool USE_SHADER = false;
 namespace fs = boost::filesystem;
@@ -531,9 +532,11 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
     capsSuffix += boost::lexical_cast<std::string>(framerate_denominator);
 
     // TODO: handle interlaced video capture stream
-    //if (v4l2util::isInterlaced(deviceStr()))
-    //    capsSuffix +=", interlaced=true";
-
+    
+    if (v4l2util::isInterlaced(owner_->get_configuration()->videoSource()))
+    {
+        capsSuffix +=", interlaced=true";
+    }
     // TODO: handle aspect ratio
     //capsSuffix += ", pixel-aspect-ratio=";
     //capsSuffix += config_.pixelAspectRatio();
