@@ -16,10 +16,11 @@ Right now, here is the list of tasks to prioritize:
  * BUG: Sometimes, in one-image clips, the playhead tries to change to 1. Clip::get_image: Got exception vector::_M_range_check \n Controller::update_playback_image: The image is NULL
  * BUG: check for runtime dep (mencoder) in the executable.
  * BUG: the first live input image is white (hence the first recorded one if using timelapse)
- * BUG: use dashes, not minus in man pages
+ * MIDI bindings specified in XML
  * architecture: create the ToonLooper and ToonGrabber classes. (take those from gui and pipeline)
  * controls: Add direct controls for playback direction.
  * doc: Make sure the keystroke instructions are in only one place.
+ * editing: Add the overdub control message. (erases and starts recording)
  * editing: Paging could allow more than ten clips. Use <>
  * editing: The first image that is grabbed with the intervalometer is black.
  * editing: make onionskin and ripple/fade effect one-per-clip-based
@@ -38,9 +39,8 @@ Right now, here is the list of tasks to prioritize:
  * packaging: install completion/toonloop /etc/bash_completion.d/toonloop
  * video: Support DV: gst-launch dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink
  * video: Support HDV (hdvdec)
- * video: Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga.
+ * video: Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga. (well, we could have many pipelines)
  * video: Use the default GStreamer-properties camera when none is given
-
 
 
 To be done later
@@ -103,3 +103,10 @@ To be done later
  * saving: Support saving in AVI
  * saving: create a subdir for each clip in images and movies dirs
  * video: do not crash if the v4l2 device is busy
+
+
+Done?
+-----
+I think those are done.
+
+ * BUG: use dashes, not minus in man pages
