@@ -43,11 +43,13 @@ Toonloop saves the clip in its project directory. The default project directory 
 Versioning
 ----------
 
-Toonloop uses the common "Linux kernel" versioning system, where even-numbered minor versions are stable and odd-numbered minor versions are development snapshots. The micro version indicates the origin of the release: even micro numbers are only used for released archives; odd micro numbers are only used on the Git repository.
+Toonloop uses the common "Linux kernel" versioning system, where even-numbered minor versions are stable and odd-numbered minor versions are development snapshots.
+
+The micro version indicates the origin of the release: even micro numbers are only used for released archives; odd micro numbers are only used on the Git repository.
 
 A stable series means that the command-line options and the interactive keyboard controls should not change much for all tags whose version number start with the same major-minor numbers. Some new features might be developped in that branch, but each release should be backward-compatible with their ancestor. Releases from a stable series should be use for production. 
 
-In contrast, unstable branches consist of tags which are developer snapshots. They are not expected to be compatible with any other version. 
+In contrast, unstable branches consist of tags which are developer snapshots. They are not expected to be compatible with any other version. Some features might change between different stable branches.
 
 
 Known Bugs
@@ -121,6 +123,11 @@ How to build Toonloop
 
 There is also the handy ./one_click_build.sh that does it in a single script. (except the `sudo make install`)
 
+If you want to install the bash completion script, you should set the sysconfdir command-line option given to ./configure to "/etc". Here is an example:
+
+ ./configure --sysconfdir=/etc
+
+Be warned that the command above would overwrite the default Toonloop config files installed by your package manager, if any. 
 
 How to run Toonloop
 -------------------

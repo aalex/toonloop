@@ -1,4 +1,4 @@
-2010-??-??: Toonloop 2.0.2
+2010-11-02: Toonloop 2.0.2
 --------------------------
 
 This release is a maintenance version in the 2.0 stable series. 
@@ -9,6 +9,7 @@ New features:
     * Added a help text. (press F1)
     * Adding a bash completion file.
     * Checking for mencoder at runtime
+    * Improved README.
 
 Bug fixes: 
     * Decreased the verbosity a lot.
