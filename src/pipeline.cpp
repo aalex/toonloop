@@ -375,7 +375,7 @@ Pipeline::Pipeline(Application* owner) :
             g_object_set(capsfilter0, "caps", the_caps, NULL);
             gst_caps_unref(the_caps);
         }
-        is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
+        is_linked = gst_element_link(videosrc_, capsfilter0);
         if (!is_linked) {
             g_print("Could not link %s to %s.\n", "videosrc_", "capfilter0"); 
             exit(1); 
@@ -386,7 +386,7 @@ Pipeline::Pipeline(Application* owner) :
         while (not source_is_linked)
         {
             g_object_set(capsfilter0, "caps", gst_caps_from_string(guess_source_caps(frame_rate_index).c_str()), NULL);
-            is_linked = gst_element_link_pads(videosrc_, "src", capsfilter0, "sink");
+            is_linked = gst_element_link(videosrc_, capsfilter0);
             if (!is_linked) 
             { 
                 std::cout << "Failed to link video source. Trying another framerate." << std::endl;
@@ -403,12 +403,12 @@ Pipeline::Pipeline(Application* owner) :
         }
     }
     //Will now link capfilter0--ffmpegcolorspace0--tee.
-    is_linked = gst_element_link_pads(capsfilter0, "src", ffmpegcolorspace0, "sink");
+    is_linked = gst_element_link(capsfilter0, ffmpegcolorspace0);
     if (!is_linked) {
         g_print("Could not link %s to %s.\n", "capsfilter0", "ffmpegcolorspace0"); 
         exit(1);
     }
-    is_linked = gst_element_link_pads(ffmpegcolorspace0, "src", tee0, "sink");
+    is_linked = gst_element_link(ffmpegcolorspace0, tee0);
     if (!is_linked) {
         g_print("Could not link %s to %s.\n", "ffmpegcolorspace0", "tee0"); 
         exit(1);
@@ -420,7 +420,7 @@ Pipeline::Pipeline(Application* owner) :
         exit(1);
     }
     // output 0: the OpenGL uploader.
-    is_linked = gst_element_link_pads(queue0, "src", videosink_, "sink");
+    is_linked = gst_element_link(queue0, videosink_);
     if (!is_linked) {
         // FIXME:2010-08-06:aalex:We could get the name of the GST element for the clutter sink using gst_element_get_name
         g_print("Could not link %s to %s.\n", "queue0", "cluttervideosink0");
@@ -434,7 +434,7 @@ Pipeline::Pipeline(Application* owner) :
         g_print("Could not link %s to %s.\n", "tee0", "queue1"); 
         exit(1); 
     }
-    is_linked = gst_element_link_pads(queue1, "src", gdkpixbufsink_, "sink");
+    is_linked = gst_element_link(queue1, gdkpixbufsink_);
     if (!is_linked) { 
         g_print("Could not link %s to %s.\n", "queue1", "gdkpixbufsink0"); 
         exit(1); 
