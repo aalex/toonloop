@@ -315,11 +315,17 @@ Pipeline::Pipeline(Application* owner) :
             std::cout << "Video source: ximagesrc" << std::endl;
         videosrc_  = gst_element_factory_make("ximagesrc", "videosrc0");
     } 
-    else 
+    else  // v4l2src
     {
+        // TODO:2010-08-06:aalex:We could rely on gstreamer-properties to configure the video source.
+        // Add -d gconf (gconfvideosrc)
         if (verbose)
             std::cout << "Video source: v4l2src" << std::endl;
         videosrc_  = gst_element_factory_make("v4l2src", "videosrc0"); 
+        std::string device_name(config->videoSource());
+        if (verbose)
+            g_print("Using camera %s.\n", device_name.c_str());
+        g_object_set(videosrc_, "device", device_name.c_str(), NULL); 
     }
     // TODO: use something else than g_assert to see if we could create the elements.
     g_assert(videosrc_); 
@@ -370,7 +376,7 @@ Pipeline::Pipeline(Application* owner) :
             g_object_set(capsfilter0, "caps", the_caps, NULL);
             gst_caps_unref(the_caps);
             
-        } else {
+        } else {  // it's a videotestsrc
             //TODO:2010-10-04:aalex:Use config.get_capture_* for test source as well
             GstCaps *the_caps = gst_caps_from_string("video/x-raw-yuv, width=640, height=480, framerate=30/1");
             g_object_set(capsfilter0, "caps", the_caps, NULL);
@@ -382,20 +388,18 @@ Pipeline::Pipeline(Application* owner) :
             exit(1); 
         }
         source_is_linked = true;
-    } else {
+    } else {     // it's a v4l2src
         // Guess the right FPS to use with the video capture device
         while (not source_is_linked)
         {
-            g_object_set(capsfilter0, "caps", gst_caps_from_string(guess_source_caps(frame_rate_index).c_str()), NULL);
+            GstCaps *videocaps = gst_caps_from_string(guess_source_caps(frame_rate_index).c_str());
+            g_object_set(capsfilter0, "caps", videocaps, NULL);
+            gst_caps_unref(videocaps);
             is_linked = gst_element_link(videosrc_, capsfilter0);
             if (!is_linked) 
             { 
                 std::cout << "Failed to link video source. Trying another framerate." << std::endl;
                 ++frame_rate_index;
-                if (frame_rate_index >= 10) 
-                {
-                    std::cout << "Giving up after 10 tries." << std::endl;
-                }
             } else {
                 if (verbose)
                     std::cout << "Success." << std::endl;
@@ -451,15 +455,6 @@ Pipeline::Pipeline(Application* owner) :
     g_signal_connect(bus, "message::eos", G_CALLBACK(end_stream_cb), this);
     g_signal_connect(bus, "message", G_CALLBACK(bus_message_cb), this);
     gst_object_unref(bus);
-
-    // TODO:2010-08-06:aalex:We could rely on gstremer-properties to configure the video source.
-    if (config->videoSource() != "test" and config->videoSource() != "x")
-    {
-        std::string device_name(config->videoSource());
-        if (verbose)
-            g_print("Using camera %s.\n", device_name.c_str());
-        g_object_set(videosrc_, "device", device_name.c_str(), NULL); 
-    }
 
     /* run */
     GstStateChangeReturn ret;
@@ -538,7 +533,7 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
         capsSuffix +=", interlaced=true";
     }
     // TODO: handle aspect ratio
-    //capsSuffix += ", pixel-aspect-ratio=";
+    // capsSuffix += ", pixel-aspect-ratio=1/1";
     //capsSuffix += config_.pixelAspectRatio();
     //capsSuffix += "4:3";
     
