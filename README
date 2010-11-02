@@ -11,9 +11,10 @@ Toonloop is a great tool for teaching new medias to children. It can also be use
 
 Toonloop can be controlled using MIDI input, or the Open Sound Control protocol. Images are saved to the disk in the JPEG format, and the clips are saved using the photo-JPEG video codec. (using mencoder)
 
-See the RELEASE file for up-to-date information about this version of Toonloop.
+See the RELEASE file for up-to-date information about this version of Toonloop. See the NEWS file for its history.
 
 Most of the information on how to use it is in the toonloop(1) man page.
+
 
 How to use Toonloop
 -------------------
@@ -32,17 +33,29 @@ s                  : saves the current clip as a movie file
 Tab                : changes the playback direction
 r                  : clear the current clip
 Caps Lock          : toggle video grabbing
-a                  : Toggles on/off the intervalometer
-k                  : increase intervalometer interval by 1 second
-j                  : decrease intervalometer interval by 1 second
 period             : Toggles the layout
-right              : move writehead to the next image
-left               : move writehead to the previous image
-return             : move writehead to the last image
-semicolon          : move writehead to the first image
 F1                 : show help
 
+See the toonloop(1) man page, or press F1 for all the key controls.
+
 Toonloop saves the clip in its project directory. The default project directory is the ~/Documents/toonloop/default/ directory, where "~" is your HOME directory. 
+
+Versioning
+----------
+
+Toonloop uses the common "Linux kernel" versioning system, where even-numbered minor versions are stable and odd-numbered minor versions are development snapshots. The micro version indicates the origin of the release: even micro numbers are only used for released archives; odd micro numbers are only used on the Git repository.
+
+A stable series means that the command-line options and the interactive keyboard controls should not change much for all tags whose version number start with the same major-minor numbers. Some new features might be developped in that branch, but each release should be backward-compatible with their ancestor. Releases from a stable series should be use for production. 
+
+In contrast, unstable branches consist of tags which are developer snapshots. They are not expected to be compatible with any other version. 
+
+
+Known Bugs
+----------
+
+Here is a list of known bugs. See also the TODO file. That is what we mainly use to manage issues, rather than a Web application. Please read and write on the mailing list if you encounter some issues with Toonloop.
+
+ * The portrait layout doesn't look nice: both images overlap when not in 4:3 ratio.
 
 
 Basic Tools for Compiling
@@ -68,13 +81,11 @@ Here is the list of Debian package that you will need to build Toonloop 2.x.
 
  ffmpeg,
  gettext,
- gstreamer0.10-alsa,
  gstreamer0.10-ffmpeg,
  gstreamer0.10-plugins-bad,
  gstreamer0.10-plugins-base,
  gstreamer0.10-plugins-good,
  gstreamer0.10-plugins-ugly (>= 0.10.14),
- gstreamer0.10-pulseaudio,
  gstreamer0.10-x,
  help2man,
  libasound-dev,
@@ -99,11 +110,6 @@ Here is the list of Debian package that you will need to build Toonloop 2.x.
  libxv-dev,
  mencoder
 
-The packages listed below are not used yet, but we plan to use them 
-soon.
-
- libxml++2.6-2,
- libxml++2.6-dev,
 
 How to build Toonloop
 ---------------------

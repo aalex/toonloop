@@ -1,7 +1,7 @@
-2010-??-??: Toonloop 2.0.1
+2010-??-??: Toonloop 2.0.2
 --------------------------
 
-This release is a maintenance version in the stable 2.0 series. A stable series means that the command-line options and the interactive keyboard controls should not change much for all tags with 2.0 as major-minor numbers. Some new features might be developped in that branch, but each release should be backward-compatible with their ancestor. The next unstable development branch is 2.1. The next stable series is 2.2. 
+This release is a maintenance version in the 2.0 stable series. 
 
 This version contains new features and bug fixes. 
 
