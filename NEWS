@@ -1,5 +1,24 @@
-See the RELEASE file for the latest new features and bug fixes.
+This file lists all the release notes for the former versions.
+See the RELEASE file for the current notes. (latest new features and bug fixes)
 See the ChangeLog file for a log of previous releases informations.
+
+
+2010-11-02: Toonloop 2.0.2
+--------------------------
+
+This release is a maintenance version in the 2.0 stable series.
+
+This version contains new features and bug fixes.
+
+New features:
+    * Added a help text. (press F1)
+    * Adding a bash completion file.
+    * Checking for mencoder at runtime
+    * Improved README.
+
+Bug fixes:
+    * Decreased the verbosity a lot.
+    * Not checking for mencoder at build time anymore
 
 
 2010-10-08: Toonloop 2.0.0
