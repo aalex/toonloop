@@ -1,17 +1,13 @@
-2010-11-02: Toonloop 2.0.2
+2010-11-??: Toonloop 2.0.4
 --------------------------
 
 This release is a maintenance version in the 2.0 stable series. 
 
-This version contains new features and bug fixes. 
+This version contains new features and bug fixes. Those were backported from the 2.1 development branch.
 
 New features:
-    * Added a help text. (press F1)
-    * Adding a bash completion file.
-    * Checking for mencoder at runtime
-    * Improved README.
+    * support interlaced video
 
 Bug fixes: 
-    * Decreased the verbosity a lot.
-    * Not checking for mencoder at build time anymore
+    * detect V4L2 video features from the right device
 
