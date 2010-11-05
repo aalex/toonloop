@@ -82,9 +82,10 @@ void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg,  gpointer user_d
             // VIDEO RECORDING:
             if (context->get_record_all_frames())
             {
-                std::cout << "Video grabbing is on." << std::endl; 
+                //std::cout << "Video grabbing is on." << std::endl; 
                 unsigned long time_between_frames = (unsigned long)(1.0f / float(current_clip->get_playhead_fps()) * timing::TIMESTAMP_PRECISION);
-                std::cout << "now=" << now << " last_time_grabbed=" << last_time_grabbed << " time_between_frames" << time_between_frames << std::endl;
+                if (verbose)
+                    std::cout << "now=" << now << " last_time_grabbed=" << last_time_grabbed << " time_between_frames" << time_between_frames << std::endl;
                 if ((now - last_time_grabbed) > time_between_frames)
                 {
                     must_grab_now = true;
@@ -106,7 +107,8 @@ void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg,  gpointer user_d
             }
             if (must_grab_now)
             {
-                std::cout << "Grabbing an image" << std::endl;
+                if (verbose)
+                    std::cout << "Grabbing an image" << std::endl;
                 context->save_image_to_current_clip(pixbuf);
                 current_clip->set_last_time_grabbed_image(now);
             }
