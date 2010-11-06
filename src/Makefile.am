@@ -7,8 +7,7 @@ doxygen:
 clean-local:
 	rm -rf html
 
-# noinst_PROGRAMS = 
-# FIXME: We should not add all the .h files here
+noinst_PROGRAMS = presets
 
 headers = \
 	application.h \
@@ -57,6 +56,12 @@ toonloop_SOURCES = \
     oscsender.cpp \
 	$(headers)
 
+presets_SOURCES = presets.cpp
+
+presets_CXXFLAGS = \
+	$(CLUTTERGST_CFLAGS) \
+	$(CXXFLAGS)
+
 toonloop_CXXFLAGS = \
 	$(CXXFLAGS) \
 	$(BOOST_CPPFLAGS) \
@@ -65,9 +70,7 @@ toonloop_CXXFLAGS = \
 	$(LIBLO_CFLAGS) \
 	$(LIBM_CXXFLAGS) \
 	$(LIBTHREAD_CXXFLAGS) \
-	$(STK_CXXFLAGS) \
-	$(CXXFLAGS) \
-	-DPIXMAPS_DIR=\"$(PIXMAPS_DIR)\"
+	$(STK_CXXFLAGS)
  
 toonloop_LDADD = \
 	$(BOOST_FILESYSTEM_LIB) \
@@ -83,3 +86,6 @@ toonloop_LDADD = \
 	$(LDFLAGS) \
 	$(STK_LIBS)
 
+presets_LDADD = \
+	$(CLUTTERGST_LIBS) \
+	$(LDFLAGS)

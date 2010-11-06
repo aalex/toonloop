@@ -49,6 +49,7 @@ tests/check_midi
 # TODO:2010-08-05:aalex:How can we avoid automake to create make INSTALL a symlink?
 INSTALL
 src/core
+src/presets
 # doxygen stuff
 src/doxyfile
 src/html

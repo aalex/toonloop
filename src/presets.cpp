@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include "unused.h"
 
 struct MidiBinding
 {
@@ -41,6 +42,8 @@ static void on_midi_xml_start_element(
         gpointer user_data,
         GError **error)
 {
+    UNUSED(context);
+    UNUSED(error);
     MidiBinder *self = static_cast<MidiBinder *>(user_data);
     // check each name and value for the current tag:
     if (g_strcmp0(element_name, "note_on") == 0)
@@ -71,6 +74,8 @@ static void on_midi_xml_text(
         gpointer             user_data,
         GError             **error)
 {
+    UNUSED(context);
+    UNUSED(error);
     MidiBinder *self = static_cast<MidiBinder *>(user_data);
     // Note that "text" is not a regular C string: it is
     // not null-terminated. This is the reason for the
@@ -88,6 +93,9 @@ static void on_midi_xml_end_element(
         gpointer user_data,
         GError **error)
 {
+    UNUSED(context);
+    UNUSED(error);
+    UNUSED(element_name);
     MidiBinder *self = static_cast<MidiBinder *>(user_data);
     if (self->current_binding)
     {
@@ -102,6 +110,8 @@ static void on_midi_xml_end_element(
    */
 static void on_midi_xml_error(GMarkupParseContext *context, GError *error, gpointer user_data)
 {
+    UNUSED(context);
+    UNUSED(user_data);
     //MidiBinder *self = static_cast<MidiBinder *>(user_data);
     g_print("Error parsing XML markup: %s\n", error->message);
 }
