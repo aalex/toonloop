@@ -26,7 +26,7 @@ gboolean toon_load_fragment_source_file(ClutterShader *shader, gchar *file_name)
 gchar *toon_find_shader_file(const gchar *file_name)
 {
     // TODO: add ~/.toonloop/
-    gchar *dirs[] ={"", "./shaders/", "./src/shaders", PKGDATADIR, NULL};
+    gchar *dirs[] ={"", "./shaders/", "./src/shaders/", PKGDATADIR, NULL};
     int i;
     for (i = 0; dirs[i]; i++)
     {
