@@ -20,7 +20,7 @@
     <note_on note="69" action="select_clip" args="9" />
 
     <!-- Program change: select_clip -->
-    <control_pass  control="80" action="select_clip" />
+    <program_change action="select_clip" />
 
     <!-- Saturation (7 is main volume) -->
     <control_map control="7" action="fx_brcosa" from="0" to="1" />
