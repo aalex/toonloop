@@ -28,6 +28,23 @@
 #include "message.h"
 #include "presets.h"
 
+typedef enum 
+{
+    NOTE_ON = 0,
+    NOTE_OFF,
+    CONTROL,
+    PEDAL_ON,
+    PEDAL_OFF,
+    PROGRAM_CHANGE
+} MidiEventType;   
+// TODO
+#if 0
+static MidiEventType get_midi_event_type(unsigned char first_byte)
+{
+    if ((first_byte & 0xF0)  
+}
+#endif
+
 /**
  * Callback for incoming MIDI messages.  Called in its thread.
  * 
@@ -49,33 +66,27 @@
 void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char > *message, void *user_data )
 {
     MidiInput* context = static_cast<MidiInput*>(user_data);
+    MidiEventType event_type = NOTE_ON; // default...
+    unsigned char value = 0;
     unsigned int nBytes = message->size();
+    // Print debug info:
     if (context->verbose_) 
     {
-        std::cout << "(";
+        std::cout << "MIDI message: (";
         for (unsigned int i = 0; i < nBytes; i++)
             std::cout << (int)message->at(i) << " ";
         std::cout << ")";
         if (nBytes > 0)
             std::cout << " stamp = " << delta_time << std::endl;
     }
+    // Check if it's a note or control:
     if (message->size() >= 3)
     {
-        if ((int)message->at(1) == 64) // 64: sustain pedal
-        {
-            if ((int)message->at(2) != 0) 
-                context->push_message(Message(Message::ADD_IMAGE));
-                //context->on_pedal_down();
-        }
-        else if ((int)message->at(1) == 80) // 80: general-purpose control. The Roland GFC-50 provides an on/off pedal input with that number
-        {
-            if ((int)message->at(2) == 127) 
-                context->push_message(Message(Message::VIDEO_RECORD_ON));
-                //context->on_ctrl_80_changed(true);
-            else
-                context->push_message(Message(Message::VIDEO_RECORD_OFF));
-                //context->on_ctrl_80_changed(false);
-        } 
+        value = message->at(1);
+        if ((int)message->at(2) != 0) 
+            event_type = PEDAL_ON;
+        else
+            event_type = PEDAL_OFF;
         //else if ((int)message->at(1) == 7) // 7: volume expression pedal
         //    context->on_volume_control((int)message->at(2));
     }
@@ -91,6 +102,16 @@ void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char >
             else
                 context->push_message(Message(Message::SELECT_CLIP, clip_number));
         }
+    }
+    // TODO: change those by lookups in the map of MidiRules
+    if (event_type == PEDAL_ON && value == 64)
+        context->push_message(Message(Message::ADD_IMAGE));
+    else if (value == 80)
+    {
+        if (event_type == PEDAL_ON)
+            context->push_message(Message(Message::VIDEO_RECORD_ON));
+        else
+            context->push_message(Message(Message::VIDEO_RECORD_OFF));
     }
 }
 
