@@ -1,3 +1,4 @@
+SUBDIRS = shaders
 bin_PROGRAMS = toonloop
 EXTRA_DIST = doxyfile.in
 

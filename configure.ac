@@ -145,6 +145,7 @@ AC_CONFIG_FILES([
     Makefile
     src/Makefile
     src/doxyfile
+    src/shaders/Makefile
     man/Makefile
     tests/Makefile
     pixmaps/Makefile
