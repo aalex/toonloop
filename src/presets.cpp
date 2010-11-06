@@ -18,6 +18,9 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+// TODO: rename to midibinder.cpp
+
 #include "presets.h"
 #include "unused.h"
 #include <boost/lexical_cast.hpp>
@@ -57,10 +60,6 @@ void MidiBinder::on_midi_xml_start_element(
     self->rules_.push_back(midi_rule);
 }
 
-MidiBinder::MidiBinder()
-{
-    // pass
-}
 
 /** 
  * Called on error, including one set by other
@@ -103,7 +102,7 @@ MidiRule *MidiBinder::get_rule(const gchar *name)
 }
 */
 /**
- * Code to grab the file into memory and parse it. 
+ * Code to load the XML file into memory and parse it. 
  */
 bool MidiBinder::load_xml_file(const gchar *file_name)
 {
@@ -135,14 +134,12 @@ bool MidiBinder::load_xml_file(const gchar *file_name)
     return true;
 }
 
-// TODO: make a class...
-void init_midi_presets()
+MidiBinder::MidiBinder()
 {
-    MidiBinder binder = MidiBinder();
     std::string full_name(toon_find_midi_preset_file("midi.xml"));
     std::cout << "Found MIDI bindings file " << full_name << std::endl;
     
-    if (binder.load_xml_file(full_name.c_str()))
-        g_print("success\n");
+    if (load_xml_file(full_name.c_str()))
+        g_print("successfully loaded XML file\n");
 }
 

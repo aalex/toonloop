@@ -144,7 +144,11 @@ void MidiInput::consume_messages()
 
 MidiInput::MidiInput(Application* owner) : 
         owner_(owner),
-        messaging_queue_()
+        messaging_queue_(),
+        port_(0),
+        ports_count_(0),
+        opened_(false),
+        midi_binder_()
 {
     verbose_ = false;
     //verbose_ = true;
@@ -159,12 +163,7 @@ MidiInput::MidiInput(Application* owner) :
     }
   
     // Check available ports vs. specified.
-    port_ = 0;
     ports_count_ = midi_in_->getPortCount();
-    opened_ = false;
-    
-    // Try to load MIDI presets
-    init_midi_presets();
 }
 
 bool MidiInput::open(unsigned int port)
