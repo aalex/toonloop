@@ -162,7 +162,7 @@ void Application::run(int argc, char *argv[])
     
     po::store(po::parse_command_line(argc, argv, desc), options);
     po::notify(options);
-
+    
     // tmp: 
     bool verbose = options["verbose"].as<bool>();
     // Options that makes the program exit:

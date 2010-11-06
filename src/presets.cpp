@@ -4,6 +4,10 @@
 #include <string>
 #include "unused.h"
 
+#define VAL(str) #str
+#define TOSTRING(str) VAL(str)
+#define PRESETS_DIR TOSTRING(DATADIR) "/presets/"
+
 struct MidiBinding
 {
     public:
@@ -122,6 +126,21 @@ MidiBinder::MidiBinder()
     current_binding = NULL;
 }
 
+gchar *toon_find_midi_preset_file(const gchar *file_name)
+{
+    // TODO: add ~/.toonloop/
+    const gchar *dirs[] ={"", "../presets/", "./presets/", PRESETS_DIR, NULL};
+    int i;
+    for (i = 0; dirs[i]; i++)
+    {
+        gchar *path = g_strdup_printf("%s%s", dirs[i], file_name);
+        if (g_file_test(path, G_FILE_TEST_EXISTS))
+            return path;
+        g_free(path);
+    }
+    return NULL;
+}
+
 /**
  * Code to grab the file into memory and parse it. 
  */
@@ -155,11 +174,13 @@ bool MidiBinder::load_xml_file(const gchar *file_name)
     return true;
 }
 
-int main()
+// TODO: make a class...
+void init_midi_presets()
 {
     MidiBinder binder = MidiBinder();
-    std::string file_name = "midibindings.xml";
-    if (binder.load_xml_file(file_name.c_str()))
+    std::string full_name(toon_find_midi_preset_file("midi.xml"));
+    
+    if (binder.load_xml_file(full_name.c_str()))
         g_print("success\n");
-    return 0;
 }
+

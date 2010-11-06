@@ -7,8 +7,6 @@ doxygen:
 clean-local:
 	rm -rf html
 
-noinst_PROGRAMS = presets
-
 headers = \
 	application.h \
 	clip.h \
@@ -26,6 +24,7 @@ headers = \
     oscreceiver.h \
     oscsender.h \
 	pipeline.h \
+	presets.h \
 	saverworker.h \
 	statesaving.h \
 	subprocess.h \
@@ -45,6 +44,7 @@ toonloop_SOURCES = \
 	midi.cpp \
 	moviesaver.cpp \
 	pipeline.cpp \
+    presets.cpp \
 	saverworker.cpp \
 	statesaving.cpp \
 	subprocess.cpp \
@@ -56,12 +56,6 @@ toonloop_SOURCES = \
     oscsender.cpp \
 	$(headers)
 
-presets_SOURCES = presets.cpp
-
-presets_CXXFLAGS = \
-	$(CLUTTERGST_CFLAGS) \
-	$(CXXFLAGS)
-
 toonloop_CXXFLAGS = \
 	$(CXXFLAGS) \
 	$(BOOST_CPPFLAGS) \
@@ -70,7 +64,9 @@ toonloop_CXXFLAGS = \
 	$(LIBLO_CFLAGS) \
 	$(LIBM_CXXFLAGS) \
 	$(LIBTHREAD_CXXFLAGS) \
-	$(STK_CXXFLAGS)
+	$(STK_CXXFLAGS) \
+    -DDATADIR="$(datadir)"
+
  
 toonloop_LDADD = \
 	$(BOOST_FILESYSTEM_LIB) \
@@ -85,7 +81,3 @@ toonloop_LDADD = \
 	$(LIBTHREAD_LIBS) \
 	$(LDFLAGS) \
 	$(STK_LIBS)
-
-presets_LDADD = \
-	$(CLUTTERGST_LIBS) \
-	$(LDFLAGS)

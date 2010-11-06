@@ -26,6 +26,7 @@
 #include "controller.h"
 #include "midi.h"
 #include "message.h"
+#include "presets.h"
 
 /**
  * Callback for incoming MIDI messages.  Called in its thread.
@@ -161,6 +162,9 @@ MidiInput::MidiInput(Application* owner) :
     port_ = 0;
     ports_count_ = midi_in_->getPortCount();
     opened_ = false;
+    
+    // Try to load MIDI presets
+    init_midi_presets();
 }
 
 bool MidiInput::open(unsigned int port)
