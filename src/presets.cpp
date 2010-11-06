@@ -1,12 +1,19 @@
+#include "presets.h"
+#include "unused.h"
+#include <boost/lexical_cast.hpp>
 #include <glib.h>
+#include <iostream>
+#include <map>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include "unused.h"
+#include <vector>
 
 #define VAL(str) #str
 #define TOSTRING(str) VAL(str)
 #define PRESETS_DIR TOSTRING(DATADIR) "/presets/"
+
+typedef std::vector<MidiRule>::iterator MidiRuleIterator;
 
 struct MidiBinding
 {
@@ -33,12 +40,24 @@ class MidiBinder
         MidiBinder();
         bool load_xml_file(const gchar *file_name);
         MidiBinding *current_binding;
+        MidiRule *get_rule(const gchar *name);
+        //void add_rule(const gchar *name);
+        //void add_attribute_to_rule(const gchar *rule, const gchar *attr, const gchar *value);
+        static void on_midi_xml_start_element(
+            GMarkupParseContext *context,
+            const gchar *element_name,
+            const gchar **attribute_names,
+            const gchar **attribute_values,
+            gpointer user_data,
+            GError **error);
+    private:
+        std::vector<MidiRule> rules_;
 };
 
 /*
  * Called for open tags <foo bar="baz">
  */
-static void on_midi_xml_start_element(
+void MidiBinder::on_midi_xml_start_element(
         GMarkupParseContext *context,
         const gchar *element_name,
         const gchar **attribute_names,
@@ -50,22 +69,20 @@ static void on_midi_xml_start_element(
     UNUSED(error);
     MidiBinder *self = static_cast<MidiBinder *>(user_data);
     // check each name and value for the current tag:
-    if (g_strcmp0(element_name, "note_on") == 0)
+    MidiRule midi_rule;
+    midi_rule.name_ = element_name;
+    
+    const gchar **name_cursor = attribute_names;
+    const gchar **value_cursor = attribute_values;
+    std::cout << "Adding rule " << element_name << ": ";
+    while (*name_cursor)
     {
-        self->current_binding = new MidiBinding();
-        const gchar **name_cursor = attribute_names;
-        const gchar **value_cursor = attribute_values;
-        while (*name_cursor)
-        {
-            if (g_strcmp0(*name_cursor, "action") == 0)
-            {
-                self->current_binding->action = g_strdup(*value_cursor);
-                g_print("Found action %s=%s in %s\n", *name_cursor, *value_cursor, element_name);
-            }
-            name_cursor++;
-            value_cursor++;
-        }
+        midi_rule.attributes_[*name_cursor] = *value_cursor;
+        std::cout << *name_cursor << " " << *value_cursor << "\n";
+        name_cursor++;
+        value_cursor++;
     }
+    self->rules_.push_back(midi_rule);
 }
 
 /**
@@ -140,7 +157,36 @@ gchar *toon_find_midi_preset_file(const gchar *file_name)
     }
     return NULL;
 }
+/*
+void MidiBinder::add_rule(const gchar *name)
+{
+    MidiRule e;
+    e.name_ = name;
+    rules_.push_back(e);
+}
 
+MidiRule *MidiBinder::get_rule(const gchar *name)
+{
+    for (MidiRuleIterator iter = rules_.begin(); iter != rules_.end(); ++iter)
+        if (iter->name_ == name)
+            return &(*iter);
+    return NULL;
+}
+void MidiBinder::add_attribute_to_rule(const gchar *rule, const gchar *attr, const gchar *value)
+{
+
+    MidiRule *midi_rule = get_rule(rule);
+    if (! midi_rule)
+    {
+        g_critical("No such rule %s", rule);
+        return;
+    }
+    // if rule in rules_.
+    std::cout << "Rule " << rule << ": Adding " << attr << " " << value << std::endl;
+    midi_rule->attributes_[attr] = value;
+    //std::cout << e.name_ << " " << boost::lexical_cast<int>(e.attributes_["note"]) << std::endl;
+}
+*/
 /**
  * Code to grab the file into memory and parse it. 
  */
@@ -148,7 +194,7 @@ bool MidiBinder::load_xml_file(const gchar *file_name)
 {
     /* The list of what handler does what. */
     GMarkupParser parser = {
-        on_midi_xml_start_element,
+        MidiBinder::on_midi_xml_start_element,
         on_midi_xml_end_element,
         on_midi_xml_text,
         NULL,
@@ -179,6 +225,7 @@ void init_midi_presets()
 {
     MidiBinder binder = MidiBinder();
     std::string full_name(toon_find_midi_preset_file("midi.xml"));
+    std::cout << "Found MIDI bindings file " << full_name << std::endl;
     
     if (binder.load_xml_file(full_name.c_str()))
         g_print("success\n");
