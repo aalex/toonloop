@@ -1,12 +1,12 @@
+#include "config.h" // PKGDATADIR
 #include <clutter/clutter.h>
 
 #define PKGDATADIR "./data/"
-#define IMGFILE "example.jpg" // works with svg too
 
 /**
  * Loads a fragment shader source from a file.
  */
-static gboolean toon_load_fragment_source_file(ClutterShader *shader, gchar *file_name)
+gboolean toon_load_fragment_source_file(ClutterShader *shader, gchar *file_name)
 {
     gchar *contents = NULL;
     gsize length;
@@ -23,9 +23,10 @@ static gboolean toon_load_fragment_source_file(ClutterShader *shader, gchar *fil
     return TRUE;
 }
 
-static gchar *toon_find_file(const gchar *file_name)
+gchar *toon_find_shader_file(const gchar *file_name)
 {
-    gchar *dirs[] ={"", "./data/", PKGDATADIR, NULL};
+    // TODO: add ~/.toonloop/
+    gchar *dirs[] ={"", "./shaders/", "./src/shaders", PKGDATADIR, NULL};
     int i;
     for (i = 0; dirs[i]; i++)
     {
@@ -37,29 +38,13 @@ static gchar *toon_find_file(const gchar *file_name)
     return NULL;
 }
 
-static ClutterActor *load_custom_image(int width, int height)
-{
-    ClutterActor *actor = NULL;
-    actor = clutter_texture_new ();
-    gboolean success;
-    GError *error = NULL;
-    gchar *file_name = toon_find_file(IMGFILE);
-    success = clutter_texture_set_from_file(CLUTTER_TEXTURE(actor), file_name, &error);
-    if (! success)
-        g_print("Could not load image %s.\n", file_name);
-    if (error)
-        g_error("Error loading image %s: %s\n", file_name, error->message);
-    g_free(file_name);
-    return actor;
-}
-
 static void setup_custom_shader(ClutterActor *actor)
 {
     ClutterShader *shader = NULL;
     shader = clutter_shader_new();
     // TODO: use toon_find_shader_file
     //clutter_shader_set_fragment_source(shader, frag_source, -1);
-    gchar *file_name = toon_find_file("frag.brcosa.glsl");
+    gchar *file_name = toon_find_shader_file("frag.brcosa.glsl");
     toon_load_fragment_source_file(shader, file_name);
     g_free(file_name);
     //toon_load_fragment_source_file(shader, PKGDATADIR, "frag.test.glsl");
@@ -109,6 +94,7 @@ static void setup_shortcuts(ClutterStage *stage)
     g_signal_connect(stage, "key-press-event", G_CALLBACK(on_key_pressed), NULL);
 }
 
+#if 0
 int main(int argc, char *argv[])
 {
     clutter_init(&argc, &argv);
@@ -130,3 +116,4 @@ int main(int argc, char *argv[])
     clutter_main();
     return 0;
 }
+#endif
