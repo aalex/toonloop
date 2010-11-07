@@ -1,0 +1,51 @@
+#N canvas 534 319 641 360 10;
+#X obj 10 138 ctlout;
+#X obj 18 -11 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0
+127;
+#X text 8 -74 Make sure the MIDI is enabled.;
+#X text 8 -60 pd -alsamidi -midioutdev 1;
+#X msg 18 6 \$1 64;
+#X text 39 -15 Sustain pedal;
+#X obj 65 7 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0 127
+;
+#X msg 65 24 \$1 80;
+#X text 86 3 Other pedal;
+#X obj 18 81 unpack f f 1;
+#X obj 339 134 noteout;
+#X obj 344 88 unpack f f 1;
+#X text 336 154 [noteout]: note \, velocity \, channel;
+#X text 8 158 [ctlout]: value \, controller \, channel;
+#X obj 308 3 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0 127
+;
+#X text 329 -1 C;
+#X msg 308 20 64 127;
+#X obj 356 3 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0 127
+;
+#X msg 356 20 65 127;
+#X text 377 -1 C#;
+#X obj 404 3 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0 127
+;
+#X msg 404 20 64 127;
+#X obj 452 3 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0 127
+;
+#X msg 452 20 65 127;
+#X text 425 -1 D;
+#X text 473 -1 Eb;
+#X connect 1 0 4 0;
+#X connect 4 0 9 0;
+#X connect 6 0 7 0;
+#X connect 7 0 9 0;
+#X connect 9 0 0 0;
+#X connect 9 1 0 1;
+#X connect 9 2 0 2;
+#X connect 11 0 10 0;
+#X connect 11 1 10 1;
+#X connect 11 2 10 2;
+#X connect 14 0 16 0;
+#X connect 16 0 11 0;
+#X connect 17 0 18 0;
+#X connect 18 0 11 0;
+#X connect 20 0 21 0;
+#X connect 21 0 11 0;
+#X connect 22 0 23 0;
+#X connect 23 0 11 0;
