@@ -65,8 +65,8 @@ toonloop_CXXFLAGS = \
 	$(LIBM_CXXFLAGS) \
 	$(LIBTHREAD_CXXFLAGS) \
 	$(STK_CXXFLAGS) \
+    -DPIXMAPS_DIR="$(PIXMAPS_DIR)" \
     -DDATADIR="$(datadir)"
-
  
 toonloop_LDADD = \
 	$(BOOST_FILESYSTEM_LIB) \
