@@ -130,49 +130,23 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
         return; // Don't support messages with only one byte or less.
     unsigned char message_type = get_midi_event_type(message->at(0));
 
-
-    std::vector<MidiRule> rules = context->midi_binder_.get_rules();
-
     switch (message_type)
     {
         case MIDINOTEON:
-            for (MidiRuleIterator iter = rules.begin(); iter != rules.end(); ++iter)
-            {
-                if (iter->name_ == "note_on")
-                {
-                    std::cout << "Found a rule with note_on\n";
-                    MidiRuleAttributeIter note_found = iter->attributes_.find("note");
-                    if (note_found != iter->attributes_.end()) // if found it
-                    {
-                        int note = boost::lexical_cast<int>((*note_found).second);
-                        if (note == int(message->at(2)))
-                        {
-                            MidiRuleAttributeIter args_found = iter->attributes_.find("args");
-                            std::string args("");
-                            if (args_found != iter->attributes_.end())
-                                args = (*args_found).second;
-                            MidiRuleAttributeIter action_found = iter->attributes_.find("action");
-                            if (action_found == iter->attributes_.end())
-                                g_critical("Could not find any action in that XML MIDI rule.");
-                            else
-                            {
-                                std::cout << "push_action " << (*action_found).second << " " << args << std::endl;
-                                context->push_action((*action_found).second, args);
-                            }
-                            break; // leave for loop
-                        }
-                    }
-                }
-            }
+            context->find_and_apply_matching_event("note_on", "note", int(message->at(2)));
             break;
         case MIDINOTEOFF:
+            context->find_and_apply_matching_event("note_off", "note", int(message->at(2)));
             break;
-        case MIDICONTROLCHANGE:
-            break;
-        case MIDIPROGRAMCHANGE:
-            break;
-        case MIDIPITCHBEND:
-            break;
+        //case MIDICONTROLCHANGE:
+        //    context->find_and_apply_matching_event("note_on", "note", int(message->at(2)));
+        //    break;
+        //case MIDIPROGRAMCHANGE:
+        //    context->find_and_apply_matching_event("note_on", "note", int(message->at(2)));
+        //    break;
+        //case MIDIPITCHBEND:
+        //    context->find_and_apply_matching_event("note_on", "note", int(message->at(2)));
+        //    break;
         default:
             return;
             break;
@@ -212,6 +186,55 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
 //        else
 //            context->push_message(Message(Message::VIDEO_RECORD_OFF));
 //    }
+}
+
+/**
+ * Checks for a tag in our MIDI rules whose attribute match a given value.
+ * If one is found, pushes a message to the messaging queue.
+ *
+ * Example of arguments to this method:: "note_on", "note", 64
+ *
+ * Give "" as attr_name and it won't validate any attr. (always match)
+ */
+void MidiInput::find_and_apply_matching_event(std::string tag_name, std::string attr_name, int attr_value)
+{
+    std::vector<MidiRule> rules = midi_binder_.get_rules();
+    for (MidiRuleIterator iter = rules.begin(); iter != rules.end(); ++iter)
+    {
+        if (iter->name_ == tag_name)
+        {
+            std::cout << "Found a rule with " << tag_name << std::endl;
+            bool matches(false);
+            if (attr_name == "")
+                matches = true;
+            // TODO: replace "note" to attr
+            MidiRuleAttributeIter note_found = iter->attributes_.find(attr_name);
+            if (note_found != iter->attributes_.end()) // if found it
+            {
+                int note = boost::lexical_cast<int>((*note_found).second);
+                if (note == attr_value)
+                {
+                    matches = true;
+                }
+            }
+            if (matches)
+            {
+                MidiRuleAttributeIter args_found = iter->attributes_.find("args");
+                std::string args("");
+                if (args_found != iter->attributes_.end())
+                    args = (*args_found).second;
+                MidiRuleAttributeIter action_found = iter->attributes_.find("action");
+                if (action_found == iter->attributes_.end())
+                    g_critical("Could not find any action in that XML MIDI rule.");
+                else
+                {
+                    std::cout << "push_action " << (*action_found).second << " " << args << std::endl;
+                    push_action((*action_found).second, args);
+                }
+                break; // leave for loop
+            }
+        }
+    }
 }
 /**
  * Here we map the string for actions to their Message class const 
