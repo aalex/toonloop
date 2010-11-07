@@ -18,14 +18,15 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <iostream>
+#include <boost/lexical_cast.hpp>
 #include <cstdlib>
+#include <iostream>
 #include <stk/RtMidi.h>
 #include "application.h"
 #include "configuration.h"
 #include "controller.h"
-#include "midi.h"
 #include "message.h"
+#include "midi.h"
 #include "presets.h"
 
 typedef enum 
@@ -45,6 +46,55 @@ static MidiEventType get_midi_event_type(unsigned char first_byte)
 }
 #endif
 
+static const unsigned char MIDINOTEOFF =       0x80; // channel, pitch, velocity
+static const unsigned char MIDINOTEON =        0x90; // channel, pitch, velocity
+static const unsigned char MIDICONTROLCHANGE = 0xb0; // channel, controller, value
+static const unsigned char MIDIPROGRAMCHANGE = 0xc0; // channel, value
+static const unsigned char MIDIPITCHBEND =     0xe0; // channel, value
+// TODO:2010-11-07:aalex:Support other MIDI event types.
+//static const unsigned char MIDIPOLYTOUCH =     0xa0; // channel, pitch, velocity
+//static const unsigned char MIDICHANNELTOUCH=   0xd0; /* 1 */
+//static const unsigned char MIDISTARTSYSEX =    0xf0; /* (until F7) */
+//static const unsigned char MIDITIMECODE =      0xf1; /* 1 */
+//static const unsigned char MIDISONGPOS =       0xf2; /* 2 */
+//static const unsigned char MIDISONGSELECT =    0xf3; /* 1 */
+//static const unsigned char MIDIRESERVED1 =     0xf4; /* ? */
+//static const unsigned char MIDIRESERVED2 =     0xf5; /* ? */
+//static const unsigned char MIDITUNEREQUEST =   0xf6; /* 0 */
+//static const unsigned char MIDIENDSYSEX =      0xf7; /* 0 */
+//static const unsigned char MIDICLOCK =         0xf8; /* 0 */
+//static const unsigned char MIDITICK =          0xf9; /* 0 */
+//static const unsigned char MIDISTART =         0xfa; /* 0 */
+//static const unsigned char MIDICONT =          0xfb; /* 0 */
+//static const unsigned char MIDISTOP =          0xfc; /* 0 */
+//static const unsigned char MIDIACTIVESENSE =   0xfe; /* 0 */
+//static const unsigned char MIDIRESET =         0xff; /* 0 */
+static const unsigned char MIDI_NOT_SUPPORTED = 0x00;
+
+unsigned char get_midi_event_type(const unsigned char first_byte)
+{
+    unsigned char type_code;
+    if (first_byte >= 0xf0)
+        type_code = first_byte;
+    else
+        type_code = first_byte & 0xf0;
+    unsigned char ret;
+    switch (type_code)
+    {
+        case MIDINOTEOFF:
+        case MIDINOTEON:
+        case MIDICONTROLCHANGE:
+        case MIDIPROGRAMCHANGE:
+        case MIDIPITCHBEND:
+            ret = type_code;
+            break;
+        default:
+            ret = MIDI_NOT_SUPPORTED;
+            break;
+    }
+    return ret;
+}
+
 /**
  * Callback for incoming MIDI messages.  Called in its thread.
  * 
@@ -63,56 +113,119 @@ static MidiEventType get_midi_event_type(unsigned char first_byte)
  * - Main volume is control 7. It controls the playback speed.
  *   Volume is from 0 to 127.
  */
-void MidiInput::input_message_cb(double delta_time, std::vector< unsigned char > *message, void *user_data )
+void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned char > *message, void *user_data )
 {
     MidiInput* context = static_cast<MidiInput*>(user_data);
-    MidiEventType event_type = NOTE_ON; // default...
-    unsigned char value = 0;
-    unsigned int nBytes = message->size();
+    //MidiEventType event_type = NOTE_ON; // default...
+    //unsigned char value = 0;
     // Print debug info:
     if (context->verbose_) 
     {
         std::cout << "MIDI message: (";
-        for (unsigned int i = 0; i < nBytes; i++)
+        for (unsigned int i = 0; i < message->size(); i++)
             std::cout << (int)message->at(i) << " ";
         std::cout << ")";
-        if (nBytes > 0)
-            std::cout << " stamp = " << delta_time << std::endl;
     }
-    // Check if it's a note or control:
-    if (message->size() >= 3)
+    if (message->size() <= 1)
+        return; // Don't support messages with only one byte or less.
+    unsigned char message_type = get_midi_event_type(message->at(0));
+
+
+    std::vector<MidiRule> rules = context->midi_binder_.get_rules();
+
+    switch (message_type)
     {
-        value = message->at(1);
-        if ((int)message->at(2) != 0) 
-            event_type = PEDAL_ON;
-        else
-            event_type = PEDAL_OFF;
-        //else if ((int)message->at(1) == 7) // 7: volume expression pedal
-        //    context->on_volume_control((int)message->at(2));
+        case MIDINOTEON:
+            for (MidiRuleIterator iter = rules.begin(); iter != rules.end(); ++iter)
+            {
+                if (iter->name_ == "note_on")
+                {
+                    std::cout << "Found a rule with note_on\n";
+                    MidiRuleAttributeIter note_found = iter->attributes_.find("note");
+                    if (note_found != iter->attributes_.end()) // if found it
+                    {
+                        int note = boost::lexical_cast<int>((*note_found).second);
+                        if (note == int(message->at(2)))
+                        {
+                            MidiRuleAttributeIter args_found = iter->attributes_.find("args");
+                            std::string args("");
+                            if (args_found != iter->attributes_.end())
+                                args = (*args_found).second;
+                            MidiRuleAttributeIter action_found = iter->attributes_.find("action");
+                            if (action_found == iter->attributes_.end())
+                                g_critical("Could not find any action in that XML MIDI rule.");
+                            else
+                            {
+                                std::cout << "push_action " << (*action_found).second << " " << args << std::endl;
+                                context->push_action((*action_found).second, args);
+                            }
+                            break; // leave for loop
+                        }
+                    }
+                }
+            }
+            break;
+        case MIDINOTEOFF:
+            break;
+        case MIDICONTROLCHANGE:
+            break;
+        case MIDIPROGRAMCHANGE:
+            break;
+        case MIDIPITCHBEND:
+            break;
+        default:
+            return;
+            break;
     }
-    else if (message->size() >= 2)
-    {
-        if (((int)message->at(0) & 192) == 192)
-        {
-            // Program change control (chooses a clip)
-            unsigned int clip_number = (unsigned int)message->at(1);
-            //context->on_program_change();
-            if (clip_number >= 10)
-                std::cout << "Cannot choose a clip greater or equal to 10." << std::endl; 
-            else
-                context->push_message(Message(Message::SELECT_CLIP, clip_number));
-        }
-    }
-    // TODO: change those by lookups in the map of MidiRules
-    if (event_type == PEDAL_ON && value == 64)
-        context->push_message(Message(Message::ADD_IMAGE));
-    else if (value == 80)
-    {
-        if (event_type == PEDAL_ON)
-            context->push_message(Message(Message::VIDEO_RECORD_ON));
-        else
-            context->push_message(Message(Message::VIDEO_RECORD_OFF));
-    }
+
+//    // Check if it's a note or control:
+//    if (message->size() >= 3)
+//    {
+//        value = message->at(1);
+//        if ((int)message->at(2) != 0) 
+//            event_type = PEDAL_ON;
+//        else
+//            event_type = PEDAL_OFF;
+//        //else if ((int)message->at(1) == 7) // 7: volume expression pedal
+//        //    context->on_volume_control((int)message->at(2));
+//    }
+//    else if (message->size() >= 2)
+//    {
+//        if (((int)message->at(0) & 192) == 192)
+//        {
+//            // Program change control (chooses a clip)
+//            unsigned int clip_number = (unsigned int)message->at(1);
+//            //context->on_program_change();
+//            if (clip_number >= 10)
+//                std::cout << "Cannot choose a clip greater or equal to 10." << std::endl; 
+//            else
+//                context->push_message(Message(Message::SELECT_CLIP, clip_number));
+//        }
+//    }
+//    // TODO: change those by lookups in the map of MidiRules
+//    if (event_type == PEDAL_ON && value == 64)
+//        context->push_message(Message(Message::ADD_IMAGE));
+//    else if (value == 80)
+//    {
+//        if (event_type == PEDAL_ON)
+//            context->push_message(Message(Message::VIDEO_RECORD_ON));
+//        else
+//            context->push_message(Message(Message::VIDEO_RECORD_OFF));
+//    }
+}
+/**
+ * Here we map the string for actions to their Message class const 
+ */
+void MidiInput::push_action(std::string action, std::string args)
+{
+    if (action == "select_clip") 
+        push_message(Message(Message::SELECT_CLIP, boost::lexical_cast<int>(args)));
+    else if (action == "video_record_on") 
+        push_message(Message(Message::VIDEO_RECORD_ON));
+    else if (action == "video_record_off") 
+        push_message(Message(Message::VIDEO_RECORD_OFF));
+    else
+        g_critical("Unknown action %s", action.c_str());
 }
 
 void MidiInput::enumerate_devices() const

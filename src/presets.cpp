@@ -46,17 +46,19 @@ void MidiBinder::on_midi_xml_start_element(
     UNUSED(error);
     MidiBinder *self = static_cast<MidiBinder *>(user_data);
     MidiRule midi_rule;
-    std::cout << "Adding rule " << element_name << ": ";
+    std::cout << "Adding rule " << element_name << ":";
     midi_rule.name_ = element_name;
     const gchar **name_cursor = attribute_names;
     const gchar **value_cursor = attribute_values;
     while (*name_cursor)
     {
+        // TODO: validate ints ("note") prior to insert in the map
         midi_rule.attributes_[*name_cursor] = *value_cursor;
-        std::cout << *name_cursor << " " << *value_cursor << "\n";
+        std::cout << " " << *name_cursor << "=" << *value_cursor;
         name_cursor++;
         value_cursor++;
     }
+    std::cout << std::endl;
     self->rules_.push_back(midi_rule);
 }
 

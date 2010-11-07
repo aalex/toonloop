@@ -56,6 +56,7 @@ class MidiInput
         bool opened_;
         MidiBinder midi_binder_;
         void push_message(Message message);
+        void push_action(std::string action, std::string args);
         RtMidiIn *midi_in_;
 };
 

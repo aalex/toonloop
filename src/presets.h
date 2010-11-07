@@ -40,6 +40,7 @@ void init_midi_presets();
 #define PRESETS_DIR TOSTRING(DATADIR) "/presets/"
 
 typedef std::vector<MidiRule>::iterator MidiRuleIterator;
+typedef std::map<std::string, std::string>::iterator MidiRuleAttributeIter; 
 
 class MidiBinder
 {

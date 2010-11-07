@@ -1,11 +1,11 @@
 <!-- default MIDI bindings for Toonloop -->
 <midi>
     <!-- Grab frame  -->
-    <pedal_on  control="64" action="video_record_on" />
+    <control_on  control="64" action="video_record_on" />
     
     <!-- Video grab -->
-    <pedal_on  control="80" action="video_record_on" />
-    <pedal_off control="80" action="video_record_off" />
+    <control_on  control="80" action="video_record_on" />
+    <control_off control="80" action="video_record_off" />
     
     <!-- Notes [60,69]: select_clip -->
     <note_on note="60" action="select_clip" args="0" />
@@ -23,7 +23,7 @@
     <program_change action="select_clip" />
 
     <!-- Saturation (7 is main volume) -->
-    <map control="7" action="fx_brcosa" from="0" to="1" />
+    <control_map control="7" action="fx_brcosa" from="0" to="1" />
     
     <!-- Note 72: reset current clip -->
     <note_on note="72" action="reset" />
