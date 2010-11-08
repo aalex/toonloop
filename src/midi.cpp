@@ -99,12 +99,8 @@ unsigned char get_midi_event_type(const unsigned char first_byte)
 void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned char > *message, void *user_data )
 {
     MidiInput* context = static_cast<MidiInput*>(user_data);
-    //MidiEventType event_type = NOTE_ON; // default...
-    //unsigned char value = 0;
-    // Print debug info:
-    std::cout << __FUNCTION__ << std::endl;
-    //if (context->verbose_) 
-    if (true)
+    //std::cout << __FUNCTION__ << std::endl;
+    if (context->verbose_) 
     {
         std::cout << "MIDI message: (";
         for (unsigned int i = 0; i < message->size(); i++)
@@ -118,7 +114,6 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
     switch (message_type)
     {
         case MIDINOTEON:
-            std::cout << "NOTE ON" << std::endl;
             if (message->size() < 3)
             {
                 std::cout << "Note on message should have 4 params" << std::endl;
@@ -132,7 +127,6 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                     return;
                 }
             } else {
-                //context->find_and_apply_matching_event("note_on", "note", ));
                 rule = context->midi_binder_.find_rule(NOTE_ON_RULE, int(message->at(1)));
                 if (rule != 0)
                 {
@@ -142,7 +136,6 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             }
             break;
         case MIDINOTEOFF:
-            std::cout << "NOTE OFF" << std::endl;
             rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, int(message->at(1)));
             if (rule != 0)
             {
@@ -152,10 +145,8 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             break;
         case MIDICONTROLCHANGE:
         { // we declare some scope variables:
-            std::cout << "CONTROL" << std::endl;
             int controller_number = int(message->at(1));
             int control_value = int(message->at(2));
-            std::cout << "control_value" << control_value << std::endl;
             if (control_value == 0)
             {
                 rule = context->midi_binder_.find_rule(CONTROL_OFF_RULE, controller_number);
@@ -181,10 +172,18 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             }
             break;
         }
-        //    context->find_and_apply_matching_event("note_on", "note", int(message->at(2)));
-        //case MIDIPROGRAMCHANGE:
-        //    context->find_and_apply_matching_event("note_on", "note", int(message->at(2)));
-        //    break;
+        case MIDIPROGRAMCHANGE:
+        {
+            int program_number = int(message->at(1));
+            rule = context->midi_binder_.find_rule(PROGRAM_CHANGE_RULE, program_number);
+            if (rule != 0)
+            {
+                context->push_action(rule->action_, program_number); // we pass the value (an int)
+                return;
+            }
+            break;
+        }
+        // TODO:2010-11-07:aalex:Support pitch bend
         //case MIDIPITCHBEND:
         //    context->find_and_apply_matching_event("note_on", "note", int(message->at(2)));
         //    break;
@@ -192,93 +191,8 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             return;
             break;
     }
-
-//    // Check if it's a note or control:
-//    if (message->size() >= 3)
-//    {
-//        value = message->at(1);
-//        if ((int)message->at(2) != 0) 
-//            event_type = PEDAL_ON;
-//        else
-//            event_type = PEDAL_OFF;
-//        //else if ((int)message->at(1) == 7) // 7: volume expression pedal
-//        //    context->on_volume_control((int)message->at(2));
-//    }
-//    else if (message->size() >= 2)
-//    {
-//        if (((int)message->at(0) & 192) == 192)
-//        {
-//            // Program change control (chooses a clip)
-//            unsigned int clip_number = (unsigned int)message->at(1);
-//            //context->on_program_change();
-//            if (clip_number >= 10)
-//                std::cout << "Cannot choose a clip greater or equal to 10." << std::endl; 
-//            else
-//                context->push_message(Message(Message::SELECT_CLIP, clip_number));
-//        }
-//    }
-//    // TODO: change those by lookups in the map of MidiRules
-//    if (event_type == PEDAL_ON && value == 64)
-//        context->push_message(Message(Message::ADD_IMAGE));
-//    else if (value == 80)
-//    {
-//        if (event_type == PEDAL_ON)
-//            context->push_message(Message(Message::VIDEO_RECORD_ON));
-//        else
-//            context->push_message(Message(Message::VIDEO_RECORD_OFF));
-//    }
 }
 
-#if 0
-/**
- * Checks for a tag in our MIDI rules whose attribute match a given value.
- * If one is found, pushes a message to the messaging queue.
- *
- * Example of arguments to this method:: "note_on", "note", 64
- *
- * Give "" as attr_name and it won't validate any attr. (always match)
- */
-void MidiInput::find_and_apply_matching_event(std::string tag_name, std::string attr_name, int attr_value)
-{
-    std::vector<MidiRule> rules = midi_binder_.get_rules();
-    for (MidiRuleIterator iter = rules.begin(); iter != rules.end(); ++iter)
-    {
-        if (iter->name_ == tag_name)
-        {
-            std::cout << "Found a rule with " << tag_name << std::endl;
-            bool matches(false);
-            if (attr_name == "")
-                matches = true;
-            // TODO: replace "note" to attr
-            MidiRuleAttributeIter note_found = iter->attributes_.find(attr_name);
-            if (note_found != iter->attributes_.end()) // if found it
-            {
-                int note = boost::lexical_cast<int>((*note_found).second);
-                if (note == attr_value)
-                {
-                    matches = true;
-                }
-            }
-            if (matches)
-            {
-                MidiRuleAttributeIter args_found = iter->attributes_.find("args");
-                std::string args("");
-                if (args_found != iter->attributes_.end())
-                    args = (*args_found).second;
-                MidiRuleAttributeIter action_found = iter->attributes_.find("action");
-                if (action_found == iter->attributes_.end())
-                    g_critical("Could not find any action in that XML MIDI rule.");
-                else
-                {
-                    std::cout << "push_action " << (*action_found).second << " " << args << std::endl;
-                    push_action((*action_found).second, args);
-                }
-                break; // leave for loop
-            }
-        }
-    }
-}
-#endif
 /**
  * Here we map the string for actions to their Message class const 
  */
@@ -289,14 +203,25 @@ void MidiInput::push_action(std::string action, std::string args)
         push_message(Message(Message::ADD_IMAGE));
     else if (action == "remove_image") 
         push_message(Message(Message::REMOVE_IMAGE));
-    else if (action == "select_clip") 
-        push_message(Message(Message::SELECT_CLIP, boost::lexical_cast<int>(args)));
     else if (action == "video_record_on") 
         push_message(Message(Message::VIDEO_RECORD_ON));
     else if (action == "video_record_off") 
         push_message(Message(Message::VIDEO_RECORD_OFF));
-    //else if (action == "quit")
-    //    push_message(Message(Message::QUIT));
+    else if (action == "quit")
+        push_message(Message(Message::QUIT));
+    else if (action == "select_clip") 
+        push_message(Message(Message::SELECT_CLIP, boost::lexical_cast<int>(args)));
+    else
+        g_critical("Unknown action %s", action.c_str());
+}
+/** 
+ * Version of it with an int argument.
+ */
+void MidiInput::push_action(std::string action, int arg)
+{
+    std::cout << __FUNCTION__ << " " << action << " " << arg << std::endl;
+    if (action == "select_clip") 
+        push_message(Message(Message::SELECT_CLIP, arg));
     else
         g_critical("Unknown action %s", action.c_str());
 }
