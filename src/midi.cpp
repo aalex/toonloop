@@ -174,8 +174,8 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
         }
         case MIDIPROGRAMCHANGE:
         {
-            int program_number = int(message->at(1));
-            rule = context->midi_binder_.find_rule(PROGRAM_CHANGE_RULE, program_number);
+            int program_number = int(message->at(0) & 0x0f);
+            rule = context->midi_binder_.find_program_change_rule();
             if (rule != 0)
             {
                 context->push_action(rule->action_, program_number); // we pass the value (an int)
