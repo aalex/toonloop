@@ -107,7 +107,7 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
         std::cout << "MIDI message: (";
         for (unsigned int i = 0; i < message->size(); i++)
             std::cout << (int)message->at(i) << " ";
-        std::cout << ")";
+        std::cout << ")" << std::endl;
     }
     if (message->size() <= 1)
         return; // Don't support messages with only one byte or less.
@@ -116,6 +116,7 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
     switch (message_type)
     {
         case MIDINOTEON:
+        {
             if (context->verbose_) 
                 std::cout << "MIDINOTEON" << std::endl;
             if (message->size() < 3)
@@ -123,15 +124,21 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                 g_critical("Note on message should have 4 params");
                 return;
             }
+            if (context->verbose_) 
+                std::cout << "getting an int at index 1" << std::endl;
+            int note_pitch = int(message->at(1));
             if (message->at(2) == 0x00) // if velocity is 0, it's actually a note off message
             {
-                rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, int(message->at(1)));
-                if (rule != 0) {
+                if (context->verbose_) 
+                    std::cout << "it's actually a note off " << std::endl;
+                rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, note_pitch);
+                if (rule != 0) 
+                {
                     context->push_action(rule->action_, rule->args_);
                     return;
                 }
             } else {
-                rule = context->midi_binder_.find_rule(NOTE_ON_RULE, int(message->at(1)));
+                rule = context->midi_binder_.find_rule(NOTE_ON_RULE, note_pitch);
                 if (rule != 0)
                 {
                     context->push_action(rule->action_, rule->args_);
@@ -139,6 +146,7 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                 }
             }
             break;
+        }
         case MIDINOTEOFF:
             if (context->verbose_) 
                 std::cout << "MIDINOTEOFF" << std::endl;

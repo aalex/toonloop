@@ -139,9 +139,9 @@ void MidiBinder::on_midi_xml_start_element(
     {
         std::cout << " " << *name_cursor << "=" << *value_cursor;
         if (g_strcmp0(*name_cursor, "args") == 0)
-            rule.args_ = *value_cursor;
+            rule.args_ = std::string(*value_cursor);
         if (g_strcmp0(*name_cursor, "action") == 0)
-            rule.action_ = *value_cursor;
+            rule.action_ = std::string(*value_cursor);
         else if (g_strcmp0(*name_cursor, "number") == 0)
         {
             try {
