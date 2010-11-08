@@ -38,7 +38,7 @@
 #include "config.h"
 #include "configuration.h"
 #include "gui.h"
-#include "midi.h"
+#include "midiinput.h"
 #include "pipeline.h"
 #include "subprocess.h"
 #include "v4l2util.h"

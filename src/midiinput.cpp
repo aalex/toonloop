@@ -26,7 +26,7 @@
 #include "configuration.h"
 #include "controller.h"
 #include "message.h"
-#include "midi.h"
+#include "midiinput.h"
 #include "presets.h"
 
 static const unsigned char MIDINOTEOFF =       0x80; // channel, pitch, velocity

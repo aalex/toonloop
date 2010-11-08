@@ -18,7 +18,7 @@ headers = \
 	image.h \
 	log.h \
 	message.h \
-	midi.h \
+	midiinput.h \
 	moviesaver.h \
     oscinterface.h \
     oscreceiver.h \
@@ -41,7 +41,7 @@ toonloop_SOURCES = \
 	gui.cpp \
 	image.cpp \
 	main.cpp \
-	midi.cpp \
+	midiinput.cpp \
 	moviesaver.cpp \
 	pipeline.cpp \
     presets.cpp \
