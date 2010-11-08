@@ -119,21 +119,21 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
     {
         case MIDINOTEON:
             std::cout << "NOTE ON" << std::endl;
-            if (message->size() < 4)
+            if (message->size() < 3)
             {
                 std::cout << "Note on message should have 4 params" << std::endl;
                 return;
             }
-            if (message->at(3) == 0x00) // if velocity is 0, it's actually a note off message
+            if (message->at(2) == 0x00) // if velocity is 0, it's actually a note off message
             {
-                rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, int(message->at(2)));
+                rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, int(message->at(1)));
                 if (rule != 0) {
                     context->push_action(rule->action_, rule->args_);
                     return;
                 }
             } else {
                 //context->find_and_apply_matching_event("note_on", "note", ));
-                rule = context->midi_binder_.find_rule(NOTE_ON_RULE, int(message->at(2)));
+                rule = context->midi_binder_.find_rule(NOTE_ON_RULE, int(message->at(1)));
                 if (rule != 0)
                 {
                     context->push_action(rule->action_, rule->args_);
@@ -143,16 +143,45 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             break;
         case MIDINOTEOFF:
             std::cout << "NOTE OFF" << std::endl;
-            rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, int(message->at(2)));
+            rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, int(message->at(1)));
             if (rule != 0)
             {
                 context->push_action(rule->action_, rule->args_);
                 return;
             }
             break;
-        //case MIDICONTROLCHANGE:
+        case MIDICONTROLCHANGE:
+        { // we declare some scope variables:
+            std::cout << "CONTROL" << std::endl;
+            int controller_number = int(message->at(1));
+            int control_value = int(message->at(2));
+            std::cout << "control_value" << control_value << std::endl;
+            if (control_value == 0)
+            {
+                rule = context->midi_binder_.find_rule(CONTROL_OFF_RULE, controller_number);
+                if (rule != 0)
+                {
+                    context->push_action(rule->action_, rule->args_);
+                    return;
+                }
+            } else {
+                rule = context->midi_binder_.find_rule(CONTROL_ON_RULE, controller_number);
+                if (rule != 0)
+                {
+                    context->push_action(rule->action_, rule->args_);
+                    return;
+                }
+            } // and if not of those found:
+            rule = context->midi_binder_.find_rule(CONTROL_MAP_RULE, controller_number);
+            if (rule != 0)
+            {
+                //TODO:2010-11-07:aalex:Map the value from [0,127] to the desired range:
+                context->push_action(rule->action_, boost::lexical_cast<std::string>(control_value)); // we pass the value
+                return;
+            }
+            break;
+        }
         //    context->find_and_apply_matching_event("note_on", "note", int(message->at(2)));
-        //    break;
         //case MIDIPROGRAMCHANGE:
         //    context->find_and_apply_matching_event("note_on", "note", int(message->at(2)));
         //    break;
@@ -255,12 +284,19 @@ void MidiInput::find_and_apply_matching_event(std::string tag_name, std::string 
  */
 void MidiInput::push_action(std::string action, std::string args)
 {
-    if (action == "select_clip") 
+    std::cout << __FUNCTION__ << " " << action << " " << args << std::endl;
+    if (action == "add_image") 
+        push_message(Message(Message::ADD_IMAGE));
+    else if (action == "remove_image") 
+        push_message(Message(Message::REMOVE_IMAGE));
+    else if (action == "select_clip") 
         push_message(Message(Message::SELECT_CLIP, boost::lexical_cast<int>(args)));
     else if (action == "video_record_on") 
         push_message(Message(Message::VIDEO_RECORD_ON));
     else if (action == "video_record_off") 
         push_message(Message(Message::VIDEO_RECORD_OFF));
+    //else if (action == "quit")
+    //    push_message(Message(Message::QUIT));
     else
         g_critical("Unknown action %s", action.c_str());
 }

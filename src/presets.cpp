@@ -31,7 +31,14 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-
+// TODO:2010-11-07:aalex:override << for MidiRule
+#if 0
+std::ostream &MidiRule::operator<< (std::ostream &theStream, const MidiRule &self)
+{
+    theStream << "MidiRule: type=" << self.type_ << " action=" << self.action_ << " args=" << self.args_ << " number=" << self.number_ << " from|to=" << self.from_ << " " << self.to_;
+    return theStream;
+}
+#endif
 /**
  * Returns 0 if none found.
  */
@@ -40,6 +47,8 @@ const MidiRule *MidiBinder::find_program_change_rule()
     std::cout << __FUNCTION__ << std::endl;
     if (program_change_rules_.size() >= 1)
         try {
+            //std::cout << program_change_rules_.at(0) << std::endl;
+            std::cout << "Found rule for program change!" << std::endl;
             return &(program_change_rules_.at(0));
         } catch (std::out_of_range &e) {
             std::cout << "Program change rule: out of range! " << e.what() << std::endl;
@@ -53,7 +62,7 @@ const MidiRule *MidiBinder::find_program_change_rule()
  */
 const MidiRule *MidiBinder::find_rule(RuleType rule_type, int number)
 {
-    std::cout << __FUNCTION__ << std::endl;
+    std::cout << "Method: MidiBinder::" << __FUNCTION__  << " Looking for " << number << std::endl;
     std::vector<MidiRule> rules;
     switch (rule_type)
     {
@@ -79,8 +88,13 @@ const MidiRule *MidiBinder::find_rule(RuleType rule_type, int number)
     }
     for (MidiRuleIterator iter = rules.begin(); iter != rules.end(); ++iter)
     {
+        std::cout << " - Rule: action=" << (*iter).action_ << " number=" << (*iter).number_ << std::endl;
         if ((*iter).number_ == number)
+        {
+            std::cout << "Found rule !" << std::endl;
+            //std::cout << *iter << std::endl;
             return &(*iter);
+        }
     }
     return 0;
 }
@@ -128,7 +142,7 @@ void MidiBinder::on_midi_xml_start_element(
     const gchar **value_cursor = attribute_values;
     while (*name_cursor)
     {
-        std::cout << *name_cursor << "=" << *value_cursor;
+        std::cout << " " << *name_cursor << "=" << *value_cursor;
         if (g_strcmp0(*name_cursor, "args") == 0)
             rule.args_ = *value_cursor;
         if (g_strcmp0(*name_cursor, "action") == 0)

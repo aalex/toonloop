@@ -22,6 +22,7 @@
 #define __PRESETS_H__
 
 #include <glib.h>
+#include <iostream>
 #include <map>
 #include <string>
 #include <vector>
@@ -44,12 +45,14 @@ typedef enum
  * */
 struct MidiRule
 {
-    RuleType type_;
-    int number_;
-    std::string action_;
-    std::string args_;
-    float from_;
-    float to_;
+    public:
+        RuleType type_;
+        int number_;
+        std::string action_;
+        std::string args_;
+        float from_;
+        float to_;
+        //friend std::ostream &operator<< (std::ostream &theStream, const MidiRule &self);
 };
 
 // FIXME
