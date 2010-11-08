@@ -55,7 +55,7 @@ class MidiInput
         unsigned int ports_count_;
         bool opened_;
         MidiBinder midi_binder_;
-        void find_and_apply_matching_event(std::string tag_name, std::string attr_name, int attr_value);
+        //void find_and_apply_matching_event(std::string tag_name, std::string attr_name, int attr_value);
         void push_message(Message message);
         void push_action(std::string action, std::string args);
         RtMidiIn *midi_in_;

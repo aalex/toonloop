@@ -29,23 +29,6 @@
 #include "midi.h"
 #include "presets.h"
 
-typedef enum 
-{
-    NOTE_ON = 0,
-    NOTE_OFF,
-    CONTROL,
-    PEDAL_ON,
-    PEDAL_OFF,
-    PROGRAM_CHANGE
-} MidiEventType;   
-// TODO
-#if 0
-static MidiEventType get_midi_event_type(unsigned char first_byte)
-{
-    if ((first_byte & 0xF0)  
-}
-#endif
-
 static const unsigned char MIDINOTEOFF =       0x80; // channel, pitch, velocity
 static const unsigned char MIDINOTEON =        0x90; // channel, pitch, velocity
 static const unsigned char MIDICONTROLCHANGE = 0xb0; // channel, controller, value
@@ -119,7 +102,9 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
     //MidiEventType event_type = NOTE_ON; // default...
     //unsigned char value = 0;
     // Print debug info:
-    if (context->verbose_) 
+    std::cout << __FUNCTION__ << std::endl;
+    //if (context->verbose_) 
+    if (true)
     {
         std::cout << "MIDI message: (";
         for (unsigned int i = 0; i < message->size(); i++)
@@ -129,14 +114,41 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
     if (message->size() <= 1)
         return; // Don't support messages with only one byte or less.
     unsigned char message_type = get_midi_event_type(message->at(0));
-
+    const MidiRule *rule;
     switch (message_type)
     {
         case MIDINOTEON:
-            context->find_and_apply_matching_event("note_on", "note", int(message->at(2)));
+            std::cout << "NOTE ON" << std::endl;
+            if (message->size() < 4)
+            {
+                std::cout << "Note on message should have 4 params" << std::endl;
+                return;
+            }
+            if (message->at(3) == 0x00) // if velocity is 0, it's actually a note off message
+            {
+                rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, int(message->at(2)));
+                if (rule != 0) {
+                    context->push_action(rule->action_, rule->args_);
+                    return;
+                }
+            } else {
+                //context->find_and_apply_matching_event("note_on", "note", ));
+                rule = context->midi_binder_.find_rule(NOTE_ON_RULE, int(message->at(2)));
+                if (rule != 0)
+                {
+                    context->push_action(rule->action_, rule->args_);
+                    return;
+                }
+            }
             break;
         case MIDINOTEOFF:
-            context->find_and_apply_matching_event("note_off", "note", int(message->at(2)));
+            std::cout << "NOTE OFF" << std::endl;
+            rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, int(message->at(2)));
+            if (rule != 0)
+            {
+                context->push_action(rule->action_, rule->args_);
+                return;
+            }
             break;
         //case MIDICONTROLCHANGE:
         //    context->find_and_apply_matching_event("note_on", "note", int(message->at(2)));
@@ -188,6 +200,7 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
 //    }
 }
 
+#if 0
 /**
  * Checks for a tag in our MIDI rules whose attribute match a given value.
  * If one is found, pushes a message to the messaging queue.
@@ -236,6 +249,7 @@ void MidiInput::find_and_apply_matching_event(std::string tag_name, std::string 
         }
     }
 }
+#endif
 /**
  * Here we map the string for actions to their Message class const 
  */

@@ -18,23 +18,23 @@
 #X obj 308 3 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 127
 127;
 #X text 329 -1 C;
-#X msg 308 20 64 127;
 #X obj 356 3 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 127
 127;
-#X msg 356 20 65 127;
 #X text 377 -1 C#;
 #X obj 404 3 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0 127
 ;
-#X msg 404 20 64 127;
-#X obj 452 3 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0 127
-;
-#X msg 452 20 65 127;
+#X obj 452 3 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 127
+127;
 #X text 425 -1 D;
 #X text 473 -1 Eb;
 #X obj 521 0 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0 127
 ;
-#X msg 521 17 80 127;
 #X text 542 -4 Video grab;
+#X msg 404 20 64 \$1;
+#X msg 452 20 65 \$1;
+#X msg 355 20 65 \$1;
+#X msg 308 20 64 $!;
+#X msg 521 17 80 \$1;
 #X connect 1 0 4 0;
 #X connect 4 0 9 0;
 #X connect 6 0 7 0;
@@ -45,13 +45,13 @@
 #X connect 11 0 10 0;
 #X connect 11 1 10 1;
 #X connect 11 2 10 2;
-#X connect 14 0 16 0;
-#X connect 16 0 11 0;
-#X connect 17 0 18 0;
-#X connect 18 0 11 0;
-#X connect 20 0 21 0;
-#X connect 21 0 11 0;
-#X connect 22 0 23 0;
-#X connect 23 0 11 0;
-#X connect 26 0 27 0;
+#X connect 14 0 27 0;
+#X connect 16 0 26 0;
+#X connect 18 0 24 0;
+#X connect 19 0 25 0;
+#X connect 22 0 28 0;
+#X connect 24 0 11 0;
+#X connect 25 0 11 0;
+#X connect 26 0 11 0;
 #X connect 27 0 11 0;
+#X connect 28 0 11 0;

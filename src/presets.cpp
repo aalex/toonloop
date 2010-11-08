@@ -27,9 +27,63 @@
 #include <glib.h>
 #include <iostream>
 #include <map>
+#include <stdexcept>
 #include <stdio.h>
 #include <string>
 #include <vector>
+
+/**
+ * Returns 0 if none found.
+ */
+const MidiRule *MidiBinder::find_program_change_rule()
+{
+    std::cout << __FUNCTION__ << std::endl;
+    if (program_change_rules_.size() >= 1)
+        try {
+            return &(program_change_rules_.at(0));
+        } catch (std::out_of_range &e) {
+            std::cout << "Program change rule: out of range! " << e.what() << std::endl;
+            return 0;
+        }
+    else
+        return 0;
+}
+/**
+ * Returns 0 if none found.
+ */
+const MidiRule *MidiBinder::find_rule(RuleType rule_type, int number)
+{
+    std::cout << __FUNCTION__ << std::endl;
+    std::vector<MidiRule> rules;
+    switch (rule_type)
+    {
+        case NOTE_ON_RULE:
+            rules = note_on_rules_;
+            break;
+        case NOTE_OFF_RULE:
+            rules = note_off_rules_;
+            break;
+        case CONTROL_ON_RULE:
+            rules = control_on_rules_;
+            break;
+        case CONTROL_OFF_RULE:
+            rules = control_off_rules_;
+            break;
+        case CONTROL_MAP_RULE:
+            rules = control_map_rules_;
+            break;
+        default:
+            g_critical("Unsupported rule type");
+            return 0;
+            break;
+    }
+    for (MidiRuleIterator iter = rules.begin(); iter != rules.end(); ++iter)
+    {
+        if ((*iter).number_ == number)
+            return &(*iter);
+    }
+    return 0;
+}
 
 /*
  * Called for open tags <foo bar="baz">
@@ -45,23 +99,89 @@ void MidiBinder::on_midi_xml_start_element(
     UNUSED(context);
     UNUSED(error);
     MidiBinder *self = static_cast<MidiBinder *>(user_data);
-    MidiRule midi_rule;
+
+    MidiRule rule;
+    // default values:
+    rule.action_ = "";
+    rule.args_ = "";
+    rule.from_ = 0.0f;
+    rule.to_ = 0.0f;
+    rule.number_ = 0;
+    if (g_strcmp0(element_name, "toonloop_midi_rules") == 0) // root
+        return;
+    else if (g_strcmp0(element_name, "note_on") == 0)
+        rule.type_ = NOTE_ON_RULE;
+    else if (g_strcmp0(element_name, "note_off") == 0)
+        rule.type_ = NOTE_OFF_RULE;
+    else if (g_strcmp0(element_name, "control_on") == 0)
+        rule.type_ = CONTROL_ON_RULE;
+    else if (g_strcmp0(element_name, "control_off") == 0)
+        rule.type_ = CONTROL_OFF_RULE;
+    else if (g_strcmp0(element_name, "control_map") == 0)
+        rule.type_ = CONTROL_MAP_RULE;
+    else if (g_strcmp0(element_name, "program_change") == 0)
+        rule.type_ = PROGRAM_CHANGE_RULE;
+    else
+        g_critical("Invalid MIDI rule type: %s", element_name);
     std::cout << "Adding rule " << element_name << ":";
-    midi_rule.name_ = element_name;
     const gchar **name_cursor = attribute_names;
     const gchar **value_cursor = attribute_values;
     while (*name_cursor)
     {
-        // TODO: validate ints ("note") prior to insert in the map
-        midi_rule.attributes_[*name_cursor] = *value_cursor;
-        std::cout << " " << *name_cursor << "=" << *value_cursor;
+        std::cout << *name_cursor << "=" << *value_cursor;
+        if (g_strcmp0(*name_cursor, "args") == 0)
+            rule.args_ = *value_cursor;
+        if (g_strcmp0(*name_cursor, "action") == 0)
+            rule.action_ = *value_cursor;
+        else if (g_strcmp0(*name_cursor, "number") == 0)
+        {
+            try {
+                rule.number_ = boost::lexical_cast<int>(*value_cursor);
+            } catch(boost::bad_lexical_cast &) {
+                g_critical("Invalid int for %s in XML file: %s", *name_cursor, *value_cursor);
+                return;
+            }
+        }
+        else if (g_strcmp0(*name_cursor, "from") == 0)
+        {
+            try {
+                rule.from_ = boost::lexical_cast<float>(*value_cursor);
+            } catch(boost::bad_lexical_cast &) {
+                g_critical("Invalid int for %s in XML file: %s", *name_cursor, *value_cursor);
+                return;
+            }
+        }
+        else if (g_strcmp0(*name_cursor, "to") == 0)
+        {
+            try {
+                rule.to_ = boost::lexical_cast<float>(*value_cursor);
+            } catch(boost::bad_lexical_cast &) {
+                g_critical("Invalid int for %s in XML file: %s", *name_cursor, *value_cursor);
+                return;
+            }
+        }
         name_cursor++;
         value_cursor++;
     }
     std::cout << std::endl;
-    self->rules_.push_back(midi_rule);
+    if (rule.action_ == "")
+    {
+        g_critical("No action for rule %s", element_name);
+        return;
+    }
+    if (rule.type_ == NOTE_ON_RULE)
+        self->note_on_rules_.push_back(rule);
+    else if (rule.type_ == NOTE_OFF_RULE)
+        self->note_off_rules_.push_back(rule);
+    else if (rule.type_ == CONTROL_ON_RULE)
+        self->control_on_rules_.push_back(rule);
+    else if (rule.type_ == CONTROL_OFF_RULE)
+        self->control_off_rules_.push_back(rule);
+    else if (rule.type_ == CONTROL_MAP_RULE)
+        self->control_map_rules_.push_back(rule);
+    else if (rule.type_ == PROGRAM_CHANGE_RULE)
+        self->program_change_rules_.push_back(rule);
 }
-
 
 /** 
  * Called on error, including one set by other
@@ -94,15 +214,6 @@ gchar *toon_find_midi_preset_file(const gchar *file_name)
     }
     return NULL;
 }
-/*
-MidiRule *MidiBinder::get_rule(const gchar *name)
-{
-    for (MidiRuleIterator iter = rules_.begin(); iter != rules_.end(); ++iter)
-        if (iter->name_ == name)
-            return &(*iter);
-    return NULL;
-}
-*/
 /**
  * Code to load the XML file into memory and parse it. 
  */

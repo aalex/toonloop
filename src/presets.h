@@ -26,11 +26,33 @@
 #include <string>
 #include <vector>
 
-struct MidiRule {
+/** Types of MidiRule structs */
+typedef enum 
+{
+    NOTE_ON_RULE,
+    NOTE_OFF_RULE,
+    CONTROL_ON_RULE,
+    CONTROL_OFF_RULE,
+    CONTROL_MAP_RULE,
+    PROGRAM_CHANGE_RULE
+} RuleType;
 
-    std::string name_;
-    std::map<std::string, std::string> attributes_;
+/** 
+ * Instruction to do an action when a MIDI event happens. 
+ *
+ * This type contains 
+ * */
+struct MidiRule
+{
+    RuleType type_;
+    int number_;
+    std::string action_;
+    std::string args_;
+    float from_;
+    float to_;
 };
+
+// FIXME
 
 void init_midi_presets();
 
@@ -40,17 +62,21 @@ void init_midi_presets();
 #define PRESETS_DIR TOSTRING(DATADIR) "/presets/"
 
 typedef std::vector<MidiRule>::iterator MidiRuleIterator;
-typedef std::map<std::string, std::string>::iterator MidiRuleAttributeIter; 
 
 class MidiBinder
 {
     public:
         MidiBinder();
+        const MidiRule *find_program_change_rule();
+        const MidiRule *find_rule(RuleType rule_type, int number);
+    private:
+        std::vector<MidiRule> note_on_rules_;
+        std::vector<MidiRule> note_off_rules_;
+        std::vector<MidiRule> control_on_rules_;
+        std::vector<MidiRule> control_off_rules_;
+        std::vector<MidiRule> control_map_rules_;
+        std::vector<MidiRule> program_change_rules_;
         bool load_xml_file(const gchar *file_name);
-        //MidiBinding *current_binding;
-        //MidiRule *get_rule(const gchar *name);
-        //void add_rule(const gchar *name);
-        //void add_attribute_to_rule(const gchar *rule, const gchar *attr, const gchar *value);
         static void on_midi_xml_start_element(
             GMarkupParseContext *context,
             const gchar *element_name,
@@ -58,9 +84,6 @@ class MidiBinder
             const gchar **attribute_values,
             gpointer user_data,
             GError **error);
-        const std::vector<MidiRule> &get_rules() { return rules_; }
-    private:
-        std::vector<MidiRule> rules_;
 };
 
 #endif
