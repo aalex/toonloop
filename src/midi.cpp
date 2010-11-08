@@ -116,7 +116,7 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
         case MIDINOTEON:
             if (message->size() < 3)
             {
-                std::cout << "Note on message should have 4 params" << std::endl;
+                g_critical("Note on message should have 4 params");
                 return;
             }
             if (message->at(2) == 0x00) // if velocity is 0, it's actually a note off message
@@ -198,7 +198,8 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
  */
 void MidiInput::push_action(std::string action, std::string args)
 {
-    std::cout << __FUNCTION__ << " " << action << " " << args << std::endl;
+    if (verbose_) 
+        std::cout << __FUNCTION__ << " " << action << " " << args << std::endl;
     if (action == "add_image") 
         push_message(Message(Message::ADD_IMAGE));
     else if (action == "remove_image") 
@@ -219,7 +220,8 @@ void MidiInput::push_action(std::string action, std::string args)
  */
 void MidiInput::push_action(std::string action, int arg)
 {
-    std::cout << __FUNCTION__ << " " << action << " " << arg << std::endl;
+    if (verbose_) 
+        std::cout << __FUNCTION__ << " " << action << " " << arg << std::endl;
     if (action == "select_clip") 
         push_message(Message(Message::SELECT_CLIP, arg));
     else

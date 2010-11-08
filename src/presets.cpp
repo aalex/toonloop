@@ -24,6 +24,7 @@
 #include "presets.h"
 #include "unused.h"
 #include <boost/lexical_cast.hpp>
+#include <cstdlib> // for getenv
 #include <glib.h>
 #include <iostream>
 #include <map>
@@ -44,11 +45,8 @@ std::ostream &MidiRule::operator<< (std::ostream &theStream, const MidiRule &sel
  */
 const MidiRule *MidiBinder::find_program_change_rule()
 {
-    std::cout << __FUNCTION__ << std::endl;
     if (program_change_rules_.size() >= 1)
         try {
-            //std::cout << program_change_rules_.at(0) << std::endl;
-            std::cout << "Found rule for program change!" << std::endl;
             return &(program_change_rules_.at(0));
         } catch (std::out_of_range &e) {
             std::cout << "Program change rule: out of range! " << e.what() << std::endl;
@@ -62,7 +60,6 @@ const MidiRule *MidiBinder::find_program_change_rule()
  */
 const MidiRule *MidiBinder::find_rule(RuleType rule_type, int number)
 {
-    std::cout << "Method: MidiBinder::" << __FUNCTION__  << " Looking for " << number << std::endl;
     std::vector<MidiRule> rules;
     switch (rule_type)
     {
@@ -88,11 +85,8 @@ const MidiRule *MidiBinder::find_rule(RuleType rule_type, int number)
     }
     for (MidiRuleIterator iter = rules.begin(); iter != rules.end(); ++iter)
     {
-        std::cout << " - Rule: action=" << (*iter).action_ << " number=" << (*iter).number_ << std::endl;
         if ((*iter).number_ == number)
         {
-            std::cout << "Found rule !" << std::endl;
-            //std::cout << *iter << std::endl;
             return &(*iter);
         }
     }
@@ -137,7 +131,8 @@ void MidiBinder::on_midi_xml_start_element(
         rule.type_ = PROGRAM_CHANGE_RULE;
     else
         g_critical("Invalid MIDI rule type: %s", element_name);
-    std::cout << "Adding rule " << element_name << ":";
+    if (self->verbose_)
+        std::cout << "Adding rule " << element_name << ":";
     const gchar **name_cursor = attribute_names;
     const gchar **value_cursor = attribute_values;
     while (*name_cursor)
@@ -216,8 +211,9 @@ static void on_midi_xml_error(GMarkupParseContext *context, GError *error, gpoin
  */
 gchar *toon_find_midi_preset_file(const gchar *file_name)
 {
-    // TODO: add ~/.toonloop/ first
-    const gchar *dirs[] ={"", "../presets/", "./presets/", PRESETS_DIR, NULL};
+    // adding ~/.toonloop/
+    std::string config_dir = std::string(std::getenv("HOME")) + "/.toonloop/";
+    const gchar *dirs[] ={"", "../presets/", "./presets/", config_dir.c_str(), PRESETS_DIR, NULL};
     int i;
     for (i = 0; dirs[i]; i++)
     {
@@ -248,12 +244,12 @@ bool MidiBinder::load_xml_file(const gchar *file_name)
     gsize length;
     if (g_file_get_contents(file_name, &xml_text, &length, NULL) == FALSE)
     {
-        printf("Couldn't load XML\n");
+        g_critical("Couldn't load XML\n");
         return false;
     }
     if (g_markup_parse_context_parse(context, xml_text, length, NULL) == FALSE)
     {
-        printf("Parse failed\n");
+        g_critical("Parse failed\n");
         return false;
     }
     g_free(xml_text);
@@ -261,12 +257,16 @@ bool MidiBinder::load_xml_file(const gchar *file_name)
     return true;
 }
 
-MidiBinder::MidiBinder()
+// TODO:2010-11-07:aalex:Be able to set MidiBinder verbose or not
+MidiBinder::MidiBinder() : 
+    verbose_(false)
 {
     std::string full_name(toon_find_midi_preset_file("midi.xml"));
     std::cout << "Found MIDI bindings file " << full_name << std::endl;
-    
     if (load_xml_file(full_name.c_str()))
-        g_print("successfully loaded XML file\n");
+    {
+        if (verbose_)
+            g_print("successfully loaded XML file\n");
+    }
 }
 

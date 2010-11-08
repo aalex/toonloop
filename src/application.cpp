@@ -217,7 +217,6 @@ void Application::run(int argc, char *argv[])
             std::cout << "project-home is set to " << project_home << std::endl;
         if (! setup_project_home(project_home))
             exit(1);
-
     }
     // FIXME: From there, the options are set in configuration.cpp
     // TODO: We should do this in only one place. 

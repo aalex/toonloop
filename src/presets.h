@@ -87,6 +87,7 @@ class MidiBinder
             const gchar **attribute_values,
             gpointer user_data,
             GError **error);
+        bool verbose_;
 };
 
 #endif
