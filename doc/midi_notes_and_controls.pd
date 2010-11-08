@@ -1,7 +1,5 @@
 #N canvas 617 239 641 270 10;
 #X obj 10 138 ctlout;
-#X obj 18 -11 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0
-127;
 #X text 8 -74 Make sure the MIDI is enabled.;
 #X text 8 -60 pd -alsamidi -midioutdev 1;
 #X msg 18 6 \$1 64;
@@ -13,50 +11,37 @@
 #X obj 344 88 unpack f f 1;
 #X text 336 154 [noteout]: note \, velocity \, channel;
 #X text 8 158 [ctlout]: value \, controller \, channel;
-#X obj 308 3 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0 127
-;
-#X obj 356 3 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 127
-127;
-#X obj 404 3 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0 127
-;
-#X obj 452 3 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 127
-127;
-#X obj 512 41 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0
-127;
-#X msg 404 20 64 \$1;
-#X msg 452 20 65 \$1;
-#X msg 355 20 65 \$1;
 #X text 39 -15 add_image;
-#X msg 308 20 64 \$1;
 #X text 48 28 video_record_[on|off];
 #X text 309 -22 select_clip [n];
-#X msg 512 58 59 \$1;
-#X text 533 37 remove_image;
+#X text 545 56 remove_image;
 #X obj 185 113 pgmout;
 #X obj 181 83 unpack f f;
 #X msg 183 51 1 1;
 #X msg 219 50 1 2;
-#X connect 1 0 4 0;
-#X connect 4 0 7 0;
+#X msg 512 58 59 1;
+#X obj 18 -11 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0
+127;
+#X msg 308 20 60 1;
+#X msg 353 21 61 1;
+#X msg 404 20 62 1;
+#X msg 452 20 63 1;
+#X connect 3 0 6 0;
+#X connect 4 0 5 0;
 #X connect 5 0 6 0;
-#X connect 6 0 7 0;
-#X connect 7 0 0 0;
-#X connect 7 1 0 1;
-#X connect 7 2 0 2;
-#X connect 9 0 8 0;
-#X connect 9 1 8 1;
-#X connect 9 2 8 2;
-#X connect 12 0 21 0;
-#X connect 13 0 19 0;
-#X connect 14 0 17 0;
-#X connect 15 0 18 0;
-#X connect 16 0 24 0;
-#X connect 17 0 9 0;
-#X connect 18 0 9 0;
-#X connect 19 0 9 0;
-#X connect 21 0 9 0;
-#X connect 24 0 9 0;
-#X connect 27 0 26 0;
-#X connect 27 1 26 1;
-#X connect 28 0 27 0;
-#X connect 29 0 27 0;
+#X connect 6 0 0 0;
+#X connect 6 1 0 1;
+#X connect 6 2 0 2;
+#X connect 8 0 7 0;
+#X connect 8 1 7 1;
+#X connect 8 2 7 2;
+#X connect 16 0 15 0;
+#X connect 16 1 15 1;
+#X connect 17 0 16 0;
+#X connect 18 0 16 0;
+#X connect 19 0 8 0;
+#X connect 20 0 3 0;
+#X connect 21 0 8 0;
+#X connect 22 0 8 0;
+#X connect 23 0 8 0;
+#X connect 24 0 8 0;

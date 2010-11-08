@@ -72,6 +72,7 @@ class MidiBinder
         MidiBinder();
         const MidiRule *find_program_change_rule();
         const MidiRule *find_rule(RuleType rule_type, int number);
+        void set_verbose(bool verbose);
     private:
         std::vector<MidiRule> note_on_rules_;
         std::vector<MidiRule> note_off_rules_;

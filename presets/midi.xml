@@ -9,7 +9,7 @@
     <control_off number="80" action="video_record_off" />
 
     <!-- Notes [50,59]: misc -->
-    <note_on number="59" action="remove_image" args="0" />
+    <note_on number="59" action="remove_image" />
     
     <!-- Notes [60,69]: select_clip -->
     <note_on number="60" action="select_clip" args="0" />

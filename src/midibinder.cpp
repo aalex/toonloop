@@ -269,4 +269,8 @@ MidiBinder::MidiBinder() :
             g_print("successfully loaded XML file\n");
     }
 }
+void MidiBinder::set_verbose(bool verbose)
+{
+    verbose_ = verbose;
+}
 

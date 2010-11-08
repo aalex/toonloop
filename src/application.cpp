@@ -329,7 +329,10 @@ void Application::run(int argc, char *argv[])
     // std::cout << "Starting MIDI input." << std::endl;
     midi_input_.reset(new MidiInput(this));
     if (verbose)
+    {
         midi_input_->enumerate_devices();
+        midi_input_->set_verbose(true);
+    }
     if (config_->get_midi_input_number() != MIDI_INPUT_NONE)
     {
         bool midi_ok = midi_input_->open(config_->get_midi_input_number());
