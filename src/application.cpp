@@ -38,7 +38,7 @@
 #include "config.h"
 #include "configuration.h"
 #include "gui.h"
-#include "midi.h"
+#include "midiinput.h"
 #include "pipeline.h"
 #include "subprocess.h"
 #include "v4l2util.h"
@@ -162,7 +162,7 @@ void Application::run(int argc, char *argv[])
     
     po::store(po::parse_command_line(argc, argv, desc), options);
     po::notify(options);
-
+    
     // tmp: 
     bool verbose = options["verbose"].as<bool>();
     // Options that makes the program exit:
@@ -217,7 +217,6 @@ void Application::run(int argc, char *argv[])
             std::cout << "project-home is set to " << project_home << std::endl;
         if (! setup_project_home(project_home))
             exit(1);
-
     }
     // FIXME: From there, the options are set in configuration.cpp
     // TODO: We should do this in only one place. 

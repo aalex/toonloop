@@ -8,9 +8,6 @@ doxygen:
 clean-local:
 	rm -rf html
 
-# noinst_PROGRAMS = 
-# FIXME: We should not add all the .h files here
-
 headers = \
 	application.h \
 	clip.h \
@@ -22,12 +19,13 @@ headers = \
 	image.h \
 	log.h \
 	message.h \
-	midi.h \
+	midiinput.h \
 	moviesaver.h \
     oscinterface.h \
     oscreceiver.h \
     oscsender.h \
 	pipeline.h \
+	midibinder.h \
 	saverworker.h \
 	statesaving.h \
 	subprocess.h \
@@ -44,9 +42,10 @@ toonloop_SOURCES = \
 	gui.cpp \
 	image.cpp \
 	main.cpp \
-	midi.cpp \
+	midiinput.cpp \
 	moviesaver.cpp \
 	pipeline.cpp \
+    midibinder.cpp \
 	saverworker.cpp \
 	statesaving.cpp \
 	subprocess.cpp \
@@ -67,8 +66,8 @@ toonloop_CXXFLAGS = \
 	$(LIBM_CXXFLAGS) \
 	$(LIBTHREAD_CXXFLAGS) \
 	$(STK_CXXFLAGS) \
-	$(CXXFLAGS) \
-	-DPIXMAPS_DIR=\"$(PIXMAPS_DIR)\"
+    -DPIXMAPS_DIR="$(PIXMAPS_DIR)" \
+    -DDATADIR="$(datadir)"
  
 toonloop_LDADD = \
 	$(BOOST_FILESYSTEM_LIB) \
@@ -83,4 +82,3 @@ toonloop_LDADD = \
 	$(LIBTHREAD_LIBS) \
 	$(LDFLAGS) \
 	$(STK_LIBS)
-

@@ -150,6 +150,7 @@ AC_CONFIG_FILES([
     tests/Makefile
     pixmaps/Makefile
     completion/Makefile
+    presets/Makefile
     ])
 AC_OUTPUT
 

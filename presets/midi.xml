@@ -1,0 +1,34 @@
+<!-- default MIDI bindings for Toonloop -->
+<!-- you can override those. Put the file in ~/.toonloop/midi.xml -->
+<toonloop_midi_rules>
+    <!-- Grab frame  -->
+    <control_on  number="64" action="add_image" />
+    
+    <!-- Video grab -->
+    <control_on  number="80" action="video_record_on" />
+    <control_off number="80" action="video_record_off" />
+
+    <!-- Notes [50,59]: misc -->
+    <note_on number="59" action="remove_image" args="0" />
+    
+    <!-- Notes [60,69]: select_clip -->
+    <note_on number="60" action="select_clip" args="0" />
+    <note_on number="61" action="select_clip" args="1" />
+    <note_on number="62" action="select_clip" args="2" />
+    <note_on number="63" action="select_clip" args="3" />
+    <note_on number="64" action="select_clip" args="4" />
+    <note_on number="65" action="select_clip" args="5" />
+    <note_on number="66" action="select_clip" args="6" />
+    <note_on number="67" action="select_clip" args="7" />
+    <note_on number="68" action="select_clip" args="8" />
+    <note_on number="69" action="select_clip" args="9" />
+
+    <!-- Program change: select_clip -->
+    <program_change action="select_clip" />
+
+    <!-- Saturation (7 is main volume) -->
+    <control_map number="7" action="fx_brcosa" from="0" to="1" />
+    
+    <!-- Note 72: reset current clip -->
+    <note_on number="72" action="reset" />
+</toonloop_midi_rules>

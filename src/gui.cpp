@@ -41,6 +41,12 @@
 #include "pipeline.h"
 #include "timer.h"
 
+// TODO:2010-11-07:aalex:Converting macros to string is too complicated
+// The same macros are defined in presets.h and they could conflict
+#define VAL(str) #str
+#define TOSTRING(str) VAL(str)
+#define PIXMAPS_DIR_STR TOSTRING(PIXMAPS_DIR)
+
 namespace fs = boost::filesystem;
 using std::tr1::shared_ptr;
 typedef std::vector<ClutterActor*>::iterator ActorIterator;
@@ -758,7 +764,7 @@ Gui::Gui(Application* owner) :
     gtk_window_move(GTK_WINDOW(window_), 300, 10); // TODO: make configurable
     gtk_window_set_title(GTK_WINDOW(window_), "Toonloop " PACKAGE_VERSION);
     // Set window icon
-    fs::path iconPath(std::string(PIXMAPS_DIR) + "/toonloop.png");
+    fs::path iconPath(std::string(PIXMAPS_DIR_STR) + "/toonloop.png");
     if (fs::exists(iconPath))
         gtk_window_set_icon_from_file(GTK_WINDOW(window_), iconPath.string().c_str(), NULL);
 
