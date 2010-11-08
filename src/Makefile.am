@@ -24,7 +24,7 @@ headers = \
     oscreceiver.h \
     oscsender.h \
 	pipeline.h \
-	presets.h \
+	midibinder.h \
 	saverworker.h \
 	statesaving.h \
 	subprocess.h \
@@ -44,7 +44,7 @@ toonloop_SOURCES = \
 	midiinput.cpp \
 	moviesaver.cpp \
 	pipeline.cpp \
-    presets.cpp \
+    midibinder.cpp \
 	saverworker.cpp \
 	statesaving.cpp \
 	subprocess.cpp \

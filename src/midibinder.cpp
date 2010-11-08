@@ -21,7 +21,7 @@
 
 // TODO: rename to midibinder.cpp
 
-#include "presets.h"
+#include "midibinder.h"
 #include "unused.h"
 #include <boost/lexical_cast.hpp>
 #include <cstdlib> // for getenv
