@@ -126,6 +126,7 @@ void Gui::hideCursor()
     gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), cursor);
 }
 
+
 /**
  * In windowed mode, shows the cursor.
  */
@@ -913,6 +914,47 @@ void Gui::update_info_text()
 ClutterActor* Gui::get_live_input_texture() const
 {
     return live_input_texture_;
+}
+
+static void set_blending_mode_for_texture(ClutterTexture *texture, const gchar *blend)
+{
+    CoglHandle material = clutter_texture_get_cogl_material(texture);
+    GError *error = NULL;
+    gboolean success = cogl_material_set_blend(material, blend, &error);
+    if (error)
+    {
+        g_critical("Error setting blend: %s\n", error->message);
+        g_error_free(error);
+    }
+    if (! success)
+    {
+        g_critical("Could not set blend");
+    }
+}
+
+void Gui::set_blending_mode(BlendingMode mode)
+{
+    static const gchar *NORMAL_BLEND_MODE = "RGBA = ADD (SRC_COLOR * (SRC_COLOR[A]), DST_COLOR * (1-SRC_COLOR[A]))";
+    static const gchar *ADD_BLEND_MODE = "RGBA = ADD (SRC_COLOR * (SRC_COLOR[A]), DST_COLOR * (SRC_COLOR[A]))";
+    if (mode == blending_mode_)
+        return;
+    const gchar *blend;
+    blending_mode_ = mode;
+    switch (blending_mode_)
+    { 
+        case BLENDING_MODE_NORMAL:
+            blend = NORMAL_BLEND_MODE;
+            break;
+        case BLENDING_MODE_ADDITIVE:
+            blend = ADD_BLEND_MODE;
+            break;
+    } 
+    // set mode for all textures:
+    set_blending_mode_for_texture(CLUTTER_TEXTURE(live_input_texture_), blend);
+    for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
+        set_blending_mode_for_texture(CLUTTER_TEXTURE(*iter), blend);
+    for (ActorIterator iter = onionskin_textures_.begin(); iter != onionskin_textures_.end(); ++iter)
+        set_blending_mode_for_texture(CLUTTER_TEXTURE(*iter), blend);
 }
 
 Gui::~Gui()

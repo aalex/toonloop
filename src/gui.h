@@ -46,6 +46,10 @@ class Gui
             LAYOUT_PLAYBACK_ONLY,
             LAYOUT_PORTRAIT
         };
+        enum BlendingMode {
+            BLENDING_MODE_NORMAL = 0,
+            BLENDING_MODE_ADDITIVE
+        };
         ClutterActor* get_live_input_texture() const;
         Gui(Application* owner); 
         ~Gui();
@@ -57,6 +61,7 @@ class Gui
         layout_number get_layout() const { return current_layout_; }
         void set_layout(layout_number layout);
         void toggle_layout();
+        void set_blending_mode(BlendingMode mode);
         
     private:
         static void on_live_input_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data);
@@ -103,6 +108,7 @@ class Gui
         float fade_duration_ratio_; // RENAME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         static const int WINWIDTH = 640;
         static const int WINHEIGHT = 480;
+        BlendingMode blending_mode_;
 };
 
 #endif // __GUI_H__
