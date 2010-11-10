@@ -1,8 +1,7 @@
-#N canvas 617 239 641 270 10;
+#N canvas 616 491 641 270 10;
 #X obj 10 138 ctlout;
 #X text 8 -74 Make sure the MIDI is enabled.;
 #X text 8 -60 pd -alsamidi -midioutdev 1;
-#X msg 18 6 \$1 64;
 #X obj 27 32 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0 127
 ;
 #X msg 27 49 \$1 80;
@@ -11,7 +10,7 @@
 #X obj 344 88 unpack f f 1;
 #X text 336 154 [noteout]: note \, velocity \, channel;
 #X text 8 158 [ctlout]: value \, controller \, channel;
-#X text 39 -15 add_image;
+#X text 54 3 add_image;
 #X text 48 28 video_record_[on|off];
 #X text 309 -22 select_clip [n];
 #X text 545 56 remove_image;
@@ -20,28 +19,49 @@
 #X msg 183 51 1 1;
 #X msg 219 50 1 2;
 #X msg 512 58 59 1;
-#X obj 18 -11 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0
-127;
 #X msg 308 20 60 1;
 #X msg 353 21 61 1;
 #X msg 404 20 62 1;
 #X msg 452 20 63 1;
-#X connect 3 0 6 0;
+#X msg 18 6 1 64;
+#X obj 71 -23 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 38 -22 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 201 -8 sel 0 1;
+#X obj 211 -100 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
+1 1;
+#X obj 210 -82 metro 500;
+#X obj 209 -55 f 0;
+#X obj 264 -55 + 1;
+#X obj 208 -30 % 2;
+#X floatatom 285 -93 5 0 0 0 - - -;
+#X connect 3 0 4 0;
 #X connect 4 0 5 0;
-#X connect 5 0 6 0;
-#X connect 6 0 0 0;
-#X connect 6 1 0 1;
-#X connect 6 2 0 2;
-#X connect 8 0 7 0;
-#X connect 8 1 7 1;
-#X connect 8 2 7 2;
+#X connect 5 0 0 0;
+#X connect 5 1 0 1;
+#X connect 5 2 0 2;
+#X connect 7 0 6 0;
+#X connect 7 1 6 1;
+#X connect 7 2 6 2;
+#X connect 15 0 14 0;
+#X connect 15 1 14 1;
 #X connect 16 0 15 0;
-#X connect 16 1 15 1;
-#X connect 17 0 16 0;
-#X connect 18 0 16 0;
-#X connect 19 0 8 0;
-#X connect 20 0 3 0;
-#X connect 21 0 8 0;
-#X connect 22 0 8 0;
-#X connect 23 0 8 0;
-#X connect 24 0 8 0;
+#X connect 17 0 15 0;
+#X connect 18 0 7 0;
+#X connect 19 0 7 0;
+#X connect 20 0 7 0;
+#X connect 21 0 7 0;
+#X connect 22 0 7 0;
+#X connect 23 0 5 0;
+#X connect 24 0 18 0;
+#X connect 25 0 23 0;
+#X connect 26 0 25 0;
+#X connect 26 1 24 0;
+#X connect 27 0 28 0;
+#X connect 28 0 29 0;
+#X connect 29 0 30 0;
+#X connect 29 0 31 0;
+#X connect 30 0 29 1;
+#X connect 31 0 26 0;
+#X connect 32 0 28 1;
