@@ -97,6 +97,18 @@ Clip* Application::get_current_clip()
     return clips_[selected_clip_];
 }
 
+Clip* Application::get_clip(unsigned int clip_number)
+{
+    if (clip_number > (clips_.size() - 1))
+    {
+        g_critical("Tried to set_current_clip_number to %d", clip_number);
+        return 0;
+    }
+    else 
+    {
+        return clips_[clip_number];
+    }
+}
 unsigned int Application::get_current_clip_number()
 {
     return selected_clip_;
@@ -104,11 +116,16 @@ unsigned int Application::get_current_clip_number()
 
 /** Should be called only via calling the Controller::choose_clip method.
  */
-void Application::set_current_clip_number(unsigned int clipnumber)
+void Application::set_current_clip_number(unsigned int clip_number)
 {
-    selected_clip_ = clipnumber;
-    if (config_->get_verbose())
-        std::cout << "current clip is " << selected_clip_ << std::endl;
+    if (clip_number > (clips_.size() - 1))
+        g_critical("Tried to set_current_clip_number to %d", clip_number);
+    else 
+    {
+        selected_clip_ = clip_number;
+        if (config_->get_verbose())
+            std::cout << "current clip is " << selected_clip_ << std::endl;
+    }
 }
 
 static void check_for_mencoder()

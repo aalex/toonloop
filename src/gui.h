@@ -105,6 +105,11 @@ class Gui
         bool enable_info_;
         bool enable_help_;
         // TODO: rename to fade_duration_ratio
+        /**
+         * How long the fade between each frame lasts.
+         * 1.0 means that it's going to last one (playback) frame.
+         * Can be up to 10.0 or so.
+         */
         float fade_duration_ratio_; // RENAME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         static const int WINWIDTH = 640;
         static const int WINHEIGHT = 480;

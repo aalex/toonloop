@@ -90,6 +90,8 @@ class Application
         MovieSaver *get_movie_saver();
         /** Returns the currently selected clip */
         Clip* get_current_clip();
+        /** Returns a given clip or 0 if there is not such a clip. */
+        Clip* get_clip(unsigned int clip_number);
         /** Returns the currently selected clip number */
         unsigned int get_current_clip_number();
         /** Should be only called directly by Controller::choose_clip */
