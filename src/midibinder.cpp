@@ -60,30 +60,36 @@ const MidiRule *MidiBinder::find_program_change_rule()
  */
 const MidiRule *MidiBinder::find_rule(RuleType rule_type, int number)
 {
-    std::vector<MidiRule> rules;
+    MidiRuleIterator iter;
+    MidiRuleIterator end;
     switch (rule_type)
     {
         case NOTE_ON_RULE:
-            rules = note_on_rules_;
+            iter = note_on_rules_.begin();
+            end = note_on_rules_.begin();
             break;
         case NOTE_OFF_RULE:
-            rules = note_off_rules_;
+            iter = note_off_rules_.begin();
+            end = note_off_rules_.begin();
             break;
         case CONTROL_ON_RULE:
-            rules = control_on_rules_;
+            iter = control_on_rules_.begin();
+            end = control_on_rules_.begin();
             break;
         case CONTROL_OFF_RULE:
-            rules = control_off_rules_;
+            iter = control_off_rules_.begin();
+            end = control_off_rules_.begin();
             break;
         case CONTROL_MAP_RULE:
-            rules = control_map_rules_;
+            iter = control_map_rules_.begin();
+            end = control_map_rules_.begin();
             break;
         default:
             g_critical("Unsupported rule type");
             return 0;
             break;
     }
-    for (MidiRuleIterator iter = rules.begin(); iter != rules.end(); ++iter)
+    for ( ; iter != end; ++iter)
     {
         if ((*iter).number_ == number)
         {
@@ -113,7 +119,7 @@ void MidiBinder::on_midi_xml_start_element(
     rule.action_ = "";
     rule.args_ = "";
     rule.from_ = 0.0f;
-    rule.to_ = 0.0f;
+    rule.to_ = 1.0f;
     rule.number_ = 0;
     if (g_strcmp0(element_name, "toonloop_midi_rules") == 0) // root
         return;
@@ -178,18 +184,30 @@ void MidiBinder::on_midi_xml_start_element(
         g_critical("No action for rule %s", element_name);
         return;
     }
-    if (rule.type_ == NOTE_ON_RULE)
-        self->note_on_rules_.push_back(rule);
-    else if (rule.type_ == NOTE_OFF_RULE)
-        self->note_off_rules_.push_back(rule);
-    else if (rule.type_ == CONTROL_ON_RULE)
-        self->control_on_rules_.push_back(rule);
-    else if (rule.type_ == CONTROL_OFF_RULE)
-        self->control_off_rules_.push_back(rule);
-    else if (rule.type_ == CONTROL_MAP_RULE)
-        self->control_map_rules_.push_back(rule);
-    else if (rule.type_ == PROGRAM_CHANGE_RULE)
-        self->program_change_rules_.push_back(rule);
+    switch (rule.type_)
+    {
+        case NOTE_ON_RULE:
+            self->note_on_rules_.push_back(rule);
+            break;
+        case NOTE_OFF_RULE:
+            self->note_off_rules_.push_back(rule);
+            break;
+        case CONTROL_ON_RULE:
+            self->control_on_rules_.push_back(rule);
+            break;
+        case CONTROL_OFF_RULE:
+            self->control_off_rules_.push_back(rule);
+            break;
+        case CONTROL_MAP_RULE:
+            self->control_map_rules_.push_back(rule);
+            break;
+        case PROGRAM_CHANGE_RULE:
+            self->program_change_rules_.push_back(rule);
+            break;
+        default:
+            g_critical("Invalid rule type!");
+            break;
+    }
 }
 
 /** 
