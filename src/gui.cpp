@@ -437,7 +437,7 @@ void Gui::on_next_image_to_play(unsigned int clip_number, unsigned int/*image_nu
         if (owner_->get_configuration()->get_verbose())
             std::cout << "animate texture for " << duration << " ms" << std::endl;
         // TODO:2010-11-10:aalex:If there is only one image in the clip, do not fade out.
-        clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(1)), CLUTTER_LINEAR, duration, "opacity", 0, NULL);  
+        clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(1)), CLUTTER_EASE_IN_OUT_CUBIC, duration, "opacity", 0, NULL);  
     }
     else
         clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(1)), 0);
