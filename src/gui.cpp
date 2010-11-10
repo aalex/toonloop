@@ -317,6 +317,8 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             if (context->fade_duration_ratio_ > 0.0f)
             {
                 context->fade_duration_ratio_ = context->fade_duration_ratio_ - 0.1;
+                if (context->fade_duration_ratio_ < 0.1f) // avoid floating point roundoff errors
+                    context->fade_duration_ratio_ = 0.0f;
                 std::cout << "Duration ratio: " << context->fade_duration_ratio_ << std::endl;
             }
             break;
@@ -424,10 +426,10 @@ void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*imag
     // Load file
     success = clutter_texture_set_from_file(CLUTTER_TEXTURE(playback_textures_.at(0)), file_name.c_str(), &error);
     clutter_container_raise_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)), NULL);
-   
+
     // TODO: Handle the ClutterAnimation* 
     // Attach a callback to when it's done
-    if (fade_duration_ratio_ >= 0.01f)
+    if (fade_duration_ratio_ > 0.0f)
     {
         unsigned int fps = owner_->get_current_clip()->get_playhead_fps();
         unsigned int duration = (unsigned int) ((1.0f / fps * fade_duration_ratio_) * 1000);
@@ -436,7 +438,7 @@ void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*imag
     }
     else
         clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 255);
-        
+
     // TODO: validate this path
     if (!success)
     {
@@ -500,13 +502,13 @@ void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpoint
     // Prints rendering FPS information
     static int number_of_frames_in_last_second = 0; // counting FPS
     static Timer fps_calculation_timer = Timer();
-    
+
     Gui *context = static_cast<Gui*>(user_data);
 
     context->owner_->check_for_messages();
     bool verbose = context->owner_->get_configuration()->get_verbose();
     Clip *thisclip = context->owner_->get_current_clip();
-    
+
     context->update_info_text();
 
     fps_calculation_timer.tick();
@@ -577,7 +579,7 @@ void Gui::resize_actors()
         clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
         clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
     }
-        
+
     // Figure out the size of the area on which we draw things
     gfloat area_x, area_y, area_width, area_height;
     gfloat stage_width, stage_height;
@@ -647,19 +649,19 @@ void Gui::resize_actors()
         // FIXME: The following looks OK when the window ration is 4:3 or smaller, but not when bigger than that. 
         playback_tex_x = area_width / 2.0f - ((live_tex_width - live_tex_height) / 2); // in the middle
         playback_tex_y = live_tex_y;
-        
+
         // rotation: 
         rotation = 90.0f;
     }
     else 
         std::cout << "ERROR: Invalid layout" << std::endl; // should not occur...
-    
+
     // Now, set actually everything:
     // Live input:
     clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), live_tex_x, live_tex_y);
     clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), live_tex_width, live_tex_height);
     clutter_actor_set_rotation(CLUTTER_ACTOR(live_input_texture_), CLUTTER_Z_AXIS, rotation, live_tex_width / 2.0f, live_tex_height / 2.0f, 0.0f);
-    
+
     // Playback:
     for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
     {
@@ -691,7 +693,7 @@ void Gui::on_live_input_texture_size_changed(ClutterTexture *texture, gfloat wid
     gui->video_input_height_ = (float) height;
 
     ClutterActor *stage;
-  
+
     stage = clutter_actor_get_stage(CLUTTER_ACTOR(texture));
     if (stage == NULL)
         return;
@@ -786,7 +788,7 @@ Gui::Gui(Application* owner) :
     g_signal_connect(G_OBJECT(window_), "delete-event", G_CALLBACK(on_delete_event), this);
     g_signal_connect(G_OBJECT(window_), "key-press-event", G_CALLBACK(key_press_event), this);
     g_signal_connect(G_OBJECT(window_), "button-press-event", G_CALLBACK(on_mouse_button_event), this);
-    
+
     // add listener for window-state-event to detect fullscreenness
     g_signal_connect(G_OBJECT(window_), "window-state-event", G_CALLBACK(on_window_state_event), this);
 
@@ -809,26 +811,26 @@ Gui::Gui(Application* owner) :
 
     /* We need to set certain props on the target texture currently for
      * efficient/corrent playback onto the texture (which sucks a bit)  
-    */
+     */
     live_input_texture_ = (ClutterActor *) g_object_new(CLUTTER_TYPE_TEXTURE, 
-        "sync-size", FALSE, 
-        "disable-slicing", TRUE, 
-        NULL);
+            "sync-size", FALSE, 
+            "disable-slicing", TRUE, 
+            NULL);
     g_signal_connect(CLUTTER_TEXTURE(live_input_texture_), "size-change", G_CALLBACK(on_live_input_texture_size_changed), this);
 
     // Playback textures:
     playback_group_ = clutter_group_new();
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_));
-    
+
     const unsigned int NUM_PLAYBACK_IMAGES = 30;
     for(unsigned int i = 0 ; i < NUM_PLAYBACK_IMAGES; i++)
     {
         playback_textures_.insert(playback_textures_.begin(), 
-            (ClutterActor*)
-            g_object_new(CLUTTER_TYPE_TEXTURE, 
-                "sync-size", FALSE, 
-                "disable-slicing", TRUE, 
-                NULL));
+                (ClutterActor*)
+                g_object_new(CLUTTER_TYPE_TEXTURE, 
+                    "sync-size", FALSE, 
+                    "disable-slicing", TRUE, 
+                    NULL));
         clutter_container_add_actor(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)));
         // FIXME:2010-09-14:aalex:It's OK to detect playback image change but it should be done at the last minute before drawing each.
         g_signal_connect(CLUTTER_TEXTURE(playback_textures_.at(0)), "size-change", G_CALLBACK(on_playback_texture_size_changed), this);
@@ -842,11 +844,11 @@ Gui::Gui(Application* owner) :
     for(unsigned int i = 0 ; i < NUM_ONIONSKIN_IMAGES; i++)
     {
         onionskin_textures_.insert(onionskin_textures_.begin(), 
-            (ClutterActor*)
-            g_object_new(CLUTTER_TYPE_TEXTURE, 
-                "sync-size", FALSE, 
-                "disable-slicing", TRUE, 
-                NULL));
+                (ClutterActor*)
+                g_object_new(CLUTTER_TYPE_TEXTURE, 
+                    "sync-size", FALSE, 
+                    "disable-slicing", TRUE, 
+                    NULL));
         clutter_container_add_actor(CLUTTER_CONTAINER(onionskin_group_), CLUTTER_ACTOR(onionskin_textures_.at(0)));
         clutter_container_raise_child(CLUTTER_CONTAINER(onionskin_group_), CLUTTER_ACTOR(onionskin_textures_.at(0)), NULL);
     }
@@ -866,7 +868,7 @@ Gui::Gui(Application* owner) :
     /* of course, we need to show the texture in the stage. */
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_));
     clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
-    
+
     // INFO TEXT
     info_text_actor_ = clutter_text_new_full("Sans 16px", "", clutter_color_new(255, 255, 255, 255));
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_));
@@ -878,13 +880,13 @@ Gui::Gui(Application* owner) :
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(onionskin_group_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_), NULL);
-  
+
     /* Only show the actors after parent show otherwise it will just be
      * unrealized when the clutter foreign window is set. widget_show
      * will call show on the stage.
      */
     gtk_widget_show_all(window_);
-    
+
     // Set visibility for other things
     enable_onionskin(false); // hides it
     clutter_actor_hide(info_text_actor_);
