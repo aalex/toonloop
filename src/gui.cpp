@@ -336,6 +336,13 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
         case GDK_o:
             context->enable_onionskin( ! context->onionskin_enabled_);
             break;
+        case GDK_b:
+            if (context->blending_mode_ == BLENDING_MODE_ADDITIVE)
+                context->set_blending_mode(BLENDING_MODE_NORMAL);
+            else
+                context->set_blending_mode(BLENDING_MODE_ADDITIVE);
+            std::cout << "Blending mode:" << context->blending_mode_ << std::endl;
+            break;
         default:
             break;
     }
@@ -424,8 +431,8 @@ void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*imag
     {
         unsigned int fps = owner_->get_current_clip()->get_playhead_fps();
         unsigned int duration = (unsigned int) ((1.0f / fps * fade_duration_ratio_) * 1000);
-        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 0);
-        clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(0)), CLUTTER_LINEAR, duration, "opacity", 255, NULL);  
+        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 255);
+        clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(0)), CLUTTER_LINEAR, duration, "opacity", 0, NULL);  
     }
     else
         clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 255);
@@ -928,14 +935,14 @@ static void set_blending_mode_for_texture(ClutterTexture *texture, const gchar *
     }
     if (! success)
     {
-        g_critical("Could not set blend");
+        g_critical("Could not set blend mode");
     }
 }
 
 void Gui::set_blending_mode(BlendingMode mode)
 {
     static const gchar *NORMAL_BLEND_MODE = "RGBA = ADD (SRC_COLOR * (SRC_COLOR[A]), DST_COLOR * (1-SRC_COLOR[A]))";
-    static const gchar *ADD_BLEND_MODE = "RGBA = ADD (SRC_COLOR * (SRC_COLOR[A]), DST_COLOR * (SRC_COLOR[A]))";
+    static const gchar *ADD_BLEND_MODE = "RGBA = ADD (SRC_COLOR * (SRC_COLOR[A]), DST_COLOR)";
     if (mode == blending_mode_)
         return;
     const gchar *blend;
