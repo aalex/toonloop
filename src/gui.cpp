@@ -927,7 +927,12 @@ static void set_blending_mode_for_texture(ClutterTexture *texture, const gchar *
 {
     CoglHandle material = clutter_texture_get_cogl_material(texture);
     GError *error = NULL;
+#if CLUTTER_CHECK_VERSION(1, 4, 0)
+    gboolean success = cogl_material_set_blend(COGL_MATERIAL(material), blend, &error);
+#else
     gboolean success = cogl_material_set_blend(material, blend, &error);
+#endif
+
     if (error)
     {
         g_critical("Error setting blend: %s\n", error->message);
