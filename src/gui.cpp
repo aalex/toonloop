@@ -409,7 +409,7 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
  *
  * Called when it's time to update the image to play back.
  * 
- * The next image to play is raised on top of the input image textures.
+ * The next image to play is lowered to bottom of the input image textures.
  * If the fade_duration_ratio_ (TO RENAME) is set, tweens its opacity from 255 to 0 in 
  * as much ms there are between two frames currently. 
  */
@@ -423,7 +423,8 @@ void Gui::on_next_image_to_play(unsigned int clip_number, unsigned int/*image_nu
     playback_textures_.pop_back();
     // Load file
     success = clutter_texture_set_from_file(CLUTTER_TEXTURE(playback_textures_.at(0)), file_name.c_str(), &error);
-    clutter_container_raise_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)), NULL);
+    clutter_container_lower_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)), NULL);
+    clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 255);
    
     // TODO: Handle the ClutterAnimation* 
     // Attach a callback to when it's done
@@ -431,12 +432,13 @@ void Gui::on_next_image_to_play(unsigned int clip_number, unsigned int/*image_nu
     {
         unsigned int fps = owner_->get_current_clip()->get_playhead_fps();
         unsigned int duration = (unsigned int) (((1.0f / fps) * fade_duration_ratio_) * 1000);
-        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 255);
+        if (owner_->get_configuration()->get_verbose())
+            std::cout << "animate texture for " << duration << " ms" << std::endl;
         // TODO:2010-11-10:aalex:If there is only one image in the clip, do not fade out.
-        clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(0)), CLUTTER_LINEAR, duration, "opacity", 0, NULL);  
+        clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(1)), CLUTTER_LINEAR, duration, "opacity", 0, NULL);  
     }
     else
-        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 255);
+        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(1)), 0);
         
     // TODO: validate this path
     if (!success)
@@ -666,7 +668,6 @@ void Gui::resize_actors()
     {
         clutter_actor_set_position(CLUTTER_ACTOR(*iter), playback_tex_x, playback_tex_y);
         clutter_actor_set_size(CLUTTER_ACTOR(*iter), playback_tex_width, playback_tex_height);
-        clutter_actor_set_opacity(CLUTTER_ACTOR(*iter), 255);
         clutter_actor_set_rotation(CLUTTER_ACTOR(*iter), CLUTTER_Z_AXIS, rotation, playback_tex_width / 2.0f, playback_tex_height / 2.0f, 0.0f);
     }
     // Onion skin: same as live input
@@ -833,7 +834,8 @@ Gui::Gui(Application* owner) :
         clutter_container_add_actor(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)));
         // FIXME:2010-09-14:aalex:It's OK to detect playback image change but it should be done at the last minute before drawing each.
         g_signal_connect(CLUTTER_TEXTURE(playback_textures_.at(0)), "size-change", G_CALLBACK(on_playback_texture_size_changed), this);
-        clutter_container_raise_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)), NULL);
+        clutter_container_lower_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)), NULL);
+        clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 0);
     }
 
     // Onionskin textures:
@@ -849,7 +851,7 @@ Gui::Gui(Application* owner) :
                 "disable-slicing", TRUE, 
                 NULL));
         clutter_container_add_actor(CLUTTER_CONTAINER(onionskin_group_), CLUTTER_ACTOR(onionskin_textures_.at(0)));
-        clutter_container_raise_child(CLUTTER_CONTAINER(onionskin_group_), CLUTTER_ACTOR(onionskin_textures_.at(0)), NULL);
+        clutter_container_lower_child(CLUTTER_CONTAINER(onionskin_group_), CLUTTER_ACTOR(onionskin_textures_.at(0)), NULL);
     }
 
     // Background color:
