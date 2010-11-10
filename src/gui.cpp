@@ -410,10 +410,10 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
  * Called when it's time to update the image to play back.
  * 
  * The next image to play is raised on top of the input image textures.
- * If the fade_duration_ratio_ (TO RENAME) is set, tweens its opacity from 0 to 255 in 
+ * If the fade_duration_ratio_ (TO RENAME) is set, tweens its opacity from 255 to 0 in 
  * as much ms there are between two frames currently. 
  */
-void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*image_number*/, std::string file_name)
+void Gui::on_next_image_to_play(unsigned int clip_number, unsigned int/*image_number*/, std::string file_name)
 {
     GError *error = NULL;
     gboolean success;
@@ -427,11 +427,12 @@ void Gui::on_next_image_to_play(unsigned int /*clip_number*/, unsigned int/*imag
    
     // TODO: Handle the ClutterAnimation* 
     // Attach a callback to when it's done
-    if (fade_duration_ratio_ >= 0.01f)
+    if (fade_duration_ratio_ > 0.01f && owner_->get_clip(clip_number)->size() > 1) // do not fade if only one image in clip
     {
         unsigned int fps = owner_->get_current_clip()->get_playhead_fps();
-        unsigned int duration = (unsigned int) ((1.0f / fps * fade_duration_ratio_) * 1000);
+        unsigned int duration = (unsigned int) (((1.0f / fps) * fade_duration_ratio_) * 1000);
         clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 255);
+        // TODO:2010-11-10:aalex:If there is only one image in the clip, do not fade out.
         clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(0)), CLUTTER_LINEAR, duration, "opacity", 0, NULL);  
     }
     else
