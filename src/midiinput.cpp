@@ -101,11 +101,13 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
     MidiInput* context = static_cast<MidiInput*>(user_data);
     //std::cout << __FUNCTION__ << std::endl;
     if (context->verbose_) 
+        std::cout << __FUNCTION__ << " " << std::endl;
+    if (context->verbose_) 
     {
         std::cout << "MIDI message: (";
         for (unsigned int i = 0; i < message->size(); i++)
             std::cout << (int)message->at(i) << " ";
-        std::cout << ")";
+        std::cout << ")" << std::endl;
     }
     if (message->size() <= 1)
         return; // Don't support messages with only one byte or less.
@@ -114,20 +116,29 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
     switch (message_type)
     {
         case MIDINOTEON:
+        {
+            if (context->verbose_) 
+                std::cout << "MIDINOTEON" << std::endl;
             if (message->size() < 3)
             {
                 g_critical("Note on message should have 4 params");
                 return;
             }
+            if (context->verbose_) 
+                std::cout << "getting an int at index 1" << std::endl;
+            int note_pitch = int(message->at(1));
             if (message->at(2) == 0x00) // if velocity is 0, it's actually a note off message
             {
-                rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, int(message->at(1)));
-                if (rule != 0) {
+                if (context->verbose_) 
+                    std::cout << "it's actually a note off " << std::endl;
+                rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, note_pitch);
+                if (rule != 0) 
+                {
                     context->push_action(rule->action_, rule->args_);
                     return;
                 }
             } else {
-                rule = context->midi_binder_.find_rule(NOTE_ON_RULE, int(message->at(1)));
+                rule = context->midi_binder_.find_rule(NOTE_ON_RULE, note_pitch);
                 if (rule != 0)
                 {
                     context->push_action(rule->action_, rule->args_);
@@ -135,7 +146,10 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                 }
             }
             break;
+        }
         case MIDINOTEOFF:
+            if (context->verbose_) 
+                std::cout << "MIDINOTEOFF" << std::endl;
             rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, int(message->at(1)));
             if (rule != 0)
             {
@@ -145,6 +159,8 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             break;
         case MIDICONTROLCHANGE:
         { // we declare some scope variables:
+            if (context->verbose_) 
+                std::cout << "MIDICONTROLCHANGE" << std::endl;
             int controller_number = int(message->at(1));
             int control_value = int(message->at(2));
             if (control_value == 0)
@@ -167,13 +183,15 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             if (rule != 0)
             {
                 //TODO:2010-11-07:aalex:Map the value from [0,127] to the desired range:
-                context->push_action(rule->action_, boost::lexical_cast<std::string>(control_value)); // we pass the value
+                context->push_action(rule->action_, control_value); // we pass the value
                 return;
             }
             break;
         }
         case MIDIPROGRAMCHANGE:
         {
+            if (context->verbose_) 
+                std::cout << "MIDIPROGRAMCHANGE" << std::endl;
             int program_number = int(message->at(0) & 0x0f);
             rule = context->midi_binder_.find_program_change_rule();
             if (rule != 0)
@@ -210,8 +228,12 @@ void MidiInput::push_action(std::string action, std::string args)
         push_message(Message(Message::VIDEO_RECORD_OFF));
     else if (action == "quit")
         push_message(Message(Message::QUIT));
-    else if (action == "select_clip") 
+    else if (action == "select_clip") // TODO:2010-11-05:aalex:enclose in a try catch
+    {
+        if (verbose_)
+            std::cout << "casting args to int..." << std::endl;
         push_message(Message(Message::SELECT_CLIP, boost::lexical_cast<int>(args)));
+    }
     else
         g_critical("Unknown action %s", action.c_str());
 }
@@ -341,6 +363,7 @@ bool MidiInput::open(unsigned int port)
 void MidiInput::set_verbose(bool verbose)
 {
     verbose_ = verbose;
+    midi_binder_.set_verbose(verbose);
 }
 
 MidiInput::~MidiInput()
