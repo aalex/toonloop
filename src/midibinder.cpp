@@ -66,23 +66,23 @@ const MidiRule *MidiBinder::find_rule(RuleType rule_type, int number)
     {
         case NOTE_ON_RULE:
             iter = note_on_rules_.begin();
-            end = note_on_rules_.begin();
+            end = note_on_rules_.end();
             break;
         case NOTE_OFF_RULE:
             iter = note_off_rules_.begin();
-            end = note_off_rules_.begin();
+            end = note_off_rules_.end();
             break;
         case CONTROL_ON_RULE:
             iter = control_on_rules_.begin();
-            end = control_on_rules_.begin();
+            end = control_on_rules_.end();
             break;
         case CONTROL_OFF_RULE:
             iter = control_off_rules_.begin();
-            end = control_off_rules_.begin();
+            end = control_off_rules_.end();
             break;
         case CONTROL_MAP_RULE:
             iter = control_map_rules_.begin();
-            end = control_map_rules_.begin();
+            end = control_map_rules_.end();
             break;
         default:
             g_critical("Unsupported rule type");
