@@ -1,5 +1,7 @@
 #include "config.h" // PKGDATADIR
 #include <clutter/clutter.h>
+// TODO:2010-11-10:aalex:Actually use this file.
+// TODO:2010-11-10:aalex:Use DATADIR
 
 #define PKGDATADIR "./data/"
 
