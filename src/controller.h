@@ -60,6 +60,36 @@ class Controller
          * Should be used more in future.
          */
         Properties<float> float_properties_;
+        /**
+         * Creates a new named int property.
+         * Returns a pointer to it, so that clients can query its value and register slots for their signals.
+         */
+        Property<int> *add_int_property(const std::string &name, int value);
+        /**
+         * Creates a new named float property.
+         * Returns a pointer to it, so that clients can query its value and register slots for their signals.
+         */
+        Property<float> *add_float_property(const std::string &name, float value);
+        /** 
+         * Sets the value of a int property, given its name. 
+         * Returns whether is succeeded or not.
+         */
+        bool set_int_value(std::string &name, int value);
+        /** 
+         * Sets the value of a float property, given its name. 
+         * Returns whether is succeeded or not.
+         */
+        bool set_float_value(std::string &name, float value);
+        /**
+         * Returns the value of a named int property.
+         * Returns 0 if it doesn't exist.
+         */
+        int get_int_value(std::string &name);
+        /**
+         * Returns the value of a named float property.
+         * Returns 0.0 if it doesn't exist.
+         */
+        float get_float_value(std::string &name);
 
         /** 
          * Called when a frame is added to a clip.

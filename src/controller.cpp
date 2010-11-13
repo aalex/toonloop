@@ -36,6 +36,65 @@ Controller::Controller(Application* owner) :
 {
     
 }
+
+Property<int> *Controller::add_int_property(const std::string &name, int value)
+{
+    if (int_properties_.has_property(name)) 
+        return 0;
+    else
+        return int_properties_.add_property(name, value);
+}
+
+Property<float> *Controller::add_float_property(const std::string &name, float value)
+{
+    if (float_properties_.has_property(name)) 
+        return 0;
+    else
+        return float_properties_.add_property(name, value);
+}
+
+bool Controller::set_int_value(std::string &name, int value)
+{
+    Property<int> *p = int_properties_.get_property(name);
+    if (p == 0)
+        return false;
+    else
+    {
+        p->set_value(value);
+        return true;
+    }
+}
+
+bool Controller::set_float_value(std::string &name, float value)
+{
+    Property<float> *p = float_properties_.get_property(name);
+    if (p == 0)
+        return false;
+    else
+    {
+        p->set_value(value);
+        return true;
+    }
+}
+
+int Controller::get_int_value(std::string &name)
+{
+    Property<int> *p = int_properties_.get_property(name);
+    if (p == 0)
+        return 0;
+    else
+        return p->get_value();
+}
+
+float Controller::get_float_value(std::string &name)
+{
+    Property<float> *p = float_properties_.get_property(name);
+    if (p == 0)
+        return 0;
+    else
+        return p->get_value();
+}
+
 void Controller::add_frame()
 {
     //Clip* clip = owner_->get_current_clip();
