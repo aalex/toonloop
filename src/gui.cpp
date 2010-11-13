@@ -318,20 +318,10 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
                 context->set_overlay_opacity(context->overlay_opacity_ + 1);
             break;
         case GDK_parenleft:
-            if (context->fade_duration_ratio_ > 0.0f)
-            {
-                context->fade_duration_ratio_ = context->fade_duration_ratio_ - 0.1;
-                if (context->fade_duration_ratio_ < 0.1f) // avoid floating point roundoff errors
-                    context->fade_duration_ratio_ = 0.0f;
-                std::cout << "Duration ratio: " << context->fade_duration_ratio_ << std::endl;
-            }
+            context->crossfade_increment(-0.1f);
             break;
         case GDK_parenright:
-            if (context->fade_duration_ratio_ < 10.0f)
-            {
-                context->fade_duration_ratio_ = context->fade_duration_ratio_ + 0.1f;
-                std::cout << "Duration ratio: " << context->fade_duration_ratio_ << std::endl;
-            }
+            context->crossfade_increment(0.1f);
             break;
         case GDK_i:
             context->toggle_info();
@@ -359,6 +349,28 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
     }
     return TRUE;
 }
+/**
+ * Adds a certain amount of crossfading duration to the crossfade between images.
+ * The given value can be negative.
+ */
+void Gui::crossfade_increment(float value)
+{
+    const float maximum = 10.0f;
+    float current = fade_duration_ratio_;
+    float new_value = current + value;
+
+    if (new_value < 0.0f)
+        new_value = 0.0f;
+    else if (new_value > maximum)
+        new_value = maximum;
+    if (fade_duration_ratio_ != new_value)
+    {
+        fade_duration_ratio_ = new_value;
+        if (owner_->get_configuration()->get_verbose())
+            std::cout << "Duration ratio: " << new_value << std::endl;
+    }
+}
+
 /**
  * Toggles the visibility of the info text.
  */
@@ -919,9 +931,7 @@ Gui::Gui(Application* owner) :
     if (owner_->get_configuration()->get_fullscreen())
         toggleFullscreen(window_);
     // add properties:
-    owner_->get_controller()->int_properties_.add_property("blending_mode", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_blending_mode_int_property_changed, this, _1, _2));
-
-    
+    owner_->get_controller()->add_int_property("blending_mode", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_blending_mode_int_property_changed, this, _1, _2));
 }
 
 void Gui::update_info_text()
