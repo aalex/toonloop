@@ -51,6 +51,11 @@ template <typename T> class Properties
             return properties_.find(name)->second.get();
         }
 
+        bool has_property(const std::string &name) const
+        {
+            return properties_.find(name) != properties_.end();
+        }
+
     private:
         std::map<std::string, PropertyPtr> properties_;
 };

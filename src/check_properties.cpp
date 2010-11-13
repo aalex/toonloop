@@ -35,14 +35,21 @@ int main(int /* argc */, char ** /*argv */)
     holder.remove_property("bar");
     Property<int> *val = holder.get_property("bar");
     if (val != 0)
+    {
         std::cout << "Should not get a valid pointer " << val << std::endl;
+        return 1;
+    }
     else
         std::cout << "Good! Did not get a valid pointer " << val << std::endl;
+    
+    if (! holder.has_property("qweqwe"))
+        std::cout << "Good, it still doesnt find qweqwe " << std::endl;
+    else 
+        return 1;
 
     Property<float> f("float property", 0.0);
     f.value_changed_signal_.connect(&f_cb);
     f.set_value(3.14159);
-
 
     Property<std::string> s("string property", "");
     s.value_changed_signal_.connect(&s_cb);
