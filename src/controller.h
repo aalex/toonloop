@@ -31,6 +31,10 @@
 #include <string>
 #include "clip.h" // for clip_direction enum
 #include "properties.h"
+#include "property.h"
+
+typedef Property<int> IntProperty;
+typedef Property<float> FloatProperty;
 
 // Forward declaration
 class Application;
