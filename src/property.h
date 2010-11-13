@@ -53,7 +53,7 @@ template <typename T> class Property
             name_(name),
             value_(value) {}
 
-        T &get_value() const { return value_; }
+        T get_value() const { return value_; }
 
         std::string &get_name() const { return name_; }
 

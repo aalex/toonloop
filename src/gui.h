@@ -72,6 +72,7 @@ class Gui
         static gboolean on_mouse_button_event(GtkWidget *widget, GdkEventButton *event, gpointer user_data);
         static int on_window_state_event(_GtkWidget *widget, _GdkEventWindowState *event, gpointer user_data);
         static void on_render_frame(ClutterTimeline * timeline, gint msecs, gpointer user_data);
+        void on_blending_mode_int_property_changed(std::string &name, int value);
         void set_overlay_opacity(int value);
         void enable_onionskin(bool value);
         void set_onionskin_opacity(int value);

@@ -34,9 +34,11 @@ template <typename T> class Properties
     public:
         typedef boost::shared_ptr< Property<T> > PropertyPtr;
 
-        void add_property(const std::string &name, T value)
+        Property<T> *add_property(const std::string &name, T value)
         {
+            // TODO: check if we have it.
             properties_[name] = PropertyPtr(new Property<T>(name, value));
+            return get_property(name);
         }
         
         void remove_property(const std::string &name)

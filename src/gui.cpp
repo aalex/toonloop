@@ -22,6 +22,7 @@
 /**
  * Graphical user interface made with Clutter 
  */
+#include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
 #include <clutter-gst/clutter-gst.h>
 #include <clutter-gtk/clutter-gtk.h>
@@ -39,7 +40,10 @@
 #include "controller.h"
 #include "gui.h"
 #include "pipeline.h"
+#include "properties.h"
+#include "property.h"
 #include "timer.h"
+#include "unused.h"
 
 // TODO:2010-11-07:aalex:Converting macros to string is too complicated
 // The same macros are defined in presets.h and they could conflict
@@ -339,11 +343,16 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             context->enable_onionskin( ! context->onionskin_enabled_);
             break;
         case GDK_b:
-            if (context->blending_mode_ == BLENDING_MODE_ADDITIVE)
-                context->set_blending_mode(BLENDING_MODE_NORMAL);
-            else
-                context->set_blending_mode(BLENDING_MODE_ADDITIVE);
-            std::cout << "Blending mode:" << context->blending_mode_ << std::endl;
+            {
+                Property<int> *blending_mode = context->owner_->get_controller()->int_properties_.get_property("blending_mode");
+                if (blending_mode->get_value() == 1) //context->blending_mode_ == BLENDING_MODE_ADDITIVE)
+                    blending_mode->set_value(0);
+                    //context->set_blending_mode(BLENDING_MODE_NORMAL);
+                else
+                    blending_mode->set_value(1);
+                    //context->set_blending_mode(BLENDING_MODE_ADDITIVE);
+                std::cout << "Blending mode:" << context->blending_mode_ << std::endl;
+            }
             break;
         default:
             break;
@@ -744,6 +753,16 @@ void on_playback_texture_size_changed(ClutterTexture *texture,
         return;
     gui->resize_actors();
 }
+
+void Gui::on_blending_mode_int_property_changed(std::string &name, int value)
+{
+    UNUSED(name);
+    if (value == 1)
+        set_blending_mode(BLENDING_MODE_ADDITIVE);
+    else
+        set_blending_mode(BLENDING_MODE_NORMAL);
+}
+
 /**
  * Graphical user interface for Toonloop. 
  *
@@ -899,6 +918,10 @@ Gui::Gui(Application* owner) :
     // Makes fullscreen if needed
     if (owner_->get_configuration()->get_fullscreen())
         toggleFullscreen(window_);
+    // add properties:
+    owner_->get_controller()->int_properties_.add_property("blending_mode", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_blending_mode_int_property_changed, this, _1, _2));
+
+    
 }
 
 void Gui::update_info_text()
