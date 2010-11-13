@@ -14,6 +14,11 @@ void f_cb(std::string &name, float value)
     std::cout << name << " changed to " << value << std::endl;
 }
 
+void s_cb(std::string &name, std::string value)
+{
+    std::cout << name << " changed to " << value << std::endl;
+}
+
 int main(int /* argc */, char ** /*argv */)
 {
     std::string name("hello");
@@ -37,6 +42,11 @@ int main(int /* argc */, char ** /*argv */)
     Property<float> f("float property", 0.0);
     f.value_changed_signal_.connect(&f_cb);
     f.set_value(3.14159);
+
+
+    Property<std::string> s("string property", "");
+    s.value_changed_signal_.connect(&s_cb);
+    s.set_value("boo!");
 
     return 0;
 }

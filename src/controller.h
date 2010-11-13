@@ -30,6 +30,7 @@
 #include <boost/signals2.hpp>
 #include <string>
 #include "clip.h" // for clip_direction enum
+#include "properties.h"
 
 // Forward declaration
 class Application;
@@ -45,8 +46,21 @@ class Application;
 class Controller
 {
     public:
-        //FIXME: does this member need to be public?
+        /**
+         * Constructor.
+         */
         Controller(Application* owner);
+        /**
+         * Hash table of int properties. 
+         * Should be used more in future.
+         */
+        Properties<int> int_properties_;
+        /**
+         * Hash table of float properties. 
+         * Should be used more in future.
+         */
+        Properties<float> float_properties_;
+
         /** 
          * Called when a frame is added to a clip.
          * Arguments: clip number, new frame number.
