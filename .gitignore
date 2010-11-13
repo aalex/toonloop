@@ -31,6 +31,7 @@ src/config.h.in
 src/stamp-h1
 tests/.deps/*
 # --------- specific conmpiled files.
+src/check_properties
 src/toonloop
 tests/check_bool
 tests/check_classes

@@ -2,6 +2,9 @@ SUBDIRS = shaders
 bin_PROGRAMS = toonloop
 EXTRA_DIST = doxyfile.in
 
+noinst_PROGRAMS = check_properties
+check_properties_SOURCES = properties.h property.h check_properties.cpp
+
 html-local: doxygen
 doxygen:
 	@if [ -z `which doxygen` ]; then echo "No Doxygen!"; else doxygen; fi
@@ -25,6 +28,8 @@ headers = \
     oscreceiver.h \
     oscsender.h \
 	pipeline.h \
+	property.h \
+	properties.h \
 	midibinder.h \
 	saverworker.h \
 	statesaving.h \
