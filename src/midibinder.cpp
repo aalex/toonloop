@@ -49,7 +49,7 @@ const MidiRule *MidiBinder::find_program_change_rule()
         try {
             return &(program_change_rules_.at(0));
         } catch (std::out_of_range &e) {
-            std::cout << "Program change rule: out of range! " << e.what() << std::endl;
+            std::cout << "ERROR: Program change rule: out of range! " << e.what() << std::endl;
             return 0;
         }
     else
@@ -85,7 +85,7 @@ const MidiRule *MidiBinder::find_rule(RuleType rule_type, int number)
             end = control_map_rules_.end();
             break;
         default:
-            g_critical("Unsupported rule type");
+            g_critical("ERROR: Unsupported MIDI binding rule type");
             return 0;
             break;
     }
@@ -143,10 +143,11 @@ void MidiBinder::on_midi_xml_start_element(
     const gchar **value_cursor = attribute_values;
     while (*name_cursor)
     {
-        std::cout << " " << *name_cursor << "=" << *value_cursor;
+        if (self->verbose_)
+            std::cout << " " << *name_cursor << "=" << *value_cursor;
         if (g_strcmp0(*name_cursor, "args") == 0)
             rule.args_ = std::string(*value_cursor);
-        if (g_strcmp0(*name_cursor, "action") == 0)
+        else if (g_strcmp0(*name_cursor, "action") == 0)
             rule.action_ = std::string(*value_cursor);
         else if (g_strcmp0(*name_cursor, "number") == 0)
         {
@@ -174,11 +175,16 @@ void MidiBinder::on_midi_xml_start_element(
                 g_critical("Invalid int for %s in XML file: %s", *name_cursor, *value_cursor);
                 return;
             }
+        } 
+        else
+        {
+            g_warning("Unknown MIDI binding rule XML attribute: %s with value %s", *name_cursor, *value_cursor);
         }
         name_cursor++;
         value_cursor++;
     }
-    std::cout << std::endl;
+    if (self->verbose_)
+        std::cout << std::endl;
     if (rule.action_ == "")
     {
         g_critical("No action for rule %s", element_name);
@@ -280,7 +286,8 @@ MidiBinder::MidiBinder() :
     verbose_(false)
 {
     std::string full_name(toon_find_midi_preset_file("midi.xml"));
-    std::cout << "Found MIDI bindings file " << full_name << std::endl;
+    if (verbose_)
+        std::cout << "Found MIDI bindings file " << full_name << std::endl;
     if (load_xml_file(full_name.c_str()))
     {
         if (verbose_)
