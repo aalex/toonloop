@@ -1,11 +1,11 @@
-#N canvas 616 491 641 270 10;
+#N canvas 616 389 662 487 10;
 #X obj 10 138 ctlout;
 #X text 8 -74 Make sure the MIDI is enabled.;
 #X text 8 -60 pd -alsamidi -midioutdev 1;
 #X obj 27 32 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -1 0 127
 ;
 #X msg 27 49 \$1 80;
-#X obj 18 81 unpack f f 1;
+#X obj 14 95 unpack f f 1;
 #X obj 339 134 noteout;
 #X obj 344 88 unpack f f 1;
 #X text 336 154 [noteout]: note \, velocity \, channel;
@@ -30,12 +30,16 @@
 -1;
 #X obj 201 -8 sel 0 1;
 #X obj 211 -100 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
-1 1;
+0 1;
 #X obj 210 -82 metro 500;
 #X obj 209 -55 f 0;
 #X obj 264 -55 + 1;
 #X obj 208 -30 % 2;
 #X floatatom 285 -93 5 0 0 0 - - -;
+#X msg 202 261 \$1 7;
+#X obj 201 199 vsl 15 50 0 127 0 0 empty empty empty 0 -9 0 10 -258113
+-1 -1 0 1;
+#X text 230 212 crossfade ratio;
 #X connect 3 0 4 0;
 #X connect 4 0 5 0;
 #X connect 5 0 0 0;
@@ -65,3 +69,5 @@
 #X connect 30 0 29 1;
 #X connect 31 0 26 0;
 #X connect 32 0 28 1;
+#X connect 33 0 5 0;
+#X connect 34 0 33 0;
