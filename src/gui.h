@@ -74,6 +74,7 @@ class Gui
         static int on_window_state_event(_GtkWidget *widget, _GdkEventWindowState *event, gpointer user_data);
         static void on_render_frame(ClutterTimeline * timeline, gint msecs, gpointer user_data);
         void on_blending_mode_int_property_changed(std::string &name, int value);
+        void on_crossfade_ratio_changed(std::string &name, float value);
         void set_overlay_opacity(int value);
         void enable_onionskin(bool value);
         void set_onionskin_opacity(int value);
@@ -106,13 +107,12 @@ class Gui
         bool onionskin_enabled_;
         bool enable_info_;
         bool enable_help_;
-        // TODO: rename to fade_duration_ratio
         /**
          * How long the fade between each frame lasts.
          * 1.0 means that it's going to last one (playback) frame.
          * Can be up to 10.0 or so.
          */
-        float fade_duration_ratio_; // RENAME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        float crossfade_ratio_;
         static const int WINWIDTH = 640;
         static const int WINHEIGHT = 480;
         BlendingMode blending_mode_;

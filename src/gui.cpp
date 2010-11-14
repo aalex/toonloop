@@ -349,6 +349,17 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
     }
     return TRUE;
 }
+
+void Gui::on_crossfade_ratio_changed(std::string &name, float value)
+{
+    UNUSED(name);
+    if (crossfade_ratio_ != value)
+    {
+        crossfade_ratio_ = value;
+        if (owner_->get_configuration()->get_verbose())
+            std::cout << "Crossfade ratio: " << value << std::endl;
+    }
+}
 /**
  * Adds a certain amount of crossfading duration to the crossfade between images.
  * The given value can be negative.
@@ -356,16 +367,16 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
 void Gui::crossfade_increment(float value)
 {
     const float maximum = 10.0f;
-    float current = fade_duration_ratio_;
+    float current = crossfade_ratio_;
     float new_value = current + value;
 
     if (new_value < 0.0f)
         new_value = 0.0f;
     else if (new_value > maximum)
         new_value = maximum;
-    if (fade_duration_ratio_ != new_value)
+    if (crossfade_ratio_ != new_value)
     {
-        fade_duration_ratio_ = new_value;
+        crossfade_ratio_ = new_value;
         if (owner_->get_configuration()->get_verbose())
             std::cout << "Duration ratio: " << new_value << std::endl;
     }
@@ -433,7 +444,7 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
  * Called when it's time to update the image to play back.
  * 
  * The next image to play is lowered to bottom of the input image textures.
- * If the fade_duration_ratio_ (TO RENAME) is set, tweens its opacity from 255 to 0 in 
+ * If the crossfade_ratio_ is set, tweens its opacity from 255 to 0 in 
  * as much ms there are between two frames currently. 
  */
 void Gui::on_next_image_to_play(unsigned int clip_number, unsigned int/*image_number*/, std::string file_name)
@@ -451,10 +462,10 @@ void Gui::on_next_image_to_play(unsigned int clip_number, unsigned int/*image_nu
    
     // TODO: Handle the ClutterAnimation* 
     // Attach a callback to when it's done
-    if (fade_duration_ratio_ > 0.0f && owner_->get_clip(clip_number)->size() > 1) // do not fade if only one image in clip
+    if (crossfade_ratio_ > 0.0f && owner_->get_clip(clip_number)->size() > 1) // do not fade if only one image in clip
     {
         unsigned int fps = owner_->get_current_clip()->get_playhead_fps();
-        unsigned int duration = (unsigned int) (((1.0f / fps) * fade_duration_ratio_) * 1000);
+        unsigned int duration = (unsigned int) (((1.0f / fps) * crossfade_ratio_) * 1000);
         if (owner_->get_configuration()->get_verbose())
             std::cout << "animate texture for " << duration << " ms" << std::endl;
         // TODO:2010-11-10:aalex:If there is only one image in the clip, do not fade out.
@@ -793,7 +804,7 @@ Gui::Gui(Application* owner) :
     onionskin_enabled_(false),
     enable_info_(false),
     enable_help_(false),
-    fade_duration_ratio_(0.0)
+    crossfade_ratio_(0.0)
 {
     //video_xwindow_id_ = 0;
     owner_->get_controller()->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
@@ -932,6 +943,7 @@ Gui::Gui(Application* owner) :
         toggleFullscreen(window_);
     // add properties:
     owner_->get_controller()->add_int_property("blending_mode", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_blending_mode_int_property_changed, this, _1, _2));
+    owner_->get_controller()->add_float_property("crossfade_ratio", 0.0)->value_changed_signal_.connect(boost::bind(&Gui::on_crossfade_ratio_changed, this, _1, _2));
 }
 
 void Gui::update_info_text()
