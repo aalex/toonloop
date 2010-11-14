@@ -59,6 +59,7 @@ class MidiInput
         void push_message(Message message);
         void push_action(std::string action, std::string args);
         void push_action(std::string action, int arg);
+        void push_action(std::string action, std::string args, float float_arg);
         RtMidiIn *midi_in_;
 };
 

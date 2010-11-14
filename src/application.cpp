@@ -488,6 +488,12 @@ void Application::handle_message(Message &message)
         case Message::SELECT_CLIP:
             get_controller()->choose_clip(value);
             break;
+        case Message::SET_FLOAT:
+            get_controller()->set_float_value(message.get_string_value(), message.get_float_value());
+            break;
+        case Message::SET_INT:
+            std::cout << "TODO: SET_INT\n";
+            break;
         case Message::QUIT:
             quit();
             break;

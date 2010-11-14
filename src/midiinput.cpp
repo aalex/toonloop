@@ -18,6 +18,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <algorithm> // min, max
 #include <boost/lexical_cast.hpp>
 #include <cstdlib>
 #include <iostream>
@@ -29,6 +30,25 @@
 #include "midiinput.h"
 #include "midibinder.h"
 
+/**
+ * The MIDI bindings are now set up with a XML file in the MidiBinder class.
+ *
+ * Historically:
+ * - Pressing the sustain pedal down grabs a frame.
+ *   MIDI controller 64 is the sustain pedal controller. It looks like this:
+ *   <channel and status> <controller> <value>
+ *   Where the controller number is 64 and the value is either 0 or 127.
+ *
+ * - The MIDI controller 80 is also a pedal on the Roland GFC-50.
+ *   It controls video grabbing. (on / off)
+ *
+ * - The program change should allow the user to choose another instrument. 
+ *   This way, the Roland GFC-50 allows to select any of ten clips.
+ *   The MIDI spec allows for 128 programs, numbered 0-127.
+ *
+ * - Main volume is control 7. It controls the playback speed.
+ *   Volume is from 0 to 127.
+ */
 static const unsigned char MIDINOTEOFF =       0x80; // channel, pitch, velocity
 static const unsigned char MIDINOTEON =        0x90; // channel, pitch, velocity
 static const unsigned char MIDICONTROLCHANGE = 0xb0; // channel, controller, value
@@ -79,29 +99,39 @@ unsigned char get_midi_event_type(const unsigned char first_byte)
 }
 
 /**
- * Callback for incoming MIDI messages.  Called in its thread.
+ * Convenience function to map a variable from one coordinate space
+ * to another.
+ * The result is clipped in the range [ostart, ostop]
+ * Make sure ostop is bigger than ostart.
  * 
- * - Pressing the sustain pedal down grabs a frame.
- *   MIDI controller 64 is the sustain pedal controller. It looks like this:
- *   <channel and status> <controller> <value>
- *   Where the controller number is 64 and the value is either 0 or 127.
+ * To map a MIDI control value into the [0,1] range:
+ * map(value, 0.0, 1.0, 0. 127.);
+ * 
+ * Depends on: #include <algorithm>
+ */
+static float map(float value, float istart, float istop, float ostart, float ostop) 
+{
+    float ret = ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+    // In Processing, they don't do the following: (clipping)
+    return std::max(std::min(ret, ostop), ostart);
+}
+
+/** 
+ * Callback for incoming MIDI messages.  Called in its thread.
  *
- * - The MIDI controller 80 is also a pedal on the Roland GFC-50.
- *   It controls video grabbing. (on / off)
- *
- * - The program change should allow the user to choose another instrument. 
- *   This way, the Roland GFC-50 allows to select any of ten clips.
- *   The MIDI spec allows for 128 programs, numbered 0-127.
- *
- * - Main volume is control 7. It controls the playback speed.
- *   Volume is from 0 to 127.
+ * We try to get the first MidiRule found for the given MIDI event.
+ * (given its pitch, and if on or off)
+ *  - NOTE_OFF_RULE: [s:action s:args]
+ *  - NOTE_ON_RULE: [s:action s:args]
+ *  - CONTROL_MAP_RULE [s:action i:value]
+ *  - CONTROL_ON_RULE [s:action s:args]
+ *  - CONTROL_OFF_RULE [s:action s:args]
+ *  - MIDIPROGRAMCHANGE [s:action i:number]
  */
 void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned char > *message, void *user_data )
 {
     MidiInput* context = static_cast<MidiInput*>(user_data);
     //std::cout << __FUNCTION__ << std::endl;
-    if (context->verbose_) 
-        std::cout << __FUNCTION__ << " " << std::endl;
     if (context->verbose_) 
     {
         std::cout << "MIDI message: (";
@@ -124,8 +154,6 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                 g_critical("Note on message should have 4 params");
                 return;
             }
-            if (context->verbose_) 
-                std::cout << "getting an int at index 1" << std::endl;
             int note_pitch = int(message->at(1));
             if (message->at(2) == 0x00) // if velocity is 0, it's actually a note off message
             {
@@ -183,7 +211,8 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             if (rule != 0)
             {
                 //TODO:2010-11-07:aalex:Map the value from [0,127] to the desired range:
-                context->push_action(rule->action_, control_value); // we pass the value
+                float f_val = map((float) control_value , 0.0f, 127.0f, rule->from_, rule->to_);
+                context->push_action(rule->action_, rule->args_, f_val); // we pass the value
                 return;
             }
             break;
@@ -217,7 +246,7 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
 void MidiInput::push_action(std::string action, std::string args)
 {
     if (verbose_) 
-        std::cout << __FUNCTION__ << " " << action << " " << args << std::endl;
+        std::cout << __FUNCTION__ << "  s:" << action << " s:" << args << std::endl;
     if (action == "add_image") 
         push_message(Message(Message::ADD_IMAGE));
     else if (action == "remove_image") 
@@ -243,9 +272,25 @@ void MidiInput::push_action(std::string action, std::string args)
 void MidiInput::push_action(std::string action, int arg)
 {
     if (verbose_) 
-        std::cout << __FUNCTION__ << " " << action << " " << arg << std::endl;
+        std::cout << __FUNCTION__ << " s:" << action << " i:" << arg << std::endl;
     if (action == "select_clip") 
         push_message(Message(Message::SELECT_CLIP, arg));
+    else
+        g_critical("Unknown action %s", action.c_str());
+}
+/**
+ * Version with string and float. (such as SET_FLOAT)
+ */
+void MidiInput::push_action(std::string action, std::string args, float float_arg)
+{
+    if (verbose_) 
+        std::cout << __FUNCTION__ << " s:" << action << " s:" << args << " f:" << float_arg << std::endl;
+    if (action == "set_float") 
+    {
+        if (args == "")
+            std::cout << "ERROR in " << __FUNCTION__ << ": The \"args\" XML attribute is empty s:" << action << " s:" << args << " f:" << float_arg << std::endl;
+        push_message(Message(Message::SET_FLOAT, args, float_arg));
+    }
     else
         g_critical("Unknown action %s", action.c_str());
 }

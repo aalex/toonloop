@@ -34,8 +34,9 @@ typedef enum
     NOTE_OFF_RULE,
     CONTROL_ON_RULE,
     CONTROL_OFF_RULE,
-    CONTROL_MAP_RULE,
+    CONTROL_MAP_RULE, // float
     PROGRAM_CHANGE_RULE
+    //TODO: CONTROL_MAP_INT_RULE
 } RuleType;
 
 /** 

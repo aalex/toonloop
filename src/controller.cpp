@@ -69,9 +69,15 @@ bool Controller::set_float_value(std::string &name, float value)
 {
     Property<float> *p = float_properties_.get_property(name);
     if (p == 0)
+    {
+        std::cout << __FUNCTION__ << ": no such property: " << name << std::endl;
         return false;
+    }
     else
     {
+        bool verbose = owner_->get_configuration()->get_verbose();
+        if (verbose)
+            std::cout << __FUNCTION__ << ": " << name << "=" << value << std::endl;
         p->set_value(value);
         return true;
     }
