@@ -30,9 +30,14 @@ int main(int argc, char* argv[])
     {
         app.run(argc, argv);
     }
+    catch(const std::logic_error& e) 
+    {
+        std::cerr << "ERROR (std::logic_error): " << e.what() << "\n";
+        return 1;
+    }
     catch(const std::exception& e) 
     {
-        std::cerr << "error: " << e.what() << "\n";
+        std::cerr << "ERROR (std::exception): " << e.what() << "\n";
         return 1;
     }
     catch (...) 

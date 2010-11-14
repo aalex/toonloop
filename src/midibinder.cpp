@@ -233,7 +233,7 @@ static void on_midi_xml_error(GMarkupParseContext *context, GError *error, gpoin
  * 
  * These are the presets dirs in /usr/share/toonloop/presets and the like.
  */
-gchar *toon_find_midi_preset_file(const gchar *file_name)
+gchar *toon_find_midi_preset_file(const gchar *file_name, bool verbose)
 {
     // adding ~/.toonloop/
     std::string config_dir = std::string(std::getenv("HOME")) + "/.toonloop/";
@@ -241,6 +241,8 @@ gchar *toon_find_midi_preset_file(const gchar *file_name)
     int i;
     for (i = 0; dirs[i]; i++)
     {
+        if (verbose)
+            std::cout << "Looking for " << file_name << " in " << dirs[i] << "..." << std::endl;
         gchar *path = g_strdup_printf("%s%s", dirs[i], file_name);
         if (g_file_test(path, G_FILE_TEST_EXISTS))
             return path;
@@ -282,10 +284,13 @@ bool MidiBinder::load_xml_file(const gchar *file_name)
 }
 
 // TODO:2010-11-07:aalex:Be able to set MidiBinder verbose or not
-MidiBinder::MidiBinder() : 
-    verbose_(false)
+MidiBinder::MidiBinder(bool verbose) : 
+    verbose_(verbose)
 {
-    std::string full_name(toon_find_midi_preset_file("midi.xml"));
+    gchar *found = toon_find_midi_preset_file("midi.xml", verbose_);
+    if (! found)
+        g_error("Could not find XML midi file!");
+    std::string full_name(found);
     if (verbose_)
         std::cout << "Found MIDI bindings file " << full_name << std::endl;
     if (load_xml_file(full_name.c_str()))

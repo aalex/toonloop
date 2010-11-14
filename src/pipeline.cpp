@@ -47,7 +47,7 @@ namespace fs = boost::filesystem;
  * In that case, checks if the video recording or the intervalometer is enabled. 
  * If so, grabs an image if it's time to do so.
  */
-void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg,  gpointer user_data)
+void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg, gpointer user_data)
 {
     Pipeline *context = static_cast<Pipeline*>(user_data);
     bool verbose = context->owner_->get_configuration()->get_verbose();
@@ -134,8 +134,12 @@ void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg,  gpointer user_d
 /**
  * GST bus signal watch callback 
  */
-void Pipeline::end_stream_cb(GstBus* /*bus*/, GstMessage* message, GstElement* /*pipeline*/)
+void Pipeline::end_stream_cb(GstBus* /*bus*/, GstMessage* message, gpointer user_data)
 {
+    Pipeline *context = static_cast<Pipeline*>(user_data);
+    bool is_verbose = context->owner_->get_configuration()->get_verbose();
+    if (is_verbose)
+        std::cout << __FUNCTION__ << std::endl;
     bool stop_it = true;
     if (GST_MESSAGE_TYPE(message) == GST_MESSAGE_ERROR)
     {
@@ -174,7 +178,7 @@ void Pipeline::end_stream_cb(GstBus* /*bus*/, GstMessage* message, GstElement* /
     }
 }
 
-void Pipeline::on_new_live_pixbuf(GstBus* /*bus*/, GstMessage* /*message*/, GstElement* /*pipeline*/)
+void Pipeline::on_new_live_pixbuf(GstBus* /*bus*/, GstMessage* /*message*/, gpointer /*user_data*/)
 {
     std::cout << "on_new_live_pixbuf" << std::endl;
 }
@@ -321,12 +325,12 @@ Pipeline::Pipeline(Application* owner) :
     {
         // TODO:2010-08-06:aalex:We could rely on gstreamer-properties to configure the video source.
         // Add -d gconf (gconfvideosrc)
-        if (verbose)
-            std::cout << "Video source: v4l2src" << std::endl;
-        videosrc_  = gst_element_factory_make("v4l2src", "videosrc0"); 
         std::string device_name(config->videoSource());
         if (verbose)
-            g_print("Using camera %s.\n", device_name.c_str());
+        {
+            std::cout << "Video source: v4l2src with camera " << device_name << std::endl;
+        }
+        videosrc_  = gst_element_factory_make("v4l2src", "videosrc0"); 
         g_object_set(videosrc_, "device", device_name.c_str(), NULL); 
     }
     // TODO: use something else than g_assert to see if we could create the elements.
@@ -460,6 +464,8 @@ Pipeline::Pipeline(Application* owner) :
 
     /* run */
     GstStateChangeReturn ret;
+    if (verbose)
+        std::cout << "Set pipeline to PLAYING" << std::endl;
     ret = gst_element_set_state(GST_ELEMENT(pipeline_), GST_STATE_PLAYING);
     if (ret == GST_STATE_CHANGE_FAILURE)
     {
@@ -479,6 +485,8 @@ Pipeline::Pipeline(Application* owner) :
         exit(1);
         //FIXME: causes a segfault: context->owner_->quit();
     }
+    if (verbose)
+        std::cout << "Successfully started the pipeline." << std::endl;
 }
 
 // Desctructor. TODO: do we need to free anything?
@@ -502,7 +510,8 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
     const GValue *val = gst_structure_get_value(structure, "framerate");
     if (is_verbose)
         LOG_DEBUG("Caps structure from v4l2src srcpad: " << gst_structure_to_string(structure));
-    gint framerate_numerator, framerate_denominator; 
+    gint framerate_numerator = 1;
+    gint framerate_denominator = 1; 
     if (GST_VALUE_HOLDS_LIST(val))
     {
         // trying another one

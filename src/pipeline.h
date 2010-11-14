@@ -54,8 +54,8 @@ class Pipeline
         GstState state_;
         bool record_all_frames_enabled_;
         bool intervalometer_is_on_;
-        static void end_stream_cb(GstBus* bus, GstMessage* msg, GstElement* pipeline);
-        static void on_new_live_pixbuf(GstBus* bus, GstMessage* message, GstElement* pipeline);
+        static void end_stream_cb(GstBus* bus, GstMessage* msg, gpointer user_data);
+        static void on_new_live_pixbuf(GstBus* bus, GstMessage* message, gpointer user_data);
         std::string guess_source_caps(unsigned int framerateIndex) const;
         static void bus_message_cb(GstBus *bus, GstMessage *msg,  gpointer user_data);
 };

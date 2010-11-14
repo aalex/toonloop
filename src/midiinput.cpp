@@ -343,16 +343,15 @@ void MidiInput::consume_messages()
     }
 }
 
-MidiInput::MidiInput(Application* owner) : 
+MidiInput::MidiInput(Application* owner, bool verbose) : 
+        verbose_(verbose),
         owner_(owner),
         messaging_queue_(),
         port_(0),
         ports_count_(0),
         opened_(false),
-        midi_binder_()
+        midi_binder_(verbose)
 {
-    verbose_ = false;
-    //verbose_ = true;
     midi_in_ = 0;
     // RtMidiIn constructor
     try {
@@ -362,7 +361,6 @@ MidiInput::MidiInput(Application* owner) :
         error.printMessage();
         exit(EXIT_FAILURE);
     }
-  
     // Check available ports vs. specified.
     ports_count_ = midi_in_->getPortCount();
 }

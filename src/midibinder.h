@@ -63,14 +63,14 @@ void init_midi_presets();
 // Constant for the presets data directory: (/usr/share/toonloop/presets/)
 #define VAL(str) #str
 #define TOSTRING(str) VAL(str)
-#define PRESETS_DIR TOSTRING(DATADIR) "/presets/"
+#define PRESETS_DIR TOSTRING(DATADIR) "/toonloop/presets/"
 
 typedef std::vector<MidiRule>::iterator MidiRuleIterator;
 
 class MidiBinder
 {
     public:
-        MidiBinder();
+        MidiBinder(bool verbose);
         const MidiRule *find_program_change_rule();
         const MidiRule *find_rule(RuleType rule_type, int number);
         void set_verbose(bool verbose);

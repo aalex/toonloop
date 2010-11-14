@@ -204,7 +204,7 @@ void Application::run(int argc, char *argv[])
     }
     if (options["list-midi-inputs"].as<bool>())
     {
-        MidiInput tmp_midi_input(this); 
+        MidiInput tmp_midi_input(this, verbose); 
         tmp_midi_input.enumerate_devices();
         return; 
     }
@@ -343,8 +343,9 @@ void Application::run(int argc, char *argv[])
         std::cout << "Starting pipeline." << std::endl;
     pipeline_.reset(new Pipeline(this));
     // Start MIDI
-    // std::cout << "Starting MIDI input." << std::endl;
-    midi_input_.reset(new MidiInput(this));
+    if (verbose)
+        std::cout << "Starting MIDI input." << std::endl;
+    midi_input_.reset(new MidiInput(this, verbose));
     if (verbose)
     {
         midi_input_->enumerate_devices();
@@ -359,10 +360,16 @@ void Application::run(int argc, char *argv[])
             std::cout << "MIDI: Failed to open port " << config_->get_midi_input_number() << std::endl;
     }
     // Sets the intervalometer stuff.
+    if (verbose)
+        std::cout << "Set the default intervalometer rate" << std::endl;
     for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
         iter->second->set_intervalometer_rate(config_->get_default_intervalometer_rate());
     if (options["enable-intervalometer"].as<bool>())
+    {
+        if (verbose)
+            std::cout << "starting the intervalometer" << std::endl;
         get_controller()->toggle_intervalometer();
+    }
 
     // Sets the remove_deleted_images thing
     for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
@@ -373,11 +380,13 @@ void Application::run(int argc, char *argv[])
         gui_->set_layout((Gui::layout_number) layout);
     else
         std::cout << "There is no layout number " << layout << ". Using 0." << std::endl;
+    if (verbose)
+        std::cout << "Check for mencoder" << std::endl;
+    check_for_mencoder();
     // Run the main loop
     if (verbose)
         std::cout << "Running toonloop" << std::endl;
     // This call is blocking:
-    check_for_mencoder();
     // Starts it all:
     gtk_main();
 }

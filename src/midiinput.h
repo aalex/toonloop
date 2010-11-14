@@ -35,7 +35,7 @@ class MidiInput
 {
     public:
         /** Contructor. */
-        MidiInput(Application *owner);
+        MidiInput(Application *owner, bool verbose);
         /** Opens a MIDI source device. */
         bool open(unsigned int port);
         ~MidiInput();
