@@ -20,4 +20,7 @@ Bug fixes:
     * do not crossfade frames if clip size <= 1
     * cleanup in MidiInput constructor
     * decreased verbosity when grabbing video
+    * Fixed crash with std::string given a null arg when looking for midi.xml
+    * The path to usr/share/toonloop/presets was wrong.
+
 
