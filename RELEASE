@@ -6,8 +6,18 @@ This release is a developer snapshot in the 2.1 unstable series.
 This version contains new features and bug fixes. 
 
 New features:
-    * 
+    * XML MIDI bindings configuration file. (controls, notes and program change can send messages to the controller with some arguments)
+    * Can now set float, bool and int properties in the Controller
+    * It's possible to change the blending mode between each frame in the crossfading. (ADD or NORMAL)
+
 
 Bug fixes: 
-    * 
+    * IMPORTANT: Set v4l2 device name before guessing caps. (back-ported to the 2.0.x stable branch)
+    * handling interlaced video source (back-ported to the 2.0.x stable branch)
+    * Improved MIDI events parsing.
+    * Fixed crossafe between each frame. Each frame must fade out, not fade in.
+    * Crossfade: the change in opactiry looks better in in-out cubic easing
+    * do not crossfade frames if clip size <= 1
+    * cleanup in MidiInput constructor
+    * decreased verbosity when grabbing video
 
