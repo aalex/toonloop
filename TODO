@@ -16,7 +16,6 @@ Right now, here is the list of tasks to prioritize:
  * BUG: Sometimes, in one-image clips, the playhead tries to change to 1. Clip::get_image: Got exception vector::_M_range_check \n Controller::update_playback_image: The image is NULL
  * BUG: check for runtime dep (mencoder) in the executable.
  * BUG: the first live input image is white (hence the first recorded one if using timelapse)
- * MIDI bindings specified in XML
  * architecture: create the ToonLooper and ToonGrabber classes. (take those from gui and pipeline)
  * controls: Add direct controls for playback direction.
  * doc: Make sure the keystroke instructions are in only one place.
@@ -25,7 +24,6 @@ Right now, here is the list of tasks to prioritize:
  * editing: The first image that is grabbed with the intervalometer is black.
  * editing: make onionskin and ripple/fade effect one-per-clip-based
  * effect: Rippling effect (strobing) effect (like in _Pas de deux_) Variable delay between each former frame. Variable number of former frames displayed
- * effects: additive blending mode
  * effects: adjust delay on the live input.
  * effects: effect on the live input. 
  * effects: one effect per clip
@@ -40,7 +38,7 @@ Right now, here is the list of tasks to prioritize:
  * video: Support DV: gst-launch dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink
  * video: Support HDV (hdvdec)
  * video: Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga. (well, we could have many pipelines)
- * video: Use the default GStreamer-properties camera when none is given
+ * video: Use the default GStreamer-properties camera when none is given (or when "gst" is given)
 
 
 To be done later

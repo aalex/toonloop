@@ -85,5 +85,5 @@
     <note_on number="72" action="reset" />
 
     <!-- pitch bend! -->
-    <pitch_bend action="set_float" args="latency_adjust" from="-10.0" to="10.0" />
+    <pitch_bend action="set_float" args="latency_adjust" from="-10.0" to="10.0" /> <!-- latency_adjust is TODO -->
 </toonloop_midi_rules>
