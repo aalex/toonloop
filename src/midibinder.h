@@ -35,7 +35,8 @@ typedef enum
     CONTROL_ON_RULE,
     CONTROL_OFF_RULE,
     CONTROL_MAP_RULE, // float
-    PROGRAM_CHANGE_RULE
+    PROGRAM_CHANGE_RULE,
+    PITCH_WHEEL_RULE
     //TODO: CONTROL_MAP_INT_RULE
 } RuleType;
 
@@ -72,6 +73,7 @@ class MidiBinder
     public:
         MidiBinder(bool verbose);
         const MidiRule *find_program_change_rule();
+        const MidiRule *find_pitch_wheel_rule();
         const MidiRule *find_rule(RuleType rule_type, int number);
         void set_verbose(bool verbose);
     private:
@@ -81,6 +83,7 @@ class MidiBinder
         std::vector<MidiRule> control_off_rules_;
         std::vector<MidiRule> control_map_rules_;
         std::vector<MidiRule> program_change_rules_;
+        std::vector<MidiRule> pitch_wheel_rules_;
         bool load_xml_file(const gchar *file_name);
         static void on_midi_xml_start_element(
             GMarkupParseContext *context,

@@ -12,6 +12,27 @@
     <note_on number="59" action="remove_image" />
     
     <!-- Notes [60,69]: select_clip -->
+    <!--
+    <note_on number="41" />
+    <note_on number="42" />
+    <note_on number="43" />
+    <note_on number="44" />
+    <note_on number="45" />
+    <note_on number="46" />
+    <note_on number="47" />
+    <note_on number="48" />
+    <note_on number="49" />
+    <note_on number="50" />
+    <note_on number="51" />
+    <note_on number="52" />
+    <note_on number="53" />
+    <note_on number="54" />
+    <note_on number="55" />
+    <note_on number="56" />
+    <note_on number="57" />
+    <note_on number="58" />
+    <note_on number="59" />
+    -->
     <note_on number="60" action="select_clip" args="0" />
     <note_on number="61" action="select_clip" args="1" />
     <note_on number="62" action="select_clip" args="2" />
@@ -23,12 +44,46 @@
     <note_on number="68" action="select_clip" args="8" />
     <note_on number="69" action="select_clip" args="9" />
 
+    <!--
+    <note_on number="70" />
+    <note_on number="71" />
+    <note_on number="72" />
+    -->
+
     <!-- Program change: select_clip -->
     <program_change action="select_clip" />
 
     <!-- Crossfade ratio (7 is main volume) -->
     <control_map number="7" action="set_float" args="crossfade_ratio" from="0.0" to="10.0" />
+
+    <!--
+    Knobs for the Edirol PCR-M30
+    <control_map number="74" />
+    <control_map number="71" />
+    <control_map number="76" />
+    <control_map number="76" />
+    <control_map number="77" />
+    <control_map number="78" />
+    <control_map number="6" />
+    <control_map number="38" />
+    <control_map number="10" />
+    -->
+    
+    <!-- 
+    Sliders for the Edirol PCR-M30
+    <control_map number="5" />
+    <control_map number="????" />
+    <control_map number="73" />
+    <control_map number="75" />
+    <control_map number="72" />
+    <control_map number="93" />
+    <control_map number="91" />
+    <control_map number="7" />
+    -->
     
     <!-- Note 72: reset current clip -->
     <note_on number="72" action="reset" />
+
+    <!-- pitch bend! -->
+    <pitch_bend action="set_float" args="latency_adjust" from="-10.0" to="10.0" />
 </toonloop_midi_rules>

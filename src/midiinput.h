@@ -57,9 +57,9 @@ class MidiInput
         MidiBinder midi_binder_;
         //void find_and_apply_matching_event(std::string tag_name, std::string attr_name, int attr_value);
         void push_message(Message message);
-        void push_action(std::string action, std::string args);
-        void push_action(std::string action, int arg);
-        void push_action(std::string action, std::string args, float float_arg);
+        void push_action_with_string(std::string action, std::string args);
+        void push_action_with_int(std::string action, int arg);
+        void push_action_with_float(std::string action, std::string args, float float_arg);
         RtMidiIn *midi_in_;
 };
 

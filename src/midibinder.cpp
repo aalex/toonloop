@@ -55,6 +55,22 @@ const MidiRule *MidiBinder::find_program_change_rule()
     else
         return 0;
 }
+
+/**
+ * Returns 0 if none found.
+ */
+const MidiRule *MidiBinder::find_pitch_wheel_rule()
+{
+    if (pitch_wheel_rules_.size() >= 1)
+        try {
+            return &(pitch_wheel_rules_.at(0));
+        } catch (std::out_of_range &e) {
+            std::cout << "ERROR: Pitch wheel rule: out of range! " << e.what() << std::endl;
+            return 0;
+        }
+    else
+        return 0;
+}
 /**
  * Returns 0 if none found.
  */
@@ -83,6 +99,10 @@ const MidiRule *MidiBinder::find_rule(RuleType rule_type, int number)
         case CONTROL_MAP_RULE:
             iter = control_map_rules_.begin();
             end = control_map_rules_.end();
+            break;
+        case PITCH_WHEEL_RULE:
+            iter = pitch_wheel_rules_.begin();
+            end = pitch_wheel_rules_.end();
             break;
         default:
             g_critical("ERROR: Unsupported MIDI binding rule type");
@@ -135,6 +155,8 @@ void MidiBinder::on_midi_xml_start_element(
         rule.type_ = CONTROL_MAP_RULE;
     else if (g_strcmp0(element_name, "program_change") == 0)
         rule.type_ = PROGRAM_CHANGE_RULE;
+    else if (g_strcmp0(element_name, "pitch_bend") == 0)
+        rule.type_ = PITCH_WHEEL_RULE;
     else
         g_critical("Invalid MIDI rule type: %s", element_name);
     if (self->verbose_)
@@ -163,7 +185,7 @@ void MidiBinder::on_midi_xml_start_element(
             try {
                 rule.from_ = boost::lexical_cast<float>(*value_cursor);
             } catch(boost::bad_lexical_cast &) {
-                g_critical("Invalid int for %s in XML file: %s", *name_cursor, *value_cursor);
+                g_critical("Invalid float for %s in XML file: %s", *name_cursor, *value_cursor);
                 return;
             }
         }
@@ -172,7 +194,7 @@ void MidiBinder::on_midi_xml_start_element(
             try {
                 rule.to_ = boost::lexical_cast<float>(*value_cursor);
             } catch(boost::bad_lexical_cast &) {
-                g_critical("Invalid int for %s in XML file: %s", *name_cursor, *value_cursor);
+                g_critical("Invalid float for %s in XML file: %s", *name_cursor, *value_cursor);
                 return;
             }
         } 
@@ -209,6 +231,9 @@ void MidiBinder::on_midi_xml_start_element(
             break;
         case PROGRAM_CHANGE_RULE:
             self->program_change_rules_.push_back(rule);
+            break;
+        case PITCH_WHEEL_RULE:
+            self->pitch_wheel_rules_.push_back(rule);
             break;
         default:
             g_critical("Invalid rule type!");

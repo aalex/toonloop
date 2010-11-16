@@ -162,14 +162,14 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                 rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, note_pitch);
                 if (rule != 0) 
                 {
-                    context->push_action(rule->action_, rule->args_);
+                    context->push_action_with_string(rule->action_, rule->args_);
                     return;
                 }
             } else {
                 rule = context->midi_binder_.find_rule(NOTE_ON_RULE, note_pitch);
                 if (rule != 0)
                 {
-                    context->push_action(rule->action_, rule->args_);
+                    context->push_action_with_string(rule->action_, rule->args_);
                     return;
                 }
             }
@@ -181,7 +181,7 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, int(message->at(1)));
             if (rule != 0)
             {
-                context->push_action(rule->action_, rule->args_);
+                context->push_action_with_string(rule->action_, rule->args_);
                 return;
             }
             break;
@@ -196,14 +196,14 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                 rule = context->midi_binder_.find_rule(CONTROL_OFF_RULE, controller_number);
                 if (rule != 0)
                 {
-                    context->push_action(rule->action_, rule->args_);
+                    context->push_action_with_string(rule->action_, rule->args_);
                     return;
                 }
             } else {
                 rule = context->midi_binder_.find_rule(CONTROL_ON_RULE, controller_number);
                 if (rule != 0)
                 {
-                    context->push_action(rule->action_, rule->args_);
+                    context->push_action_with_string(rule->action_, rule->args_);
                     return;
                 }
             } // and if not of those found:
@@ -212,7 +212,7 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             {
                 //TODO:2010-11-07:aalex:Map the value from [0,127] to the desired range:
                 float f_val = map((float) control_value , 0.0f, 127.0f, rule->from_, rule->to_);
-                context->push_action(rule->action_, rule->args_, f_val); // we pass the value
+                context->push_action_with_float(rule->action_, rule->args_, f_val); // we pass the value
                 return;
             }
             break;
@@ -225,15 +225,29 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             rule = context->midi_binder_.find_program_change_rule();
             if (rule != 0)
             {
-                context->push_action(rule->action_, program_number); // we pass the value (an int)
+                context->push_action_with_int(rule->action_, program_number); // we pass the value (an int)
                 return;
             }
             break;
         }
-        // TODO:2010-11-07:aalex:Support pitch bend
-        //case MIDIPITCHBEND:
-        //    context->find_and_apply_matching_event("note_on", "note", int(message->at(2)));
-        //    break;
+        case MIDIPITCHBEND:
+        {
+            int val(message->at(2));
+            if (context->verbose_) 
+            {
+                std::cout << "MIDIPITCHBEND";
+                std::cout << " " << val << std::endl;
+                // The use of the LSB and MSB might differ from a device to another.
+            }
+            rule = context->midi_binder_.find_pitch_wheel_rule();
+            if (rule != 0)
+            {
+                float f_val = map((float) val , 0.0f, 127.0f, rule->from_, rule->to_);
+                context->push_action_with_float(rule->action_, rule->args_, f_val); // we pass the value (a float)
+                return;
+            }
+            break;
+        }
         default:
             return;
             break;
@@ -243,7 +257,7 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
 /**
  * Here we map the string for actions to their Message class const 
  */
-void MidiInput::push_action(std::string action, std::string args)
+void MidiInput::push_action_with_string(std::string action, std::string args)
 {
     if (verbose_) 
         std::cout << __FUNCTION__ << "  s:" << action << " s:" << args << std::endl;
@@ -269,7 +283,7 @@ void MidiInput::push_action(std::string action, std::string args)
 /** 
  * Version of it with an int argument.
  */
-void MidiInput::push_action(std::string action, int arg)
+void MidiInput::push_action_with_int(std::string action, int arg)
 {
     if (verbose_) 
         std::cout << __FUNCTION__ << " s:" << action << " i:" << arg << std::endl;
@@ -281,7 +295,7 @@ void MidiInput::push_action(std::string action, int arg)
 /**
  * Version with string and float. (such as SET_FLOAT)
  */
-void MidiInput::push_action(std::string action, std::string args, float float_arg)
+void MidiInput::push_action_with_float(std::string action, std::string args, float float_arg)
 {
     if (verbose_) 
         std::cout << __FUNCTION__ << " s:" << action << " s:" << args << " f:" << float_arg << std::endl;
