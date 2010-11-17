@@ -290,12 +290,26 @@ void MidiInput::push_action_with_string(std::string action, std::string args)
 /** 
  * Version of it with an int argument.
  */
-void MidiInput::push_action_with_int(std::string action, int arg)
+void MidiInput::push_action_with_int(std::string action, int int_arg)
 {
     if (verbose_) 
-        std::cout << __FUNCTION__ << " s:" << action << " i:" << arg << std::endl;
+        std::cout << __FUNCTION__ << " s:" << action << " i:" << int_arg << std::endl;
     if (action == "select_clip") 
-        push_message(Message(Message::SELECT_CLIP, arg));
+        push_message(Message(Message::SELECT_CLIP, int_arg));
+    else
+        g_critical("Unknown action %s", action.c_str());
+}
+
+void MidiInput::push_action_with_string_and_int(std::string action, std::string args, int int_arg)
+{
+    if (verbose_)
+        std::cout << __FUNCTION__ << " s:" << action << " s:" << args << " i:" << int_arg << std::endl;
+    if (action == "set_int") 
+    {
+        if (args == "")
+            std::cout << "ERROR in " << __FUNCTION__ << ": The \"args\" XML attribute is empty s:" << action << " s:" << args << " i:" << int_arg << std::endl;
+        push_message(Message(Message::SET_INT, args, int_arg));
+    }
     else
         g_critical("Unknown action %s", action.c_str());
 }

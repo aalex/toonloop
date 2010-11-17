@@ -87,6 +87,7 @@ class Message
          */
         // TODO:2010-11-13:aalex:Rename to get_int_value
         unsigned int get_value() { return value_; }
+        unsigned int get_int_value() { return value_; }
         float get_float_value() { return float_value_; }
         std::string &get_string_value() { return string_value_; }
         /** 

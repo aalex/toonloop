@@ -501,7 +501,7 @@ void Application::handle_message(Message &message)
             get_controller()->set_float_value(message.get_string_value(), message.get_float_value());
             break;
         case Message::SET_INT:
-            std::cout << "TODO: SET_INT\n";
+            get_controller()->set_int_value(message.get_string_value(), message.get_int_value());
             break;
         case Message::QUIT:
             quit();
