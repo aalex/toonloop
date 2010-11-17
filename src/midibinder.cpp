@@ -32,6 +32,12 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
+
+// Constant for the presets data directory: (/usr/share/toonloop/presets/)
+#define VAL(str) #str
+#define TOSTRING(str) VAL(str)
+#define PRESETS_DIR TOSTRING(DATADIR) "/toonloop/presets/"
+
 // TODO:2010-11-07:aalex:override << for MidiRule
 #if 0
 std::ostream &MidiRule::operator<< (std::ostream &theStream, const MidiRule &self)

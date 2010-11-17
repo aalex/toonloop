@@ -85,7 +85,7 @@ class Message
         /** 
          * Returns the value. Useful for the SELECT_CLIP command.
          */
-        // TODO:2010-11-13:aalex:Rename to get_int_value
+        // TODO:2010-11-13:aalex:Rename get_value to get_int_value
         unsigned int get_value() { return value_; }
         unsigned int get_int_value() { return value_; }
         float get_float_value() { return float_value_; }

@@ -28,7 +28,7 @@
 #include <vector>
 
 /** Types of MidiRule structs */
-typedef enum 
+typedef enum // TODO: use const string with names of the XML tags instead of enum
 {
     NOTE_ON_RULE,
     NOTE_OFF_RULE,
@@ -48,23 +48,20 @@ typedef enum
 struct MidiRule
 {
     public:
-        RuleType type_;
+        /** Type of MIDI event for which this rule will trigger an action. */
+        RuleType type_; // TODO: change for string
+        /** Note pitch or control number */
         int number_;
-        std::string action_;
+        /** identifies the Command to trigger. */
+        std::string action_; // TODO: pass it a Command instance. keep the same instance and only change its values.
+        /** Optional string argument to pass to the command. Useful for select_clip, for example. */
         std::string args_;
+        /** Maps [0,127] to [from_,to_] */
         float from_;
+        /** Maps [0,127] to [from_,to_] */
         float to_;
         //friend std::ostream &operator<< (std::ostream &theStream, const MidiRule &self);
 };
-
-// FIXME
-
-void init_midi_presets();
-
-// Constant for the presets data directory: (/usr/share/toonloop/presets/)
-#define VAL(str) #str
-#define TOSTRING(str) VAL(str)
-#define PRESETS_DIR TOSTRING(DATADIR) "/toonloop/presets/"
 
 typedef std::vector<MidiRule>::iterator MidiRuleIterator;
 
@@ -72,11 +69,14 @@ class MidiBinder
 {
     public:
         MidiBinder(bool verbose);
+        // TODO: merge find_pitch_wheel_rule + find_program_change_rule into find_rule(RuleType)
         const MidiRule *find_program_change_rule();
         const MidiRule *find_pitch_wheel_rule();
+        /** number: for note pitch of control number */
         const MidiRule *find_rule(RuleType rule_type, int number);
         void set_verbose(bool verbose);
     private:
+        // TODO: replace by a map<string,vector<MidiRule> >
         std::vector<MidiRule> note_on_rules_;
         std::vector<MidiRule> note_off_rules_;
         std::vector<MidiRule> control_on_rules_;
