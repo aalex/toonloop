@@ -217,10 +217,18 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             rule = context->midi_binder_.find_rule(CONTROL_MAP_RULE, controller_number);
             if (rule != 0)
             {
-                //TODO:2010-11-07:aalex:Map the value from [0,127] to the desired range:
-                float f_val = map((float) control_value , 0.0f, 127.0f, rule->from_, rule->to_);
-                context->push_action_with_float(rule->action_, rule->args_, f_val); // we pass the value
-                return;
+                if (rule->action_ == "set_float")
+                {
+                    float f_val = map((float) control_value , 0.0f, 127.0f, rule->from_, rule->to_);
+                    context->push_action_with_float(rule->action_, rule->args_, f_val); // we pass the value
+                    return;
+                } 
+                else if (rule->action_ == "set_int")
+                {
+                    int i_val = map((int) control_value , 0, 127, (int) rule->from_, (int) rule->to_);
+                    context->push_action_with_string_and_int(rule->action_, rule->args_, i_val); // we pass the value
+                    return;
+                }
             }
             break;
         }

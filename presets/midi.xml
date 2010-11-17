@@ -58,6 +58,9 @@
 
     <!--
     Knobs for the Edirol PCR-M30
+    -->
+    <control_map number="74" action="set_int" args="livefeed_opacity" from="0" to="255" />
+    <!--
     <control_map number="74" />
     <control_map number="71" />
     <control_map number="76" />
