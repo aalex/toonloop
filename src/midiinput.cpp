@@ -109,9 +109,16 @@ unsigned char get_midi_event_type(const unsigned char first_byte)
  * 
  * Depends on: #include <algorithm>
  */
-static float map(float value, float istart, float istop, float ostart, float ostop) 
+float map(float value, float istart, float istop, float ostart, float ostop) 
 {
     float ret = ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+    // In Processing, they don't do the following: (clipping)
+    return std::max(std::min(ret, ostop), ostart);
+}
+
+int map_int(int value, int istart, int istop, int ostart, int ostop) 
+{
+    int ret = ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
     // In Processing, they don't do the following: (clipping)
     return std::max(std::min(ret, ostop), ostart);
 }

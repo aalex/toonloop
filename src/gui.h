@@ -75,7 +75,7 @@ class Gui
         static void on_render_frame(ClutterTimeline * timeline, gint msecs, gpointer user_data);
         void on_blending_mode_int_property_changed(std::string &name, int value);
         void on_crossfade_ratio_changed(std::string &name, float value);
-        void set_overlay_opacity(int value);
+        void on_livefeed_opacity_changed(std::string &name, int value);
         void enable_onionskin(bool value);
         void set_onionskin_opacity(int value);
         void hideCursor();
@@ -101,8 +101,6 @@ class Gui
         GtkWidget *clutter_widget_;
         GtkWidget *vbox_;
         layout_number current_layout_;
-        // TODO: overlay_opacity_ might disappear when we switch to an actual overlay blending mode
-        int overlay_opacity_;
         int onionskin_opacity_;
         bool onionskin_enabled_;
         bool enable_info_;

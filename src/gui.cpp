@@ -27,6 +27,7 @@
 #include <clutter-gst/clutter-gst.h>
 #include <clutter-gtk/clutter-gtk.h>
 #include <clutter/clutter.h>
+#include <cmath>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
@@ -55,6 +56,11 @@ namespace fs = boost::filesystem;
 using std::tr1::shared_ptr;
 typedef std::vector<ClutterActor*>::iterator ActorIterator;
 
+static int clip_int(int value, int from, int to)
+{
+    return std::max(std::min(value, to), from);
+}
+
 gboolean Gui::on_mouse_button_event(GtkWidget* /* widget */, GdkEventButton *event, gpointer user_data)
 {
     Gui *context = static_cast<Gui *>(user_data);
@@ -67,15 +73,20 @@ gboolean Gui::on_mouse_button_event(GtkWidget* /* widget */, GdkEventButton *eve
     return TRUE;
 }
 
-void Gui::set_overlay_opacity(int value)
+/**
+ * [0,255]
+ */
+void Gui::on_livefeed_opacity_changed(std::string &name, int value)
 {
-    overlay_opacity_ = value;
-    if (owner_->get_configuration()->get_verbose())
-        std::cout << "overlay opacity: " << overlay_opacity_ << std::endl;
+    UNUSED(name);
     if (current_layout_ == LAYOUT_OVERLAY)
-        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), overlay_opacity_);
-    else
-        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
+    {
+        if (owner_->get_configuration()->get_verbose())
+            std::cout << "livefeed opacity: " << value << std::endl;
+        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), value);
+    }
+    //else
+    //    clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
 }
 
 void Gui::enable_onionskin(bool value)
@@ -310,12 +321,16 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             context->owner_->get_controller()->move_writehead_to_first();
             break;
         case GDK_bracketleft:
-            if (context->overlay_opacity_ > 0)
-                context->set_overlay_opacity(context->overlay_opacity_ - 1);
+            {
+                Property<int> *livefeed_opacity = context->owner_->get_controller()->int_properties_.get_property("livefeed_opacity");
+                livefeed_opacity->set_value(clip_int(livefeed_opacity->get_value() - 1, 0, 255));
+            }
             break;
         case GDK_bracketright:
-            if (context->overlay_opacity_ < 255)
-                context->set_overlay_opacity(context->overlay_opacity_ + 1);
+            {
+                Property<int> *livefeed_opacity = context->owner_->get_controller()->int_properties_.get_property("livefeed_opacity");
+                livefeed_opacity->set_value(clip_int(livefeed_opacity->get_value() + 1, 0, 255));
+            }
             break;
         case GDK_parenleft:
             context->crossfade_increment(-0.1f);
@@ -606,7 +621,8 @@ void Gui::resize_actors()
     else if (current_layout_ == LAYOUT_OVERLAY)
     {    
         clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
-        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), overlay_opacity_);
+        Property<int> *livefeed_opacity = owner_->get_controller()->int_properties_.get_property("livefeed_opacity");
+        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), livefeed_opacity->get_value());
     } 
     else  // LAYOUT_SPLITSCREEN or LAYOUT_PORTRAIT
     {
@@ -799,7 +815,6 @@ Gui::Gui(Application* owner) :
     owner_(owner),
     isFullscreen_(false),
     current_layout_(LAYOUT_SPLITSCREEN),
-    overlay_opacity_(50),
     onionskin_opacity_(50),
     onionskin_enabled_(false),
     enable_info_(false),
@@ -944,6 +959,7 @@ Gui::Gui(Application* owner) :
     // add properties:
     owner_->get_controller()->add_int_property("blending_mode", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_blending_mode_int_property_changed, this, _1, _2));
     owner_->get_controller()->add_float_property("crossfade_ratio", 0.0)->value_changed_signal_.connect(boost::bind(&Gui::on_crossfade_ratio_changed, this, _1, _2));
+    owner_->get_controller()->add_int_property("livefeed_opacity", 127)->value_changed_signal_.connect(boost::bind(&Gui::on_livefeed_opacity_changed, this, _1, _2));
 }
 
 void Gui::update_info_text()
