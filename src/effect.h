@@ -22,7 +22,9 @@
 #ifndef __EFFECT_H__
 #define __EFFECT_H__
 
+#include <boost/shared_ptr.hpp>
 #include <clutter/cluter.h>
+#include <vector>
 #include "controller.h"
 
 // typedefs for some GLSL base types.
@@ -37,6 +39,7 @@ typedef float[4] vec4;
 class Effect
 {
     public:
+        typedef boost::shared_ptr< ClutterActor > ClutterActorPtr;
         /**
          * Registers properties to the Controller.
          * 
@@ -46,6 +49,7 @@ class Effect
         Effect(Controller *controller);
         add_actor(ClutterActor *actor);
     private:
+        std::vector<ClutterActorPtr> actors_;
 };
 
 #endif
