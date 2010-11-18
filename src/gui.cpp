@@ -46,8 +46,8 @@
 #include "timer.h"
 #include "unused.h"
 
-// TODO:2010-11-07:aalex:Converting macros to string is too complicated
-// The same macros are defined in presets.h and they could conflict
+// TODO:2010-11-07:aalex:This way of converting macros to string is too complicated
+// The same macros are defined in midibinder.cpp and they could conflict
 #define VAL(str) #str
 #define TOSTRING(str) VAL(str)
 #define PIXMAPS_DIR_STR TOSTRING(PIXMAPS_DIR)
