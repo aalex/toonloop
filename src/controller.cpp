@@ -18,9 +18,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/signals2.hpp>
 #include "application.h"
 #include "clip.h"
 #include "moviesaver.h"
@@ -28,8 +26,6 @@
 #include "controller.h"
 #include "timer.h"
 #include "log.h"
-
-namespace fs = boost::filesystem;
 
 Controller::Controller(Application* owner) : 
     owner_(owner)
@@ -176,9 +172,11 @@ void Controller::save_current_clip()
 
 void Controller::update_playback_image()
 {
+    namespace fs = boost::filesystem;
+
     static std::string prev_image_name = "";
     static Clip *prevclip = NULL;
-    static Timer playback_timer = Timer(); // TODO: move to Clip
+    static Timer playback_timer; // TODO: move to Clip
 
     Clip *thisclip = owner_->get_current_clip();
     bool move_playhead = false;
@@ -187,7 +185,7 @@ void Controller::update_playback_image()
     playback_timer.tick();
 
     // check if it is time to move the playhead
-    if ((playback_timer.get_elapsed()) >=  (1.0f / thisclip->get_playhead_fps() * 1.0) || playback_timer.get_elapsed() < 0.0f)
+    if ((playback_timer.get_elapsed()) >=  (1.0f / thisclip->get_playhead_fps() * 1.0) or playback_timer.get_elapsed() < 0.0f)
     {
         move_playhead = true;
         playback_timer.reset();
@@ -196,7 +194,7 @@ void Controller::update_playback_image()
     if (thisclip->size() == 0)
         no_image_to_play_signal_();
     
-    if(thisclip->size() > 0) 
+    if (thisclip->size() > 0) 
     {     
         if (move_playhead) // if it's time to move the playhead
             thisclip->iterate_playhead(); // updates the clip's playhead number
