@@ -22,14 +22,13 @@
 #ifndef __EFFECT_H__
 #define __EFFECT_H__
 
-#include <boost/shared_ptr.hpp>
 #include <clutter/cluter.h>
-#include <vector>
-#include "controller.h"
+
+class Controller;
 
 // typedefs for some GLSL base types.
-typedef float[3] vec3;
-typedef float[4] vec4;
+//typedef float[3] vec3;
+//typedef float[4] vec4;
 
 /**
  * Toonloop base class for effects
@@ -39,17 +38,24 @@ typedef float[4] vec4;
 class Effect
 {
     public:
-        typedef boost::shared_ptr< ClutterActor > ClutterActorPtr;
         /**
          * Registers properties to the Controller.
          * 
          * One should change the properties for this effect using the controller's interface.
          * Each property name must be unique.
          */
-        Effect(Controller *controller);
-        add_actor(ClutterActor *actor);
+        Effect(Controller *controller) :
+            controller_(controller) 
+        {
+            actors_ = NULL;
+        }
+        void add_actor(ClutterActor *actor);
+        void update_all_actors();
     private:
-        std::vector<ClutterActorPtr> actors_;
+        Controller *controller_;
+        GList *actors_;
+        virtual void update_actor(ClutterActor *actor) = 0;
+        virtual void init_properties() = 0;
 };
 
 #endif
