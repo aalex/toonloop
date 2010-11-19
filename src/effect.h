@@ -22,7 +22,7 @@
 #ifndef __EFFECT_H__
 #define __EFFECT_H__
 
-#include <clutter/cluter.h>
+#include <clutter/clutter.h>
 
 class Controller;
 

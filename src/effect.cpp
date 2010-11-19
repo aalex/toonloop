@@ -1,6 +1,6 @@
 
 #include <clutter/clutter.h>
-#include "effect.c"
+#include "effect.h"
 
 void Effect::add_actor(ClutterActor *actor)
 {

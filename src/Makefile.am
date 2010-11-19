@@ -19,6 +19,7 @@ headers = \
 	config.h \
 	configuration.h \
 	controller.h \
+    effect.h \
 	gui.h \
 	image.h \
 	log.h \
@@ -32,6 +33,7 @@ headers = \
 	property.h \
 	properties.h \
 	midibinder.h \
+    saturationeffect.h \
 	saverworker.h \
 	statesaving.h \
 	subprocess.h \
@@ -45,6 +47,7 @@ toonloop_SOURCES = \
 	clip.cpp \
 	configuration.cpp \
 	controller.cpp \
+    effect.cpp \
 	gui.cpp \
 	image.cpp \
 	main.cpp \
@@ -52,6 +55,7 @@ toonloop_SOURCES = \
 	moviesaver.cpp \
 	pipeline.cpp \
     midibinder.cpp \
+    saturationeffect.cpp \
 	saverworker.cpp \
 	statesaving.cpp \
 	subprocess.cpp \
