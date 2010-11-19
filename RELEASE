@@ -1,13 +1,13 @@
-2010-11-19: Toonloop 2.0.4
+2010-11-??: Toonloop 2.0.6
 --------------------------
 
 This release is a maintenance version in the 2.0 stable series. 
 
-This version contains a new feature and a major bug fix. These were backported from the 2.1 development branch.
+This version contains new featurse and bug fixes. These were backported from the 2.1 development branch.
 
 New features:
-    * support interlaced video
+    * 
 
 Bug fixes: 
-    * detect V4L2 video features from the right device
+    * 
 
