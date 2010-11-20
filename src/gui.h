@@ -27,13 +27,12 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <vector>
+#include "timer.h"
 
 class Application;
 
-
 // TODO:2010-10-05:aalex:Should we put that in a namespace or in the Gui class?
 const unsigned int NUM_LAYOUTS = 4;
-
 
 /** This graphical user interface uses GTK and Clutter-GST.
  */
@@ -111,6 +110,9 @@ class Gui
          * Can be up to 10.0 or so.
          */
         float crossfade_ratio_;
+        Timer fps_calculation_timer_;
+        int number_of_frames_in_last_second_; // counting FPS
+        int rendering_fps_;
         static const int WINWIDTH = 640;
         static const int WINHEIGHT = 480;
         BlendingMode blending_mode_;

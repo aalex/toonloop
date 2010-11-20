@@ -549,8 +549,6 @@ void Gui::on_frame_added(unsigned int /*clip_number*/, unsigned int image_number
 void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpointer user_data)
 {
     // Prints rendering FPS information
-    static int number_of_frames_in_last_second = 0; // counting FPS
-    static Timer fps_calculation_timer = Timer();
 
     Gui *context = static_cast<Gui*>(user_data);
 
@@ -558,18 +556,20 @@ void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpoint
     bool verbose = context->owner_->get_configuration()->get_verbose();
     Clip *thisclip = context->owner_->get_current_clip();
 
-    context->update_info_text();
-
-    fps_calculation_timer.tick();
-    ++number_of_frames_in_last_second;
     // calculate rendering FPS
-    if (fps_calculation_timer.get_elapsed() >= 1.0f)
+    context->fps_calculation_timer_.tick();
+    ++context->number_of_frames_in_last_second_;
+    if (context->fps_calculation_timer_.get_elapsed() >= 1.0f)
     {
         if (verbose)
-            std::cout << "Rendering FPS: " << number_of_frames_in_last_second << std::endl;
-        number_of_frames_in_last_second = 0;
-        fps_calculation_timer.reset();
+            std::cout << "Rendering FPS: " << context->number_of_frames_in_last_second_ << std::endl;
+        context->rendering_fps_ = context->number_of_frames_in_last_second_;
+        context->number_of_frames_in_last_second_ = 0;
+        context->fps_calculation_timer_.reset();
     }
+    // Display info:
+    if (context->enable_info_)
+        context->update_info_text();
 
     context->owner_->get_controller()->update_playback_image();
 
@@ -819,7 +819,10 @@ Gui::Gui(Application* owner) :
     onionskin_enabled_(false),
     enable_info_(false),
     enable_help_(false),
-    crossfade_ratio_(0.0)
+    crossfade_ratio_(0.0),
+    fps_calculation_timer_(),
+    number_of_frames_in_last_second_(0),
+    rendering_fps_(0)
 {
     //video_xwindow_id_ = 0;
     owner_->get_controller()->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
@@ -973,7 +976,28 @@ void Gui::update_info_text()
     os << "Writehead: " << current_clip->get_writehead() << "/" << current_clip->size() << std::endl;
     os << "Intervalometer rate: " << current_clip->get_intervalometer_rate() << std::endl;
     os << "Intervalometer enabled:" << owner_->get_pipeline()->get_intervalometer_is_on() << std::endl;
-    os << "Layout:" << current_layout_ << std::endl;
+    os << "Layout:" << current_layout_;
+    switch (current_layout_)
+    {
+        case LAYOUT_SPLITSCREEN:
+            os << " (splitscreen)";
+            break;
+        case LAYOUT_OVERLAY:
+            os << " (overlay)";
+            break;
+        case LAYOUT_PLAYBACK_ONLY:
+            os << " (playback_only)";
+            break;
+        case LAYOUT_PORTRAIT:
+            os << " (portrait)";
+            break;
+        default:
+            os << " (unknown)";
+            break;
+            
+    }
+    os << std::endl;
+    os << "OpenGL rendering: " << rendering_fps_ << " FPS" << std::endl;
     clutter_text_set_text(CLUTTER_TEXT(info_text_actor_), os.str().c_str());
 }
 

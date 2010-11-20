@@ -164,8 +164,8 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             int note_pitch = int(message->at(1));
             if (message->at(2) == 0x00) // if velocity is 0, it's actually a note off message
             {
-                if (context->verbose_) 
-                    std::cout << "it's actually a note off " << std::endl;
+                //if (context->verbose_) 
+                //    std::cout << "it's actually a note off " << std::endl;
                 rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, note_pitch);
                 if (rule != 0) 
                 {
