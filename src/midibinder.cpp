@@ -125,7 +125,7 @@ const MidiRule *MidiBinder::find_rule(RuleType rule_type, int number)
         }
     }
     if (verbose_)
-        std::cout << __FUNCTION__ << ":" " did not find a rule for #" << number << std::endl;
+        std::cout << __FUNCTION__ << ":" " did not find a rule  of type " << rule_type << "for #" << number << std::endl;
     return 0;
 }
 
@@ -322,6 +322,8 @@ bool MidiBinder::load_xml_file(const gchar *file_name)
 MidiBinder::MidiBinder(bool verbose) : 
     verbose_(verbose)
 {
+    if (verbose_)
+        std::cout << "$PWD=" << std::getenv("PWD") << std::endl;
     gchar *found = toon_find_midi_preset_file("midi.xml", verbose_);
     if (! found)
         g_error("Could not find XML midi file!");
