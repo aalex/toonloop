@@ -119,9 +119,13 @@ const MidiRule *MidiBinder::find_rule(RuleType rule_type, int number)
     {
         if ((*iter).number_ == number)
         {
+            if (verbose_)
+                std::cout << __FUNCTION__ << ":" " found a rule for #" << number << std::endl;
             return &(*iter);
         }
     }
+    if (verbose_)
+        std::cout << __FUNCTION__ << ":" " did not find a rule for #" << number << std::endl;
     return 0;
 }
 
@@ -322,8 +326,8 @@ MidiBinder::MidiBinder(bool verbose) :
     if (! found)
         g_error("Could not find XML midi file!");
     std::string full_name(found);
-    if (verbose_)
-        std::cout << "Found MIDI bindings file " << full_name << std::endl;
+    //if (verbose_)
+    std::cout << "Using MIDI bindings file " << full_name << std::endl;
     if (load_xml_file(full_name.c_str()))
     {
         if (verbose_)

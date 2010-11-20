@@ -205,29 +205,35 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             break;
         case MIDICONTROLCHANGE:
         { // we declare some scope variables:
-            if (context->verbose_) 
-                std::cout << "MIDICONTROLCHANGE" << std::endl;
             int controller_number = int(message->at(1));
             int control_value = int(message->at(2));
+            if (context->verbose_) 
+                std::cout << "MIDICONTROLCHANGE #" << controller_number << " i:" << control_value << std::endl;
             if (control_value == 0)
             {
                 rule = context->midi_binder_.find_rule(CONTROL_OFF_RULE, controller_number);
                 if (rule != 0)
                 {
-                    context->push_message(context->make_message(rule->action_).set_string(rule->args_));
+                    if (context->verbose_)
+                        std::cout << "found a control_off rule" << std::endl;
+                    context->push_message(context->make_message(rule->action_).set_string(rule->args_).set_int(control_value));
                     return;
                 }
             } else {
                 rule = context->midi_binder_.find_rule(CONTROL_ON_RULE, controller_number);
                 if (rule != 0)
                 {
-                    context->push_message(context->make_message(rule->action_).set_string(rule->args_));
+                    if (context->verbose_)
+                        std::cout << "found a control_on rule" << std::endl;
+                    context->push_message(context->make_message(rule->action_).set_string(rule->args_).set_int(control_value));
                     return;
                 }
-            } // and if not of those found:
+            } // and if not of those found try to find a control_map:
             rule = context->midi_binder_.find_rule(CONTROL_MAP_RULE, controller_number);
             if (rule != 0)
             {
+                if (context->verbose_)
+                    std::cout << "found a control_map rule" << std::endl;
                 if (rule->action_ == "set_float")
                 {
                     float f_val = map_float((float) control_value , 0.0f, 127.0f, rule->from_, rule->to_);
@@ -332,9 +338,11 @@ bool MidiInput::is_open() const
     return opened_;
 }
 
-void MidiInput::push_message(Message message)
+void MidiInput::push_message(Message &message)
 {
     // TODO: pass this message argument by reference?
+    if (verbose_)
+        std::cout << __FUNCTION__ << " " << message.get_command() << " i:" << message.get_int() << " f:" << message.get_float() << " s:" << message.get_string() << std::endl;
     messaging_queue_.push(message);
 }
 

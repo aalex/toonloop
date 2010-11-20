@@ -55,7 +55,7 @@ class MidiInput
         unsigned int ports_count_;
         bool opened_;
         MidiBinder midi_binder_;
-        void push_message(Message message);
+        void push_message(Message &message);
         RtMidiIn *midi_in_;
         Message make_message(const std::string &action);
 };

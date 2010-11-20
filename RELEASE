@@ -12,7 +12,6 @@ New features:
     * improved how info and help text look
     * Displaying FPS and layout name in info text HUD
 
-
 Bug fixes: 
     * IMPORTANT: Set v4l2 device name before guessing caps. (back-ported to the 2.0.x stable branch)
     * handling interlaced video source (back-ported to the 2.0.x stable branch)
@@ -27,3 +26,5 @@ Bug fixes:
     * Fixed overlay layout: livefeed was behind playback
     * Fixed issue with map_int always returning 0. Simplified Messaging.
 
+Notes:
+    If you run toonloop from a directory in your home (not in /usr/local) it might use the midi.xml file in /usr/local, unless you are in the same directory as the executable. Be careful.
