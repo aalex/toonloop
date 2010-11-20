@@ -1,4 +1,4 @@
-2010-11-??: Toonloop 2.1.2
+2010-11-20: Toonloop 2.1.2
 --------------------------
 
 This release is a developer snapshot in the 2.1 unstable series. 
@@ -25,5 +25,5 @@ Bug fixes:
     * Fixed crash with std::string given a null arg when looking for midi.xml
     * The path to usr/share/toonloop/presets was wrong.
     * Fixed overlay layout: livefeed was behind playback
-
+    * Fixed issue with map_int always returning 0. Simplified Messaging.
 
