@@ -22,6 +22,7 @@
  */
 
 #include <map>
+// TODO: use tr1:unordered_map, since lookup is faster with it
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include "property.h"

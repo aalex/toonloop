@@ -824,7 +824,6 @@ Gui::Gui(Application* owner) :
     number_of_frames_in_last_second_(0),
     rendering_fps_(0)
 {
-    //video_xwindow_id_ = 0;
     owner_->get_controller()->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
     owner_->get_controller()->add_frame_signal_.connect(boost::bind(&Gui::on_frame_added, this, _1, _2));
     //TODO: owner_->get_controller()->no_image_to_play_signals_.connect(boost::bind(&Gui::on_no_image_to_play, this))
@@ -833,7 +832,9 @@ Gui::Gui(Application* owner) :
     // TODO:2010-08-06:aalex:make window size configurable
     gtk_widget_set_size_request(window_, WINWIDTH, WINHEIGHT); 
     gtk_window_move(GTK_WINDOW(window_), 300, 10); // TODO: make configurable
-    gtk_window_set_title(GTK_WINDOW(window_), "Toonloop " PACKAGE_VERSION);
+    std::string window_title("Toonloop " PACKAGE_VERSION);
+    // TODO: version is "snapshot" if minor number is odd, "git" if micro is odd, "release" otherwise
+    gtk_window_set_title(GTK_WINDOW(window_), window_title.c_str());
     // Set window icon
     fs::path iconPath(std::string(PIXMAPS_DIR_STR) + "/toonloop.png");
     if (fs::exists(iconPath))
@@ -942,6 +943,7 @@ Gui::Gui(Application* owner) :
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(help_text_actor_));
     // Sort actors and groups:
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_), NULL);
+    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(onionskin_group_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_), NULL);
 
