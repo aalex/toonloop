@@ -971,9 +971,9 @@ void Gui::update_info_text()
     std::ostringstream os;
     Clip* current_clip = owner_->get_current_clip();
     os << "Toonloop " << PACKAGE_VERSION << 
-        (isUnstable ? " (unstable) " : "") << 
-        (isGit ? "(git)" : "") <<
-        " info (press i to hide)" << std::endl;
+        (isUnstable ? " (UNSTABLE) " : "") << 
+        (isGit ? "(Git)" : "") << std::endl << std::endl <<
+        "Press i to hide info" << std::endl;
     os << "OpenGL rendering rate: " << rendering_fps_ << " FPS" << std::endl;
     os << "Layout: " << current_layout_;
     switch (current_layout_)
