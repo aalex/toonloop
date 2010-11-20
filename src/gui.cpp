@@ -966,9 +966,14 @@ Gui::Gui(Application* owner) :
 
 void Gui::update_info_text()
 {
+    static const bool isUnstable = PACKAGE_VERSION_MINOR % 2 == 1;
+    static const bool isGit = PACKAGE_VERSION_MICRO != 0;
     std::ostringstream os;
     Clip* current_clip = owner_->get_current_clip();
-    os << "Toonloop " << PACKAGE_VERSION << " info (press i to hide)" << std::endl;
+    os << "Toonloop " << PACKAGE_VERSION << 
+        (isUnstable ? " (unstable) " : "") << 
+        (isGit ? "(git)" : "") <<
+        " info (press i to hide)" << std::endl;
     os << "OpenGL rendering rate: " << rendering_fps_ << " FPS" << std::endl;
     os << "Layout: " << current_layout_;
     switch (current_layout_)
