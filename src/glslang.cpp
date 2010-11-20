@@ -1,10 +1,12 @@
-#include "config.h" // PKGDATADIR
+#include "config.h"
 #include "unused.h"
+#include "glslang.h"
 #include <clutter/clutter.h>
-// TODO:2010-11-10:aalex:Actually use this file.
-// TODO:2010-11-10:aalex:Use DATADIR
 
-#define PKGDATADIR "./data/"
+// Constant for the shaders data directory: (/usr/share/toonloop/shaders/)
+#define VAL(str) #str
+#define TOSTRING(str) VAL(str)
+#define SHADERS_DIR TOSTRING(DATADIR) "/toonloop/shaders/"
 
 /**
  * Loads a fragment shader source from a file.
@@ -29,7 +31,7 @@ gboolean toon_load_fragment_source_file(ClutterShader *shader, gchar *file_name)
 gchar *toon_find_shader_file(const gchar *file_name)
 {
     // TODO: add ~/.toonloop/
-    const gchar *dirs[] ={"", "./shaders/", "./src/shaders/", PKGDATADIR, NULL};
+    const gchar *dirs[] ={"", "./shaders/", "./src/shaders/", SHADERS_DIR, NULL};
     int i;
     for (i = 0; dirs[i]; i++)
     {
@@ -50,7 +52,7 @@ static void setup_custom_shader(ClutterActor *actor)
     gchar *file_name = toon_find_shader_file("frag.brcosa.glsl");
     toon_load_fragment_source_file(shader, file_name);
     g_free(file_name);
-    //toon_load_fragment_source_file(shader, PKGDATADIR, "frag.test.glsl");
+    //toon_load_fragment_source_file(shader, SHADERS_DIR, "frag.test.glsl");
     GError *error = NULL;
     clutter_shader_compile(shader, &error);
     if (error)

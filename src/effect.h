@@ -45,12 +45,15 @@ class Effect
          * Each property name must be unique.
          */
         Effect(Controller *controller) :
-            controller_(controller) 
+            loaded_(false),
+            controller_(controller)
         {
             actors_ = NULL;
         }
         void add_actor(ClutterActor *actor);
         void update_all_actors();
+    protected:
+        bool loaded_;
     private:
         Controller *controller_;
         GList *actors_;
