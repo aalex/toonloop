@@ -2,11 +2,11 @@
 <!-- you can override those. Put the file in ~/.toonloop/midi.xml -->
 <toonloop_midi_rules>
     <!-- Grab frame  -->
-    <control_on  number="64" action="add_image" />
+    <control_on  number="80" action="add_image" />
     
     <!-- Video grab -->
-    <control_on  number="80" action="video_record_on" />
-    <control_off number="80" action="video_record_off" />
+    <control_on  number="64" action="video_record_on" />
+    <control_off number="64" action="video_record_off" />
 
     <!-- Notes [50,59]: misc -->
     <note_on number="59" action="remove_image" />
@@ -54,12 +54,15 @@
     <program_change action="select_clip" />
 
     <!-- Crossfade ratio (7 is main volume) -->
+    <!--
     <control_map number="7" action="set_float" args="crossfade_ratio" from="0.0" to="10.0" />
+    -->
 
     <!--
     Knobs for the Edirol PCR-M30
     -->
     <control_map number="74" action="set_int" args="livefeed_opacity" from="0" to="255" />
+    <control_map number="71" action="set_float" args="crossfade_ratio" from="0.0" to="10.0" />
     <!--
     <control_map number="74" />
     <control_map number="71" />
@@ -88,5 +91,9 @@
     <note_on number="72" action="reset" />
 
     <!-- pitch bend! -->
-    <pitch_bend action="set_float" args="latency_adjust" from="-10.0" to="10.0" /> <!-- latency_adjust is TODO -->
+    <!--
+    <pitch_bend action="set_float" args="latency_adjust" from="-10.0" to="10.0" /> 
+    --> 
+    <!-- latency_adjust is TODO -->
+
 </toonloop_midi_rules>

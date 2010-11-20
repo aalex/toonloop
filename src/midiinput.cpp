@@ -170,14 +170,20 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                 rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, note_pitch);
                 if (rule != 0) 
                 {
-                    context->push_message(context->make_message(rule->action_).set_string(rule->args_));
+                    Message m = context->make_message(rule->action_).set_string(rule->args_).set_int(note_pitch);
+                    if (m.get_command() == Message::SELECT_CLIP)
+                        m.set_int(boost::lexical_cast<int>(rule->args_));
+                    context->push_message(m);
                     return;
                 }
             } else {
                 rule = context->midi_binder_.find_rule(NOTE_ON_RULE, note_pitch);
                 if (rule != 0)
                 {
-                    context->push_message(context->make_message(rule->action_).set_string(rule->args_));
+                    Message m = context->make_message(rule->action_).set_string(rule->args_).set_int(note_pitch);
+                    if (m.get_command() == Message::SELECT_CLIP)
+                        m.set_int(boost::lexical_cast<int>(rule->args_));
+                    context->push_message(m);
                     return;
                 }
             }
@@ -189,7 +195,11 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, int(message->at(1)));
             if (rule != 0)
             {
-                context->push_message(context->make_message(rule->action_).set_string(rule->args_));
+                int note_pitch = int(message->at(1));
+                Message m = context->make_message(rule->action_).set_string(rule->args_).set_int(note_pitch);
+                if (m.get_command() == Message::SELECT_CLIP)
+                    m.set_int(boost::lexical_cast<int>(rule->args_));
+                context->push_message(m);
                 return;
             }
             break;
@@ -289,11 +299,13 @@ Message MidiInput::make_message(const std::string &action)
         return Message(Message::VIDEO_RECORD_ON);
     else if (action == "video_record_off") 
         return Message(Message::VIDEO_RECORD_OFF);
+    else if (action == "select_clip")
+        return Message(Message::SELECT_CLIP);
     else if (action == "quit")
         return Message(Message::QUIT);
     else
     {
-        g_critical("Unknown action name: %s\n", action.c_str());
+        g_critical("%s: Unknown action name: %s\n", __FUNCTION__, action.c_str());
         return Message(Message::NOP);
     }
 }
