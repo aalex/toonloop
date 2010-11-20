@@ -31,6 +31,7 @@ class Message
     public:
         enum Command 
         {
+            NOP,
             ADD_IMAGE,
             REMOVE_IMAGE,
             VIDEO_RECORD_ON,
@@ -48,56 +49,50 @@ class Message
             //MOVE_WRITEHEAD_END,
             //SET_PLAYHEAD_FPS,
         };
-        // Constructor with no arg
-        Message() : 
-            command_(), 
-            value_(0), 
-            float_value_(0.0),
-            string_value_("")
-        {}
         /**
-         * Constructor. One must provide at least a command id.
+         * Constructor. 
          */
         Message(Command c) : 
             command_(c), 
-            value_(0), 
+            int_value_(0), 
             float_value_(0.0),
             string_value_("")
-        {}
-        /**
-         * Constructor for commands which accept a unsigned int as an argument.
-         */
-        Message(Command c, int value) :
-            command_(c), 
-            value_(value), 
-            float_value_(0.0),
-            string_value_("")
-        {}
-        /**
-         * Constructor for commands which accept a string and a float as arguments.
-         */
-        Message(Command c, std::string string_arg, float float_value) :
-            command_(c),
-            value_(0),
-            float_value_(float_value), 
-            string_value_(string_arg)
         {}
         /** 
-         * Returns the value. Useful for the SELECT_CLIP command.
+         * Returns the int value.
          */
-        // TODO:2010-11-13:aalex:Rename get_value to get_int_value
-        unsigned int get_value() { return value_; }
-        unsigned int get_int_value() { return value_; }
-        float get_float_value() { return float_value_; }
-        std::string &get_string_value() { return string_value_; }
+        int get_int() { return int_value_; }
+        /** 
+         * Returns the float value.
+         */
+        float get_float() { return float_value_; }
+        /** 
+         * Returns the string value.
+         */
+        std::string &get_string() { return string_value_; }
+
+        Message &set_int(int value) 
+        {
+            int_value_ = value; 
+            return *this; 
+        }
+        Message &set_float(float value) 
+        {
+            float_value_ = value; 
+            return *this; 
+        }
+        Message &set_string(const std::string &value) 
+        { 
+            string_value_ = value; 
+            return *this; 
+        }
         /** 
          * Returns the Command id.
          */
         Command get_command() { return command_; }
     private:
         Command command_;
-        // TODO:2010-10-03:aalex:Maybe sometimes the value will not be an unsigned int.
-        unsigned int value_;
+        int int_value_;
         float float_value_;
         std::string string_value_;
 };

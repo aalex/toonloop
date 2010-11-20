@@ -58,11 +58,12 @@ class MidiInput
         //void find_and_apply_matching_event(std::string tag_name, std::string attr_name, int attr_value);
         void push_message(Message message);
         // TODO: get rid of all push_action_* methods
-        void push_action_with_string(std::string action, std::string args);
-        void push_action_with_int(std::string action, int arg);
-        void push_action_with_string_and_int(std::string action, std::string args, int int_arg);
-        void push_action_with_float(std::string action, std::string args, float float_arg);
+        //void push_action_with_string(std::string action, std::string args);
+        //void push_action_with_int(std::string action, int arg);
+        //void push_action_with_string_and_int(std::string action, std::string args, int int_arg);
+        //void push_action_with_float(std::string action, std::string args, float float_arg);
         RtMidiIn *midi_in_;
+        Message make_message(const std::string &action);
 };
 
 #endif // _MIDI_H_

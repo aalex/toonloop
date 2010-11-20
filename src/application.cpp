@@ -479,7 +479,6 @@ void Application::check_for_messages()
  */
 void Application::handle_message(Message &message)
 {
-    unsigned int value = message.get_value();
     switch (message.get_command())
     {
         case Message::ADD_IMAGE:
@@ -495,18 +494,22 @@ void Application::handle_message(Message &message)
             get_controller()->enable_video_grabbing(false);
             break;
         case Message::SELECT_CLIP:
-            get_controller()->choose_clip(value);
+            get_controller()->choose_clip(message.get_int());
             break;
         case Message::SET_FLOAT:
-            get_controller()->set_float_value(message.get_string_value(), message.get_float_value());
+            get_controller()->set_float_value(message.get_string(), message.get_float());
             break;
         case Message::SET_INT:
             if (config_->get_verbose())
-                std::cout << "set_int_value(" << message.get_string_value() << ", " << message.get_int_value() << ")" << std::endl;
-            get_controller()->set_int_value(message.get_string_value(), message.get_int_value());
+                std::cout << "set_int_value(" << message.get_string() << ", " << message.get_int() << ")" << std::endl;
+            get_controller()->set_int_value(message.get_string(), message.get_int());
             break;
         case Message::QUIT:
             quit();
+            break;
+        case Message::NOP:
+            if (config_->get_verbose())
+                std::cout << "Got an empty message" << std::endl;
             break;
     }
 }

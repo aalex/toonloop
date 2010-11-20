@@ -109,7 +109,7 @@ unsigned char get_midi_event_type(const unsigned char first_byte)
  * 
  * Depends on: #include <algorithm>
  */
-float map(float value, float istart, float istop, float ostart, float ostop) 
+float map_float(float value, float istart, float istop, float ostart, float ostop) 
 {
     float ret = ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
     // In Processing, they don't do the following: (clipping)
@@ -118,9 +118,10 @@ float map(float value, float istart, float istop, float ostart, float ostop)
 
 int map_int(int value, int istart, int istop, int ostart, int ostop) 
 {
-    int ret = ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+    float ret = ostart + (ostop - ostart) * ((value - istart) / float(istop - istart));
+    g_print("%f = %d + (%d-%d) * ((%d-%d) / (%d-%d))", ret, ostart, ostop, ostart, value, istart, istop, istart);
     // In Processing, they don't do the following: (clipping)
-    return std::max(std::min(ret, ostop), ostart);
+    return std::max(std::min(int(ret), ostop), ostart);
 }
 
 /** 
@@ -169,14 +170,14 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                 rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, note_pitch);
                 if (rule != 0) 
                 {
-                    context->push_action_with_string(rule->action_, rule->args_);
+                    context->push_message(context->make_message(rule->action_).set_string(rule->args_));
                     return;
                 }
             } else {
                 rule = context->midi_binder_.find_rule(NOTE_ON_RULE, note_pitch);
                 if (rule != 0)
                 {
-                    context->push_action_with_string(rule->action_, rule->args_);
+                    context->push_message(context->make_message(rule->action_).set_string(rule->args_));
                     return;
                 }
             }
@@ -188,7 +189,7 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             rule = context->midi_binder_.find_rule(NOTE_OFF_RULE, int(message->at(1)));
             if (rule != 0)
             {
-                context->push_action_with_string(rule->action_, rule->args_);
+                context->push_message(context->make_message(rule->action_).set_string(rule->args_));
                 return;
             }
             break;
@@ -203,14 +204,14 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                 rule = context->midi_binder_.find_rule(CONTROL_OFF_RULE, controller_number);
                 if (rule != 0)
                 {
-                    context->push_action_with_string(rule->action_, rule->args_);
+                    context->push_message(context->make_message(rule->action_).set_string(rule->args_));
                     return;
                 }
             } else {
                 rule = context->midi_binder_.find_rule(CONTROL_ON_RULE, controller_number);
                 if (rule != 0)
                 {
-                    context->push_action_with_string(rule->action_, rule->args_);
+                    context->push_message(context->make_message(rule->action_).set_string(rule->args_));
                     return;
                 }
             } // and if not of those found:
@@ -219,14 +220,16 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             {
                 if (rule->action_ == "set_float")
                 {
-                    float f_val = map((float) control_value , 0.0f, 127.0f, rule->from_, rule->to_);
-                    context->push_action_with_float(rule->action_, rule->args_, f_val); // we pass the value
+                    float f_val = map_float((float) control_value , 0.0f, 127.0f, rule->from_, rule->to_);
+                    context->push_message(Message(Message::SET_FLOAT).set_string(rule->args_).set_float(f_val));
                     return;
                 } 
                 else if (rule->action_ == "set_int")
                 {
-                    int i_val = map((int) control_value , 0, 127, (int) rule->from_, (int) rule->to_);
-                    context->push_action_with_string_and_int(rule->action_, rule->args_, i_val); // we pass the value
+                    int i_val = map_int((int) control_value , 0, 127, (int) rule->from_, (int) rule->to_);
+                    if (context->verbose_)
+                        std::cout << "mapped int: " << i_val << std::endl;
+                    context->push_message(Message(Message::SET_INT).set_string(rule->args_).set_int(i_val));
                     return;
                 }
             }
@@ -240,7 +243,7 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             rule = context->midi_binder_.find_program_change_rule();
             if (rule != 0)
             {
-                context->push_action_with_int(rule->action_, program_number); // we pass the value (an int)
+                context->push_message(Message(Message::SELECT_CLIP).set_int(program_number));
                 return;
             }
             break;
@@ -257,8 +260,8 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             rule = context->midi_binder_.find_pitch_wheel_rule();
             if (rule != 0)
             {
-                float f_val = map((float) val , 0.0f, 127.0f, rule->from_, rule->to_);
-                context->push_action_with_float(rule->action_, rule->args_, f_val); // we pass the value (a float)
+                float f_val = map_float((float) val , 0.0f, 127.0f, rule->from_, rule->to_);
+                context->push_message(Message(Message::SET_FLOAT).set_string(rule->args_).set_float(f_val));
                 return;
             }
             break;
@@ -268,74 +271,31 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             break;
     }
 }
-
 /**
- * Here we map the string for actions to their Message class const 
+ * Maps action name to a message enum.
  */
-void MidiInput::push_action_with_string(std::string action, std::string args)
+Message MidiInput::make_message(const std::string &action)
 {
-    if (verbose_) 
-        std::cout << __FUNCTION__ << "  s:" << action << " s:" << args << std::endl;
+    // TODO: use some map lookup, not else if
     if (action == "add_image") 
-        push_message(Message(Message::ADD_IMAGE));
+        return Message(Message::ADD_IMAGE);
+    else if (action == "set_float") 
+        return Message(Message::SET_FLOAT);
+    else if (action == "set_int") 
+        return Message(Message::SET_INT);
     else if (action == "remove_image") 
-        push_message(Message(Message::REMOVE_IMAGE));
+        return Message(Message::REMOVE_IMAGE);
     else if (action == "video_record_on") 
-        push_message(Message(Message::VIDEO_RECORD_ON));
+        return Message(Message::VIDEO_RECORD_ON);
     else if (action == "video_record_off") 
-        push_message(Message(Message::VIDEO_RECORD_OFF));
+        return Message(Message::VIDEO_RECORD_OFF);
     else if (action == "quit")
-        push_message(Message(Message::QUIT));
-    else if (action == "select_clip") // TODO:2010-11-05:aalex:enclose in a try catch
+        return Message(Message::QUIT);
+    else
     {
-        if (verbose_)
-            std::cout << "casting args to int..." << std::endl;
-        push_message(Message(Message::SELECT_CLIP, boost::lexical_cast<int>(args)));
+        g_critical("Unknown action name: %s\n", action.c_str());
+        return Message(Message::NOP);
     }
-    else
-        g_critical("Unknown action %s", action.c_str());
-}
-/** 
- * Version of it with an int argument.
- */
-void MidiInput::push_action_with_int(std::string action, int int_arg)
-{
-    if (verbose_) 
-        std::cout << __FUNCTION__ << " s:" << action << " i:" << int_arg << std::endl;
-    if (action == "select_clip") 
-        push_message(Message(Message::SELECT_CLIP, int_arg));
-    else
-        g_critical("Unknown action %s", action.c_str());
-}
-
-void MidiInput::push_action_with_string_and_int(std::string action, std::string args, int int_arg)
-{
-    if (verbose_)
-        std::cout << __FUNCTION__ << " s:" << action << " s:" << args << " i:" << int_arg << std::endl;
-    if (action == "set_int") 
-    {
-        if (args == "")
-            std::cout << "ERROR in " << __FUNCTION__ << ": The \"args\" XML attribute is empty s:" << action << " s:" << args << " i:" << int_arg << std::endl;
-        push_message(Message(Message::SET_INT, args, int_arg));
-    }
-    else
-        g_critical("Unknown action %s", action.c_str());
-}
-/**
- * Version with string and float. (such as SET_FLOAT)
- */
-void MidiInput::push_action_with_float(std::string action, std::string args, float float_arg)
-{
-    if (verbose_) 
-        std::cout << __FUNCTION__ << " s:" << action << " s:" << args << " f:" << float_arg << std::endl;
-    if (action == "set_float") 
-    {
-        if (args == "")
-            std::cout << "ERROR in " << __FUNCTION__ << ": The \"args\" XML attribute is empty s:" << action << " s:" << args << " f:" << float_arg << std::endl;
-        push_message(Message(Message::SET_FLOAT, args, float_arg));
-    }
-    else
-        g_critical("Unknown action %s", action.c_str());
 }
 
 void MidiInput::enumerate_devices() const
@@ -377,7 +337,7 @@ void MidiInput::consume_messages()
     bool success = true;
     while (success)
     {
-        Message message;
+        Message message(Message::NOP);
         success = messaging_queue_.try_pop(message);
         if (success)
         {

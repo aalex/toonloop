@@ -273,7 +273,7 @@ void OscInterface::consume_messages()
     bool success = true;
     while (success)
     {
-        Message message;
+        Message message(Message::NOP);
         success = messaging_queue_.try_pop(message);
         if (success)
         {
