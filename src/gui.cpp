@@ -621,7 +621,7 @@ void Gui::resize_actors()
     else if (current_layout_ == LAYOUT_OVERLAY)
     {    
         clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
-        Property<int> *livefeed_opacity = owner_->get_controller()->int_properties_.get_property("livefeed_opacity");
+        Property<int> *livefeed_opacity = owner_->get_controller()->int_properties_.get_property("livefeed_opacity"); // TODO: use int_properties_.get_value() or it might crash if the property is not found!
         clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), livefeed_opacity->get_value());
     } 
     else  // LAYOUT_SPLITSCREEN or LAYOUT_PORTRAIT
@@ -932,11 +932,13 @@ Gui::Gui(Application* owner) :
     clutter_actor_hide_all(CLUTTER_ACTOR(live_input_texture_));
 
     // INFO TEXT
-    info_text_actor_ = clutter_text_new_full("Sans 16px", "", clutter_color_new(255, 255, 255, 255));
+
+    ClutterColor white = { 0xff, 0xff, 0xff, 0xff };
+    info_text_actor_ = clutter_text_new_full("Sans semibold 16px", "", &white);
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_));
     // HELP TEXT
     std::string HELP_TEXT(INTERACTIVE_HELP + "(Press F1 to hide)");
-    help_text_actor_ = clutter_text_new_full("Sans 12px", HELP_TEXT.c_str(), clutter_color_new(255, 255, 255, 255));
+    help_text_actor_ = clutter_text_new_full("Sans semibold 12px", HELP_TEXT.c_str(), &white);
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(help_text_actor_));
     // Sort actors and groups:
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_), NULL);
@@ -950,7 +952,7 @@ Gui::Gui(Application* owner) :
     gtk_widget_show_all(window_);
 
     // Set visibility for other things
-    enable_onionskin(false); // hides it
+    enable_onionskin(false);
     clutter_actor_hide(info_text_actor_);
     clutter_actor_hide(help_text_actor_);
     // shown when we get first live image size, and we play the first image
@@ -970,13 +972,8 @@ void Gui::update_info_text()
     std::ostringstream os;
     Clip* current_clip = owner_->get_current_clip();
     os << "Toonloop " << PACKAGE_VERSION << " info (press i to hide)" << std::endl;
-    os << "Current clip: " << current_clip->get_id() << std::endl;
-    os << "FPS: " << current_clip->get_playhead_fps() << std::endl;
-    os << "Playhead: " << current_clip->get_playhead() << std::endl;
-    os << "Writehead: " << current_clip->get_writehead() << "/" << current_clip->size() << std::endl;
-    os << "Intervalometer rate: " << current_clip->get_intervalometer_rate() << std::endl;
-    os << "Intervalometer enabled:" << owner_->get_pipeline()->get_intervalometer_is_on() << std::endl;
-    os << "Layout:" << current_layout_;
+    os << "OpenGL rendering rate: " << rendering_fps_ << " FPS" << std::endl;
+    os << "Layout: " << current_layout_;
     switch (current_layout_)
     {
         case LAYOUT_SPLITSCREEN:
@@ -994,10 +991,15 @@ void Gui::update_info_text()
         default:
             os << " (unknown)";
             break;
-            
     }
     os << std::endl;
-    os << "OpenGL rendering: " << rendering_fps_ << " FPS" << std::endl;
+    os << std::endl;
+    os << "Current clip: " << current_clip->get_id() << std::endl;
+    os << "FPS: " << current_clip->get_playhead_fps() << std::endl;
+    os << "Playhead: " << current_clip->get_playhead() << std::endl;
+    os << "Writehead: " << current_clip->get_writehead() << "/" << current_clip->size() << std::endl;
+    os << "Intervalometer rate: " << current_clip->get_intervalometer_rate() << std::endl;
+    os << "Intervalometer enabled:" << owner_->get_pipeline()->get_intervalometer_is_on() << std::endl;
     clutter_text_set_text(CLUTTER_TEXT(info_text_actor_), os.str().c_str());
 }
 
