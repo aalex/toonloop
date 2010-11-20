@@ -67,7 +67,7 @@ class Message
         /**
          * Constructor for commands which accept a unsigned int as an argument.
          */
-        Message(Command c, unsigned int value) :
+        Message(Command c, int value) :
             command_(c), 
             value_(value), 
             float_value_(0.0),

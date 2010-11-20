@@ -501,6 +501,8 @@ void Application::handle_message(Message &message)
             get_controller()->set_float_value(message.get_string_value(), message.get_float_value());
             break;
         case Message::SET_INT:
+            if (config_->get_verbose())
+                std::cout << "set_int_value(" << message.get_string_value() << ", " << message.get_int_value() << ")" << std::endl;
             get_controller()->set_int_value(message.get_string_value(), message.get_int_value());
             break;
         case Message::QUIT:

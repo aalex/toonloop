@@ -78,22 +78,22 @@ class Controller
          * Sets the value of a int property, given its name. 
          * Returns whether is succeeded or not.
          */
-        bool set_int_value(std::string &name, int value);
+        bool set_int_value(const std::string &name, int value);
         /** 
          * Sets the value of a float property, given its name. 
          * Returns whether is succeeded or not.
          */
-        bool set_float_value(std::string &name, float value);
+        bool set_float_value(const std::string &name, float value);
         /**
          * Returns the value of a named int property.
          * Returns 0 if it doesn't exist.
          */
-        int get_int_value(std::string &name);
+        int get_int_value(const std::string &name);
         /**
          * Returns the value of a named float property.
          * Returns 0.0 if it doesn't exist.
          */
-        float get_float_value(std::string &name);
+        float get_float_value(const std::string &name);
 
         /** 
          * Called when a frame is added to a clip.
@@ -121,7 +121,6 @@ class Controller
          */
         //TODO: make the string &const
         boost::signals2::signal<void (unsigned int, std::string)> save_clip_signal_;
-
 
         /**
          * Called when it's time to play the next image.
@@ -153,7 +152,6 @@ class Controller
          */
         boost::signals2::signal<void (unsigned int, bool)>clip_videograb_changed_signal_;
 
-
         /**
          * Called when a clip's intervalometer rate is changed. 
          *
@@ -167,7 +165,6 @@ class Controller
          * Arguments: clip number, intervalometer is enabled.
          */
         boost::signals2::signal<void (unsigned int, bool)> intervalometer_toggled_signal_;
-
 
         // TODO: the writehead_moved_signal_ should be triggered when we add or remove an image.
         /**

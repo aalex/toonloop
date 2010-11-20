@@ -49,11 +49,14 @@ Property<float> *Controller::add_float_property(const std::string &name, float v
         return float_properties_.add_property(name, value);
 }
 
-bool Controller::set_int_value(std::string &name, int value)
+bool Controller::set_int_value(const std::string &name, int value)
 {
     Property<int> *p = int_properties_.get_property(name);
     if (p == 0)
+    {
+        std::cout << "No such int property: " << name << std::endl;
         return false;
+    }
     else
     {
         p->set_value(value);
@@ -61,7 +64,7 @@ bool Controller::set_int_value(std::string &name, int value)
     }
 }
 
-bool Controller::set_float_value(std::string &name, float value)
+bool Controller::set_float_value(const std::string &name, float value)
 {
     Property<float> *p = float_properties_.get_property(name);
     if (p == 0)
@@ -79,7 +82,7 @@ bool Controller::set_float_value(std::string &name, float value)
     }
 }
 
-int Controller::get_int_value(std::string &name)
+int Controller::get_int_value(const std::string &name)
 {
     Property<int> *p = int_properties_.get_property(name);
     if (p == 0)
@@ -88,7 +91,7 @@ int Controller::get_int_value(std::string &name)
         return p->get_value();
 }
 
-float Controller::get_float_value(std::string &name)
+float Controller::get_float_value(const std::string &name)
 {
     Property<float> *p = float_properties_.get_property(name);
     if (p == 0)

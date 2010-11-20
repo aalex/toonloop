@@ -79,14 +79,12 @@ gboolean Gui::on_mouse_button_event(GtkWidget* /* widget */, GdkEventButton *eve
 void Gui::on_livefeed_opacity_changed(std::string &name, int value)
 {
     UNUSED(name);
+    if (owner_->get_configuration()->get_verbose())
+        std::cout << "Gui::" << __FUNCTION__ << " livefeed opacity: " << value << std::endl;
     if (current_layout_ == LAYOUT_OVERLAY)
     {
-        if (owner_->get_configuration()->get_verbose())
-            std::cout << "livefeed opacity: " << value << std::endl;
         clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), value);
     }
-    //else
-    //    clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
 }
 
 void Gui::enable_onionskin(bool value)
@@ -186,6 +184,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
     // TODO:2010-09-18:aalex:Use the accelerators to allow the user to configure the controls
     // TODO:2010-09-18:aalex:Use Clutter for mouse and keyboard controls (ClutterBindingPool)
     Gui *context = static_cast<Gui*>(user_data);
+    Controller *controller = context->owner_->get_controller();
     bool verbose = context->owner_->get_configuration()->get_verbose();
 
     switch (event->keyval)
@@ -195,27 +194,27 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             if ((event->state & GDK_LOCK_MASK) != 0)
             {
                 std::cout << "Caps_Lock off." << std::endl;
-                context->owner_->get_controller()->enable_video_grabbing(false);
+                controller->enable_video_grabbing(false);
             } else {
                 std::cout << "Caps_Lock on. Recording video." << std::endl;
-                context->owner_->get_controller()->enable_video_grabbing(true);
+                controller->enable_video_grabbing(true);
             }
             break;
         }
         case GDK_Up:
-            context->owner_->get_controller()->increase_playhead_fps();
+            controller->increase_playhead_fps();
             break;
         case GDK_Down:
-            context->owner_->get_controller()->decrease_playhead_fps();
+            controller->decrease_playhead_fps();
             break;
         //case GDK_XXX:
-        //    context->owner_->get_controller()->set_current_clip_direction(DIRECTION_BACKWARD);
+        //    controller->set_current_clip_direction(DIRECTION_BACKWARD);
         //    break;
         //case GDK_XXX:
-        //    context->owner_->get_controller()->set_current_clip_direction(DIRECTION_FORWARD);
+        //    controller->set_current_clip_direction(DIRECTION_FORWARD);
         //    break;
         case GDK_Tab:
-            context->owner_->get_controller()->change_current_clip_direction();
+            controller->change_current_clip_direction();
             break;
         case GDK_period:
             //TODO:2010-08-27:aalex:Create Controller:toggle_layout
@@ -224,23 +223,23 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
         case GDK_r:
             // Ctrl-r or just r?
             //if (event->state & GDK_CONTROL_MASK)
-            context->owner_->get_controller()->clear_current_clip();
+            controller->clear_current_clip();
             break;
         case GDK_BackSpace:
-            context->owner_->get_controller()->remove_frame();
+            controller->remove_frame();
             break;
         case GDK_f:
         case GDK_Escape:
             context->toggleFullscreen(widget);
             break;
         case GDK_space:
-            context->owner_->get_controller()->add_frame();
+            controller->add_frame();
             break;
         case GDK_Page_Up:
-            context->owner_->get_controller()->choose_previous_clip();
+            controller->choose_previous_clip();
             break;
         case GDK_Page_Down:
-            context->owner_->get_controller()->choose_next_clip();
+            controller->choose_next_clip();
             break;
         case GDK_0:
         case GDK_1:
@@ -273,7 +272,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
                     std::cout << "No layout with number " << number_pressed << std::endl;
             }
             else
-                context->owner_->get_controller()->choose_clip(number_pressed);
+                controller->choose_clip(number_pressed);
             break;
         }
         case GDK_q:
@@ -294,43 +293,37 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
                 if (verbose)
                     g_print("Ctrl-S key pressed, TODO: save the whole project.\n");
                 // For now, we save the clip anyways
-                context->owner_->get_controller()->save_current_clip();
+                controller->save_current_clip();
             } else // no Ctrl pressed
-                context->owner_->get_controller()->save_current_clip();
+                controller->save_current_clip();
             break;
         case GDK_a:
             //std::cout << "Toggle intervalometer." << std::endl; 
-            context->owner_->get_controller()->toggle_intervalometer();
+            controller->toggle_intervalometer();
             break;
         case GDK_k:
-            context->owner_->get_controller()->increase_intervalometer_rate();
+            controller->increase_intervalometer_rate();
             break;
         case GDK_j:
-            context->owner_->get_controller()->decrease_intervalometer_rate();
+            controller->decrease_intervalometer_rate();
             break;
         case GDK_Left:
-            context->owner_->get_controller()->move_writehead_to_previous();
+            controller->move_writehead_to_previous();
             break;
         case GDK_Right:
-            context->owner_->get_controller()->move_writehead_to_next();
+            controller->move_writehead_to_next();
             break;
         case GDK_Return:
-            context->owner_->get_controller()->move_writehead_to_last();
+            controller->move_writehead_to_last();
             break;
         case GDK_semicolon:
-            context->owner_->get_controller()->move_writehead_to_first();
+            controller->move_writehead_to_first();
             break;
         case GDK_bracketleft:
-            {
-                Property<int> *livefeed_opacity = context->owner_->get_controller()->int_properties_.get_property("livefeed_opacity");
-                livefeed_opacity->set_value(clip_int(livefeed_opacity->get_value() - 1, 0, 255));
-            }
+            controller->set_int_value("livefeed_opacity", clip_int(controller->get_int_value("livefeed_opacity") - 1, 0, 255));
             break;
         case GDK_bracketright:
-            {
-                Property<int> *livefeed_opacity = context->owner_->get_controller()->int_properties_.get_property("livefeed_opacity");
-                livefeed_opacity->set_value(clip_int(livefeed_opacity->get_value() + 1, 0, 255));
-            }
+            controller->set_int_value("livefeed_opacity", clip_int(controller->get_int_value("livefeed_opacity") + 1, 0, 255));
             break;
         case GDK_parenleft:
             context->crossfade_increment(-0.1f);
@@ -349,7 +342,7 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             break;
         case GDK_b:
             {
-                Property<int> *blending_mode = context->owner_->get_controller()->int_properties_.get_property("blending_mode");
+                Property<int> *blending_mode = controller->int_properties_.get_property("blending_mode");
                 if (blending_mode->get_value() == 1) //context->blending_mode_ == BLENDING_MODE_ADDITIVE)
                     blending_mode->set_value(0);
                     //context->set_blending_mode(BLENDING_MODE_NORMAL);
@@ -613,6 +606,7 @@ void on_stage_allocation_changed(ClutterActor * /*stage*/,
  */
 void Gui::resize_actors() 
 {
+    Controller *controller = owner_->get_controller();
     // Hide or show the live input:
     if (current_layout_ == LAYOUT_PLAYBACK_ONLY)
     {
@@ -621,7 +615,7 @@ void Gui::resize_actors()
     else if (current_layout_ == LAYOUT_OVERLAY)
     {    
         clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
-        Property<int> *livefeed_opacity = owner_->get_controller()->int_properties_.get_property("livefeed_opacity"); // TODO: use int_properties_.get_value() or it might crash if the property is not found!
+        Property<int> *livefeed_opacity = controller->int_properties_.get_property("livefeed_opacity"); // TODO: use int_properties_.get_value() or it might crash if the property is not found!
         clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), livefeed_opacity->get_value());
     } 
     else  // LAYOUT_SPLITSCREEN or LAYOUT_PORTRAIT
@@ -824,9 +818,10 @@ Gui::Gui(Application* owner) :
     number_of_frames_in_last_second_(0),
     rendering_fps_(0)
 {
-    owner_->get_controller()->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
-    owner_->get_controller()->add_frame_signal_.connect(boost::bind(&Gui::on_frame_added, this, _1, _2));
-    //TODO: owner_->get_controller()->no_image_to_play_signals_.connect(boost::bind(&Gui::on_no_image_to_play, this))
+    Controller *controller = owner_->get_controller();
+    controller->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
+    controller->add_frame_signal_.connect(boost::bind(&Gui::on_frame_added, this, _1, _2));
+    //TODO: controller->no_image_to_play_signals_.connect(boost::bind(&Gui::on_no_image_to_play, this))
     // Main GTK window
     window_ = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     // TODO:2010-08-06:aalex:make window size configurable
@@ -964,9 +959,9 @@ Gui::Gui(Application* owner) :
     if (owner_->get_configuration()->get_fullscreen())
         toggleFullscreen(window_);
     // add properties:
-    owner_->get_controller()->add_int_property("blending_mode", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_blending_mode_int_property_changed, this, _1, _2));
-    owner_->get_controller()->add_float_property("crossfade_ratio", 0.0)->value_changed_signal_.connect(boost::bind(&Gui::on_crossfade_ratio_changed, this, _1, _2));
-    owner_->get_controller()->add_int_property("livefeed_opacity", 127)->value_changed_signal_.connect(boost::bind(&Gui::on_livefeed_opacity_changed, this, _1, _2));
+    controller->add_int_property("blending_mode", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_blending_mode_int_property_changed, this, _1, _2));
+    controller->add_float_property("crossfade_ratio", 0.0)->value_changed_signal_.connect(boost::bind(&Gui::on_crossfade_ratio_changed, this, _1, _2));
+    controller->add_int_property("livefeed_opacity", 127)->value_changed_signal_.connect(boost::bind(&Gui::on_livefeed_opacity_changed, this, _1, _2));
 }
 
 void Gui::update_info_text()

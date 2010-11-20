@@ -59,11 +59,9 @@ template <typename T> class Property
 
         void set_value(T value)
         {
-            if (value_ != value)
-            {
-                value_ = value;
-                value_changed_signal_(name_, value_);
-            }
+            //if (value_ != value)
+            value_ = value;
+            value_changed_signal_(name_, value_);
         }
         // TODO: make private, and ask to user to use the register_on_changed_slot method.
         OnChanged value_changed_signal_;
