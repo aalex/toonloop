@@ -21,6 +21,7 @@ headers = \
 	controller.h \
     effect.h \
 	gui.h \
+    glslang.h \
 	image.h \
 	log.h \
 	message.h \
@@ -49,6 +50,7 @@ toonloop_SOURCES = \
 	controller.cpp \
     effect.cpp \
 	gui.cpp \
+    glslang.cpp \
 	image.cpp \
 	main.cpp \
 	midiinput.cpp \

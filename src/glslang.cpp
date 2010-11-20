@@ -1,4 +1,5 @@
 #include "config.h" // PKGDATADIR
+#include "unused.h"
 #include <clutter/clutter.h>
 // TODO:2010-11-10:aalex:Actually use this file.
 // TODO:2010-11-10:aalex:Use DATADIR
@@ -28,7 +29,7 @@ gboolean toon_load_fragment_source_file(ClutterShader *shader, gchar *file_name)
 gchar *toon_find_shader_file(const gchar *file_name)
 {
     // TODO: add ~/.toonloop/
-    gchar *dirs[] ={"", "./shaders/", "./src/shaders/", PKGDATADIR, NULL};
+    const gchar *dirs[] ={"", "./shaders/", "./src/shaders/", PKGDATADIR, NULL};
     int i;
     for (i = 0; dirs[i]; i++)
     {
@@ -39,7 +40,7 @@ gchar *toon_find_shader_file(const gchar *file_name)
     }
     return NULL;
 }
-
+#if 0
 static void setup_custom_shader(ClutterActor *actor)
 {
     ClutterShader *shader = NULL;
@@ -68,7 +69,7 @@ static void setup_custom_shader(ClutterActor *actor)
         clutter_actor_set_shader_param_float(actor, "opacity", 0.0);
         clutter_actor_set_shader_param_int(actor, "image", 0);
     
-        GValue value = { 0, };
+        GValue value;
         g_value_init(&value, CLUTTER_TYPE_SHADER_FLOAT);
         gfloat avgluma[] = {1.0, 1.0, 1.0};
         clutter_value_set_shader_float(&value, 3, avgluma);
@@ -79,6 +80,7 @@ static void setup_custom_shader(ClutterActor *actor)
 
 static gboolean on_key_pressed(ClutterActor *actor, ClutterEvent *event, gpointer data)
 {
+    UNUSED(data);
     ClutterBindingPool *pool = NULL;
     pool = clutter_binding_pool_find (G_OBJECT_TYPE_NAME (actor));
     return clutter_binding_pool_activate(pool, clutter_event_get_key_symbol(event), clutter_event_get_state(event), G_OBJECT(actor));
@@ -91,12 +93,11 @@ static void setup_shortcuts(ClutterStage *stage)
 
     stage_class = (GObjectClass*) CLUTTER_STAGE_GET_CLASS(stage);
     binding_pool = clutter_binding_pool_get_for_class(stage_class);
-    clutter_binding_pool_install_action(binding_pool, "escape-to-quit", CLUTTER_Escape, 0 /* no modifiers */, G_CALLBACK(clutter_main_quit), NULL, NULL);
+    clutter_binding_pool_install_action(binding_pool, "escape-to-quit", CLUTTER_Escape, (ClutterModifierType) 0 /* no modifiers */, G_CALLBACK(clutter_main_quit), NULL, NULL);
     clutter_binding_pool_install_action(binding_pool, "control-q-to-quit", CLUTTER_KEY_q, CLUTTER_CONTROL_MASK, G_CALLBACK(clutter_main_quit), NULL, NULL);
     g_signal_connect(stage, "key-press-event", G_CALLBACK(on_key_pressed), NULL);
 }
 
-#if 0
 int main(int argc, char *argv[])
 {
     clutter_init(&argc, &argv);
