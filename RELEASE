@@ -9,6 +9,8 @@ New features:
     * XML MIDI bindings configuration file. (controls, notes and program change can send messages to the controller with some arguments)
     * Can now set float, bool and int properties in the Controller
     * It's possible to change the blending mode between each frame in the crossfading. (ADD or NORMAL)
+    * improved how info and help text look
+    * Displaying FPS and layout name in info text HUD
 
 
 Bug fixes: 
@@ -22,5 +24,6 @@ Bug fixes:
     * decreased verbosity when grabbing video
     * Fixed crash with std::string given a null arg when looking for midi.xml
     * The path to usr/share/toonloop/presets was wrong.
+    * Fixed overlay layout: livefeed was behind playback
 
 
