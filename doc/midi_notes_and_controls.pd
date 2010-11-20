@@ -38,8 +38,12 @@
 #X floatatom 285 -93 5 0 0 0 - - -;
 #X msg 202 261 \$1 7;
 #X obj 201 199 vsl 15 50 0 127 0 0 empty empty empty 0 -9 0 10 -258113
--1 -1 0 1;
+-1 -1 3800 1;
 #X text 230 212 crossfade ratio;
+#X obj 375 223 vsl 15 50 0 127 0 0 empty empty empty 0 -9 0 10 -258113
+-1 -1 0 1;
+#X text 404 236 livefeed opacity;
+#X msg 376 285 \$1 74;
 #X connect 3 0 4 0;
 #X connect 4 0 5 0;
 #X connect 5 0 0 0;
@@ -71,3 +75,5 @@
 #X connect 32 0 28 1;
 #X connect 33 0 5 0;
 #X connect 34 0 33 0;
+#X connect 36 0 38 0;
+#X connect 38 0 5 0;
