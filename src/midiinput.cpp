@@ -119,7 +119,7 @@ float map_float(float value, float istart, float istop, float ostart, float osto
 int map_int(int value, int istart, int istop, int ostart, int ostop) 
 {
     float ret = ostart + (ostop - ostart) * ((value - istart) / float(istop - istart));
-    g_print("%f = %d + (%d-%d) * ((%d-%d) / (%d-%d))", ret, ostart, ostop, ostart, value, istart, istop, istart);
+    //g_print("%f = %d + (%d-%d) * ((%d-%d) / (%d-%d))", ret, ostart, ostop, ostart, value, istart, istop, istart);
     // In Processing, they don't do the following: (clipping)
     return std::max(std::min(int(ret), ostop), ostart);
 }

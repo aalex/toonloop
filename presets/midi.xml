@@ -61,8 +61,8 @@
     <!--
     Knobs for the Edirol PCR-M30
     -->
-    <control_map number="74" action="set_int" args="livefeed_opacity" from="0" to="255" />
-    <control_map number="71" action="set_float" args="crossfade_ratio" from="0.0" to="10.0" />
+    <control_map number="38" action="set_int" args="livefeed_opacity" from="0" to="255" />
+    <control_map number="10" action="set_float" args="crossfade_ratio" from="0.0" to="10.0" />
     <!--
     <control_map number="74" />
     <control_map number="71" />
@@ -88,7 +88,7 @@
     -->
     
     <!-- Note 72: reset current clip -->
-    <note_on number="72" action="reset" />
+    <!-- <note_on number="72" action="reset" /> -->
 
     <!-- pitch bend! -->
     <!--
