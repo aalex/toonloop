@@ -1,4 +1,4 @@
-2010-11-20: Toonloop 2.1.2
+2010-11-24: Toonloop 2.1.2
 --------------------------
 
 This release is a developer snapshot in the 2.1 unstable series. 
@@ -10,7 +10,7 @@ New features:
     * Can now set float, bool and int properties in the Controller
     * It's possible to change the blending mode between each frame in the crossfading. (ADD or NORMAL)
     * improved how info and help text look
-    * Displaying FPS and layout name in info text HUD
+    * Displaying FPS, detailled version info and layout name in info text HUD
 
 Bug fixes: 
     * IMPORTANT: Set v4l2 device name before guessing caps. (back-ported to the 2.0.x stable branch)
