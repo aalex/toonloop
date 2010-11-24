@@ -167,6 +167,10 @@ You might need to properly configure your V4L2 video device::
   v4l2-ctl --set-fmt-video=width=768,height=480
   v4l2-ctl --set-ctrl=saturation=65535,contrast=32768
 
+You can try you r V4L2 camera with many different tools: 
+
+  vlc v4l2:///dev/video0
+
 If you use two displays, you might want to use 2 separate X screens::
 
   sudo nvidia-settings
