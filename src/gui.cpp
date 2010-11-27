@@ -482,7 +482,7 @@ void Gui::on_next_image_to_play(unsigned int clip_number, unsigned int/*image_nu
     // Attach a callback to when it's done
     if (crossfade_ratio_ > 0.0f && owner_->get_clip(clip_number)->size() > 1) // do not fade if only one image in clip
     {
-        unsigned int fps = owner_->get_current_clip()->get_playhead_fps();
+        unsigned int fps = owner_->get_clip(clip_number)->get_playhead_fps();
         unsigned int duration = (unsigned int) (((1.0f / fps) * crossfade_ratio_) * 1000);
         if (owner_->get_configuration()->get_verbose())
             std::cout << "animate texture for " << duration << " ms" << std::endl;
@@ -506,7 +506,7 @@ void Gui::on_next_image_to_play(unsigned int clip_number, unsigned int/*image_nu
  * 
  * Updates the onionskin texture
  */
-void Gui::on_frame_added(unsigned int /*clip_number*/, unsigned int image_number)
+void Gui::on_frame_added(unsigned int clip_number, unsigned int image_number)
 {
     if (owner_->get_configuration()->get_verbose())
         std::cout << "Gui::on_frame_added" << std::endl;
@@ -515,10 +515,10 @@ void Gui::on_frame_added(unsigned int /*clip_number*/, unsigned int image_number
     onionskin_textures_.insert(onionskin_textures_.begin() + 0, _tmp);
     onionskin_textures_.pop_back();
     // Get image file name
-    Clip* clip = owner_->get_current_clip();
+    Clip* clip = owner_->get_clip(clip_number);
     Image* image = clip->get_image(image_number);
     if (image == 0)
-        std::cout << "Could not get a handle to any image!" << std::endl;
+        std::cout << __FUNCTION__ << ": Could not get a handle to any image!" << std::endl;
     else
     {
         GError *error = NULL;
@@ -579,12 +579,12 @@ void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpoint
     //TODO:2010-08-26:aalex:connect to Controller's on_no_image_to_play
     if(thisclip->size() > 0) 
     {     
-        // do we really need to check an actor is visible before showing it?
-        if (! CLUTTER_ACTOR_IS_VISIBLE(context->playback_group_))
+        if (context->current_layout_ != LAYOUT_LIVEFEED_ONLY)
             clutter_actor_show_all(CLUTTER_ACTOR(context->playback_group_));
-    } else {
-        if (CLUTTER_ACTOR_IS_VISIBLE(context->playback_group_))
+        else
             clutter_actor_hide_all(CLUTTER_ACTOR(context->playback_group_));
+    } else {
+        clutter_actor_hide_all(CLUTTER_ACTOR(context->playback_group_));
     }
     // // This is just a test
     // static float rot = 0.0f;
@@ -1033,6 +1033,9 @@ void Gui::update_info_text()
             break;
         case LAYOUT_PORTRAIT:
             os << " (portrait)";
+            break;
+        case LAYOUT_LIVEFEED_ONLY:
+            os << " (live_feed)";
             break;
         default:
             os << " (unknown)";
