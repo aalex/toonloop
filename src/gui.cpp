@@ -43,6 +43,7 @@
 #include "pipeline.h"
 #include "properties.h"
 #include "property.h"
+#include "saturationeffect.h"
 #include "timer.h"
 #include "unused.h"
 
@@ -995,6 +996,11 @@ Gui::Gui(Application* owner) :
     controller->add_float_property("crossfade_ratio", 0.0)->value_changed_signal_.connect(boost::bind(&Gui::on_crossfade_ratio_changed, this, _1, _2));
     controller->add_int_property("livefeed_opacity", 127)->value_changed_signal_.connect(boost::bind(&Gui::on_livefeed_opacity_changed, this, _1, _2));
     controller->add_int_property("black_out", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_changed, this, _1, _2));
+
+    saturation_effect_ = new SaturationEffect(controller);
+    saturation_effect_->add_actor(playback_group_);
+    saturation_effect_->add_actor(live_input_texture_);
+    saturation_effect_->add_actor(onionskin_group_);
 }
 
 void Gui::on_black_out_changed(std::string &name, int value)

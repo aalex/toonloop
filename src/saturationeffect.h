@@ -25,9 +25,12 @@
 
 class SaturationEffect: public Effect
 {
+    public:
+        SaturationEffect(Controller *controller) : Effect(controller) {}
+            
     private:
         virtual void update_actor(ClutterActor *actor);
-        virtual void init_properties() = 0;
+        virtual void init_properties();
 };
 #endif
 
