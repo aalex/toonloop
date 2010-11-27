@@ -473,6 +473,11 @@ void Gui::on_next_image_to_play(unsigned int clip_number, unsigned int/*image_nu
     clutter_container_lower_child(CLUTTER_CONTAINER(playback_group_), CLUTTER_ACTOR(playback_textures_.at(0)), NULL);
     clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(0)), 255);
    
+    if (owner_->get_clip(clip_number)->size() == 0)
+    {
+        if (owner_->get_configuration()->get_verbose())
+            g_print("No image to play in current clip.\n");
+    }
     // TODO: Handle the ClutterAnimation* 
     // Attach a callback to when it's done
     if (crossfade_ratio_ > 0.0f && owner_->get_clip(clip_number)->size() > 1) // do not fade if only one image in clip

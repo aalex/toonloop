@@ -23,6 +23,7 @@
 
 #include <boost/program_options.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <tr1/memory>
 #include <tr1/unordered_map>
 
 class Clip;
@@ -69,6 +70,8 @@ static const std::string INTERACTIVE_HELP(
     "\n  x: Black out the whole window!"
     );
 
+using std::tr1::shared_ptr;
+
 /** The Application class: starts Toonloop.
  */
 class Application 
@@ -114,7 +117,7 @@ class Application
         boost::scoped_ptr<MovieSaver> movie_saver_;
         unsigned int selected_clip_;
         // Aug 25 2010:tmatth:TODO:use shared_ptr, not raw pointers for clips_
-        std::tr1::unordered_map<int, Clip*> clips_;
+        std::tr1::unordered_map<int, shared_ptr<Clip> > clips_;
 };
 
 #endif // __APPLICATION_H__

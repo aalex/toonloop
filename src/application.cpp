@@ -28,6 +28,7 @@
 #include <gtk/gtk.h>
 #include <iostream>
 #include <string>
+#include <tr1/memory>
 
 #include "application.h"
 #include "controller.h"
@@ -45,7 +46,7 @@
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
-typedef std::tr1::unordered_map<int, Clip*>::iterator ClipIterator;
+typedef std::tr1::unordered_map<int, std::tr1::shared_ptr<Clip> >::iterator ClipIterator;
 
 /**
  * Checks if a directory exists, create it and its parent directories if not.
@@ -88,25 +89,26 @@ Application::Application() :
 {
     // FIXME:2010-08-05:aalex:We should not create clips at startup like that.
     // They should be created on-demand
+    using std::tr1::shared_ptr;
     for (unsigned int i = 0; i < MAX_CLIPS; i++)
-        clips_[i] = new Clip(i);
+        clips_[i] = shared_ptr<Clip>(new Clip(i));
 }
 
 Clip* Application::get_current_clip()
 {
-    return clips_[selected_clip_];
+    return clips_[selected_clip_].get();
 }
 
 Clip* Application::get_clip(unsigned int clip_number)
 {
     if (clip_number > (clips_.size() - 1))
     {
-        g_critical("Tried to set_current_clip_number to %d", clip_number);
+        g_critical("Tried to get_clip %d", clip_number);
         return 0;
     }
     else 
     {
-        return clips_[clip_number];
+        return clips_[clip_number].get();
     }
 }
 unsigned int Application::get_current_clip_number()
@@ -248,7 +250,7 @@ void Application::run(int argc, char *argv[])
     if (options.count("playhead-fps"))
     { 
         for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
-            iter->second->set_playhead_fps(options["playhead-fps"].as<int>());
+            iter->second.get()->set_playhead_fps(options["playhead-fps"].as<int>());
     }
 
     if (options["fullscreen"].as<bool>())
@@ -363,7 +365,7 @@ void Application::run(int argc, char *argv[])
     if (verbose)
         std::cout << "Set the default intervalometer rate" << std::endl;
     for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
-        iter->second->set_intervalometer_rate(config_->get_default_intervalometer_rate());
+        iter->second.get()->set_intervalometer_rate(config_->get_default_intervalometer_rate());
     if (options["enable-intervalometer"].as<bool>())
     {
         if (verbose)
@@ -373,7 +375,7 @@ void Application::run(int argc, char *argv[])
 
     // Sets the remove_deleted_images thing
     for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
-        iter->second->set_remove_deleted_images(config_->get_remove_deleted_images());
+        iter->second.get()->set_remove_deleted_images(config_->get_remove_deleted_images());
     // Choose layout
     unsigned int layout = options["layout"].as<unsigned int>();
     if (layout < NUM_LAYOUTS)
@@ -395,8 +397,9 @@ void Application::run(int argc, char *argv[])
  */
 Application::~Application()
 {
-    for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
-        delete iter->second;
+    // No need, since we use shared_ptr:
+    //for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
+    //    delete iter->second;
 }
 /**
  * Creates all the project directories.
@@ -419,7 +422,7 @@ void Application::update_project_home_for_each_clip()
 {
     // TODO: be able to change the project_home on-the-fly
     for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
-        iter->second->set_directory_path(get_configuration()->get_project_home());
+        iter->second.get()->set_directory_path(get_configuration()->get_project_home());
 }
 Pipeline* Application::get_pipeline() 
 {
