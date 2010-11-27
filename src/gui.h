@@ -43,7 +43,8 @@ class Gui
             LAYOUT_SPLITSCREEN,
             LAYOUT_OVERLAY,
             LAYOUT_PLAYBACK_ONLY,
-            LAYOUT_PORTRAIT
+            LAYOUT_PORTRAIT,
+            LAYOUT_LIVEFEED_ONLY,
         };
         enum BlendingMode {
             BLENDING_MODE_NORMAL = 0,

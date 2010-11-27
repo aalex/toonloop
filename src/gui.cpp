@@ -268,6 +268,8 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
                     context->set_layout(LAYOUT_OVERLAY);
                 else if (number_pressed == 3)
                     context->set_layout(LAYOUT_PORTRAIT);
+                else if (number_pressed == 4)
+                    context->set_layout(LAYOUT_LIVEFEED_ONLY);
                 else
                     std::cout << "No layout with number " << number_pressed << std::endl;
             }
@@ -621,12 +623,16 @@ void Gui::resize_actors()
         Property<int> *livefeed_opacity = controller->int_properties_.get_property("livefeed_opacity"); // TODO: use int_properties_.get_value() or it might crash if the property is not found!
         clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), livefeed_opacity->get_value());
     } 
-    else  // LAYOUT_SPLITSCREEN or LAYOUT_PORTRAIT
+    else  // LAYOUT_SPLITSCREEN or LAYOUT_PORTRAIT or LAYOUT_LIVEFEED_ONLY
     {
         clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
         clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), 255);
     }
 
+    if (current_layout_ == LAYOUT_LIVEFEED_ONLY)
+        clutter_actor_hide(CLUTTER_ACTOR(playback_group_));
+    else
+        clutter_actor_show(CLUTTER_ACTOR(playback_group_));
     // Figure out the size of the area on which we draw things
     gfloat area_x, area_y, area_width, area_height;
     gfloat stage_width, stage_height;
@@ -680,6 +686,10 @@ void Gui::resize_actors()
     {
         // all actors are full screen
     } 
+    else if (current_layout_ == LAYOUT_LIVEFEED_ONLY) 
+    {
+        // all actors are full screen
+    } 
 
     else if (current_layout_ == LAYOUT_PORTRAIT)
     {
@@ -709,6 +719,8 @@ void Gui::resize_actors()
     clutter_actor_set_position(CLUTTER_ACTOR(live_input_texture_), live_tex_x, live_tex_y);
     clutter_actor_set_size(CLUTTER_ACTOR(live_input_texture_), live_tex_width, live_tex_height);
     clutter_actor_set_rotation(CLUTTER_ACTOR(live_input_texture_), CLUTTER_Z_AXIS, rotation, live_tex_width / 2.0f, live_tex_height / 2.0f, 0.0f);
+
+    // TODO: maybe not do the following if layout is LAYOUT_LIVEFEED_ONLY
 
     // Playback:
     for (ActorIterator iter = playback_textures_.begin(); iter != playback_textures_.end(); ++iter)
@@ -762,6 +774,8 @@ void Gui::toggle_layout()
     else if (current_layout_ == LAYOUT_OVERLAY)
         set_layout(LAYOUT_PORTRAIT);
     else if (current_layout_ == LAYOUT_PORTRAIT)
+        set_layout(LAYOUT_LIVEFEED_ONLY);
+    else if (current_layout_ == LAYOUT_LIVEFEED_ONLY)
         set_layout(LAYOUT_PLAYBACK_ONLY);
 }
 /**
