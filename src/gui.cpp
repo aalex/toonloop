@@ -574,12 +574,12 @@ void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpoint
     //TODO:2010-08-26:aalex:connect to Controller's on_no_image_to_play
     if(thisclip->size() > 0) 
     {     
-        // do we really need to check an actor is visible before showing it?
-        if (! CLUTTER_ACTOR_IS_VISIBLE(context->playback_group_))
+        if (context->current_layout_ != LAYOUT_LIVEFEED_ONLY)
             clutter_actor_show_all(CLUTTER_ACTOR(context->playback_group_));
-    } else {
-        if (CLUTTER_ACTOR_IS_VISIBLE(context->playback_group_))
+        else
             clutter_actor_hide_all(CLUTTER_ACTOR(context->playback_group_));
+    } else {
+        clutter_actor_hide_all(CLUTTER_ACTOR(context->playback_group_));
     }
     // // This is just a test
     // static float rot = 0.0f;
@@ -1028,6 +1028,9 @@ void Gui::update_info_text()
             break;
         case LAYOUT_PORTRAIT:
             os << " (portrait)";
+            break;
+        case LAYOUT_LIVEFEED_ONLY:
+            os << " (live_feed)";
             break;
         default:
             os << " (unknown)";
