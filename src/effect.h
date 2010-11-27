@@ -59,6 +59,7 @@ class Effect
     private:
         GList *actors_;
         virtual void update_actor(ClutterActor *actor) = 0;
+        virtual void setup_actor(ClutterActor *actor) = 0;
 };
 
 #endif

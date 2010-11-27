@@ -1002,10 +1002,10 @@ Gui::Gui(Application* owner) :
     clutter_actor_set_name(live_input_texture_, "live_input_texture_");
     clutter_actor_set_name(onionskin_group_, "onionskin_group_");
     saturation_effect_ = new SaturationEffect(controller);
+    saturation_effect_->init_properties();
     saturation_effect_->add_actor(playback_group_);
     saturation_effect_->add_actor(live_input_texture_);
     saturation_effect_->add_actor(onionskin_group_);
-    saturation_effect_->init_properties();
     saturation_effect_->update_all_actors();
 }
 

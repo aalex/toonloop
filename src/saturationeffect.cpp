@@ -27,15 +27,15 @@ void SaturationEffect::update_actor(ClutterActor *actor)
 
 void SaturationEffect::init_properties()
 {
-    ClutterShader *shader = NULL;
-    shader = clutter_shader_new();
+    shader_ = NULL;
+    shader_ = clutter_shader_new();
     gchar *file_name = toon_find_shader_file("brcosa.glsl");
     if (! file_name)
         g_critical("Could not fine shader file %s.", "brcosa.glsl");
-    toon_load_fragment_source_file(shader, file_name);
+    toon_load_fragment_source_file(shader_, file_name);
     g_free(file_name);
     GError *error = NULL;
-    clutter_shader_compile(shader, &error);
+    clutter_shader_compile(shader_, &error);
     if (error)
     {
         g_warning("Unable to init shader: %s", error->message);
@@ -47,10 +47,21 @@ void SaturationEffect::init_properties()
     if (loaded_)
     {
         g_print("Creating float property %s\n", "saturation");
-        controller_->add_float_property("saturation", 0.5)->value_changed_signal_.connect(boost::bind(&SaturationEffect::on_saturation_changed, this, _1, _2));
+        controller_->add_float_property("saturation", saturation_)->value_changed_signal_.connect(boost::bind(&SaturationEffect::on_saturation_changed, this, _1, _2));
         g_print("Creating float property %s\n", "contrast");
-        controller_->add_float_property("contrast", 1.0)->value_changed_signal_.connect(boost::bind(&SaturationEffect::on_contrast_changed, this, _1, _2));
+        controller_->add_float_property("contrast", contrast_)->value_changed_signal_.connect(boost::bind(&SaturationEffect::on_contrast_changed, this, _1, _2));
     }
+}
+
+void SaturationEffect::setup_actor(ClutterActor *actor)
+{
+    if (! loaded_)
+    {
+        g_critical("SaturationEffect not loaded yet");
+        return;
+    }
+    g_print("%s: add shader %s to actor %s\n", __FUNCTION__, "SaturationEffect", clutter_actor_get_name(actor));
+    clutter_actor_set_shader(actor, shader_);
 }
 
 void SaturationEffect::on_contrast_changed(std::string &name, float value)

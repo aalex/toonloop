@@ -29,7 +29,7 @@ class SaturationEffect: public Effect
     public:
         SaturationEffect(Controller *controller) : 
             Effect(controller), 
-            contrast_(0.5),
+            contrast_(1.5),
             saturation_(0.5)
         {
         }
@@ -37,10 +37,12 @@ class SaturationEffect: public Effect
             
     private:
         virtual void update_actor(ClutterActor *actor);
+        virtual void setup_actor(ClutterActor *actor);
         void on_saturation_changed(std::string &name, float value);
         void on_contrast_changed(std::string &name, float value);
         float contrast_;
         float saturation_;
+        ClutterShader *shader_;
 };
 #endif
 
