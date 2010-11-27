@@ -5,11 +5,13 @@
 #include "controller.h"
 #include "unused.h"
 
+//TODO: check if verbose
+
 void SaturationEffect::update_actor(ClutterActor *actor)
 {
     if (! loaded_)
         return;
-    g_print("%s: set actor %s shader params with saturation=%f contrast=%f\n", __FUNCTION__, clutter_actor_get_name(actor), saturation_, contrast_);
+    //g_print("%s: set actor %s shader params with saturation=%f contrast=%f\n", __FUNCTION__, clutter_actor_get_name(actor), saturation_, contrast_);
     clutter_actor_set_shader_param_float(actor, "saturation", saturation_);
     clutter_actor_set_shader_param_float(actor, "contrast", contrast_);
     clutter_actor_set_shader_param_float(actor, "brightness", 1.0);
@@ -46,9 +48,9 @@ void SaturationEffect::init_properties()
 
     if (loaded_)
     {
-        g_print("Creating float property %s\n", "saturation");
+        //g_print("Creating float property %s\n", "saturation");
         controller_->add_float_property("saturation", saturation_)->value_changed_signal_.connect(boost::bind(&SaturationEffect::on_saturation_changed, this, _1, _2));
-        g_print("Creating float property %s\n", "contrast");
+        //g_print("Creating float property %s\n", "contrast");
         controller_->add_float_property("contrast", contrast_)->value_changed_signal_.connect(boost::bind(&SaturationEffect::on_contrast_changed, this, _1, _2));
     }
 }
@@ -60,7 +62,7 @@ void SaturationEffect::setup_actor(ClutterActor *actor)
         g_critical("SaturationEffect not loaded yet");
         return;
     }
-    g_print("%s: add shader %s to actor %s\n", __FUNCTION__, "SaturationEffect", clutter_actor_get_name(actor));
+    //g_print("%s: add shader %s to actor %s\n", __FUNCTION__, "SaturationEffect", clutter_actor_get_name(actor));
     clutter_actor_set_shader(actor, shader_);
 }
 
