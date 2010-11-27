@@ -66,6 +66,7 @@ static const std::string INTERACTIVE_HELP(
     "\n  (): Decrease/increase frame blending in playback layout."
     "\n  []: Increase/decrease opacity of the live input image in the overlay layout."
     "\n  F1: Show help."
+    "\n  x: Black out the whole window!"
     );
 
 /** The Application class: starts Toonloop.

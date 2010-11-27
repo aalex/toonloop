@@ -340,6 +340,9 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
         case GDK_o:
             context->enable_onionskin( ! context->onionskin_enabled_);
             break;
+        case GDK_x:
+            controller->set_int_value("black_out", 1 - controller->get_int_value("black_out")); // toggle [0,1]
+            break;
         case GDK_b:
             {
                 Property<int> *blending_mode = controller->int_properties_.get_property("blending_mode");
@@ -629,6 +632,7 @@ void Gui::resize_actors()
     gfloat stage_width, stage_height;
 
     clutter_actor_get_size(stage_, &stage_width, &stage_height);
+
     area_height = (video_input_height_ * stage_width) / video_input_width_;
     if (area_height <= stage_height) 
     {
@@ -720,6 +724,7 @@ void Gui::resize_actors()
         clutter_actor_set_size(CLUTTER_ACTOR(*iter), live_tex_width, live_tex_height);
         clutter_actor_set_rotation(CLUTTER_ACTOR(*iter), CLUTTER_Z_AXIS, rotation, live_tex_width / 2.0f, live_tex_height / 2.0f, 0.0f);
     }
+    clutter_actor_set_size(black_out_rectangle_, stage_width, stage_height);
 }
 /**
  * Called when the size of the input image has changed.
@@ -912,8 +917,8 @@ Gui::Gui(Application* owner) :
     }
 
     // Background color:
-    ClutterColor stage_color = { 0x00, 0x00, 0x00, 0xff };
-    clutter_stage_set_color(CLUTTER_STAGE(stage_), &stage_color);
+    ClutterColor black = { 0x00, 0x00, 0x00, 0xff };
+    clutter_stage_set_color(CLUTTER_STAGE(stage_), &black);
 
     /* Create a timeline to manage animation */
     timeline_ = clutter_timeline_new(6000); // time here doesn't matter
@@ -936,11 +941,19 @@ Gui::Gui(Application* owner) :
     std::string HELP_TEXT(INTERACTIVE_HELP + "(Press F1 to hide)");
     help_text_actor_ = clutter_text_new_full("Sans semibold 12px", HELP_TEXT.c_str(), &white);
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(help_text_actor_));
+
+    // black out
+    black_out_rectangle_ = clutter_rectangle_new_with_color(&black);
+    clutter_actor_hide(black_out_rectangle_);
+    clutter_container_add_actor(CLUTTER_CONTAINER(stage_), black_out_rectangle_);
+
     // Sort actors and groups:
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(onionskin_group_), NULL);
+    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(black_out_rectangle_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_), NULL);
+    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(help_text_actor_), NULL);
 
     /* Only show the actors after parent show otherwise it will just be
      * unrealized when the clutter foreign window is set. widget_show
@@ -962,6 +975,18 @@ Gui::Gui(Application* owner) :
     controller->add_int_property("blending_mode", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_blending_mode_int_property_changed, this, _1, _2));
     controller->add_float_property("crossfade_ratio", 0.0)->value_changed_signal_.connect(boost::bind(&Gui::on_crossfade_ratio_changed, this, _1, _2));
     controller->add_int_property("livefeed_opacity", 127)->value_changed_signal_.connect(boost::bind(&Gui::on_livefeed_opacity_changed, this, _1, _2));
+    controller->add_int_property("black_out", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_changed, this, _1, _2));
+}
+
+void Gui::on_black_out_changed(std::string &name, int value)
+{
+    if (owner_->get_configuration()->get_verbose())
+        g_print("toggle black_out %d\n", value);
+    UNUSED(name);
+    if (value == 0)
+        clutter_actor_hide(black_out_rectangle_);
+    else
+        clutter_actor_show(black_out_rectangle_);
 }
 
 void Gui::update_info_text()
