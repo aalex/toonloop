@@ -29,8 +29,8 @@ class SaturationEffect: public Effect
     public:
         SaturationEffect(Controller *controller) : 
             Effect(controller), 
-            contrast_(1.5),
-            saturation_(0.5)
+            contrast_(1.0),
+            saturation_(1.0)
         {
         }
         virtual void init_properties();
