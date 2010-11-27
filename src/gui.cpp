@@ -1001,6 +1001,7 @@ Gui::Gui(Application* owner) :
     saturation_effect_->add_actor(playback_group_);
     saturation_effect_->add_actor(live_input_texture_);
     saturation_effect_->add_actor(onionskin_group_);
+    saturation_effect_->update_all_actors();
 }
 
 void Gui::on_black_out_changed(std::string &name, int value)
