@@ -4,7 +4,7 @@
 // the texture
 uniform sampler2D image;
 // arguments
-uniform vec3 avgluma;
+//uniform vec3 avgluma;
 uniform float saturation;
 uniform float contrast;
 uniform float brightness;
@@ -12,6 +12,7 @@ uniform float alpha;
 uniform float opacity; // how much efficient this brcosa is. reinject some of the orig. img.
 // constants
 const vec3 LumCoeff = vec3(0.2125, 0.7154, 0.0721);
+const vec3 avgluma = vec3(1.0, 1.0, 1.0);
 
 void main (void)
 {

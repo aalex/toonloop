@@ -22,15 +22,25 @@
 #ifndef __SATURATION_EFFECT_H__
 #define __SATURATION_EFFECT_H__
 #include "effect.h"
+#include <string>
 
 class SaturationEffect: public Effect
 {
     public:
-        SaturationEffect(Controller *controller) : Effect(controller) {}
+        SaturationEffect(Controller *controller) : 
+            Effect(controller), 
+            contrast_(0.5),
+            saturation_(0.5)
+        {
+        }
+        virtual void init_properties();
             
     private:
         virtual void update_actor(ClutterActor *actor);
-        virtual void init_properties();
+        void on_saturation_changed(std::string &name, float value);
+        void on_contrast_changed(std::string &name, float value);
+        float contrast_;
+        float saturation_;
 };
 #endif
 

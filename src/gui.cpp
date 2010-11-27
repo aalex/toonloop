@@ -997,10 +997,15 @@ Gui::Gui(Application* owner) :
     controller->add_int_property("livefeed_opacity", 127)->value_changed_signal_.connect(boost::bind(&Gui::on_livefeed_opacity_changed, this, _1, _2));
     controller->add_int_property("black_out", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_changed, this, _1, _2));
 
+    // saturation effect:
+    clutter_actor_set_name(playback_group_, "playback_group_");
+    clutter_actor_set_name(live_input_texture_, "live_input_texture_");
+    clutter_actor_set_name(onionskin_group_, "onionskin_group_");
     saturation_effect_ = new SaturationEffect(controller);
     saturation_effect_->add_actor(playback_group_);
     saturation_effect_->add_actor(live_input_texture_);
     saturation_effect_->add_actor(onionskin_group_);
+    saturation_effect_->init_properties();
     saturation_effect_->update_all_actors();
 }
 

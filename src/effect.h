@@ -52,13 +52,13 @@ class Effect
         }
         void add_actor(ClutterActor *actor);
         void update_all_actors();
+        virtual void init_properties() = 0;
     protected:
         bool loaded_;
-    private:
         Controller *controller_;
+    private:
         GList *actors_;
         virtual void update_actor(ClutterActor *actor) = 0;
-        virtual void init_properties() = 0;
 };
 
 #endif
