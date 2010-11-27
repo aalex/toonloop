@@ -10,7 +10,7 @@ New features:
     * Added layout livefeed_only
 
 Bug fixes: 
-    * 
+    * Fixed bug with playback not being show at all (since added layout livefeed_only)
 
 Notes:
     * If you run toonloop from a directory in your home (not in /usr/local) it might use the midi.xml file in /usr/local, unless you are in the same directory as the executable. Be careful.
