@@ -2,11 +2,14 @@
 <!-- you can override those. Put the file in ~/.toonloop/midi.xml -->
 <toonloop_midi_rules>
     <!-- Grab frame  -->
-    <control_on  number="80" action="add_image" />
+    <!--<control_on  number="80" action="add_image" /> -->
+    <control_on  number="64" action="add_image" />
     
     <!-- Video grab -->
+    <!--
     <control_on  number="64" action="video_record_on" />
     <control_off number="64" action="video_record_off" />
+    -->
 
     <!-- Notes [50,59]: misc -->
     <note_on number="59" action="remove_image" />
