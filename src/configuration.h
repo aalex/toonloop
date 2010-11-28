@@ -69,10 +69,11 @@ class Configuration
         bool fullscreen() const { return fullscreen_; }
         bool get_effects_enabled() const { return enable_effects_; }
         void set_effects_enabled(bool enabled) { enable_effects_ = enabled; }
+        bool get_shaders_enabled() const { return shaders_enabled_; } 
         void set_project_home(const std::string &project_home);
         void set_video_source(const std::string &video_source);
-        bool get_verbose() const { return verbose_; } ;
-        bool get_fullscreen() const { return fullscreen_; } ;
+        bool get_verbose() const { return verbose_; } 
+        bool get_fullscreen() const { return fullscreen_; } 
         int get_midi_input_number() const { return midi_input_number_; }
         std::string get_osc_recv_port() const { return osc_recv_port_; }
         std::string get_osc_send_port() const { return osc_send_port_; }
@@ -104,6 +105,7 @@ class Configuration
         int max_images_per_clip_;
         float default_intervalometer_rate_;
         bool remove_deleted_images_;
+        bool shaders_enabled_;
 };
 #endif // __CONFIGURATION_H__
 
