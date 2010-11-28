@@ -46,7 +46,7 @@ template <typename T> class Property
 #endif        
         Property() :
             name_(""),
-            value_(0)
+            value_(0) // FIXME:2010-11-28:aalex:what if value is not an int?
         {}
         
         Property(const std::string &name, T value) : 
