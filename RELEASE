@@ -10,6 +10,7 @@ New features:
     * Added layout livefeed_only
     * Added the --enable-shaders option
     * Saturation effect (brightness, contrast and saturation)
+    * Added a separate window for information. (--enable-info-window)
 
 Bug fixes: 
     * Fixed bug with playback not being show at all (since added layout livefeed_only)

@@ -572,8 +572,8 @@ void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpoint
         context->fps_calculation_timer_.reset();
     }
     // Display info:
-    if (context->enable_info_)
-        context->update_info_text();
+    //if (context->enable_info_)
+    context->update_info_text();
 
     context->owner_->get_controller()->update_playback_image();
 
@@ -841,7 +841,8 @@ Gui::Gui(Application* owner) :
     crossfade_ratio_(0.0),
     fps_calculation_timer_(),
     number_of_frames_in_last_second_(0),
-    rendering_fps_(0)
+    rendering_fps_(0),
+    info_window_(owner)
 {
     Controller *controller = owner_->get_controller();
     controller->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
@@ -975,6 +976,9 @@ Gui::Gui(Application* owner) :
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(help_text_actor_), NULL);
 
+    if (owner_->get_configuration()->get_info_window_enabled())
+        info_window_.create();
+
     /* Only show the actors after parent show otherwise it will just be
      * unrealized when the clutter foreign window is set. widget_show
      * will call show on the stage.
@@ -1066,6 +1070,7 @@ void Gui::update_info_text()
     os << "Intervalometer rate: " << current_clip->get_intervalometer_rate() << std::endl;
     os << "Intervalometer enabled:" << owner_->get_pipeline()->get_intervalometer_is_on() << std::endl;
     clutter_text_set_text(CLUTTER_TEXT(info_text_actor_), os.str().c_str());
+    info_window_.set_info_text(os.str());
 }
 
 /**

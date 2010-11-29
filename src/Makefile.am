@@ -23,6 +23,7 @@ headers = \
 	gui.h \
     glslang.h \
 	image.h \
+    infowindow.h \
 	log.h \
 	message.h \
 	midiinput.h \
@@ -52,6 +53,7 @@ toonloop_SOURCES = \
 	gui.cpp \
     glslang.cpp \
 	image.cpp \
+    infowindow.cpp \
 	main.cpp \
 	midiinput.cpp \
 	moviesaver.cpp \

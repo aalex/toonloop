@@ -177,6 +177,7 @@ void Application::run(int argc, char *argv[])
         ("layout", po::value<unsigned int>()->default_value(0), "Sets the layout number.") // TODO:2010-10-05:aalex:Print the NUM_LAYOUTS
         ("remove-deleted-images", po::bool_switch(), "Enables the removal of useless image files.")
         ("enable-shaders,S", po::bool_switch(), "Enables GLSL shader effects.")
+        ("enable-info-window,I", po::bool_switch(), "Enables a window for information text.")
         ; // <-- important semi-colon
     po::variables_map options;
     

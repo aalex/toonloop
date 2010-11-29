@@ -54,6 +54,7 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     default_intervalometer_rate_ = options["intervalometer-rate"].as<float>();
     remove_deleted_images_ = options["remove-deleted-images"].as<bool>();
     shaders_enabled_ = options["enable-shaders"].as<bool>();
+    info_window_enabled_ = options["enable-info-window"].as<bool>();
 }
 
 void Configuration::set_project_home(const std::string &project_home)

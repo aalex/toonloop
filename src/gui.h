@@ -28,6 +28,7 @@
 #include <gtk/gtk.h>
 #include <vector>
 #include "effect.h"
+#include "infowindow.h"
 #include "timer.h"
 
 class Application;
@@ -121,6 +122,7 @@ class Gui
         static const int WINHEIGHT = 480;
         BlendingMode blending_mode_;
         Effect *saturation_effect_;
+        InfoWindow info_window_;
 };
 
 #endif // __GUI_H__
