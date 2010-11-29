@@ -12,6 +12,9 @@ Top Priorities
  * gui: Support a separate window for informations (optional)
  * gui: Display thumbnails of the first image in each clip in the info window
  * midi: review and simplify multithread messaging
+ * controller: review and simplify properties.h and controller.h
+ * controller: If a property already exists, trying to create it should return a pointer to the other one. (to avoid race conditions upon property creation?) 
+ * controller: Implement the --list-properties option. (maybe we'll need not to start the GUI before setting up the controller and effects)
  * effects: review and simplify effect.h and saturationeffect.h
  * editing: switch to a clip and add a frame to it in a single key stroke
  * playback: scratch video
