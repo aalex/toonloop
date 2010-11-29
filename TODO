@@ -6,6 +6,14 @@ Here we list taks to be done. Once they are done, they should go in the RELEASE 
 Once the tag is done for the version number in the RELEASE notes, they are moved to the NEWS file, (most recent first) and we update the version number in the RELEASE notes and the configure.ac file, and we remove all the task that are done from the RELEASE notes. We often put the tasks that are done in the doc/DONE document.
 
 
+Top Priorities
+--------------
+ * editing: allow an infinity of clips. Paging could allow more than ten clips. Use <>
+ * gui: Support a separate window for informations (optional)
+ * gui: Display thumbnails of the first image in each clip in the info window
+ * midi: review and simplify multithread messaging
+ * editing: switch to a clip and add a frame to it in a single key stroke
+
 Things to do in priority
 ------------------------
 
@@ -20,9 +28,8 @@ Right now, here is the list of tasks to prioritize:
  * controls: Add direct controls for playback direction.
  * doc: Make sure the keystroke instructions are in only one place.
  * editing: Add the overdub control message. (erases and starts recording)
- * editing: Paging could allow more than ten clips. Use <>
  * editing: The first image that is grabbed with the intervalometer is black.
- * editing: make onionskin and ripple/fade effect one-per-clip-based
+ * editing: make onionskin and ripple/fade effect one-per-clip-based (or rather one-per-layer)
  * effect: Rippling effect (strobing) effect (like in _Pas de deux_) Variable delay between each former frame. Variable number of former frames displayed
  * effects: adjust delay on the live input.
  * effects: effect on the live input. 
@@ -34,7 +41,6 @@ Right now, here is the list of tasks to prioritize:
  * onionskin: load the image just before writehead's position
  * osc: When saving a movie, we should send the name of the saved file via OSC
  * packaging: add AM_MAINTAINER_MODE to configure.ac
- * packaging: install completion/toonloop /etc/bash_completion.d/toonloop
  * video: Support DV: gst-launch dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink
  * video: Support HDV (hdvdec)
  * video: Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga. (well, we could have many pipelines)
@@ -52,7 +58,6 @@ To be done later
  * edit: support playing back a single clip or all of them
  * editing: Load a movie file to a clip.
  * editing: Load images to a clip.
- * effects: Color improvements (brightness, contrast, saturation)
  * effects: Min/max values for effects attributes.
  * effects: Port the shaders from 1.x (See doc/effects.txt)
  * effects: Support for video mapping. (needs a matte + separating the rectangle in a grid of rectangles, with coordinates that are interpolated linearily)
@@ -86,11 +91,9 @@ To be done later
  * playback: Allow to move playhead to the beginning of a clip when we switch to it.
  * playback: Basic sequences of clips.
  * playback: Multi layers (multi clips at a time)
- * playback: Multi-layers sequences with blending mode
- * playback: Variable frame duration in a shot (freeze frame) and speed tweening.
  * playback: allow to play all clips from 0 to 9
  * playback: multiple sequences at a time
- * playback: playing two clips at a time
+ * playback: playing two clips at a time (layers)
  * playback: translation *paths* 
  * saving: Add PNG and TGA saving image formats.
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
@@ -102,9 +105,13 @@ To be done later
  * saving: create a subdir for each clip in images and movies dirs
  * video: do not crash if the v4l2 device is busy
 
+See also doc/nice-to-have.txt
+
 
 Done?
 -----
 I think those are done.
 
  * BUG: use dashes, not minus in man pages
+ * effects: Color improvements (brightness, contrast, saturation)
+ * packaging: install completion/toonloop /etc/bash_completion.d/toonloop

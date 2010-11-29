@@ -1,0 +1,3 @@
+
+ * playback: Multi-layers sequences with blending mode
+ * playback: Variable frame duration in a shot (freeze frame) and speed tweening.
