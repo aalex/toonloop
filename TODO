@@ -12,7 +12,11 @@ Top Priorities
  * gui: Support a separate window for informations (optional)
  * gui: Display thumbnails of the first image in each clip in the info window
  * midi: review and simplify multithread messaging
+ * effects: review and simplify effect.h and saturationeffect.h
  * editing: switch to a clip and add a frame to it in a single key stroke
+ * playback: scratch video
+ * playback: drunk
+ * playback: random
 
 Things to do in priority
 ------------------------
@@ -28,8 +32,10 @@ Right now, here is the list of tasks to prioritize:
  * controls: Add direct controls for playback direction.
  * doc: Make sure the keystroke instructions are in only one place.
  * editing: Add the overdub control message. (erases and starts recording)
+ * editing: Allow to edit a clip when playing another.
  * editing: The first image that is grabbed with the intervalometer is black.
  * editing: make onionskin and ripple/fade effect one-per-clip-based (or rather one-per-layer)
+ * editing: support overdubbing (delete next frame and add one)
  * effect: Rippling effect (strobing) effect (like in _Pas de deux_) Variable delay between each former frame. Variable number of former frames displayed
  * effects: adjust delay on the live input.
  * effects: effect on the live input. 
@@ -115,3 +121,4 @@ I think those are done.
  * BUG: use dashes, not minus in man pages
  * effects: Color improvements (brightness, contrast, saturation)
  * packaging: install completion/toonloop /etc/bash_completion.d/toonloop
+
