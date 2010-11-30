@@ -11,47 +11,42 @@
     <control_off number="64" action="video_record_off" />
     -->
 
-    <!-- Notes [50,59]: misc -->
-    <note_on number="59" action="remove_image" />
-    
-    <!-- Notes [60,69]: select_clip -->
-    <!--
-    <note_on number="41" />
-    <note_on number="42" />
-    <note_on number="43" />
-    <note_on number="44" />
-    <note_on number="45" />
-    <note_on number="46" />
-    <note_on number="47" />
-    <note_on number="48" />
-    <note_on number="49" />
-    <note_on number="50" />
-    <note_on number="51" />
-    <note_on number="52" />
-    <note_on number="53" />
-    <note_on number="54" />
-    <note_on number="55" />
-    <note_on number="56" />
-    <note_on number="57" />
-    <note_on number="58" />
-    <note_on number="59" />
-    -->
-    <note_on number="60" action="select_clip" args="0" />
-    <note_on number="61" action="select_clip" args="1" />
-    <note_on number="62" action="select_clip" args="2" />
-    <note_on number="63" action="select_clip" args="3" />
-    <note_on number="64" action="select_clip" args="4" />
-    <note_on number="65" action="select_clip" args="5" />
-    <note_on number="66" action="select_clip" args="6" />
-    <note_on number="67" action="select_clip" args="7" />
-    <note_on number="68" action="select_clip" args="8" />
-    <note_on number="69" action="select_clip" args="9" />
+    <!-- Notes: select_clip -->
+    <note_on number="41" action="select_clip" args="0" />
+    <note_on number="42" action="select_clip" args="1" />
+    <note_on number="43" action="select_clip" args="2" />
+    <note_on number="44" action="select_clip" args="3" />
+    <note_on number="45" action="select_clip" args="4" />
+    <note_on number="46" action="select_clip" args="5" />
+    <note_on number="47" action="select_clip" args="6" />
+    <note_on number="48" action="select_clip" args="7" />
+    <note_on number="49" action="select_clip" args="8" />
+    <note_on number="50" action="select_clip" args="9" />
 
-    <!--
-    <note_on number="70" />
-    <note_on number="71" />
-    <note_on number="72" />
-    -->
+    <note_on number="51" action="select_clip" args="10" />
+    <note_on number="52" action="select_clip" args="11" />
+    <note_on number="53" action="select_clip" args="12" />
+    <note_on number="54" action="select_clip" args="13" />
+    <note_on number="55" action="select_clip" args="14" />
+    <note_on number="56" action="select_clip" args="15" />
+    <note_on number="57" action="select_clip" args="16" />
+    <note_on number="58" action="select_clip" args="17" />
+    <note_on number="59" action="select_clip" args="18" />
+    <note_on number="60" action="select_clip" args="19" />
+
+    <note_on number="61" action="select_clip" args="20" />
+    <note_on number="62" action="select_clip" args="21" />
+    <note_on number="63" action="select_clip" args="22" />
+    <note_on number="64" action="select_clip" args="23" />
+    <note_on number="65" action="select_clip" args="24" />
+    <note_on number="66" action="select_clip" args="25" />
+    <note_on number="67" action="select_clip" args="26" />
+    <note_on number="68" action="select_clip" args="27" />
+    <note_on number="69" action="select_clip" args="28" />
+    <note_on number="70" action="select_clip" args="29" />
+
+    <note_on number="71" action="select_clip" args="30" />
+    <note_on number="72" action="select_clip" args="30" />
 
     <!-- Program change: select_clip -->
     <program_change action="select_clip" />
