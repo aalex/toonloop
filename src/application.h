@@ -37,7 +37,7 @@ class OscInterface;
 class Pipeline;
 
 // FIXME:2010-08-17:aalex:We should allow more than 10 clips
-static const unsigned int MAX_CLIPS = 10;
+static const unsigned int MAX_CLIPS = 40;
 static const int DEFAULT_CAPTURE_WIDTH = 640;
 static const int DEFAULT_CAPTURE_HEIGHT = 480;
 // TODO:2010-10-15:aalex:Internationalize the help text.
