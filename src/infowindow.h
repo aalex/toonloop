@@ -36,5 +36,6 @@ class InfoWindow
         Application *app_;
         ClutterActor *stage_;
         ClutterActor *text_;
+        static void on_window_destroyed(ClutterActor &stage, gpointer data);
 };
 #endif

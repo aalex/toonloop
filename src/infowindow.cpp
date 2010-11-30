@@ -25,6 +25,7 @@
 #include "gui.h"
 #include "infowindow.h"
 #include "pipeline.h"
+#include "unused.h"
 
 /**
  * Window to display some information. 
@@ -35,6 +36,21 @@ InfoWindow::InfoWindow(Application *app) :
     text_(NULL)
 {
 }
+
+void InfoWindow::on_window_destroyed(ClutterActor &stage, gpointer data)
+{
+    UNUSED(stage);
+    InfoWindow *self = static_cast<InfoWindow *>(data);
+    std::cout << "Info window has been deleted" << std::endl;
+    self->app_->quit();
+}
+
+// static gboolean idle_cb(gpointer data)
+// {
+//     clutter_actor_queue_redraw(CLUTTER_ACTOR(data));
+//     return TRUE;
+// }
+
 void InfoWindow::create()
 {
     stage_ = clutter_stage_new();
@@ -44,16 +60,36 @@ void InfoWindow::create()
     }
     else
     {
-        ClutterColor black = {0, 0, 0, 255};
-        ClutterColor white = {255, 255, 255, 255};
+        ClutterColor black = { 0x00, 0x00, 0x00, 0xff };
+        ClutterColor white = { 0xff, 0xff, 0xff, 0xff };
+        ClutterColor light_gray = { 0xcc, 0xcc, 0xcc, 0xff };
+        ClutterColor background_color = { 0x00, 0x00, 0x00, 0xff };
+
         clutter_stage_set_color(CLUTTER_STAGE(stage_), &black);
         clutter_stage_set_title(CLUTTER_STAGE(stage_), "Toonloop Information");
         // TODO:make stage's size configurable
         gfloat width = 320.0f;
         gfloat height = 240.0f;
         clutter_actor_set_size(stage_, width, height);
+
+        // stroke
+        ClutterActor *rect1 = clutter_rectangle_new_with_color(&light_gray);
+        clutter_actor_set_size(rect1, width, height);
+        clutter_container_add_actor(CLUTTER_CONTAINER(stage_), rect1);
+
+        // background color
+        ClutterActor *rect2 = clutter_rectangle_new_with_color(&background_color);
+        clutter_actor_set_size(rect2, width - 4, height - 4);
+        clutter_actor_set_position(rect2, 2, 2);
+        clutter_container_add_actor(CLUTTER_CONTAINER(stage_), rect2);
+        
         text_ = clutter_text_new_full("Sans semibold 12px", "", &white);
+        clutter_actor_set_position(rect2, 4, 4);
         clutter_container_add_actor(CLUTTER_CONTAINER(stage_), text_);
+
+        g_signal_connect(CLUTTER_STAGE(stage_), "delete-event", G_CALLBACK(InfoWindow::on_window_destroyed), this);
+        //g_idle_add(idle_cb, stage_);
+
         clutter_actor_show(stage_);
     }
 }
