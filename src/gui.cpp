@@ -572,8 +572,9 @@ void Gui::on_render_frame(ClutterTimeline * /*timeline*/, gint /*msecs*/, gpoint
         context->fps_calculation_timer_.reset();
     }
     // Display info:
-    //if (context->enable_info_)
-    context->update_info_text();
+    if (context->enable_info_)
+        context->update_info_text();
+    context->info_window_.update_info_window();
 
     context->owner_->get_controller()->update_playback_image();
 
@@ -1028,6 +1029,31 @@ void Gui::on_black_out_changed(std::string &name, int value)
         clutter_actor_show(black_out_rectangle_);
 }
 
+std::string Gui::get_layout_name(layout_number layout)
+{
+    switch (layout)
+    {
+        case LAYOUT_SPLITSCREEN:
+            return std::string("splitscreen");
+            break;
+        case LAYOUT_OVERLAY:
+            return std::string("overlay");
+            break;
+        case LAYOUT_PLAYBACK_ONLY:
+            return std::string("playback_only");
+            break;
+        case LAYOUT_PORTRAIT:
+            return std::string("portrait");
+            break;
+        case LAYOUT_LIVEFEED_ONLY:
+            return std::string("live_feed");
+            break;
+        default:
+            return std::string("unknown");
+            break;
+    }
+}
+
 void Gui::update_info_text()
 {
     static const bool isUnstable = PACKAGE_VERSION_MINOR % 2 == 1;
@@ -1039,28 +1065,7 @@ void Gui::update_info_text()
         (isGit ? "(Git)" : "") << std::endl << std::endl <<
         "Press i to hide info" << std::endl;
     os << "OpenGL rendering rate: " << rendering_fps_ << " FPS" << std::endl;
-    os << "Layout: " << current_layout_;
-    switch (current_layout_)
-    {
-        case LAYOUT_SPLITSCREEN:
-            os << " (splitscreen)";
-            break;
-        case LAYOUT_OVERLAY:
-            os << " (overlay)";
-            break;
-        case LAYOUT_PLAYBACK_ONLY:
-            os << " (playback_only)";
-            break;
-        case LAYOUT_PORTRAIT:
-            os << " (portrait)";
-            break;
-        case LAYOUT_LIVEFEED_ONLY:
-            os << " (live_feed)";
-            break;
-        default:
-            os << " (unknown)";
-            break;
-    }
+    os << "Layout: " << get_layout_name(current_layout_);
     os << std::endl;
     os << std::endl;
     os << "Current clip: " << current_clip->get_id() << std::endl;
@@ -1070,7 +1075,6 @@ void Gui::update_info_text()
     os << "Intervalometer rate: " << current_clip->get_intervalometer_rate() << std::endl;
     os << "Intervalometer enabled:" << owner_->get_pipeline()->get_intervalometer_is_on() << std::endl;
     clutter_text_set_text(CLUTTER_TEXT(info_text_actor_), os.str().c_str());
-    info_window_.set_info_text(os.str());
 }
 
 /**

@@ -301,6 +301,23 @@ unsigned int Clip::iterate_playhead()
     return playhead_;
 }
 
+std::string Clip::get_direction_name(clip_direction direction)
+{
+    switch (direction)
+    {
+        case DIRECTION_FORWARD:
+            return std::string("forward");
+            break;
+        case DIRECTION_BACKWARD:
+            return std::string("backward");
+            break;
+        case DIRECTION_YOYO:
+            return std::string("yoyo");
+            break;
+    }
+    return std::string("unknown");
+}
+
 unsigned int Clip::size() const
 {
     return images_.size();

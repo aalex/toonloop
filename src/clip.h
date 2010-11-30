@@ -81,6 +81,7 @@ class Clip
         bool remove_last_image();
         bool remove_first_image();
         void set_remove_deleted_images(bool enabled);
+        static std::string get_direction_name(clip_direction direction);
     private:
         unsigned int id_;
         unsigned int playhead_;

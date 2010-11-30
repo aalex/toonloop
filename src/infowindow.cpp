@@ -19,8 +19,12 @@
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "infowindow.h"
 #include <clutter/clutter.h>
+#include "application.h"
+#include "clip.h"
+#include "gui.h"
+#include "infowindow.h"
+#include "pipeline.h"
 
 /**
  * Window to display some information. 
@@ -54,8 +58,24 @@ void InfoWindow::create()
     }
 }
 
-void InfoWindow::set_info_text(const std::string &text)
+void InfoWindow::update_info_window()
 {
-    if (text_)
-        clutter_text_set_text(CLUTTER_TEXT(text_), text.c_str());
+    if (! text_)
+        return;
+    Gui *gui = app_->get_gui();
+    Clip* current_clip = app_->get_current_clip();
+    Gui::layout_number current_layout = gui->get_layout();
+    std::ostringstream os;
+
+    os << "Layout: " << current_layout << " (" << gui->get_layout_name(current_layout) << ")" << std::endl;
+    os << std::endl;
+    os << "CLIP: " << current_clip->get_id() << std::endl;
+    os << "  FPS: " << current_clip->get_playhead_fps() << std::endl;
+    os << "  Playhead: " << current_clip->get_playhead() << std::endl;
+    os << "  Writehead: " << current_clip->get_writehead() << "/" << current_clip->size() << std::endl;
+    os << "  Direction: " << Clip::get_direction_name(current_clip->get_direction()) << std::endl;
+    os << std::endl;
+    os << "  Intervalometer rate: " << current_clip->get_intervalometer_rate() << std::endl;
+    os << "  Intervalometer enabled: " << (app_->get_pipeline()->get_intervalometer_is_on() ? "yes" : "no") << std::endl;
+    clutter_text_set_text(CLUTTER_TEXT(text_), os.str().c_str());
 }

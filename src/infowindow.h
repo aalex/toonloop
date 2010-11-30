@@ -23,6 +23,7 @@
 #define __INFOWINDOW_H__
 #include <clutter/clutter.h>
 #include <string>
+#include <iostream>
 class Application;
 
 class InfoWindow
@@ -30,7 +31,7 @@ class InfoWindow
     public:
         InfoWindow(Application *app);
         void create();
-        void set_info_text(const std::string &text);
+        void update_info_window();
     private:
         Application *app_;
         ClutterActor *stage_;
