@@ -46,7 +46,7 @@
     <note_on number="70" action="select_clip" args="29" />
 
     <note_on number="71" action="select_clip" args="30" />
-    <note_on number="72" action="select_clip" args="30" />
+    <note_on number="72" action="select_clip" args="31" />
 
     <!-- Program change: select_clip -->
     <program_change action="select_clip" />
