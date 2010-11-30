@@ -9,8 +9,8 @@ Once the tag is done for the version number in the RELEASE notes, they are moved
 Top Priorities
 --------------
  * editing: allow an infinity of clips. Paging could allow more than ten clips. Use <>
- * gui: Support a separate window for informations (optional)
  * gui: Display thumbnails of the first image in each clip in the info window
+ * gui: Display info about current clip in the info window
  * midi: review and simplify multithread messaging
  * controller: review and simplify properties.h and controller.h
  * controller: If a property already exists, trying to create it should return a pointer to the other one. (to avoid race conditions upon property creation?) 
