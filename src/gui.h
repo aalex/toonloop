@@ -64,7 +64,9 @@ class Gui
         void set_layout(layout_number layout);
         void toggle_layout();
         void set_blending_mode(BlendingMode mode);
-        std::string get_layout_name(layout_number layout);
+        BlendingMode get_blending_mode() const { return blending_mode_; }
+        static std::string get_blending_mode_name(BlendingMode mode);
+        static std::string get_layout_name(layout_number layout);
         
     private:
         void crossfade_increment(float value);

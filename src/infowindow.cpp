@@ -65,9 +65,11 @@ void InfoWindow::update_info_window()
     Gui *gui = app_->get_gui();
     Clip* current_clip = app_->get_current_clip();
     Gui::layout_number current_layout = gui->get_layout();
+    Gui::BlendingMode blending_mode = gui->get_blending_mode();
     std::ostringstream os;
 
     os << "Layout: " << current_layout << " (" << gui->get_layout_name(current_layout) << ")" << std::endl;
+    os << "Blending mode: " << blending_mode << " (" << gui->get_blending_mode_name(blending_mode) << ")" << std::endl;
     os << std::endl;
     os << "CLIP: " << current_clip->get_id() << std::endl;
     os << "  FPS: " << current_clip->get_playhead_fps() << std::endl;

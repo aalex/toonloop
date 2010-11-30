@@ -1147,3 +1147,19 @@ Gui::~Gui()
         //g_print("TODO: clutter destroy texture\n");
     }
 }
+
+std::string Gui::get_blending_mode_name(BlendingMode mode)
+{
+    switch (mode)
+    {
+        case BLENDING_MODE_ADDITIVE:
+            return std::string("additive");
+            break;
+        case BLENDING_MODE_NORMAL:
+            return std::string("normal");
+            break;
+        default: 
+            return std::string("unknown");
+            break;
+    }
+}
