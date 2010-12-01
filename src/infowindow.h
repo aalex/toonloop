@@ -36,6 +36,11 @@ class InfoWindow
         Application *app_;
         ClutterActor *stage_;
         ClutterActor *text_;
+        ClutterActor *clipping_group_;
+        ClutterActor *scrollable_box_;
+        // List of ClutterActor *
+        GList *groups_; 
         static void on_window_destroyed(ClutterActor &stage, gpointer data);
+        static void on_drag_motion(ClutterDragAction *action, ClutterActor *actor, gfloat delta_x, gfloat delta_y, gpointer data);
 };
 #endif
