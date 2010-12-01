@@ -26,6 +26,7 @@
 #include "infowindow.h"
 #include "pipeline.h"
 #include "unused.h"
+#include "controller.h"
 
 static const float EACH_CLIP_ACTOR_WIDTH = 80.0;
 
@@ -77,41 +78,39 @@ void InfoWindow::create()
 
         // Create the layout manager first
         ClutterLayoutManager *layout = clutter_box_layout_new (); // FIXME: memleak?
-        clutter_box_layout_set_homogeneous (CLUTTER_BOX_LAYOUT (layout), TRUE);
+        //clutter_box_layout_set_homogeneous (CLUTTER_BOX_LAYOUT (layout), TRUE);
         clutter_box_layout_set_spacing (CLUTTER_BOX_LAYOUT (layout), 4);
         // Then create the ClutterBox actor. The Box will take ownership of the ClutterLayoutManager instance by sinking its floating reference
         clipping_group_ = clutter_group_new(); // FIXME: memleak?
-        clutter_actor_set_size(clipping_group_, 620, 120);
-        clutter_actor_set_clip_to_allocation(clipping_group_, TRUE);
+        clutter_actor_set_size(clipping_group_, 620.0, 120.0);
+        clutter_actor_set_position(clipping_group_, 0.0, 120.0);
+        //clutter_actor_set_clip_to_allocation(clipping_group_, TRUE);
         scrollable_box_ = clutter_box_new(layout);
         clutter_container_add_actor(CLUTTER_CONTAINER(clipping_group_), scrollable_box_);
         clutter_container_add_actor(CLUTTER_CONTAINER(stage_), clipping_group_);
-        // Make it draggable
-        ClutterAction *action = clutter_drag_action_new(); // FIXME: memleak?
-        clutter_drag_action_set_drag_axis(CLUTTER_DRAG_ACTION(action), CLUTTER_DRAG_X_AXIS);
-        clutter_actor_add_action(scrollable_box_, action);
-        clutter_actor_set_reactive(scrollable_box_, TRUE);
-        g_signal_connect(action, "drag-motion", G_CALLBACK(InfoWindow::on_drag_motion), this);
 
         // Add the stuff for the clips:
+        // TODO: stop using the MAX_CLIPS constant
         for (unsigned int i = 0; i < MAX_CLIPS; i++)
         {
             //Clip *clip = app_->get_clip(i);
-            ClutterActor *group = clutter_group_new();
-            groups_ = g_list_append(groups_, group);
-            clutter_actor_set_size(group, EACH_CLIP_ACTOR_WIDTH, 100);
-            clutter_actor_set_clip_to_allocation(group, TRUE);
+            ClipInfoBox *clip_info_box = new ClipInfoBox;
+            clips_[i] = std::tr1::shared_ptr<ClipInfoBox>(clip_info_box);
+            clip_info_box->group_ = clutter_group_new();
+            clutter_actor_set_size(clip_info_box->group_, EACH_CLIP_ACTOR_WIDTH, 100);
 
             std::ostringstream os;
             os << "Clip #" << i;
-            ClutterActor *text = clutter_text_new_full("Sans semibold 8px", os.str().c_str(), &white);
-            clutter_actor_set_position(text, 2.0, 2.0);
-            clutter_container_add_actor(CLUTTER_CONTAINER(group), text);
-            ClutterActor *rect = clutter_rectangle_new_with_color(&gray);
-            clutter_actor_set_size(rect, 80, 80);
-            clutter_actor_set_position(text, 10, 16);
-            clutter_container_add_actor(CLUTTER_CONTAINER(group), rect);
-            clutter_box_pack (CLUTTER_BOX (scrollable_box_), group,
+            clip_info_box->image_ = clutter_rectangle_new_with_color(&gray);
+            clutter_actor_set_size(clip_info_box->image_, 80, 60);
+            clutter_container_add_actor(CLUTTER_CONTAINER(clip_info_box->group_), clip_info_box->image_);
+
+            clip_info_box->label_ = clutter_text_new_full("Sans semibold 8px", os.str().c_str(), &white);
+            clutter_actor_set_position(clip_info_box->label_, 2.0, 2.0);
+            clutter_container_add_actor(CLUTTER_CONTAINER(clip_info_box->group_), clip_info_box->label_);
+            clutter_actor_set_position(clip_info_box->label_, 10, 16);
+
+            clutter_box_pack (CLUTTER_BOX (scrollable_box_), clip_info_box->group_,
                            "x-align", CLUTTER_BOX_ALIGNMENT_END,
                            "expand", TRUE,
                            NULL);
@@ -119,37 +118,18 @@ void InfoWindow::create()
 
         g_signal_connect(CLUTTER_STAGE(stage_), "delete-event", G_CALLBACK(InfoWindow::on_window_destroyed), this);
 
+        Controller *controller = app_->get_controller();
+        controller->choose_clip_signal_.connect(boost::bind( &InfoWindow::on_choose_clip, this, _1));
+
         clutter_actor_show(stage_);
     }
 }
 
-void InfoWindow::on_drag_motion(
-    ClutterDragAction *action,
-    ClutterActor *actor,
-    gfloat delta_x, gfloat delta_y, gpointer data)
+/** Slot for Controller::choose_clip_signal_
+ * */
+void InfoWindow::on_choose_clip(unsigned int clip_number)
 {
-    UNUSED(actor);
-    UNUSED(delta_y);
-    InfoWindow *self = static_cast<InfoWindow *>(data);
-    gdouble container_w = clutter_actor_get_width(self->clipping_group_);
-    gdouble dragged_w = clutter_actor_get_width(self->scrollable_box_);
-    gdouble dragged_x = clutter_actor_get_x(self->scrollable_box_);
-    gdouble pos = dragged_x + delta_x;
-    gdouble min_pos = container_w - dragged_w;
-
-    //g_print("POS=%f and should be between %f and 0\n", pos, min_pos);
-    if (pos <= min_pos && delta_x < 0.0)
-    {
-        // in Clutter 2.0 we will be able to simply return FALSE instead of calling g_signal_stop_emission_by_name
-        g_signal_stop_emission_by_name(action, "drag-motion");
-        clutter_actor_set_x(self->scrollable_box_, min_pos);
-    }
-    else if (pos >= 0.0 && delta_x > 0.0)
-    {
-        g_signal_stop_emission_by_name(action, "drag-motion");
-        //g_print("GOTO 0: %f\n", pos);
-        clutter_actor_set_x(self->scrollable_box_, 0.0);
-    }
+    std::cout << __FUNCTION__ << clip_number << std::endl;
 }
 
 void InfoWindow::update_info_window()

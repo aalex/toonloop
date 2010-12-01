@@ -24,7 +24,20 @@
 #include <clutter/clutter.h>
 #include <string>
 #include <iostream>
+#include <vector>
+#include <tr1/memory>
+
 class Application;
+using std::tr1::shared_ptr;
+// TODO: change for a struct since all its data is public.
+class ClipInfoBox
+{
+    public:
+        ClutterActor *group_;
+        ClutterActor *image_;
+        ClutterActor *label_;
+        gdouble position_;
+};
 
 class InfoWindow
 {
@@ -38,9 +51,8 @@ class InfoWindow
         ClutterActor *text_;
         ClutterActor *clipping_group_;
         ClutterActor *scrollable_box_;
-        // List of ClutterActor *
-        GList *groups_; 
+        std::vector<shared_ptr<ClipInfoBox> > clips_;
         static void on_window_destroyed(ClutterActor &stage, gpointer data);
-        static void on_drag_motion(ClutterDragAction *action, ClutterActor *actor, gfloat delta_x, gfloat delta_y, gpointer data);
+        void on_choose_clip(unsigned int clip_number);
 };
 #endif
