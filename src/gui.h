@@ -82,6 +82,7 @@ class Gui
         void on_crossfade_ratio_changed(std::string &name, float value);
         void on_livefeed_opacity_changed(std::string &name, int value);
         void on_black_out_changed(std::string &name, int value);
+        void on_black_out_opacity_changed(std::string &name, int value);
         void enable_onionskin(bool value);
         void set_onionskin_opacity(int value);
         void hideCursor();

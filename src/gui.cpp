@@ -1001,6 +1001,7 @@ Gui::Gui(Application* owner) :
     controller->add_float_property("crossfade_ratio", 0.0)->value_changed_signal_.connect(boost::bind(&Gui::on_crossfade_ratio_changed, this, _1, _2));
     controller->add_int_property("livefeed_opacity", 127)->value_changed_signal_.connect(boost::bind(&Gui::on_livefeed_opacity_changed, this, _1, _2));
     controller->add_int_property("black_out", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_changed, this, _1, _2));
+    controller->add_int_property("black_out_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_opacity_changed, this, _1, _2));
 
     // saturation effect:
     clutter_actor_set_name(playback_group_, "playback_group_");
@@ -1016,6 +1017,14 @@ Gui::Gui(Application* owner) :
         saturation_effect_->add_actor(onionskin_group_);
         saturation_effect_->update_all_actors();
     }
+}
+
+void Gui::on_black_out_opacity_changed(std::string &name, int value)
+{
+    if (owner_->get_configuration()->get_verbose())
+        g_print("make black_out opacity %d\n", value);
+    UNUSED(name);
+    clutter_actor_set_opacity(black_out_rectangle_, value);
 }
 
 void Gui::on_black_out_changed(std::string &name, int value)
