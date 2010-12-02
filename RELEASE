@@ -1,25 +1,15 @@
-2010-12-02 Toonloop 2.1.4 ("pas de deux")
------------------------------------------
+2010-??-?? Toonloop 2.1.6
+-------------------------
 
 This release is a snapshot in the 2.1 unstable series. 
 
 This version contains new features and bug fixes. 
 
-We have finally implemented again a support for GLSL shader effects. Also, a new info window allows one to view a thumbnail for each clip in a separate display, to ease controlling the looper during a live performance.
-
 New features:
-    * Black out when x is pressed
-    * Added layout livefeed_only
-    * Added the --enable-shaders option
-    * Saturation effect (brightness, contrast and saturation)
-    * Added a separate window for information. (--enable-info-window)
-    * Show a row of thumbnails to represent each clip.
-    * black out opacity can be changed
+    * 
 
 Bug fixes: 
-    * Fixed bug with playback not being show at all (since added layout livefeed_only)
-    * Using shared_ptr for map of clips
-    * Allow up to 40 clips
+    * 
 
 Notes:
     * If you run toonloop from a directory in your home (not in /usr/local) it might use the midi.xml file in /usr/local, unless you are in the same directory as the executable. Be careful.
