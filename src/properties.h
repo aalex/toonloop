@@ -24,6 +24,7 @@
 #include <map>
 // TODO: use tr1:unordered_map, since lookup is faster with it
 #include <string>
+#include <iostream>
 #include <boost/shared_ptr.hpp>
 #include "property.h"
 
@@ -38,6 +39,12 @@ template <typename T> class Properties
         Property<T> *add_property(const std::string &name, T value)
         {
             // TODO: check if we have it.
+            if (has_property(name))
+            {
+                std::cout << "Warning: property \"" << name << 
+                    "\" already exists" << std::endl;
+                return 0;
+            }
             properties_[name] = PropertyPtr(new Property<T>(name, value));
             return get_property(name);
         }
@@ -52,6 +59,29 @@ template <typename T> class Properties
             if (properties_.find(name) == properties_.end())
                 return 0;
             return properties_.find(name)->second.get();
+        }
+
+        bool set_property_value(const std::string &name, T value)
+        {
+            if (not has_property(name))
+            {
+                std::cout << "No such property \"" << name << "\"" << std::endl;
+                return false;
+            }
+            else
+                properties_[name]->set_value(value);
+            return true;
+        }
+
+        T get_property_value(const std::string &name)
+        {
+            if (not has_property(name))
+            {
+                std::cout << "No such property \"" << name << "\"" << std::endl;
+                return 0;
+            }
+            else
+                return properties_[name]->get_value();
         }
 
         bool has_property(const std::string &name) const
