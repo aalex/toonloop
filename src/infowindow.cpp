@@ -82,26 +82,14 @@ void InfoWindow::create()
         
         // each image will be 80x60.
         // Plus some text under it
-
-        // Create the layout manager first
-        ClutterLayoutManager *layout = clutter_box_layout_new (); // FIXME: memleak?
-        //clutter_box_layout_set_homogeneous (CLUTTER_BOX_LAYOUT (layout), TRUE);
         gdouble EACH_PADDING = 4;
-        clutter_box_layout_set_spacing (CLUTTER_BOX_LAYOUT (layout), EACH_PADDING);
-        // Then create the ClutterBox actor. The Box will take ownership of the ClutterLayoutManager instance by sinking its floating reference
         clipping_group_ = clutter_group_new(); // FIXME: memleak?
         clutter_actor_set_size(clipping_group_, 620.0, 220.0);
         clutter_actor_set_position(clipping_group_, 0.0, 180.0);
 
 
         static const float EACH_CLIP_ACTOR_WIDTH = 80.0;
-        //ClutterActor *highlight = clutter_rectangle_new_with_color(&white); // memleak?
-        //clutter_actor_set_size(highlight, EACH_CLIP_ACTOR_WIDTH + 2, 62);
-        //clutter_actor_set_position(highlight, -1, -1);
-        //clutter_container_add_actor(CLUTTER_CONTAINER(clipping_group_), highlight);
-        
-        //clutter_actor_set_clip_to_allocation(clipping_group_, TRUE);
-        scrollable_box_ = clutter_box_new(layout);
+        scrollable_box_ = clutter_group_new();
         clutter_container_add_actor(CLUTTER_CONTAINER(clipping_group_), scrollable_box_);
         clutter_container_add_actor(CLUTTER_CONTAINER(stage_), clipping_group_);
 
@@ -109,7 +97,6 @@ void InfoWindow::create()
         // TODO: stop using the MAX_CLIPS constant
         for (unsigned int i = 0; i < MAX_CLIPS; i++)
         {
-            //Clip *clip = app_->get_clip(i);
             using std::tr1::shared_ptr;
             clips_.push_back(shared_ptr<ClipInfoBox>(new ClipInfoBox()));
             ClipInfoBox *clip_info_box = clips_.at(i).get();
@@ -130,11 +117,10 @@ void InfoWindow::create()
             clutter_container_add_actor(CLUTTER_CONTAINER(clip_info_box->group_), clip_info_box->label_);
             clutter_actor_set_position(clip_info_box->label_, 10, 16);
             
-            clutter_box_pack (CLUTTER_BOX (scrollable_box_), clip_info_box->group_,
-                           "x-align", CLUTTER_BOX_ALIGNMENT_END,
-                           "expand", TRUE,
-                           NULL);
-            clip_info_box->position_ = - (EACH_CLIP_ACTOR_WIDTH * i + EACH_PADDING * 2 + /* arbitrary constant */ (3 * i)) + /* about half the window */ 300;
+            clip_info_box->position_ = EACH_CLIP_ACTOR_WIDTH * i + i * EACH_PADDING * 2;
+            clutter_actor_set_position(clip_info_box->group_, clip_info_box->position_, 0);
+            std::cout << "position:" << clip_info_box->position_ << std::endl;
+            clutter_container_add_actor(CLUTTER_CONTAINER(scrollable_box_), clip_info_box->group_);
             // set the label's text
             update_num_frames(i);
         }
@@ -151,6 +137,7 @@ void InfoWindow::create()
         controller->clip_cleared_signal_.connect(boost::bind(
             &InfoWindow::on_clip_cleared, this, _1));
 
+        on_choose_clip(0);
         clutter_actor_show(stage_);
     }
 }
@@ -242,8 +229,9 @@ void InfoWindow::on_choose_clip(unsigned int clip_number)
     //clutter_actor_animate(scrollable_box_, CLUTTER_EASE_IN_OUT_SINE, 200,
     //    "x", current->position_, 
     //    NULL);
-    clutter_actor_set_x(scrollable_box_, current->position_);
-    clutter_rectangle_set_color(CLUTTER_RECTANGLE(current->rect_), &red);
+    gdouble goto_pos = 300 - current->position_;
+    clutter_actor_set_x(scrollable_box_, goto_pos);
+    std::cout << "GOTO position:" << goto_pos << std::endl;
     if (previously_selected_ >= clips_.size())
     {
         g_critical("%s: Clip number bigger than size of known clips.", __FUNCTION__);
@@ -251,6 +239,8 @@ void InfoWindow::on_choose_clip(unsigned int clip_number)
     }
     ClipInfoBox *previous = clips_.at(previously_selected_).get();
     clutter_rectangle_set_color(CLUTTER_RECTANGLE(previous->rect_), &gray);
+    clutter_rectangle_set_color(CLUTTER_RECTANGLE(current->rect_), &red);
+    
     previously_selected_ = clip_number;
 }
 
