@@ -28,7 +28,6 @@
 #include "unused.h"
 #include "controller.h"
 
-static const float EACH_CLIP_ACTOR_WIDTH = 80.0;
 
 static ClutterColor gray = { 0x99, 0x99, 0x99, 0xff };
 static ClutterColor white = { 0xff, 0xff, 0xff, 0xff };
@@ -90,6 +89,8 @@ void InfoWindow::create()
         clutter_actor_set_size(clipping_group_, 620.0, 120.0);
         clutter_actor_set_position(clipping_group_, 0.0, 180.0);
 
+
+        static const float EACH_CLIP_ACTOR_WIDTH = 80.0;
         //ClutterActor *highlight = clutter_rectangle_new_with_color(&white); // memleak?
         //clutter_actor_set_size(highlight, EACH_CLIP_ACTOR_WIDTH + 2, 62);
         //clutter_actor_set_position(highlight, -1, -1);
@@ -126,7 +127,7 @@ void InfoWindow::create()
                            "x-align", CLUTTER_BOX_ALIGNMENT_END,
                            "expand", TRUE,
                            NULL);
-            clip_info_box->position_ = - (EACH_CLIP_ACTOR_WIDTH * i + EACH_PADDING * 2);
+            clip_info_box->position_ = - (EACH_CLIP_ACTOR_WIDTH * i + EACH_PADDING * 2 + /* arbitrary constant */ (3 * i)) + /* about half the window */ 300;
         }
 
         g_signal_connect(CLUTTER_STAGE(stage_), "delete-event", G_CALLBACK(InfoWindow::on_window_destroyed), this);
@@ -197,9 +198,10 @@ void InfoWindow::on_choose_clip(unsigned int clip_number)
     }
     ClipInfoBox *current = clips_.at(clip_number).get();
     //std::cout << __FUNCTION__ << " " << clip_number << " goto x=" << current->position_ << std::endl;
-    clutter_actor_animate(scrollable_box_, CLUTTER_EASE_IN_OUT_SINE, 200,
-        "x", current->position_, 
-        NULL);
+    //clutter_actor_animate(scrollable_box_, CLUTTER_EASE_IN_OUT_SINE, 200,
+    //    "x", current->position_, 
+    //    NULL);
+    clutter_actor_set_x(scrollable_box_, current->position_);
     clutter_rectangle_set_color(CLUTTER_RECTANGLE(current->image_), &red);
     if (previously_selected_ >= clips_.size())
     {
