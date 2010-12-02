@@ -20,6 +20,7 @@
  */
 
 #include <clutter/clutter.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include "application.h"
 #include "clip.h"
 #include "gui.h"
@@ -27,7 +28,6 @@
 #include "pipeline.h"
 #include "unused.h"
 #include "controller.h"
-
 
 static ClutterColor gray = { 0x99, 0x99, 0x99, 0xff };
 static ClutterColor white = { 0xff, 0xff, 0xff, 0xff };
@@ -211,6 +211,41 @@ void InfoWindow::on_choose_clip(unsigned int clip_number)
     ClipInfoBox *previous = clips_.at(previously_selected_).get();
     clutter_rectangle_set_color(CLUTTER_RECTANGLE(previous->image_), &gray);
     previously_selected_ = clip_number;
+}
+
+void InfoWindow::load_thumbnail_from_file(ClutterTexture *texture, const std::string &file_name, int width, int height)
+{
+    GdkPixbuf *pixbuf;
+    GError *error = NULL;
+    pixbuf = gdk_pixbuf_new_from_file_at_size(
+        file_name.c_str(),
+        width,
+        height,
+        &error);
+    if (!pixbuf)
+    {
+        g_warning ("Error loading pixbuf: %s", error->message);
+        g_error_free (error);
+        error = NULL;
+        return;
+    }
+    clutter_texture_set_from_rgb_data(
+        texture,
+        gdk_pixbuf_get_pixels (pixbuf),
+        gdk_pixbuf_get_has_alpha (pixbuf),
+        gdk_pixbuf_get_width (pixbuf),
+        gdk_pixbuf_get_height (pixbuf),
+        gdk_pixbuf_get_rowstride (pixbuf),
+        gdk_pixbuf_get_n_channels (pixbuf),
+        (ClutterTextureFlags) 0,
+        &error);
+    if (error)
+    {
+        g_warning ("Error loading the pixbuf's pixels into texture: %s", error->message);
+        g_error_free (error);
+        error = NULL;
+    }
+    g_object_unref(pixbuf);
 }
 
 void InfoWindow::update_info_window()

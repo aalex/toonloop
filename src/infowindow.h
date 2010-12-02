@@ -65,5 +65,7 @@ class InfoWindow
         void on_add_frame(unsigned int clip_number, unsigned int frame_number);
         void on_remove_frame(unsigned int clip_number, unsigned int frame_number);
         void on_clip_cleared(unsigned int clip_number);
+
+        void load_thumbnail_from_file(ClutterTexture *texture, const std::string &file_name, int width, int height);
 };
 #endif
