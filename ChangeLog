@@ -1,3 +1,1647 @@
+commit eb26a7dad5bd0fa90a4d95bf94cbb7d30b904f04
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 14:50:02 2010 -0500
+
+    preparing release 2.1.4
+
+commit a030bb24b2aa55ce28ea2c796b9eb7587a82e258
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 14:36:05 2010 -0500
+
+    added a slider to test black out opacity in pd patch
+
+commit 9782f5b6d2f18942623332a3fb9423a58f560c20
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 14:24:57 2010 -0500
+
+    updated RELEASE
+
+commit b3a58e44bc4ddbc94c8be7303792f1d633702f28
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 14:23:26 2010 -0500
+
+    rectangles in the info window are now well aligned.
+    
+    Clip 0 is highlighted at startup.
+
+commit 66009e4b44a0e3a02ad600ac50871efde961fa4d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 14:06:44 2010 -0500
+
+    show a thumbnail for each clip
+
+commit b9beb768454cd4774d94de741d3fa1275e8df7b7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 13:23:08 2010 -0500
+
+    renamed image to rect in InfoWindow
+
+commit 00213106b793c7309e11ced4351c967bbc2167c1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 12:36:35 2010 -0500
+
+    added InfoWindow::load_thumbnail_from_file (not tested)
+
+commit 810830e6cd043e96110d72b95fe1ce904aefd90a
+Author: Tristan Matthews <le.businessman@gmail.com>
+Date:   Thu Dec 2 10:20:58 2010 -0500
+
+    properties: cleanup API a bit, have Properties class do more of the work.
+
+commit 2db4e7a28a72f39b58ead5045254367ea8ef0834
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 00:38:32 2010 -0500
+
+    updated RELEASE
+
+commit 12d885193bd6bed02dd68756edae0c7f986e6a53
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 00:37:02 2010 -0500
+
+    No animation. Just warp to the rectangle.
+
+commit 1f0104987a926926df5edbcca25ab6cc6c87e987
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 00:30:08 2010 -0500
+
+    info window shows frame count per clip
+
+commit 1bb1b93bfd56eb64fc006de8927001d00975dc44
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 00:13:05 2010 -0500
+
+    now see a row of rectangles with clip numbers
+
+commit 012cb4ddad95cb9d12400944689152acf5cfeef8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Dec 1 17:39:17 2010 -0500
+
+    compiles but segfaults
+
+commit a6d1713f22745c60888553700011874574e587ae
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Dec 1 14:49:16 2010 -0500
+
+    it doesnt compile with clutter 1.2
+
+commit 3a20306c6b8dc46426d13b8ec0169d0f6a802648
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Dec 1 14:02:53 2010 -0500
+
+    adding black_out_opacity property
+
+commit d37f7684e9856ecdd83ba6fb9f162e673413bc3e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Nov 30 08:47:59 2010 -0500
+
+    more to do
+
+commit 527c7c906c373606747c04bd90b10ff9c7a52601
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Nov 30 00:18:22 2010 -0500
+
+    adding some rectangles - cannot close info window!?
+
+commit fa34e2e9463c81304f35f7a84438cfa4534869e8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 29 23:49:28 2010 -0500
+
+    display blending mode in info window
+
+commit 440a0b7dd1c0d61c6833b368d4f37865b0917a50
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 29 23:37:13 2010 -0500
+
+    imrproved text in info window
+
+commit 7bb2daa0cc0e673bb5a63211749ddfd1b9d2d304
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 29 23:37:09 2010 -0500
+
+    updated todo
+
+commit 1f547633f114da08057c44e0e1149e1d7faa0a3e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 29 19:45:38 2010 -0500
+
+    fixed a small mistake in midi config file
+
+commit fa05be5982ebf0cf14247584c6257b22892ade36
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 29 19:20:32 2010 -0500
+
+    notes choose clips
+
+commit 625bfcc720575fd510f754c08a66599775012b69
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 29 19:20:10 2010 -0500
+
+    more than 10 clips, but not yet dynamic
+
+commit 874baa2a1512209a116257101f666b19723bd820
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 28 23:23:07 2010 -0500
+
+    adding files i had forgotten in last commit
+
+commit 625042a3ff836c3a38584aaf63ba2d08ddb5a114
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 28 23:22:29 2010 -0500
+
+    Adding info window.
+
+commit e30ed42cbfdc93981b946334fc067122bae9dcc4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 28 22:54:12 2010 -0500
+
+    more to do
+
+commit 85c56ea58caf7cf46e26bcc0bf993567cb623a3a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 28 22:49:00 2010 -0500
+
+    more to do
+
+commit 0db1aaebb0ffbead5f1962039bed931805e17a39
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 28 22:42:42 2010 -0500
+
+    updated todo
+
+commit 6fcf0cc0e631a7d153da861c90b7fff00d05666f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 28 17:32:29 2010 -0500
+
+    added a todo
+
+commit 82780e222aa06109c84a54d5a5b75d2c24b24d7e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 28 15:59:13 2010 -0500
+
+    removed record video rule from MIDI bindings
+
+commit 40d3db15737840632a9d3a214a53f7c8c3c6e210
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 28 12:04:53 2010 -0500
+
+    a little less verbose
+
+commit 1b10c51f49ca604912a707cda0faad6851095a14
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 28 11:42:20 2010 -0500
+
+    added some midi rules for brcosa
+
+commit f4f241a48853a4ac4a6d505caa44eeeebc57aa6d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 27 23:14:23 2010 -0500
+
+    updated RELEASE
+
+commit 6b73410184473c38789da92617e0a0a3850af92d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 27 23:12:08 2010 -0500
+
+    Added --enable-shaders option
+
+commit 0c2bddce9e17f664b8f0c47096a44550c14d752f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 27 14:04:03 2010 -0500
+
+    less verbose
+
+commit d48454ed13513594bebd6b4af41a27953469f3fd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 27 14:01:59 2010 -0500
+
+    default is origial brcosa
+
+commit bafe0413f52f3e70737e46e8213609f17f3bdfbe
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 27 14:01:16 2010 -0500
+
+    the saturation effect works
+
+commit 2cf63c370fa288791ed7edb333d5442226b27e30
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 27 13:22:14 2010 -0500
+
+    the shader builds
+
+commit 96183bb0f8ae9d9fce507427e1b295d652d62971
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 27 01:01:08 2010 -0500
+
+    using saturationeffect doesnt work yet
+
+commit 5558fc8fb63cc8ae432ca5aaaf7c2ea4a9f4f6e9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 27 00:57:23 2010 -0500
+
+    towards using the SaturationEffect
+
+commit 30eb303054ab598caab9810fe07e814a566f2901
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 27 00:13:35 2010 -0500
+
+    updated RELEASE
+
+commit 6e3fdb5655c0f5646bb5623c3514badd89f17685
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 27 00:12:55 2010 -0500
+
+    updated RELEASE
+
+commit 390985afb6401ca9d04d8bc62b04050a3585424d
+Merge: 4652c9f b287e9e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 27 00:11:48 2010 -0500
+
+    Merge branch 'master' into sharedptr
+
+commit b287e9ed9a85bb83fcd7e9e350cb96b0aab24abb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 27 00:11:18 2010 -0500
+
+    fixed playback: was not shown at all ever!
+
+commit 3935bdfecceefea54cf24a6f50946c0182669419
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 27 00:06:49 2010 -0500
+
+    using specific clip number provided, not "current clip"
+
+commit 4652c9f8dc0045ed93cee1d6d2ad6621dc9f798a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 26 23:11:25 2010 -0500
+
+    tried to use shared_ptr for clips, but there is no image
+
+commit 5de31cbf15729441a1057c7eff27bd61ce51793a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 26 22:45:13 2010 -0500
+
+    updated RELEASE
+
+commit a8452dfc9a4b31f98ddf6966a1ec58fc8c868379
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 26 22:44:33 2010 -0500
+
+    added layout livefeed_only
+
+commit d858eb358e4a4663d94644c2230e55c7494ff165
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 26 22:32:41 2010 -0500
+
+    updated RELEASE notes
+
+commit 53ae042a4249bd2d488b6a9fe1da1a533d5dabc6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 26 22:32:01 2010 -0500
+
+    black the whole thing out when x is pressed
+
+commit c21cd01291b0e9a9fd662d190c64318b7e08380c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 24 12:51:36 2010 -0500
+
+    updating version number for more development
+
+commit 554e4dca6cec5bfd8b38bec8393e23cc3696dfa5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 24 12:49:15 2010 -0500
+
+    updated version for a snapshot
+
+commit 1f3e9daff1b5ca0d4a33f766b0ddc3f33f9bedd3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 24 11:43:10 2010 -0500
+
+    added a note about vlc in readme
+
+commit 633320b3f88d065b903f65c057edae67cba31f62
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 21 09:04:40 2010 -0500
+
+    changed midi mapping for a piksel gig. - removed a print
+
+commit 5509a37f766930729a7b3acd09fd410107fba9a7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 14:35:34 2010 -0500
+
+    HUD looks a bit better
+
+commit c691e39daa492434897b6f401b6b992a692be35a
+Merge: c96cdf8 5a32533
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 12:17:20 2010 -0500
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit c96cdf812e637cffa5e53f77d18aa5770934837a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 12:17:12 2010 -0500
+
+    more prints
+
+commit cf36700cfc89c1fcbe364f6e138621405d19501d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 12:09:20 2010 -0500
+
+    added a note and some prints
+
+commit 5a32533c717e7c3c98dbdfb59c1a66f1562a986b
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Sat Nov 20 12:02:15 2010 -0500
+
+    gui: info says if unstable and git
+
+commit 8688861ba997e06555078e1ee9130371420b2702
+Merge: b009ee2 339efb7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 11:46:03 2010 -0500
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit b009ee284f5df70f92ecf7de442bbb0eb2e7f8f8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 11:45:42 2010 -0500
+
+    select_clip works with MIDI bindings
+
+commit 339efb7400eec444049f97f48b66f2e603889884
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Sat Nov 20 08:00:42 2010 -0500
+
+    configure: added MAJOR,MINOR and MICRO version to config.h
+
+commit 76aebb4f053df9b3acee482419fb13018b7e3bee
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 07:37:26 2010 -0500
+
+    cleaned up undeclared methods
+
+commit f59687209a0f31cf73157919ab65f0d20edf9630
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 07:20:01 2010 -0500
+
+    updated release notes once more
+
+commit 423177c9e77d88e0553a93238969c2cfc8a2c719
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 07:02:25 2010 -0500
+
+    more midi tests in pd patch
+
+commit 6ce9ec2f23e7fbf9455b6047bfe441767e3218f4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 07:01:51 2010 -0500
+
+    Fixed issue with map_int always returning 0. Simplified Messaging.
+
+commit 158fab6e24daf5ce16242d11d41d8168e8762d9b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 06:17:01 2010 -0500
+
+    simplified accessing the controller for the gui
+    
+    Also removed if changed in Property
+
+commit fcffc93eabefa7813e7b27d031652bc217bba69a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 05:50:01 2010 -0500
+
+    updated RELEASE notes
+
+commit 73bf3782a52c79b9a6010ca390dea31276ffdf2b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 05:48:46 2010 -0500
+
+    Fixed overlay layout: livefeed was behind playback
+
+commit 6b3f4f323972ba8ccffbdaaaece2ce21bdf1998e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 05:35:02 2010 -0500
+
+    improved how info and help text look
+
+commit 503e18f049d521afa6c33cac77265f0a6b4176d4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 20 05:24:05 2010 -0500
+
+    Displaying FPS and layout name in info text HUD
+
+commit 39c8fec6337348a2a417325792f3a92979e93d44
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 19 21:56:46 2010 -0500
+
+    towards an actual brcosa toon-effect
+
+commit 4e0b03f041da39af9ce15522c54c66b2121df91c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 19 21:44:31 2010 -0500
+
+    glslang.cpp compiles - not used
+
+commit d5ed8cc6155ee4e49a3e1ccad84afcfe262434e9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 19 11:55:12 2010 -0500
+
+    adding release notes for 2.0.4
+
+commit 4a382be0530c27c5c6c28b9d628a28a05e0bb56c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 19 07:34:59 2010 -0500
+
+    effect.cpp and saturationeffect.cpp proto build ok
+
+commit d64aa6f2ce18d9c4b4d3e0134ecc2a1cc9f60556
+Merge: 4ce8cd7 667a47b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Nov 18 00:25:14 2010 -0500
+
+    Merge branch 'master' of /media/BEMOLNEUF/toonloop
+
+commit 4ce8cd7c98d0dc9098fad548dc015a0f643f7f73
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Nov 18 00:24:23 2010 -0500
+
+    adding effect.c and saturationeffect.c - wip
+
+commit 667a47bf97173330cfb5769d893544c39b601aa1
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Nov 17 22:04:14 2010 -0500
+
+    Controller: minor cleanup
+
+commit f4b91702b18cb3cd8a744f114d1f80e568d7913e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 17 19:43:54 2010 -0500
+
+    each effect must update each actor its assigned to
+
+commit 10335277216380691d5700d9690fd7ef6b55307d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 17 19:26:16 2010 -0500
+
+    adding effect.h - prototype of a base class for effects
+
+commit d3eb5e33e0563c117ef410784d11c9f280066881
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 17 19:12:57 2010 -0500
+
+    updated a todo
+
+commit 4137d2655f1ef967556b08b105412aa42eb99877
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 17 17:49:48 2010 -0500
+
+    added todos and comments
+
+commit 0184f90aba21bdd3c2268a25ecad5499286db50a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Nov 16 19:34:06 2010 -0500
+
+    towards controlling livefeed_opacity in midi (set_int)
+
+commit 83ed444fbd285cbe9b10c2f30211b801cd58893e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Nov 16 19:29:40 2010 -0500
+
+    Improved (?) support for int MIDI messages
+
+commit 6d279586c6967e16f0e24d5001749791ddeb6b0a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Nov 16 19:22:27 2010 -0500
+
+    livefeed_opacity is a property
+
+commit e3923bb6cc977d53192899f46b7f25f6434616a2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 15 22:27:58 2010 -0500
+
+    more to do
+
+commit ed4db6f5f4902f19a71a2a0837618299a13175bb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 15 22:23:45 2010 -0500
+
+    adding support for pitch bend
+
+commit 03450cb6945cf5d55ba70813f88e69b9308d9047
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 21:58:31 2010 -0500
+
+    updated RELEASE notes
+
+commit 4a50f058043c4c6d14d61f86344213bba859bb9e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 21:56:56 2010 -0500
+
+    Fixed crash with std::string given a null arg when looking for midi.xml
+    
+    The path to usr/share/toonloop/presets was wrong.
+
+commit 8762bfd537ac416df2d27239aa0faaca1a710855
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 20:37:26 2010 -0500
+
+    updated RELEASE notes
+
+commit 6ea9ab8ccf0ba3816c1ebdd094e5f13539a3b609
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 20:24:37 2010 -0500
+
+    made midi bindings less verbose
+
+commit 668381157b455ea3a3f09d6be5d40a2b8cbbd938
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 20:15:08 2010 -0500
+
+    modif in the pd patch
+
+commit 6b7290f0b21c8faa75c49ed3dd1d1ecd3a0b5138
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 20:14:42 2010 -0500
+
+    Can now set float property from MIDI with the XML config
+
+commit 7ee65b2387dd07d815eac022093ab6a1c1d82802
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 19:02:52 2010 -0500
+
+    Add Gui::on_crossfade_ratio_changed.
+    
+    Renamed crossfade_ratio_
+
+commit 9daafbb686f10cd205fa63af5ce1234a06bd6110
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 11:29:48 2010 -0500
+
+    moved crossfade_increment to its own Gui method
+
+commit bf99c73b37858ff8b8e54f423bd087d3e4323b65
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 11:10:28 2010 -0500
+
+    added some typedefs
+
+commit 4b2d6de88b45a3a3dd9cdfeb559484ab87dd81ed
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 10:54:42 2010 -0500
+
+    added wrapper methods for int and float properties
+
+commit 0da4dc2765e560b18eb6e0928daabd8d0fb6a15c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 10:07:25 2010 -0500
+
+    First proof of concept at using property for blending mode
+
+commit e73a2783fbc6121ad85a919452e2efc4c8a6aefa
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 02:52:24 2010 -0500
+
+    testing bool properties
+
+commit 178edc18704bde289ad5e4bc0cd3d133c5ecabd6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 02:45:37 2010 -0500
+
+    added Properties::has_property
+    
+    Added check_properties to make check
+
+commit a635412a3c844a063cc5a7275dbb6149fba1b111
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 02:38:20 2010 -0500
+
+    added some properties to the controller.
+    
+    Wrote a test with string properties.
+    Compiling is quite slow.
+
+commit 29a6ae79b04b88b086607c6402063b8f4a71ca25
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 02:29:32 2010 -0500
+
+    build check_properties as a test
+
+commit 94fea7ae0411c8a73030c653b17dc1c3a011a32d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 13 02:02:17 2010 -0500
+
+    adding the Property and Properties templates
+
+commit ce9de13af203ed7c54af0864bc031621215b9fd4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 10 19:48:52 2010 -0500
+
+    added to dos
+
+commit 8edcf6b452582093e59596f31dc6702c4384a579
+Merge: b4ab49e aaeed7f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 10 13:39:10 2010 -0500
+
+    Merge branch 'master' into shaders
+
+commit aaeed7f53b16693c092fe38fc2f5dd7f271b28d7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 10 13:36:06 2010 -0500
+
+    alpha looks better in in-out cubic easing
+
+commit 071931697158b8d41a9c726390aad0ec14df0075
+Merge: f32b048 136f002
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 10 13:33:12 2010 -0500
+
+    Merge branch 'add' of github.com:aalex/toonloop into add
+
+commit f32b0481e72000ccd3f4cc757d4e3524f686b202
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 10 13:30:56 2010 -0500
+
+    Fixed playback image sortings - lower to bottom
+
+commit 136f002335d7f933380c551641f8ba080a145d49
+Merge: 63d863e 1a628af
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Nov 10 13:11:47 2010 -0500
+
+    Merge branch 'add' of github.com:aalex/toonloop into add
+    
+    Conflicts:
+    	src/gui.cpp
+
+commit 63d863e3e24d8c28f8db0141f777295bed6908bb
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Nov 10 13:10:07 2010 -0500
+
+    gui: Fixed floating point arithmetic issues
+
+commit 1a628af65acec447d5657065dfad0f16ae65ba11
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 10 13:09:03 2010 -0500
+
+    do not fade out if clip size <= 1
+
+commit 70c2e40bff40320f4a884bdfc6d76ce599b47580
+Merge: f2ce898 f4a93fe
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 10 12:45:25 2010 -0500
+
+    Merge branch 'add' of github.com:aalex/toonloop into add
+
+commit f2ce898bc83d1a6707e01c9b7e141ccb52cde30c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 10 12:44:13 2010 -0500
+
+    Fixed additive blend mode + fixed fade out
+
+commit f4a93fe5b9305a2c171f8216f5e09a4d6d89c629
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Nov 10 12:40:58 2010 -0500
+
+    gui: fix api compatibility issue for clutter-1.4
+    
+    When using clutter-1.4, we have to cast CoglHandle to CoglMaterial when calling
+    cogl_material_set_blend.
+
+commit 946c46db89dbfa1b722d55318f99c1727c03d419
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 10 12:12:28 2010 -0500
+
+    added Gui::set_blending_mode
+
+commit b4ab49e58455b6bde4faf5f55c91f37d9d3293af
+Merge: cb58df9 e194b7e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 10 11:45:15 2010 -0500
+
+    Merge branch 'master' into shaders
+
+commit e194b7ef157ea3133037021334c8829c1414a0d0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 10 11:33:05 2010 -0500
+
+    updated pd patch with an ugly mess
+
+commit 6c1a5da6bc4ac238fd78c456c9ee4ee47b3fe0fb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 10 11:32:39 2010 -0500
+
+    Fixed very bad bug in MidiBinder::find_rule
+
+commit 4cdfa80bc0896a9ff32cbd5261652af57c17685d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Nov 10 11:25:07 2010 -0500
+
+    Potentially fixed a bug in find_rule
+    
+    converted a if-else-if to a switch-case
+
+commit c204bd01ba68c6df2f0498699f59952c4b78c0b1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 21:57:30 2010 -0500
+
+    trying to find where it segfaults
+
+commit 3d9a6951d26dd180a649f44e79cdacb0a20b9eaa
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 21:46:16 2010 -0500
+
+    trying to catch why the remove image message segfaults
+
+commit cb58df9bf37ecbfef2c8b211cb37d4f0864c5b8d
+Merge: dfd9287 76bdc4e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 21:25:05 2010 -0500
+
+    Merge branch 'master' into shaders
+
+commit 76bdc4ee712acafaebef5e56f9a85c243242d384
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 21:23:02 2010 -0500
+
+    renamed presets.cpp to midibinder.cpp
+
+commit 308d7c2a86473b8eca8c0e0799d45ca0279b91e9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 21:20:58 2010 -0500
+
+    renamed midi.cpp to midiinput.cpp
+
+commit 1b32a6c052a7e0ccc1fddc14d00759291c4200fe
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 21:18:46 2010 -0500
+
+    decreased verbosity
+
+commit b742926ce94d3d5ea67822d57fe0331931597cfb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 21:07:37 2010 -0500
+
+    program change rule works
+
+commit 92ff82d9b59d40608087a713b1e959c43dd4c314
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 21:03:00 2010 -0500
+
+    support for program change messages should work
+
+commit ba35c5f4815a855a28462b97d961068235dfa0b1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 20:50:44 2010 -0500
+
+    Midi binding work!
+
+commit d7ca4ef7450b05fb12bb6ba5167a6fc3cecd452e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 20:05:04 2010 -0500
+
+    Getting to get the new midi stuff working.
+
+commit 84786f4248a9d6564db5d444ead1480eb7b053be
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 16:50:02 2010 -0500
+
+    this is getting too much complicated
+
+commit 2f1b90d8282f9e29ab40c41427c8054422cf3aa2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 16:30:30 2010 -0500
+
+    towards some Midi presets that might work
+
+commit 7d34113c9276c76aa721fb6f482a9b78502fd083
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 12:04:31 2010 -0500
+
+    fixed a typo in an important comment
+
+commit 4e99aedcfc5c75b7a4c33ab348927466c2bfa6d1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 12:01:34 2010 -0500
+
+    Fixed error with PIXMAPS_DIR not being a str
+
+commit c75a9beca1680ab341c7efab8204b445a3266a18
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 11:57:45 2010 -0500
+
+    re-adding PIXMAPS_DIR to Makefile.am
+
+commit 71bf58d98584675db2080b4670c87272278a98c6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Nov 7 10:28:09 2010 -0500
+
+    adding midi_notes_and_controls.pd test patch
+
+commit 3f38b164b3d7a65e644d174fb0406b28828840cb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 6 02:01:30 2010 -0400
+
+    towards parsing the midi notes. (might not work!)
+
+commit d937c531b3e387b0271a47e1b1f99f90d46b5028
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 6 00:14:29 2010 -0400
+
+    cleanup in MidiInput constructor
+
+commit dea9bcc2fb798495b1cd652e288a4771cba358c3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Nov 6 00:04:36 2010 -0400
+
+    added get_rules &
+
+commit fee5091c2510f767eae78e087a1f9cda46303f1f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 5 23:52:40 2010 -0400
+
+    cleanup in presets
+
+commit c551f4ab8b8cddfe1e9998aeb94eb9edd38b3019
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 5 22:50:39 2010 -0400
+
+    parsing some xml when instanciating the midi stuff
+
+commit 094cf79e780562c3e8ae01219057deac36c39b5d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 5 22:05:54 2010 -0400
+
+    compiling toonloop with presets.cpp - useless
+
+commit dfd92878a11dd8c53077b155fc6b3f3e59e98ef2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 5 21:43:20 2010 -0400
+
+    fixed a path
+
+commit d7ffcd8f35e272ca1e997d73aa70a37d144943c7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 5 21:38:45 2010 -0400
+
+    presets.cpp compiles
+
+commit a5aed0729df689d03490ab2ba44f9b342701bc7c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 5 20:29:18 2010 -0400
+
+    need a Makefile.am for the presets
+
+commit dce32dd08b111952d053efe00951e9fc78b93288
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 5 20:21:27 2010 -0400
+
+    add a header for glslang.cpp
+
+commit a9ed5adbec908732d8d430cbcaf56437d226c04a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 5 20:09:38 2010 -0400
+
+    adding a glslang proto
+
+commit 513215190049c01b62da040ec3341d0eabd5066b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 5 20:05:12 2010 -0400
+
+    adding src/shaders
+
+commit 6da905bb9d6235f335d6524bff036a69a982b92e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 5 19:33:42 2010 -0400
+
+    will install midi.xml in /usr/share/toonloop/presets
+
+commit 13048697e6924a8dac4cb9428d1a50912e4a3fbb
+Merge: da48074 a382cd9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 5 19:24:56 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit a382cd90d5817a6360f78468dbe3f8bf4f5b1b83
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Nov 5 08:14:22 2010 -0400
+
+    updated version number. 2.1.1 in git, 2.1.2 is next
+
+commit 549d9c0c6dc1e6a12368cf493b5e00924d360a4e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Nov 4 22:26:14 2010 -0400
+
+    decreased verbosity when grabbing video
+
+commit da480749c531adc1330a9ec0c04755b969c985d8
+Author: Tristan <alexandre@quessy.net>
+Date:   Tue Nov 2 19:47:45 2010 -0400
+
+    more to do
+
+commit 0d58bcc85186a44cde19a0082bdc71dfd27702b4
+Author: Tristan <le.businessman@gmail.com>
+Date:   Tue Nov 2 16:57:03 2010 -0400
+
+    Set v4l2 device name before guessing caps
+
+commit 4208c838dad5cfebf167cc8eade9926b73c0e1ad
+Merge: a059080 503946d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Nov 2 13:25:17 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 503946ddf4b2d42862b43971fbf7361bdcf5e9b4
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Tue Nov 2 13:23:30 2010 -0400
+
+    run: Hack to solve clutter bug
+    
+    set CLUTTER_VBLANK=none to avoid video freezing with Intel drivers.
+
+commit a059080e692f92b915bf7ccbaa1d8ce623831a37
+Merge: 286673a 0d490a3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Nov 2 13:23:09 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 286673a233c98859fb739f18cb694acd0d26748a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Nov 2 13:22:41 2010 -0400
+
+    handling interlaced video source
+    
+    Maybe it's not working yet, we'll see
+
+commit 0d490a37b837e952593833c19b3642af25058785
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Tue Nov 2 13:08:07 2010 -0400
+
+    pipeline: use gst_element_link function
+    
+    This is a convenience function that is less verbose than using gst_element_link_many
+
+commit f6e55b1a6561af6846a46ce19b692f29d305c9ce
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Nov 2 10:41:08 2010 -0400
+
+    updated to version to 2.1.0 - not yet released
+
+commit 3cde2412c26f1f45790098072001202b41c45d7e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Nov 2 10:36:35 2010 -0400
+
+    updated version to 2.0.2
+
+commit dec3156ac0946e7cd8524e1ff6eb34274d317e82
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Nov 2 10:35:24 2010 -0400
+
+    updated README and RELEASE notes
+
+commit e8837e55af85af9bf34a0372c7f48468235fc9ee
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Nov 2 08:19:04 2010 -0400
+
+    simplified a sentence
+
+commit 6917a86e64545680703edfa8fb40268cc9a1d6e0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Nov 2 08:16:36 2010 -0400
+
+    Heavily updated the README file.
+
+commit 05b38a12798fad27fc0ea4e52b04babe11aeff14
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 1 01:33:20 2010 -0400
+
+    updated RELEASE notes
+
+commit f06fbec215ccdbf1d18bd7fdb8e060c1f55ebf63
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 1 01:31:36 2010 -0400
+
+    not checking for mencoder at build time
+
+commit 75272a19ad98251f5aa4fe794b0c00dae47ef6f1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 1 01:23:21 2010 -0400
+
+    Fixed again the path for bash completion
+
+commit 26040dc7fb32264e127ff203ff3dbeae0f0fc995
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 1 01:21:39 2010 -0400
+
+    Fixed a typo in sysconfidir name
+
+commit 8880299f4932516e6cd3e72f500b2ec303ca7728
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 1 01:15:40 2010 -0400
+
+    Check for mencoder at runtime
+    
+    Decreased verbosity when running a process.
+
+commit 8a9d328a78115afcb82e4636c44ee735ac558ecb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 1 00:58:37 2010 -0400
+
+    updated RELEASE notes
+
+commit 542a279562a3ff118de385a404d27e43cd12b1af
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 1 00:54:01 2010 -0400
+
+    Now installing bash completion file.
+
+commit 939c92f743994009cad74f40b52cbf8e087602dc
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Oct 26 03:37:13 2010 -0400
+
+    added completion for intervalometer-rate
+
+commit 2fb81cea0bb1cf9362dd4f407fce1b32264167c0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Oct 26 03:31:58 2010 -0400
+
+    adding layouts to bash completion
+
+commit 07a10a7e93e396af4fb4a8ec05d9a8f3e556af9c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Oct 26 03:28:31 2010 -0400
+
+    adding completion/toonloop
+
+commit 2ab71bb4a03d06607ad483e42dc803ef843367fc
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Oct 24 16:08:34 2010 -0400
+
+    updated TODO notes
+
+commit 544b538bed49352907a82231492ca8f24ab50b70
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Oct 21 08:02:23 2010 -0400
+
+    decreased verbosity a lot
+
+commit 8a280b33009e7541bcc0ded2528d8ed36aeeabc5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 18 01:39:07 2010 -0400
+
+    towards a single help text
+
+commit ef6564de346d164824ba0b6297f3daa5635eacc7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Oct 16 11:55:32 2010 -0400
+
+    added a todo
+
+commit 59b304f50826acf641ece01627b8f77b42fb9eae
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Oct 16 11:44:57 2010 -0400
+
+    We must escape minuses in the man page source.
+
+commit 2ea15ddcc7ea09b9fe630b192546f2a0339e3ec0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Oct 16 11:29:28 2010 -0400
+
+    updated TODO
+
+commit a365351d334ad86ae3b32e087e30a5a231183291
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Oct 15 11:27:19 2010 -0400
+
+    updated release notes
+
+commit 4cd0746dda56042c6d1c78a8000c77865d82e3e8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Oct 15 11:27:08 2010 -0400
+
+    updated doc about F1 showing help
+
+commit 0870e4a7e76ac999e851528d5c38e209ff2b7d6f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Oct 15 11:19:59 2010 -0400
+
+    added a help text actor
+
+commit 364bfbd1529fa9ed517e505e328a42352f6b65aa
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Oct 15 02:17:09 2010 -0400
+
+    updated TODO
+
+commit ebfdf4f9a1b20bf4e456e59715adf38b8a665766
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Oct 9 23:12:15 2010 -0400
+
+    updated TODO
+
+commit 5e6695966afcd0c6a5743f0ccaa560943d1391db
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Oct 8 19:15:03 2010 -0400
+
+    updated to 2.0.1 - not yet released
+
+commit 9615250ad49153cdb6e4527a4f48bb26f18551ef
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Oct 8 19:00:47 2010 -0400
+
+    updated version to 2.0.0
+
+commit e4d513328ef4ed09ab7a84d43e8f92c996f0253e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Oct 8 19:00:39 2010 -0400
+
+    updated TODO
+
+commit 077d771673e9296d0fa8bee78ff497eedcf84257
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Oct 8 18:50:12 2010 -0400
+
+    removed check for GL
+
+commit 75cb36461a2a410e9de4468a14373cdde2825f1b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Oct 8 18:50:01 2010 -0400
+
+    updated RELEASE notes
+
+commit 52d71586cc855e7509766d30cd64462348f278bc
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Oct 7 21:43:17 2010 -0400
+
+    tell about man page in README
+
+commit 17d7132c91dbc7fab181f97211f30449aec2aa57
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Oct 7 21:40:47 2010 -0400
+
+    fixed a typo
+
+commit 9881d058bb0dbade2aa51e189e53ba621d791686
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Oct 7 21:38:40 2010 -0400
+
+    updated release notes
+
+commit e82b73baa47080a64bf1f22097b885a5740c133c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Oct 7 21:16:02 2010 -0400
+
+    sorted to do tasks
+
+commit be47ee6d0aedde3394a75b3215eb1c27ec33d6d6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Oct 7 21:11:01 2010 -0400
+
+    improved man page a lot
+
+commit 471f5e15417a79d00dffa76b0ded7a9f4c36509c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Oct 7 20:41:33 2010 -0400
+
+    sorted to do stuff
+
+commit 3add88274abe11556f2d21a4c39010feaf83b124
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Oct 7 20:39:57 2010 -0400
+
+    updated to do
+
+commit 6a977f0b4840d1c95bbf06d363d8fac3ba507e43
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 6 20:19:45 2010 -0400
+
+    updated README again
+
+commit 727a17438c9639f6d56490caea0a817218586c6a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 6 20:18:36 2010 -0400
+
+    updated README
+
+commit 71967317c37912bd45a40214357ca4b54d713a84
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 6 19:52:01 2010 -0400
+
+    iDecreased verbosity a bit
+
+commit 64d61216aa12e17c7b805896b196e2f4f01916d6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 6 19:49:10 2010 -0400
+
+    added the --remove-deleted-images option
+
+commit 95e5e960b9722e2954f0796d3143df7063d64c76
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 6 14:56:13 2010 -0400
+
+    Fixed negative time with intervalometer
+    
+    Added float support for intervalometer option.
+
+commit 077b8bd76ffa9d109c9cc09d97bda1666f9a1e39
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 6 08:39:25 2010 -0400
+
+    updated the doc
+
+commit 34837d47448012aa4fbf48cee8367f9196a7b768
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 6 08:39:09 2010 -0400
+
+    fixed a crash when OSC was disabled...
+
+commit 56bb526f32400cbf4752aee89574f05ac95e8ec0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 6 08:32:58 2010 -0400
+
+    updated man page
+
+commit 58c23e7153527eaa534ed8f596659e31c789ecb5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 6 08:32:41 2010 -0400
+
+    updated OSC doc
+
+commit 13caa4b1306fd92570d13a1089b5d47731fd5c40
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Oct 5 22:39:35 2010 -0400
+
+    updated doc
+
+commit 199f342f1d75400a87ea1719917f1e9108e26ef7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Oct 5 22:38:09 2010 -0400
+
+    Fixed crash with the OSC interface.
+    
+    Implemented the QUIT asynchronous message.
+
+commit 636a9b710d09374a81fd7598fd13864245033016
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Oct 5 22:27:32 2010 -0400
+
+    Moved handling messages to App::handle_message
+
+commit ad49811d77e1349d370a08c766619f6d0830234e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Oct 5 22:20:50 2010 -0400
+
+    Fixed mistake: the remove message was adding
+
+commit c006061d0642cb45b735cb5c208dce59b9e07f0f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Oct 5 22:17:22 2010 -0400
+
+    using numbers for the --layout option
+
+commit 20fb389629e839961a10369f1052fc6bd2a62c6e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Oct 5 21:05:02 2010 -0400
+
+    Added the --layout option
+
+commit 13367f6a31d8bf9d02ca5fe9e28936a1160801cd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 21:54:28 2010 -0400
+
+    updated TODO
+
+commit 378652931f7df9b211d870170f88d6b4a365454a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 21:52:22 2010 -0400
+
+    updated TODO
+
+commit 6774828d08c7865657aecd22947d2079f86a45b0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 21:48:16 2010 -0400
+
+    added the intervalometer-related options
+
+commit 3ce365cb6e4026d52b0f1afcdcaa138cea7fd3ef
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 21:25:00 2010 -0400
+
+    updated TODO and RELEASE
+
+commit f312f4f3a14326b93caee0865eb663d603d3fd0d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 21:21:40 2010 -0400
+
+    implemented the max-images-per-clip option
+
+commit f8445768506f0a71bd7c4114e015ea8ec188d3fe
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 21:11:58 2010 -0400
+
+    Implemented remove_last_image and remove_first_image
+
+commit 7321baf359cdfa6f749723403d8bacd1448f83a3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 20:55:21 2010 -0400
+
+    cleaned up mutex stuff from Clip class
+
+commit 9943389715833de4fdc0862ea805b217bf3f7a49
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 20:49:48 2010 -0400
+
+    added a license for concurrentqueue.h
+
+commit 37d36c8704c24a43fab8ae1cca2371e3153bfd57
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 20:48:59 2010 -0400
+
+    added some TODO
+
+commit 0760e849f315e3cfd588e92c60a3348a6c5ee633
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 14:30:11 2010 -0400
+
+    Updated to 1.9.7 - not yet released
+
+commit a54baf029f1293f1762faaef28c7b7d594479247
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 13:48:37 2010 -0400
+
+    updated RELEASE notes
+
+commit 7146e832cf3a2f16cb0efdb3ed9e7553ed476d23
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 13:46:28 2010 -0400
+
+    updated tasks to do
+
+commit d867af6fb800c4279db4caaaa4062f119f7fe715
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 13:43:19 2010 -0400
+
+    Updated the doc a lot. Saves even when we press Ctrl-S
+
+commit 4abc648b7c3f981675b718f51595148423257e1d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 13:18:54 2010 -0400
+
+    updated man page
+
+commit 93f3d1c8d7383cd341b0b3446639f4ff57b038bd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 13:12:08 2010 -0400
+
+    onion skin must be over live input, not playback
+
+commit 1ba711985461ff1848159ac9408d9742f5dc6a8c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 10:15:22 2010 -0400
+
+    updated RELEASE notes
+
+commit 098240b0389b56277a2c684fc77c6aebae5f51fd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 10:13:03 2010 -0400
+
+    updated man page
+
+commit 13025684dfc97f20224a23dea499c1fd98f04239
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 10:09:12 2010 -0400
+
+    Onion skinning works again
+
+commit da07ceb874d267d0c37f695a47db7bb56384a917
+Merge: 336072e d9ca793
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 10:00:50 2010 -0400
+
+    Merge branch 'size' into queue
+
+commit d9ca793b57063aa6453a20b26085e9e1d431b151
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 09:59:57 2010 -0400
+
+    cleanup in comments in Pipeline
+
+commit 171cc761cc4c2470fe50ecf2890a92861b6bb4bc
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Oct 4 09:53:28 2010 -0400
+
+    Using the new --width and --height options
+
+commit 336072e60a1580f95ba226a287899adbf0daa87e
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Sun Oct 3 23:04:21 2010 -0400
+
+    midi: delete dynamically allocated RtMidi object in destructor
+
+commit c39be276264d20a506ee3e65fad45090994bc604
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Oct 3 22:34:36 2010 -0400
+
+    cleaned up, since the asynchronous queue works
+
+commit ae81aed9a81fff3f4b84642db4631be1e4af4009
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Oct 3 22:21:16 2010 -0400
+
+    Checking for messages on each rendered frame
+
+commit 7c42709f8e2719f1b6a84f53fca1af1c6730d69c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Oct 3 22:12:47 2010 -0400
+
+    Added messaging queue in midi.cpp
+
+commit a61edf3946768ad204e76c3cfcc02a698ee42c8d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Oct 3 19:40:22 2010 -0400
+
+    adding message.h
+
+commit 79ed957f364e91a9e2018c389cda010dfdd8716f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Oct 3 19:27:27 2010 -0400
+
+    added a TODO note
+
+commit 40dfaf04a3debbf3393a47a2365a8759904ec048
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Oct 3 19:26:33 2010 -0400
+
+    done adding concurrentqueue.h
+
+commit 1e3e9507ece6d3488e8af086acbe34d3a77604fd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Oct 3 19:25:57 2010 -0400
+
+    adding concurrentqueue.h
+
+commit 9037986d7f3dd37682a2d6a62ac843c306f3994f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Sep 24 13:44:40 2010 -0400
+
+    adding a note about the onion skin crash
+
+commit 034fdc4cc19b2f7b4ff4063cf83e5a2e3315bd97
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Sep 24 13:29:00 2010 -0400
+
+    disabling onion skinning, since it crashes with MIDI
+
+commit cb91bf25743759b329179abf31bf0da3b730d65b
+Merge: 56b8223 8b2b7b5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Sep 24 12:36:40 2010 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 56b822360c6b28cb70dc99cc00e4aceb7ed93b42
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Sep 23 14:11:44 2010 -0400
+
+    made stuff more verbose
+
+commit 8b2b7b50c867fb19251ced9514ca5bc9356c5a2d
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Sep 22 23:43:44 2010 -0400
+
+    gui.h: avoid cluttering the global namespace
+
+commit bfda8d3d0b77157dedd4d769022ca3d6e38c0355
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Wed Sep 22 23:40:26 2010 -0400
+
+    subprocess: minor cleanup
+
+commit 5fb1f7306b3fbae95845c321354a6f3e67bfece7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Sep 22 13:33:19 2010 -0400
+
+    added a FIXME note
+
+commit 106c810ceaeb83d1a8f875982009e5e7e7bc0eac
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 20 15:19:30 2010 -0400
+
+    finally got a nice portrait layout
+
+commit c4882d99e9af1278b9000f25438cfd123f88cf5e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 20 15:02:52 2010 -0400
+
+    modified a TODO note
+
+commit d006b640965ea8f7922ce5b373e05d4145079c15
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 20 12:13:57 2010 -0400
+
+    simplified a bit position calculations
+    
+    Still bad center for rotations
+
+commit 2e748fb18b1fb61c15c8cbeae96cb5c3588b88d5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 20 09:27:17 2010 -0400
+
+    adding layout portrait - bad proportions though
+
+commit 7242dfcac8f11e755f1ae27d8da77639f1304f47
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 20 09:05:44 2010 -0400
+
+    renamed a badly named attribute
+
+commit 2d05a4c6e2dc85e0b9e0783409add1c8d12b9d25
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 20 05:02:43 2010 -0400
+
+    updated RELEASE
+
+commit 1d516c9edad43125d2b1d49f266229340c24570e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 20 05:02:31 2010 -0400
+
+    Attenuated white flash effect on startup
+
+commit 55b46a79460a54d1aeafd7e510233e8cb294ccc3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Sep 18 06:11:22 2010 -0400
+
+    towards rotating the actors in some layouts
+
+commit b1e5a631897c399fe3cf6143f7518b4fae0acb85
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Sep 18 06:01:26 2010 -0400
+
+    simplified a lot resizing actors according to layout
+
+commit df0b0aa79dcb838d3b35f41d3df3df92add9955e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Sep 18 05:39:02 2010 -0400
+
+    Cleaned up a bit the layouts
+
+commit 30366fc55f16f2195abb240be3d6e0b8aa198c92
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Sep 18 05:25:14 2010 -0400
+
+    updated to version 1.9.6 - not yet released
+
+commit 85b9a1b60242e4eeecf6d4f99cb97273dee2c969
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Sep 18 05:22:39 2010 -0400
+
+    Fixed NEWS file which was different than RELEASE for 1.9.5
+
+commit 1a8f1dc8d3683e7ee07362c13229b9130fcc98c2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Sep 18 05:01:38 2010 -0400
+
+    updated RELEASE notes
+
+commit b1151fe318badf5c6eb3672ea2cfc8f14fb75cc5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Sep 18 05:00:50 2010 -0400
+
+    Fixed bug with semi-transparent live input when in splitscreen layout
+
+commit 278e9378e593b2816cb68883a9d7cb078562402d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Sep 15 19:15:32 2010 -0400
+
+    next release won't be today
+
+commit 39628eb67f81d38a3e91d353daee106bdc0e2c78
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Sep 15 03:53:09 2010 -0400
+
+    Many fixes in live input feed and fading
+    
+     * fixed bug which caused the live input to not be displayed sometimes
+     * no fade by default
+     * r resets the current clip, not ctrl-r
+
+commit 4c6aac1cff17dbdd2b3053694ebdbe89f18d018b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Sep 15 03:16:57 2010 -0400
+
+    mouse adds frames
+
+commit 44969179edb24cf9643c036dca577e0c9491a44b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Sep 15 03:06:39 2010 -0400
+
+    preparing a release
+
 commit 05ea764c28f89785ca923023d553c71c5ae891aa
 Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Tue Sep 14 19:05:41 2010 -0400
