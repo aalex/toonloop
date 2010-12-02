@@ -30,13 +30,19 @@
 
 static const float EACH_CLIP_ACTOR_WIDTH = 80.0;
 
+static ClutterColor gray = { 0x99, 0x99, 0x99, 0xff };
+static ClutterColor white = { 0xff, 0xff, 0xff, 0xff };
+
 /**
  * Window to display some information. 
  */
 InfoWindow::InfoWindow(Application *app) : 
     app_(app),
     stage_(NULL),
-    text_(NULL)
+    text_(NULL),
+    clipping_group_(NULL),
+    scrollable_box_(NULL),
+    previously_selected_(0)
 {
 }
 
@@ -58,8 +64,6 @@ void InfoWindow::create()
     else
     {
         ClutterColor black = { 0x00, 0x00, 0x00, 0xff };
-        ClutterColor white = { 0xff, 0xff, 0xff, 0xff };
-        ClutterColor gray = { 0x99, 0x99, 0x99, 0xff };
         clutter_stage_set_color(CLUTTER_STAGE(stage_), &black);
         clutter_stage_set_title(CLUTTER_STAGE(stage_), "Toonloop Information");
         
@@ -79,11 +83,18 @@ void InfoWindow::create()
         // Create the layout manager first
         ClutterLayoutManager *layout = clutter_box_layout_new (); // FIXME: memleak?
         //clutter_box_layout_set_homogeneous (CLUTTER_BOX_LAYOUT (layout), TRUE);
-        clutter_box_layout_set_spacing (CLUTTER_BOX_LAYOUT (layout), 4);
+        gdouble EACH_PADDING = 4;
+        clutter_box_layout_set_spacing (CLUTTER_BOX_LAYOUT (layout), EACH_PADDING);
         // Then create the ClutterBox actor. The Box will take ownership of the ClutterLayoutManager instance by sinking its floating reference
         clipping_group_ = clutter_group_new(); // FIXME: memleak?
         clutter_actor_set_size(clipping_group_, 620.0, 120.0);
-        clutter_actor_set_position(clipping_group_, 0.0, 120.0);
+        clutter_actor_set_position(clipping_group_, 0.0, 180.0);
+
+        ClutterActor *highlight = clutter_rectangle_new_with_color(&white); // memleak?
+        clutter_actor_set_size(highlight, EACH_CLIP_ACTOR_WIDTH + 2, 62);
+        clutter_actor_set_position(highlight, -1, -1);
+        clutter_container_add_actor(CLUTTER_CONTAINER(clipping_group_), highlight);
+        
         //clutter_actor_set_clip_to_allocation(clipping_group_, TRUE);
         scrollable_box_ = clutter_box_new(layout);
         clutter_container_add_actor(CLUTTER_CONTAINER(clipping_group_), scrollable_box_);
@@ -94,8 +105,9 @@ void InfoWindow::create()
         for (unsigned int i = 0; i < MAX_CLIPS; i++)
         {
             //Clip *clip = app_->get_clip(i);
-            ClipInfoBox *clip_info_box = new ClipInfoBox;
-            clips_[i] = std::tr1::shared_ptr<ClipInfoBox>(clip_info_box);
+            using std::tr1::shared_ptr;
+            clips_.push_back(shared_ptr<ClipInfoBox>(new ClipInfoBox()));
+            ClipInfoBox *clip_info_box = clips_.at(i).get();
             clip_info_box->group_ = clutter_group_new();
             clutter_actor_set_size(clip_info_box->group_, EACH_CLIP_ACTOR_WIDTH, 100);
 
@@ -109,11 +121,12 @@ void InfoWindow::create()
             clutter_actor_set_position(clip_info_box->label_, 2.0, 2.0);
             clutter_container_add_actor(CLUTTER_CONTAINER(clip_info_box->group_), clip_info_box->label_);
             clutter_actor_set_position(clip_info_box->label_, 10, 16);
-
+            
             clutter_box_pack (CLUTTER_BOX (scrollable_box_), clip_info_box->group_,
                            "x-align", CLUTTER_BOX_ALIGNMENT_END,
                            "expand", TRUE,
                            NULL);
+            clip_info_box->position_ = - (EACH_CLIP_ACTOR_WIDTH * i + EACH_PADDING * 2);
         }
 
         g_signal_connect(CLUTTER_STAGE(stage_), "delete-event", G_CALLBACK(InfoWindow::on_window_destroyed), this);
@@ -129,7 +142,26 @@ void InfoWindow::create()
  * */
 void InfoWindow::on_choose_clip(unsigned int clip_number)
 {
-    std::cout << __FUNCTION__ << clip_number << std::endl;
+    static ClutterColor red = { 255, 0, 0, 255 };
+    if (clip_number >= clips_.size())
+    {
+        g_critical("Clip number bigger than size of known clips.");
+        return;
+    }
+    ClipInfoBox *current = clips_.at(clip_number).get();
+    //std::cout << __FUNCTION__ << " " << clip_number << " goto x=" << current->position_ << std::endl;
+    clutter_actor_animate(scrollable_box_, CLUTTER_EASE_IN_OUT_SINE, 200,
+        "x", current->position_, 
+        NULL);
+    clutter_rectangle_set_color(CLUTTER_RECTANGLE(current->image_), &red);
+    if (previously_selected_ >= clips_.size())
+    {
+        g_critical("Clip number bigger than size of known clips.");
+        return;
+    }
+    ClipInfoBox *previous = clips_.at(previously_selected_).get();
+    clutter_rectangle_set_color(CLUTTER_RECTANGLE(previous->image_), &gray);
+    previously_selected_ = clip_number;
 }
 
 void InfoWindow::update_info_window()

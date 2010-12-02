@@ -33,10 +33,16 @@ using std::tr1::shared_ptr;
 class ClipInfoBox
 {
     public:
+        gdouble position_;
         ClutterActor *group_;
         ClutterActor *image_;
         ClutterActor *label_;
-        gdouble position_;
+        ClipInfoBox() :
+            position_(0.0),
+            group_(NULL),
+            image_(NULL),
+            label_(NULL)
+        {};
 };
 
 class InfoWindow
@@ -54,5 +60,6 @@ class InfoWindow
         std::vector<shared_ptr<ClipInfoBox> > clips_;
         static void on_window_destroyed(ClutterActor &stage, gpointer data);
         void on_choose_clip(unsigned int clip_number);
+        unsigned int previously_selected_;
 };
 #endif
