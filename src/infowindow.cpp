@@ -52,7 +52,11 @@ void InfoWindow::on_window_destroyed(ClutterActor &stage, gpointer data)
     std::cout << "Info window has been deleted" << std::endl;
     self->app_->quit();
 }
-
+/**
+ * Enables the whole info window.
+ * 
+ * If this is not called, nothing will be drawn by this whole class.
+ */
 void InfoWindow::create()
 {
     stage_ = clutter_stage_new();
@@ -86,7 +90,7 @@ void InfoWindow::create()
         clutter_box_layout_set_spacing (CLUTTER_BOX_LAYOUT (layout), EACH_PADDING);
         // Then create the ClutterBox actor. The Box will take ownership of the ClutterLayoutManager instance by sinking its floating reference
         clipping_group_ = clutter_group_new(); // FIXME: memleak?
-        clutter_actor_set_size(clipping_group_, 620.0, 120.0);
+        clutter_actor_set_size(clipping_group_, 620.0, 220.0);
         clutter_actor_set_position(clipping_group_, 0.0, 180.0);
 
 
@@ -110,15 +114,18 @@ void InfoWindow::create()
             clips_.push_back(shared_ptr<ClipInfoBox>(new ClipInfoBox()));
             ClipInfoBox *clip_info_box = clips_.at(i).get();
             clip_info_box->group_ = clutter_group_new();
-            clutter_actor_set_size(clip_info_box->group_, EACH_CLIP_ACTOR_WIDTH, 100);
+            clutter_actor_set_size(clip_info_box->group_, EACH_CLIP_ACTOR_WIDTH, 200);
 
-            std::ostringstream os;
-            os << "Clip #" << i;
             clip_info_box->rect_ = clutter_rectangle_new_with_color(&gray);
+            clutter_actor_set_position(clip_info_box->rect_, 0, 0);
             clutter_actor_set_size(clip_info_box->rect_, 80, 60);
             clutter_container_add_actor(CLUTTER_CONTAINER(clip_info_box->group_), clip_info_box->rect_);
 
-            clip_info_box->label_ = clutter_text_new_full("Sans semibold 10px", os.str().c_str(), &white);
+            clip_info_box->image_ = clutter_texture_new();
+            clutter_actor_set_position(clip_info_box->image_, 0, 60);
+            clutter_container_add_actor(CLUTTER_CONTAINER(clip_info_box->group_), clip_info_box->image_);
+
+            clip_info_box->label_ = clutter_text_new_full("Sans semibold 10px", "", &white);
             clutter_actor_set_position(clip_info_box->label_, 2.0, 2.0);
             clutter_container_add_actor(CLUTTER_CONTAINER(clip_info_box->group_), clip_info_box->label_);
             clutter_actor_set_position(clip_info_box->label_, 10, 16);
@@ -128,6 +135,8 @@ void InfoWindow::create()
                            "expand", TRUE,
                            NULL);
             clip_info_box->position_ = - (EACH_CLIP_ACTOR_WIDTH * i + EACH_PADDING * 2 + /* arbitrary constant */ (3 * i)) + /* about half the window */ 300;
+            // set the label's text
+            update_num_frames(i);
         }
 
         g_signal_connect(CLUTTER_STAGE(stage_), "delete-event", G_CALLBACK(InfoWindow::on_window_destroyed), this);
@@ -152,13 +161,46 @@ void InfoWindow::on_add_frame(unsigned int clip_number, unsigned int frame_numbe
 {
     UNUSED(frame_number);
     update_num_frames(clip_number);
+    if (frame_number == 0)
+    {
+        update_thumbnail_for_clip(clip_number);
+    }
 }
+
+void InfoWindow::update_thumbnail_for_clip(unsigned int clip_number)
+{
+    if (clip_number >= clips_.size())
+    {
+        g_critical("%s: Clip number bigger than size of known clips.", __FUNCTION__);
+        return;
+    }
+    Clip *clip = app_->get_clip(clip_number);
+    ClipInfoBox *clip_info = clips_.at(clip_number).get();
+    unsigned int frames = clip->size();
+    if (frames == 0)
+        clutter_actor_hide(clip_info->image_);
+    else
+    {
+        clutter_actor_show(clip_info->image_);
+        Image *image = clip->get_image(0);
+        if (image == 0)
+            std::cout << __FUNCTION__ << ": Could not get a handle to any image!" << std::endl;
+        else
+        {
+            std::string file_name = clip->get_image_full_path(image);
+            load_thumbnail_from_file(CLUTTER_TEXTURE(clip_info->image_), file_name, 80, 60);
+        }
+    }
+}
+
 /** Slot for Controller::remove_frame_signal_ 
  */
 void InfoWindow::on_remove_frame(unsigned int clip_number, unsigned int frame_number)
 {
     UNUSED(frame_number);
     update_num_frames(clip_number);
+    if (frame_number == 0) // maybe the last left
+        update_thumbnail_for_clip(clip_number);
 }
 
 /** Slot for Controller::clip_cleared_signal_ 
@@ -166,6 +208,7 @@ void InfoWindow::on_remove_frame(unsigned int clip_number, unsigned int frame_nu
 void InfoWindow::on_clip_cleared(unsigned int clip_number)
 {
     update_num_frames(clip_number);
+    update_thumbnail_for_clip(clip_number);
 }
 
 void InfoWindow::update_num_frames(unsigned int clip_number)
@@ -179,11 +222,9 @@ void InfoWindow::update_num_frames(unsigned int clip_number)
     ClipInfoBox *clip_info = clips_.at(clip_number).get();
     unsigned int frames = clip->size();
     std::ostringstream os;
-    os << "Clip #" << clip_number << std::endl;
-    os << frames << " frame";
-    if (frames > 1)
-        os << "s";
-    clutter_text_set_text(CLUTTER_TEXT(clip_info->label_), os.str().c_str());
+    os << "  # <b>" << clip_number << "</b>" << std::endl;
+    os << "images: " << frames;
+    clutter_text_set_markup(CLUTTER_TEXT(clip_info->label_), os.str().c_str());
 }
 
 /** Slot for Controller::choose_clip_signal_

@@ -69,5 +69,6 @@ class InfoWindow
         void on_clip_cleared(unsigned int clip_number);
 
         void load_thumbnail_from_file(ClutterTexture *texture, const std::string &file_name, int width, int height);
+        void update_thumbnail_for_clip(unsigned int clip_number);
 };
 #endif
