@@ -114,9 +114,9 @@ void InfoWindow::create()
 
             std::ostringstream os;
             os << "Clip #" << i;
-            clip_info_box->image_ = clutter_rectangle_new_with_color(&gray);
-            clutter_actor_set_size(clip_info_box->image_, 80, 60);
-            clutter_container_add_actor(CLUTTER_CONTAINER(clip_info_box->group_), clip_info_box->image_);
+            clip_info_box->rect_ = clutter_rectangle_new_with_color(&gray);
+            clutter_actor_set_size(clip_info_box->rect_, 80, 60);
+            clutter_container_add_actor(CLUTTER_CONTAINER(clip_info_box->group_), clip_info_box->rect_);
 
             clip_info_box->label_ = clutter_text_new_full("Sans semibold 10px", os.str().c_str(), &white);
             clutter_actor_set_position(clip_info_box->label_, 2.0, 2.0);
@@ -202,14 +202,14 @@ void InfoWindow::on_choose_clip(unsigned int clip_number)
     //    "x", current->position_, 
     //    NULL);
     clutter_actor_set_x(scrollable_box_, current->position_);
-    clutter_rectangle_set_color(CLUTTER_RECTANGLE(current->image_), &red);
+    clutter_rectangle_set_color(CLUTTER_RECTANGLE(current->rect_), &red);
     if (previously_selected_ >= clips_.size())
     {
         g_critical("%s: Clip number bigger than size of known clips.", __FUNCTION__);
         return;
     }
     ClipInfoBox *previous = clips_.at(previously_selected_).get();
-    clutter_rectangle_set_color(CLUTTER_RECTANGLE(previous->image_), &gray);
+    clutter_rectangle_set_color(CLUTTER_RECTANGLE(previous->rect_), &gray);
     previously_selected_ = clip_number;
 }
 

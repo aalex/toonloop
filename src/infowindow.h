@@ -35,11 +35,13 @@ class ClipInfoBox
     public:
         gdouble position_;
         ClutterActor *group_;
+        ClutterActor *rect_;
         ClutterActor *image_;
         ClutterActor *label_;
         ClipInfoBox() :
             position_(0.0),
             group_(NULL),
+            rect_(NULL),
             image_(NULL),
             label_(NULL)
         {};
