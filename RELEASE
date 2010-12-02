@@ -11,6 +11,7 @@ New features:
     * Added the --enable-shaders option
     * Saturation effect (brightness, contrast and saturation)
     * Added a separate window for information. (--enable-info-window)
+    * Show a row of rectangle to represent each clip.
 
 Bug fixes: 
     * Fixed bug with playback not being show at all (since added layout livefeed_only)
