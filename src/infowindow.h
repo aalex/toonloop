@@ -61,5 +61,9 @@ class InfoWindow
         static void on_window_destroyed(ClutterActor &stage, gpointer data);
         void on_choose_clip(unsigned int clip_number);
         unsigned int previously_selected_;
+        void update_num_frames(unsigned int clip_number);
+        void on_add_frame(unsigned int clip_number, unsigned int frame_number);
+        void on_remove_frame(unsigned int clip_number, unsigned int frame_number);
+        void on_clip_cleared(unsigned int clip_number);
 };
 #endif

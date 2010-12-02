@@ -90,10 +90,10 @@ void InfoWindow::create()
         clutter_actor_set_size(clipping_group_, 620.0, 120.0);
         clutter_actor_set_position(clipping_group_, 0.0, 180.0);
 
-        ClutterActor *highlight = clutter_rectangle_new_with_color(&white); // memleak?
-        clutter_actor_set_size(highlight, EACH_CLIP_ACTOR_WIDTH + 2, 62);
-        clutter_actor_set_position(highlight, -1, -1);
-        clutter_container_add_actor(CLUTTER_CONTAINER(clipping_group_), highlight);
+        //ClutterActor *highlight = clutter_rectangle_new_with_color(&white); // memleak?
+        //clutter_actor_set_size(highlight, EACH_CLIP_ACTOR_WIDTH + 2, 62);
+        //clutter_actor_set_position(highlight, -1, -1);
+        //clutter_container_add_actor(CLUTTER_CONTAINER(clipping_group_), highlight);
         
         //clutter_actor_set_clip_to_allocation(clipping_group_, TRUE);
         scrollable_box_ = clutter_box_new(layout);
@@ -117,7 +117,7 @@ void InfoWindow::create()
             clutter_actor_set_size(clip_info_box->image_, 80, 60);
             clutter_container_add_actor(CLUTTER_CONTAINER(clip_info_box->group_), clip_info_box->image_);
 
-            clip_info_box->label_ = clutter_text_new_full("Sans semibold 8px", os.str().c_str(), &white);
+            clip_info_box->label_ = clutter_text_new_full("Sans semibold 10px", os.str().c_str(), &white);
             clutter_actor_set_position(clip_info_box->label_, 2.0, 2.0);
             clutter_container_add_actor(CLUTTER_CONTAINER(clip_info_box->group_), clip_info_box->label_);
             clutter_actor_set_position(clip_info_box->label_, 10, 16);
@@ -132,10 +132,57 @@ void InfoWindow::create()
         g_signal_connect(CLUTTER_STAGE(stage_), "delete-event", G_CALLBACK(InfoWindow::on_window_destroyed), this);
 
         Controller *controller = app_->get_controller();
-        controller->choose_clip_signal_.connect(boost::bind( &InfoWindow::on_choose_clip, this, _1));
+        controller->choose_clip_signal_.connect(boost::bind( 
+            &InfoWindow::on_choose_clip, this, _1));
+        controller->add_frame_signal_.connect(boost::bind(
+            &InfoWindow::on_add_frame, this, _1, _2));
+        controller->remove_frame_signal_.connect(boost::bind(
+            &InfoWindow::on_remove_frame, this, _1, _2));
+        controller->clip_cleared_signal_.connect(boost::bind(
+            &InfoWindow::on_clip_cleared, this, _1));
 
         clutter_actor_show(stage_);
     }
+}
+
+/** Slot for Controller::add_frame_signal_ 
+ */
+void InfoWindow::on_add_frame(unsigned int clip_number, unsigned int frame_number)
+{
+    UNUSED(frame_number);
+    update_num_frames(clip_number);
+}
+/** Slot for Controller::remove_frame_signal_ 
+ */
+void InfoWindow::on_remove_frame(unsigned int clip_number, unsigned int frame_number)
+{
+    UNUSED(frame_number);
+    update_num_frames(clip_number);
+}
+
+/** Slot for Controller::clip_cleared_signal_ 
+ */
+void InfoWindow::on_clip_cleared(unsigned int clip_number)
+{
+    update_num_frames(clip_number);
+}
+
+void InfoWindow::update_num_frames(unsigned int clip_number)
+{
+    if (clip_number >= clips_.size())
+    {
+        g_critical("%s: Clip number bigger than size of known clips.", __FUNCTION__);
+        return;
+    }
+    Clip *clip = app_->get_clip(clip_number);
+    ClipInfoBox *clip_info = clips_.at(clip_number).get();
+    unsigned int frames = clip->size();
+    std::ostringstream os;
+    os << "Clip #" << clip_number << std::endl;
+    os << frames << " frame";
+    if (frames > 1)
+        os << "s";
+    clutter_text_set_text(CLUTTER_TEXT(clip_info->label_), os.str().c_str());
 }
 
 /** Slot for Controller::choose_clip_signal_
@@ -145,7 +192,7 @@ void InfoWindow::on_choose_clip(unsigned int clip_number)
     static ClutterColor red = { 255, 0, 0, 255 };
     if (clip_number >= clips_.size())
     {
-        g_critical("Clip number bigger than size of known clips.");
+        g_critical("%s: Clip number bigger than size of known clips.", __FUNCTION__);
         return;
     }
     ClipInfoBox *current = clips_.at(clip_number).get();
@@ -156,7 +203,7 @@ void InfoWindow::on_choose_clip(unsigned int clip_number)
     clutter_rectangle_set_color(CLUTTER_RECTANGLE(current->image_), &red);
     if (previously_selected_ >= clips_.size())
     {
-        g_critical("Clip number bigger than size of known clips.");
+        g_critical("%s: Clip number bigger than size of known clips.", __FUNCTION__);
         return;
     }
     ClipInfoBox *previous = clips_.at(previously_selected_).get();
