@@ -64,6 +64,7 @@
     <control_map number="74" action="set_float" args="saturation" from="0.0" to="2.0" />
     <control_map number="71" action="set_float" args="contrast" from="0.0" to="2.0" />
     <control_map number="76" action="set_int" args="black_out_opacity" from="0" to="255" />
+    <control_map number="77" action="set_int" args="playback_opacity" from="0" to="255" />
     <!--
     <control_map number="74" />
     <control_map number="71" />
