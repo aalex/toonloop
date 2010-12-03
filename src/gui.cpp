@@ -974,9 +974,7 @@ Gui::Gui(Application* owner) :
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(onionskin_group_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(black_out_rectangle_), NULL);
-    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_), NULL);
-    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(help_text_actor_), NULL);
-
+    // The image on top, if set:
     if (owner_->get_configuration()->should_show_image_on_top())
     {
         // TODO: move this somewhere else
@@ -989,7 +987,8 @@ Gui::Gui(Application* owner) :
             clutter_container_add_actor(CLUTTER_CONTAINER(stage_), image_on_top);
         }
     }
-        
+    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_), NULL);
+    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(help_text_actor_), NULL);
 
     if (owner_->get_configuration()->get_info_window_enabled())
         info_window_.create();
