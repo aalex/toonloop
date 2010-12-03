@@ -89,16 +89,19 @@ Toonloop sends the following OSC messages:
  - /toon/playhead/none
 
 [MIDI INTERFACE]
-Toonloop can be used with MIDI control devices. Here is the list of controls it supports: 
+Toonloop can be used with MIDI control devices. The MIDI bindings are configurable by editing an XML file. This way, anyone can decide how to control Toonloop with any different MIDI controller. 
 
- - 64: (sustain pedal) Grab a still image
- - 80: Grab video
- - Program change: choose a clip
- - 7: (main volume) change playback speed
+The default presets are set so that the sustain pedal controls single-image grabbing, and program change controls clip selection.
 
-The sustain pedal controls single-image grabbing, the pedal control number 80 toggles video recording on and off, the volume pedal controls the playback speed and the 10 program changes select the clip that is currently edited and played back. 
+To customize the MIDI binding rules, one must copy the midi.xml that comes with Toonloop (typically installed in /usr/share/toonloop/presets/midi.xml) into ~/.toonloop/midi.xml. The syntax of that MIDI rules file is pretty straightforward. For example, the following rule makes it so that pressing the note 60 down selects clip number 19. (60 is the central C note on a piano)
 
-The Roland GFC-50 Foot Controller is a nice MIDI device that is useful to control Toonloop. 
+ <note_on number="60" action="select_clip" args="19" />
+
+Other possible actions include setting the value of a float or int property of the main Toonloop controller. The following rule specifies that pressing the sustain pedal down grabs and image.
+
+  <control_on number="64" action="add_image" />
+
+A list of the supported actions and the arguments they accept should follow soon.
 
 [AUTHOR]
 Alexandre Quessy, Tristan Matthews and Vasilis Liaskovitis.

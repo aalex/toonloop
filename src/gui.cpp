@@ -980,6 +980,19 @@ Gui::Gui(Application* owner) :
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(onionskin_group_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(black_out_rectangle_), NULL);
+    // The image on top, if set:
+    if (owner_->get_configuration()->should_show_image_on_top())
+    {
+        // TODO: move this somewhere else
+        std::string image_on_top_path = owner_->get_configuration()->get_image_on_top();
+        if (! fs::exists(image_on_top_path))
+            std::cout << "No such file: " << image_on_top_path << std::endl;
+        else 
+        {
+            ClutterActor *image_on_top = clutter_texture_new_from_file(image_on_top_path.c_str(), NULL);
+            clutter_container_add_actor(CLUTTER_CONTAINER(stage_), image_on_top);
+        }
+    }
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(info_text_actor_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(help_text_actor_), NULL);
 

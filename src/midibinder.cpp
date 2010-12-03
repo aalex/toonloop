@@ -124,8 +124,8 @@ const MidiRule *MidiBinder::find_rule(RuleType rule_type, int number)
             return &(*iter);
         }
     }
-    if (verbose_)
-        std::cout << __FUNCTION__ << ":" " did not find a rule  of type " << rule_type << "for #" << number << std::endl;
+    //if (verbose_)
+    //    std::cout << __FUNCTION__ << ":" " did not find a rule  of type " << rule_type << "for #" << number << std::endl;
     return 0;
 }
 
@@ -318,7 +318,6 @@ bool MidiBinder::load_xml_file(const gchar *file_name)
     return true;
 }
 
-// TODO:2010-11-07:aalex:Be able to set MidiBinder verbose or not
 MidiBinder::MidiBinder(bool verbose) : 
     verbose_(verbose)
 {
