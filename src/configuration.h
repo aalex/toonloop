@@ -85,6 +85,8 @@ class Configuration
         float get_default_intervalometer_rate() const { return default_intervalometer_rate_; }
         bool get_remove_deleted_images() const { return remove_deleted_images_; }
         bool get_info_window_enabled() const { return info_window_enabled_; }
+        std::string get_image_on_top() const { return image_on_top_; }
+        bool should_show_image_on_top() const { return image_on_top_.compare("") != 0; }
         
     private:
         //int capture_frame_rate_;
@@ -108,6 +110,7 @@ class Configuration
         bool remove_deleted_images_;
         bool shaders_enabled_;
         bool info_window_enabled_;
+        std::string image_on_top_;
 };
 #endif // __CONFIGURATION_H__
 

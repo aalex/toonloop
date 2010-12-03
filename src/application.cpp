@@ -178,6 +178,7 @@ void Application::run(int argc, char *argv[])
         ("remove-deleted-images", po::bool_switch(), "Enables the removal of useless image files.")
         ("enable-shaders,S", po::bool_switch(), "Enables GLSL shader effects.")
         ("enable-info-window,I", po::bool_switch(), "Enables a window for information text.")
+        ("image-on-top", po::value<std::string>()->default_value(""), "Shows an unscaled image on top of all.")
         ; // <-- important semi-colon
     po::variables_map options;
     
