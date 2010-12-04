@@ -207,15 +207,16 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
         { // we declare some scope variables:
             int controller_number = int(message->at(1));
             int control_value = int(message->at(2));
-            if (context->verbose_) 
-                std::cout << "MIDICONTROLCHANGE #" << controller_number << " i:" << control_value << std::endl;
+            //if (context->verbose_) 
+            //    std::cout << "MIDICONTROLCHANGE #" << controller_number << " i:" << control_value << std::endl;
+
             if (control_value == 0)
             {
                 rule = context->midi_binder_.find_rule(CONTROL_OFF_RULE, controller_number);
                 if (rule != 0)
                 {
-                    if (context->verbose_)
-                        std::cout << "found a control_off rule" << std::endl;
+                    //if (context->verbose_)
+                    //    std::cout << "found a control_off rule" << std::endl;
                     context->push_message(context->make_message(rule->action_).set_string(rule->args_).set_int(control_value));
                     return;
                 }
@@ -223,8 +224,8 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                 rule = context->midi_binder_.find_rule(CONTROL_ON_RULE, controller_number);
                 if (rule != 0)
                 {
-                    if (context->verbose_)
-                        std::cout << "found a control_on rule" << std::endl;
+                    //if (context->verbose_)
+                    //    std::cout << "found a control_on rule" << std::endl;
                     context->push_message(context->make_message(rule->action_).set_string(rule->args_).set_int(control_value));
                     return;
                 }
@@ -232,8 +233,8 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             rule = context->midi_binder_.find_rule(CONTROL_MAP_RULE, controller_number);
             if (rule != 0)
             {
-                if (context->verbose_)
-                    std::cout << "found a control_map rule" << std::endl;
+                //if (context->verbose_)
+                //    std::cout << "found a control_map rule" << std::endl;
                 if (rule->action_ == "set_float")
                 {
                     float f_val = map_float((float) control_value , 0.0f, 127.0f, rule->from_, rule->to_);
@@ -243,8 +244,8 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                 else if (rule->action_ == "set_int")
                 {
                     int i_val = map_int((int) control_value , 0, 127, (int) rule->from_, (int) rule->to_);
-                    if (context->verbose_)
-                        std::cout << "mapped int: " << i_val << std::endl;
+                    //if (context->verbose_)
+                    //    std::cout << "mapped int: " << i_val << std::endl;
                     context->push_message(Message(Message::SET_INT).set_string(rule->args_).set_int(i_val));
                     return;
                 }
@@ -253,8 +254,8 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
         }
         case MIDIPROGRAMCHANGE:
         {
-            if (context->verbose_) 
-                std::cout << "MIDIPROGRAMCHANGE" << std::endl;
+            //if (context->verbose_) 
+            //    std::cout << "MIDIPROGRAMCHANGE" << std::endl;
             int program_number = int(message->at(0) & 0x0f);
             rule = context->midi_binder_.find_program_change_rule();
             if (rule != 0)
@@ -269,8 +270,8 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             int val(message->at(2));
             if (context->verbose_) 
             {
-                std::cout << "MIDIPITCHBEND";
-                std::cout << " " << val << std::endl;
+                //std::cout << "MIDIPITCHBEND";
+                //std::cout << " " << val << std::endl;
                 // The use of the LSB and MSB might differ from a device to another.
             }
             rule = context->midi_binder_.find_pitch_wheel_rule();
