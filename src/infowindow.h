@@ -28,7 +28,6 @@
 #include <tr1/memory>
 
 class Application;
-using std::tr1::shared_ptr;
 // TODO: change for a struct since all its data is public.
 class ClipInfoBox
 {
@@ -59,7 +58,7 @@ class InfoWindow
         ClutterActor *text_;
         ClutterActor *clipping_group_;
         ClutterActor *scrollable_box_;
-        std::vector<shared_ptr<ClipInfoBox> > clips_;
+        std::vector<std::tr1::shared_ptr<ClipInfoBox> > clips_;
         static gboolean on_window_destroyed(ClutterStage *stage, ClutterEvent *event, gpointer data);
         void on_choose_clip(unsigned int clip_number);
         unsigned int previously_selected_;
