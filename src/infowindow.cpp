@@ -45,12 +45,14 @@ InfoWindow::InfoWindow(Application *app) :
 {
 }
 
-void InfoWindow::on_window_destroyed(ClutterActor &stage, gpointer data)
+gboolean InfoWindow::on_window_destroyed(ClutterStage *stage, ClutterEvent *event, gpointer data)
 {
     UNUSED(stage);
+    UNUSED(event);
     InfoWindow *self = static_cast<InfoWindow *>(data);
     std::cout << "Info window has been deleted" << std::endl;
     self->app_->quit();
+    return TRUE;
 }
 /**
  * Enables the whole info window.

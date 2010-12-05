@@ -26,12 +26,13 @@
 #include <clutter/clutter.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
+#include <tr1/memory> // for shared_ptr
 #include <vector>
-#include "effect.h"
 #include "infowindow.h"
 #include "timer.h"
 
 class Application;
+class Effect;
 
 // TODO:2010-10-05:aalex:Should we put that in a namespace or in the Gui class?
 const unsigned int NUM_LAYOUTS = 4;
@@ -126,7 +127,7 @@ class Gui
         static const int WINWIDTH = 640;
         static const int WINHEIGHT = 480;
         BlendingMode blending_mode_;
-        Effect *saturation_effect_;
+        std::tr1::shared_ptr<Effect> saturation_effect_;
         InfoWindow info_window_;
 };
 

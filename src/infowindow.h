@@ -60,7 +60,7 @@ class InfoWindow
         ClutterActor *clipping_group_;
         ClutterActor *scrollable_box_;
         std::vector<shared_ptr<ClipInfoBox> > clips_;
-        static void on_window_destroyed(ClutterActor &stage, gpointer data);
+        static gboolean on_window_destroyed(ClutterStage *stage, ClutterEvent *event, gpointer data);
         void on_choose_clip(unsigned int clip_number);
         unsigned int previously_selected_;
         void update_num_frames(unsigned int clip_number);
