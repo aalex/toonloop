@@ -8,6 +8,7 @@ Once the tag is done for the version number in the RELEASE notes, they are moved
 
 Top Priorities
 --------------
+ * video: detect what frame rate should work with each web cam, at fallback to the closest that would work if the one provided on the command-line is not supported. For example: (Logitech HD Pro Webcam C910) Caps structure from v4l2src srcpad: video/x-raw-yuv, format=(fourcc)YUY2, width=(int)704, height=(int)576, framerate=(fraction){ 25/1, 45/2, 20/1, 35/2, 15/1, 25/2, 10/1, 15/2, 5/1, 5/2, 1/1 }; Video source caps are video/x-raw-yuv, width=704, height=576, framerate=25/1
  * editing: allow an infinity of clips. Paging could allow more than ten clips. Use <>
  * gui: Display thumbnails of the first image in each clip in the info window
  * gui: Display info about current clip in the info window
