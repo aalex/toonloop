@@ -36,6 +36,8 @@ struct SavingTask
     std::vector<std::string> image_paths_;
     int clip_id_;
     int fps_;
+    int width_;
+    int height_;
 };
 /** Saves one clip at a time to a movie in a thread.
  */

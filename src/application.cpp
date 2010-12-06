@@ -158,8 +158,6 @@ void Application::run(int argc, char *argv[])
         //("rendering-fps", po::value<int>()->default_value(30), "Rendering frame rate") // FIXME: can we get a FPS different for the rendering?
         //("capture-fps,r", po::value<int>()->default_value(30), "Rendering frame rate")
         ("playhead-fps", po::value<int>()->default_value(12), "Sets the initial playback rate of clips")
-        //("image-width,w", po::value<int>()->default_value(640), "Width of the images grabbed from the camera. Default is 640")
-        //("image-height,y", po::value<int>()->default_value(480), "Height of the images grabbed from the camera. Default is 480")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode")
         ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device. Use \"test\" for color bars. Use \"x\" to capture the screen")
         ("midi-input,m", po::value<int>(), "Sets the input MIDI device number to open")
@@ -379,6 +377,13 @@ void Application::run(int argc, char *argv[])
     // Sets the remove_deleted_images thing
     for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
         iter->second.get()->set_remove_deleted_images(config_->get_remove_deleted_images());
+
+    // Clip size must be inherited...
+    for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
+    {
+        iter->second.get()->set_width(config_->get_capture_width());
+        iter->second.get()->set_height(config_->get_capture_height());
+    }
     // Choose layout
     unsigned int layout = options["layout"].as<unsigned int>();
     if (layout < NUM_LAYOUTS)
