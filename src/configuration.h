@@ -87,6 +87,8 @@ class Configuration
         bool get_info_window_enabled() const { return info_window_enabled_; }
         std::string get_image_on_top() const { return image_on_top_; }
         bool should_show_image_on_top() const { return image_on_top_.compare("") != 0; }
+
+        bool get_preview_window_enabled() const { return preview_window_enabled_; }
         
     private:
         //int capture_frame_rate_;
@@ -111,6 +113,7 @@ class Configuration
         bool shaders_enabled_;
         bool info_window_enabled_;
         std::string image_on_top_;
+        bool preview_window_enabled_;
 };
 #endif // __CONFIGURATION_H__
 
