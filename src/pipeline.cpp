@@ -357,6 +357,16 @@ Pipeline::Pipeline(Application* owner) :
     gdkpixbufsink_ = gst_element_factory_make("gdkpixbufsink", "gdkpixbufsink0");
     g_assert(gdkpixbufsink_);
 
+    bool is_preview_enabled = config->get_preview_window_enabled();
+    GstElement *queue2 = NULL;
+    GstElement *xvimagesink = NULL;
+    if (is_preview_enabled)
+    {
+        queue2 = gst_element_factory_make("queue", "queue1");
+        g_assert(queue2);
+        xvimagesink = gst_element_factory_make("xvimagesink", "xvimagesink0");
+    }
+
     // add elements
     gst_bin_add(GST_BIN(pipeline_), videosrc_); // capture
     gst_bin_add(GST_BIN(pipeline_), capsfilter0);
@@ -367,6 +377,11 @@ Pipeline::Pipeline(Application* owner) :
     gst_bin_add(GST_BIN(pipeline_), videosink_);
     gst_bin_add(GST_BIN(pipeline_), queue1); // branch #1: gdkpixbufsink
     gst_bin_add(GST_BIN(pipeline_), gdkpixbufsink_);
+    if (is_preview_enabled)
+    {
+        gst_bin_add(GST_BIN(pipeline_), queue2);
+        gst_bin_add(GST_BIN(pipeline_), xvimagesink0);
+    }
 
     // link pads:
     gboolean is_linked = FALSE; 
