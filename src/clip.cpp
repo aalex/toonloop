@@ -253,7 +253,7 @@ unsigned int Clip::get_writehead() const
 unsigned int Clip::iterate_playhead()
 {
     unsigned int len = size();
-    if (len == 0)
+    if (len <= 1)
         playhead_ = 0;
     else 
     {
@@ -298,13 +298,21 @@ unsigned int Clip::iterate_playhead()
                 }
                 break;
             case DIRECTION_RANDOM:
-            {
-                if (len > 1)
-                    playhead_ = (unsigned int) g_random_int_range(0, len - 1);
-                else
-                    playhead_ = 0;
-            }
-            break;
+                {
+                    if (len > 1)
+                        playhead_ = (unsigned int) g_random_int_range(0, len - 1);
+                    else
+                        playhead_ = 0;
+                }
+                break;
+            case DIRECTION_DRUNK:
+                {
+                    // TODO: make drunk steps configurable
+                    gint32 difference = len;
+                    playhead_ += (unsigned int) g_random_int_range(-difference, difference);
+                    playhead_ %= len;
+                }
+                break;
         } // switch
     } // else
     return playhead_;
@@ -325,6 +333,9 @@ std::string Clip::get_direction_name(clip_direction direction)
             break;
         case DIRECTION_RANDOM:
             return std::string("random");
+            break;
+        case DIRECTION_DRUNK:
+            return std::string("drunk");
             break;
     }
     return std::string("unknown");

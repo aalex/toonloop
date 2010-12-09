@@ -47,7 +47,8 @@ enum clip_direction
     DIRECTION_FORWARD, 
     DIRECTION_BACKWARD,
     DIRECTION_YOYO,
-    DIRECTION_RANDOM
+    DIRECTION_RANDOM,
+    DIRECTION_DRUNK
 };
 
 /** The Clip class contains a list of image paths */
