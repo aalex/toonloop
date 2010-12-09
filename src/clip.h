@@ -34,6 +34,14 @@ class Image;
 
 // TODO: use a hierarchy of classes, not an enum.
 // with a string and an int. Very useful
+// class Direction 
+// {
+//     public:
+//         iterate_playhead(unsigned int current, unsigned int num_images);
+//         std::string get_name();
+//         unsigned int get_number();
+// }
+
 enum clip_direction 
 {
     DIRECTION_FORWARD, 
