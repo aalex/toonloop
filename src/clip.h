@@ -32,8 +32,7 @@
 // forward declaration
 class Image;
 
-const unsigned int MAX_FPS = 60;
-
+// TODO: use a hierarchy of classes, not an enum.
 enum clip_direction 
 {
     DIRECTION_FORWARD, 
@@ -46,6 +45,7 @@ class Clip
 {
     public:
         Clip(unsigned int id);
+        static const unsigned int MAX_FPS = 60;
         unsigned int get_id() const;
         //TODO: list<int>* get_all_images();
         unsigned int frame_add();
