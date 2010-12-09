@@ -24,10 +24,11 @@
 #include "image.h"
 #include "timing.h"
 #include <boost/filesystem.hpp>
-#include <string>
-#include <iostream>
-#include <tr1/memory>
 #include <boost/thread/mutex.hpp>
+#include <glib.h>
+#include <iostream>
+#include <string>
+#include <tr1/memory>
 
 //typedef std::vector< std::tr1::shared_ptr<Image> >::iterator ImageIterator;
 namespace fs = boost::filesystem;
@@ -296,6 +297,14 @@ unsigned int Clip::iterate_playhead()
                         ++playhead_;
                 }
                 break;
+            case DIRECTION_RANDOM:
+            {
+                if (len > 1)
+                    playhead_ = (unsigned int) g_random_int_range(0, len - 1);
+                else
+                    playhead_ = 0;
+            }
+            break;
         } // switch
     } // else
     return playhead_;
@@ -313,6 +322,9 @@ std::string Clip::get_direction_name(clip_direction direction)
             break;
         case DIRECTION_YOYO:
             return std::string("yoyo");
+            break;
+        case DIRECTION_RANDOM:
+            return std::string("random");
             break;
     }
     return std::string("unknown");

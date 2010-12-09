@@ -33,11 +33,13 @@
 class Image;
 
 // TODO: use a hierarchy of classes, not an enum.
+// with a string and an int. Very useful
 enum clip_direction 
 {
     DIRECTION_FORWARD, 
     DIRECTION_BACKWARD,
-    DIRECTION_YOYO
+    DIRECTION_YOYO,
+    DIRECTION_RANDOM
 };
 
 /** The Clip class contains a list of image paths */

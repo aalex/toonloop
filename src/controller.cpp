@@ -270,6 +270,10 @@ void Controller::change_current_clip_direction()
             signal_arg = "YOYO";
             break;
         case DIRECTION_YOYO:
+            change_to = DIRECTION_RANDOM;
+            signal_arg = "RANDOM";
+            break;
+        case DIRECTION_RANDOM:
             change_to = DIRECTION_FORWARD;
             signal_arg = "FORWARD";
             break;
@@ -301,6 +305,10 @@ void Controller::set_current_clip_direction(clip_direction direction)
             case DIRECTION_YOYO:
                 change_to = DIRECTION_FORWARD;
                 signal_arg = "FORWARD";
+                break;
+            case DIRECTION_RANDOM:
+                change_to = DIRECTION_RANDOM;
+                signal_arg = "RANDOM";
                 break;
         }
         current_clip->set_direction(change_to);
