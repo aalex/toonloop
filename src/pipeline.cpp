@@ -475,7 +475,7 @@ Pipeline::Pipeline(Application* owner) :
         pad = gst_element_get_request_pad(tee0, "src%d");
         pad_name = gst_pad_get_name(pad);
         if (verbose)
-            g_print("A new pad %s was created\n", pad_name);
+            g_print("tee0: A new pad %s was created\n", pad_name);
        
         /* link the pad */
         is_linked = gst_element_link_pads(tee0, pad_name, queue2, "sink");
@@ -484,7 +484,7 @@ Pipeline::Pipeline(Application* owner) :
             exit(1); 
         }
         g_free(pad_name);
-        gst_object_unref(GST_OBJECT(pad));
+        //FIXME:2010-12-09:aalex: do we need to free the pad? : gst_object_unref(GST_OBJECT(pad));
 
         is_linked = gst_element_link(queue2, xvimagesink);
         if (!is_linked) { 
