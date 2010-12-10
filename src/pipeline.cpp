@@ -362,9 +362,10 @@ Pipeline::Pipeline(Application* owner) :
     GstElement *xvimagesink = NULL;
     if (is_preview_enabled)
     {
-        queue2 = gst_element_factory_make("queue", "queue1");
+        queue2 = gst_element_factory_make("queue", "queue2");
         g_assert(queue2);
         xvimagesink = gst_element_factory_make("xvimagesink", "xvimagesink0");
+        g_object_set(xvimagesink, "force-aspect-ratio", TRUE, NULL);
     }
 
     // add elements
@@ -380,7 +381,7 @@ Pipeline::Pipeline(Application* owner) :
     if (is_preview_enabled)
     {
         gst_bin_add(GST_BIN(pipeline_), queue2);
-        gst_bin_add(GST_BIN(pipeline_), xvimagesink0);
+        gst_bin_add(GST_BIN(pipeline_), xvimagesink);
     }
 
     // link pads:
@@ -464,6 +465,32 @@ Pipeline::Pipeline(Application* owner) :
     if (!is_linked) { 
         g_print("Could not link %s to %s.\n", "queue1", "gdkpixbufsink0"); 
         exit(1); 
+    }
+
+    if (is_preview_enabled)
+    {
+        GstPad * pad;
+        gchar *pad_name;
+       
+        pad = gst_element_get_request_pad(tee0, "src%d");
+        pad_name = gst_pad_get_name(pad);
+        if (verbose)
+            g_print("A new pad %s was created\n", pad_name);
+       
+        /* link the pad */
+        is_linked = gst_element_link_pads(tee0, pad_name, queue2, "sink");
+        if (!is_linked) { 
+            g_print("Could not link %s to %s.\n", "tee0", "queue2"); 
+            exit(1); 
+        }
+        g_free(pad_name);
+        gst_object_unref(GST_OBJECT(pad));
+
+        is_linked = gst_element_link(queue2, xvimagesink);
+        if (!is_linked) { 
+            g_print("Could not link %s to %s.\n", "queue2", "xvimagesink0"); 
+            exit(1); 
+        }
     }
 
     if (verbose)
