@@ -10,6 +10,7 @@ New features:
     * Adding the --image-on-top option. It shows an unscaled image on top of everything except info and help text.
     * Adding playback_opacity property
     * Updated man page about midi binding rules
+    * Added random and drunk playback directions
 
 Bug fixes: 
     * Pass movie size to mencoder args
