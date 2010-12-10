@@ -17,4 +17,8 @@ Bug fixes:
     * Gui: fixed memory leak, fixed delete event callback signature in infowindow
     * Less verbose midi input
 
+Many thanks to:
+    * Tristan Matthews
+
+Have fun with Toonloop!
 
