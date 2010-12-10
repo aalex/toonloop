@@ -58,6 +58,7 @@ Known Bugs
 Here is a list of known bugs. See also the TODO file. That is what we mainly use to manage issues, rather than a Web application. Please read and write on the mailing list if you encounter some issues with Toonloop.
 
  * The portrait layout doesn't look nice: both images overlap when not in 4:3 ratio.
+ * If you run toonloop from a directory in your home (not in /usr/local) it might use the midi.xml file in /usr/local, unless you are in the same directory as the executable. Be careful.
 
 
 Basic Tools for Compiling

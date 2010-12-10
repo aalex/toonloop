@@ -6,11 +6,14 @@ This release is a snapshot in the 2.1 unstable series.
 This version contains new features and bug fixes. 
 
 New features:
-    * 
+    * Added --enable-preview-window option, which shows a window with the livefeed
+    * Adding the --image-on-top option. It shows an unscaled image on top of everything except info and help text.
+    * Adding playback_opacity property
+    * Updated man page about midi binding rules
 
 Bug fixes: 
-    * 
+    * Pass movie size to mencoder args
+    * Gui: fixed memory leak, fixed delete event callback signature in infowindow
+    * Less verbose midi input
 
-Notes:
-    * If you run toonloop from a directory in your home (not in /usr/local) it might use the midi.xml file in /usr/local, unless you are in the same directory as the executable. Be careful.
 

@@ -357,6 +357,21 @@ Pipeline::Pipeline(Application* owner) :
     gdkpixbufsink_ = gst_element_factory_make("gdkpixbufsink", "gdkpixbufsink0");
     g_assert(gdkpixbufsink_);
 
+    bool is_preview_enabled = config->get_preview_window_enabled();
+    GstElement *queue2 = NULL;
+    GstElement *ffmpegcolorspace1 = NULL;
+    GstElement *xvimagesink = NULL;
+    if (is_preview_enabled)
+    {
+        queue2 = gst_element_factory_make("queue", "queue2");
+        g_assert(queue2);
+        ffmpegcolorspace1 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace1");
+        g_assert(ffmpegcolorspace1);
+        xvimagesink = gst_element_factory_make("xvimagesink", "xvimagesink0");
+        g_assert(xvimagesink);
+        g_object_set(xvimagesink, "force-aspect-ratio", TRUE, NULL);
+    }
+
     // add elements
     gst_bin_add(GST_BIN(pipeline_), videosrc_); // capture
     gst_bin_add(GST_BIN(pipeline_), capsfilter0);
@@ -367,6 +382,12 @@ Pipeline::Pipeline(Application* owner) :
     gst_bin_add(GST_BIN(pipeline_), videosink_);
     gst_bin_add(GST_BIN(pipeline_), queue1); // branch #1: gdkpixbufsink
     gst_bin_add(GST_BIN(pipeline_), gdkpixbufsink_);
+    if (is_preview_enabled)
+    {
+        gst_bin_add(GST_BIN(pipeline_), queue2); // branch #2: xvimagesink
+        gst_bin_add(GST_BIN(pipeline_), ffmpegcolorspace1);
+        gst_bin_add(GST_BIN(pipeline_), xvimagesink);
+    }
 
     // link pads:
     gboolean is_linked = FALSE; 
@@ -449,6 +470,27 @@ Pipeline::Pipeline(Application* owner) :
     if (!is_linked) { 
         g_print("Could not link %s to %s.\n", "queue1", "gdkpixbufsink0"); 
         exit(1); 
+    }
+
+    if (is_preview_enabled)
+    {
+        
+        is_linked = gst_element_link_pads(tee0, "src2", queue2, "sink");
+        if (!is_linked) { 
+            g_print("Could not link %s to %s.\n", "tee0", "queue2"); 
+            exit(1); 
+        }
+       
+        is_linked = gst_element_link(queue2, ffmpegcolorspace1);
+        if (!is_linked) { 
+            g_print("Could not link %s to %s.\n", "queue2", "ffmpegcolorspace1"); 
+            exit(1); 
+        }
+        is_linked = gst_element_link(ffmpegcolorspace1, xvimagesink);
+        if (!is_linked) { 
+            g_print("Could not link %s to %s.\n", "ffmpegcolorspace1", "xvimagesink0"); 
+            exit(1); 
+        }
     }
 
     if (verbose)
