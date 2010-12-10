@@ -177,7 +177,7 @@ void Application::run(int argc, char *argv[])
         ("enable-shaders,S", po::bool_switch(), "Enables GLSL shader effects.")
         ("enable-info-window,I", po::bool_switch(), "Enables a window for information text.")
         ("image-on-top", po::value<std::string>()->default_value(""), "Shows an unscaled image on top of all.")
-        ("enable-preview-window,I", po::bool_switch(), "Enables a preview of the live camera feed.")
+        ("enable-preview-window", po::bool_switch(), "Enables a preview of the live camera feed.")
         ; // <-- important semi-colon
     po::variables_map options;
     
