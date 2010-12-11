@@ -1,3 +1,6 @@
+/**
+ * Depends on the "shaders/brcosa.glsl" fragment shader file.
+ */
 #include <boost/bind.hpp>
 #include <clutter/clutter.h>
 #include "saturationeffect.h"
@@ -51,9 +54,9 @@ void SaturationEffect::init_properties()
     if (loaded_)
     {
         //g_print("Creating float property %s\n", "saturation");
-        controller_->add_float_property("saturation", saturation_)->value_changed_signal_.connect(boost::bind(&SaturationEffect::on_saturation_changed, this, _1, _2));
+        controller_->add_float_property("fx.brcosa.saturation", saturation_)->value_changed_signal_.connect(boost::bind(&SaturationEffect::on_saturation_changed, this, _1, _2));
         //g_print("Creating float property %s\n", "contrast");
-        controller_->add_float_property("contrast", contrast_)->value_changed_signal_.connect(boost::bind(&SaturationEffect::on_contrast_changed, this, _1, _2));
+        controller_->add_float_property("fx.brcosa.contrast", contrast_)->value_changed_signal_.connect(boost::bind(&SaturationEffect::on_contrast_changed, this, _1, _2));
     }
 }
 
