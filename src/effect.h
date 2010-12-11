@@ -43,6 +43,8 @@ class Effect
          * 
          * One should change the properties for this effect using the controller's interface.
          * Each property name must be unique.
+         *
+         * Note that the constructor of the child is responsible for calling its init_properties() private virtual method.
          */
         Effect(Controller *controller) :
             loaded_(false),
@@ -51,8 +53,11 @@ class Effect
             actors_ = NULL;
         }
         void add_actor(ClutterActor *actor);
+        /**
+         * Non-virtual interface to the update_actor virtual private method.
+         * It iterates over all actors and update them.
+         */
         void update_all_actors();
-        virtual void init_properties() = 0;
     protected:
         bool loaded_;
         Controller *controller_;
@@ -60,6 +65,7 @@ class Effect
         GList *actors_;
         virtual void update_actor(ClutterActor *actor) = 0;
         virtual void setup_actor(ClutterActor *actor) = 0;
+        virtual void init_properties() = 0;
 };
 
 #endif

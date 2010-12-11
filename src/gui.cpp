@@ -1031,7 +1031,6 @@ Gui::Gui(Application* owner) :
     if (owner_->get_configuration()->get_shaders_enabled())
     {
         saturation_effect_.reset(new SaturationEffect(controller));
-        saturation_effect_->init_properties();
         saturation_effect_->add_actor(playback_group_);
         saturation_effect_->add_actor(live_input_texture_);
         saturation_effect_->add_actor(onionskin_group_);

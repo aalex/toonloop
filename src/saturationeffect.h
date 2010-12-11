@@ -32,10 +32,11 @@ class SaturationEffect: public Effect
             contrast_(1.0),
             saturation_(1.0)
         {
+            init_properties();
         }
-        virtual void init_properties();
             
     private:
+        virtual void init_properties();
         virtual void update_actor(ClutterActor *actor);
         virtual void setup_actor(ClutterActor *actor);
         void on_saturation_changed(std::string &name, float value);

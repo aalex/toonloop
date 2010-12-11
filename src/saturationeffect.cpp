@@ -46,6 +46,8 @@ void SaturationEffect::init_properties()
     else
         loaded_ = true;
 
+    // TODO:2010-12-11:aalex:init_preperties should be done anyways, but loading the shader might be facultative. (in case shaders are not supported or desired)
+    // Those two actions should be done in two separate virtual methods. (wrapped in a non-virtual interface)
     if (loaded_)
     {
         //g_print("Creating float property %s\n", "saturation");
