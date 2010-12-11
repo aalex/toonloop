@@ -35,7 +35,7 @@ headers = \
 	property.h \
 	properties.h \
 	midibinder.h \
-    saturationeffect.h \
+    brcosaeffect.h \
 	saverworker.h \
 	statesaving.h \
 	subprocess.h \
@@ -59,7 +59,7 @@ toonloop_SOURCES = \
 	moviesaver.cpp \
 	pipeline.cpp \
     midibinder.cpp \
-    saturationeffect.cpp \
+    brcosaeffect.cpp \
 	saverworker.cpp \
 	statesaving.cpp \
 	subprocess.cpp \
