@@ -10,7 +10,7 @@
 
 //TODO: check if verbose
 
-void SaturationEffect::update_actor(ClutterActor *actor)
+void BrCoSaEffect::update_actor(ClutterActor *actor)
 {
     if (! loaded_)
         return;
@@ -30,7 +30,7 @@ void SaturationEffect::update_actor(ClutterActor *actor)
     //g_value_unset(&value);
 }
 
-void SaturationEffect::init_properties()
+void BrCoSaEffect::init_properties()
 {
     shader_ = NULL;
     shader_ = clutter_shader_new();
@@ -54,30 +54,30 @@ void SaturationEffect::init_properties()
     if (loaded_)
     {
         //g_print("Creating float property %s\n", "saturation");
-        controller_->add_float_property("fx.brcosa.saturation", saturation_)->value_changed_signal_.connect(boost::bind(&SaturationEffect::on_saturation_changed, this, _1, _2));
+        controller_->add_float_property("fx.brcosa.saturation", saturation_)->value_changed_signal_.connect(boost::bind(&BrCoSaEffect::on_saturation_changed, this, _1, _2));
         //g_print("Creating float property %s\n", "contrast");
-        controller_->add_float_property("fx.brcosa.contrast", contrast_)->value_changed_signal_.connect(boost::bind(&SaturationEffect::on_contrast_changed, this, _1, _2));
+        controller_->add_float_property("fx.brcosa.contrast", contrast_)->value_changed_signal_.connect(boost::bind(&BrCoSaEffect::on_contrast_changed, this, _1, _2));
     }
 }
 
-void SaturationEffect::setup_actor(ClutterActor *actor)
+void BrCoSaEffect::setup_actor(ClutterActor *actor)
 {
     if (! loaded_)
     {
-        g_critical("SaturationEffect not loaded yet");
+        g_critical("BrCoSaEffect not loaded yet");
         return;
     }
-    //g_print("%s: add shader %s to actor %s\n", __FUNCTION__, "SaturationEffect", clutter_actor_get_name(actor));
+    //g_print("%s: add shader %s to actor %s\n", __FUNCTION__, "BrCoSaEffect", clutter_actor_get_name(actor));
     clutter_actor_set_shader(actor, shader_);
 }
 
-void SaturationEffect::on_contrast_changed(std::string &name, float value)
+void BrCoSaEffect::on_contrast_changed(std::string &name, float value)
 {
     UNUSED(name);
     contrast_ = value;
     update_all_actors();
 }
-void SaturationEffect::on_saturation_changed(std::string &name, float value)
+void BrCoSaEffect::on_saturation_changed(std::string &name, float value)
 {
     UNUSED(name);
     saturation_ = value;

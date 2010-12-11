@@ -19,15 +19,18 @@
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __SATURATION_EFFECT_H__
-#define __SATURATION_EFFECT_H__
+#ifndef __BRCOSA_EFFECT_H__
+#define __BRCOSA_EFFECT_H__
 #include "effect.h"
 #include <string>
 
-class SaturationEffect: public Effect
+/**
+ * Brightness, contrast and saturation effect.
+ */
+class BrCoSaEffect: public Effect
 {
     public:
-        SaturationEffect(Controller *controller) : 
+        BrCoSaEffect(Controller *controller) : 
             Effect(controller), 
             contrast_(1.0),
             saturation_(1.0)
