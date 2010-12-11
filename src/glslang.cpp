@@ -4,9 +4,7 @@
 #include <clutter/clutter.h>
 
 // Constant for the shaders data directory: (/usr/share/toonloop/shaders/)
-#define VAL(str) #str
-#define TOSTRING(str) VAL(str)
-#define SHADERS_DIR TOSTRING(DATADIR) "/toonloop/shaders/"
+#define SHADERS_DIR DATADIR "/toonloop/shaders/"
 
 /**
  * Loads a fragment shader source from a file.

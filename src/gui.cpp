@@ -47,12 +47,6 @@
 #include "timer.h"
 #include "unused.h"
 
-// TODO:2010-11-07:aalex:This way of converting macros to string is too complicated
-// The same macros are defined in midibinder.cpp and they could conflict
-#define VAL(str) #str
-#define TOSTRING(str) VAL(str)
-#define PIXMAPS_DIR_STR TOSTRING(PIXMAPS_DIR)
-
 namespace fs = boost::filesystem;
 using std::tr1::shared_ptr;
 typedef std::vector<ClutterActor*>::iterator ActorIterator;
@@ -864,7 +858,7 @@ Gui::Gui(Application* owner) :
     // TODO: version is "snapshot" if minor number is odd, "git" if micro is odd, "release" otherwise
     gtk_window_set_title(GTK_WINDOW(window_), window_title.c_str());
     // Set window icon
-    fs::path iconPath(std::string(PIXMAPS_DIR_STR) + "/toonloop.png");
+    fs::path iconPath(std::string(PIXMAPS_DIR) + "/toonloop.png");
     if (fs::exists(iconPath))
         gtk_window_set_icon_from_file(GTK_WINDOW(window_), iconPath.string().c_str(), NULL);
 

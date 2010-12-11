@@ -21,6 +21,7 @@
 
 // TODO: rename to midibinder.cpp
 
+#include "config.h"
 #include "midibinder.h"
 #include "unused.h"
 #include <boost/lexical_cast.hpp>
@@ -34,9 +35,7 @@
 #include <vector>
 
 // Constant for the presets data directory: (/usr/share/toonloop/presets/)
-#define VAL(str) #str
-#define TOSTRING(str) VAL(str)
-#define PRESETS_DIR TOSTRING(DATADIR) "/toonloop/presets/"
+#define PRESETS_DIR DATADIR "/toonloop/presets/"
 
 // TODO:2010-11-07:aalex:override << for MidiRule
 #if 0
