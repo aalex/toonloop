@@ -10,8 +10,6 @@ Top Priorities
 --------------
  * video: detect what frame rate should work with each web cam, at fallback to the closest that would work if the one provided on the command-line is not supported. For example: (Logitech HD Pro Webcam C910) Caps structure from v4l2src srcpad: video/x-raw-yuv, format=(fourcc)YUY2, width=(int)704, height=(int)576, framerate=(fraction){ 25/1, 45/2, 20/1, 35/2, 15/1, 25/2, 10/1, 15/2, 5/1, 5/2, 1/1 }; Video source caps are video/x-raw-yuv, width=704, height=576, framerate=25/1
  * editing: allow an infinity of clips. Paging could allow more than ten clips. Use <>
- * gui: Display thumbnails of the first image in each clip in the info window
- * gui: Display info about current clip in the info window
  * gui: Why does closing the info window makes the app unresponsive?
  * midi: review and simplify multithread messaging
  * controller: review and simplify properties.h and controller.h
@@ -20,8 +18,6 @@ Top Priorities
  * effects: review and simplify effect.h and saturationeffect.h
  * editing: switch to a clip and add a frame to it in a single key stroke
  * playback: scratch video
- * playback: drunk
- * playback: random
 
 Things to do in priority
 ------------------------
@@ -123,7 +119,4 @@ Done?
 -----
 I think those are done.
 
- * BUG: use dashes, not minus in man pages
- * effects: Color improvements (brightness, contrast, saturation)
- * packaging: install completion/toonloop /etc/bash_completion.d/toonloop
 

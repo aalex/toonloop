@@ -49,10 +49,17 @@
  * DONE: gui: Display information in either a HUD, or a mx GUI in Clutter
  * DONE: Press 'i' to print current loop frame number, number of frames in loop and global framerate.
  * DONE: Press 'o' to toggle the onion skinning on/off.
- * mouse: support mouse controls (disabled by default)
- * Onion skinning is disabled since it crashes when used with a MIDI pedal.
- * simplify what is shown and how depending on the layout. 
- * Add the --layout option
- * Use a messaging queue for the OSC callbacks
- * video: support different sizes (currently only 640x480)
- * layout: portrait theme (rotation to the right)
+ * DONE: mouse: support mouse controls (disabled by default)
+ * DONE: Onion skinning is disabled since it crashes when used with a MIDI pedal.
+ * DONE: simplify what is shown and how depending on the layout. 
+ * DONE: Add the --layout option
+ * DONE: Use a messaging queue for the OSC callbacks
+ * DONE: video: support different sizes (currently only 640x480)
+ * DONE: layout: portrait theme (rotation to the right)
+ * DONE: gui: Display thumbnails of the first image in each clip in the info window
+ * DONE: gui: Display info about current clip in the info window
+ * DONE: playback: drunk
+ * DONE: playback: random
+ * DONE: BUG: use dashes, not minus in man pages
+ * DONE: effects: Color improvements (brightness, contrast, saturation)
+ * DONE: packaging: install completion/toonloop /etc/bash_completion.d/toonloop
