@@ -1,5 +1,27 @@
+/*
+ * Toonloop
+ *
+ * Copyright 2010 Alexandre Quessy
+ * <alexandre@quessy.net>
+ * http://www.toonloop.com
+ *
+ * Toonloop is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Toonloop is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the gnu general public license
+ * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "playheaditerator.h"
 
+// base class
 const std::string &PlayheadIterator::get_name() const
 {
     return do_get_name();
@@ -13,6 +35,7 @@ unsigned int PlayheadIterator::iterate(unsigned int current, unsigned int length
         return do_iterate(current, length) % length;
 }
 
+// forward
 const std::string ForwardIterator::name_ = "forward";
 
 unsigned int ForwardIterator::do_iterate(unsigned int current, unsigned int length)
@@ -23,6 +46,7 @@ unsigned int ForwardIterator::do_iterate(unsigned int current, unsigned int leng
         return current + 1;
 }
 
+// backward
 const std::string BackwardIterator::name_ = "backward";
 
 unsigned int BackwardIterator::do_iterate(unsigned int current, unsigned int length)
@@ -33,6 +57,7 @@ unsigned int BackwardIterator::do_iterate(unsigned int current, unsigned int len
         return current - 1;
 }
 
+// yoyo
 const std::string YoyoIterator::name_ = "yoyo";
 
 unsigned int YoyoIterator::do_iterate(unsigned int current, unsigned int length)
@@ -56,6 +81,26 @@ unsigned int YoyoIterator::do_iterate(unsigned int current, unsigned int length)
         else 
             ++current;
     }
+    return current;
+}
+
+// random
+const std::string RandomIterator::name_ = "random";
+
+unsigned int RandomIterator::do_iterate(unsigned int current, unsigned int length)
+{
+    return (unsigned int) g_random_int_range(0, length - 1);
+}
+
+// drunk
+const std::string DrunkIterator::name_ = "drunk";
+
+unsigned int DrunkIterator::do_iterate(unsigned int current, unsigned int length)
+{
+    // TODO: make drunk steps configurable
+    gint32 difference = 4;
+    current += (unsigned int) g_random_int_range(-difference, difference);
+    current %= length;
     return current;
 }
 
