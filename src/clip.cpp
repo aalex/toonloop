@@ -21,6 +21,7 @@
 
 #include "clip.h"
 #include "configuration.h"
+#include "playheaditerator.h"
 #include "image.h"
 #include "timing.h"
 #include <boost/filesystem.hpp>

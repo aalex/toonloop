@@ -32,6 +32,7 @@ headers = \
     oscreceiver.h \
     oscsender.h \
 	pipeline.h \
+    playheaditerator.h \
 	property.h \
 	properties.h \
 	midibinder.h \
@@ -58,6 +59,7 @@ toonloop_SOURCES = \
 	midiinput.cpp \
 	moviesaver.cpp \
 	pipeline.cpp \
+    playheaditerator.cpp \
     midibinder.cpp \
     brcosaeffect.cpp \
 	saverworker.cpp \
