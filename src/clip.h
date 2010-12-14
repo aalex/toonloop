@@ -28,10 +28,10 @@
 #include <tr1/memory>
 #include <tr1/unordered_map>
 #include <vector>
+#include "playheaditerator.h"
 
-// forward declaration
+// forward declarations
 class Image;
-
 
 enum clip_direction 
 {
@@ -84,6 +84,8 @@ class Clip
         bool remove_first_image();
         void set_remove_deleted_images(bool enabled);
         static std::string get_direction_name(clip_direction direction);
+        const std::string &get_current_playhead_direction() const { return current_playhead_direction_; }
+        void set_current_playhead_direction(const std::string &name);
     private:
         unsigned int id_;
         unsigned int playhead_;
@@ -113,6 +115,8 @@ class Clip
         void make_sure_playhead_and_writehead_are_valid();
         bool remove_deleted_images_;
         void remove_image_file(unsigned int index);
+        std::map< std::string, std::tr1::shared_ptr<PlayheadIterator> > playhead_iterators_;
+        std::string current_playhead_direction_;
 };
 
 #endif // __CLIP_H__

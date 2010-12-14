@@ -31,10 +31,11 @@ class PlayheadIterator
 {
     public:
         PlayheadIterator() {}
-        const std::string &get_name() const;
+        static const std::string &get_name();
         unsigned int iterate(unsigned int current, unsigned int length);
     private:
-        virtual const std::string &do_get_name() const = 0;
+        static const std::string default_name_;
+        static const std::string &do_get_name();
         virtual unsigned int do_iterate(unsigned int current, unsigned int length) = 0;
 };
 
@@ -50,7 +51,7 @@ class ForwardIterator : public PlayheadIterator
     private:
         // declaration
         static const std::string name_;
-        virtual const std::string &do_get_name() const { return name_; }
+        static const std::string &do_get_name() { return name_; }
         virtual unsigned int do_iterate(unsigned int current, unsigned int length);
 };
 
@@ -65,7 +66,7 @@ class BackwardIterator : public PlayheadIterator
         {}
     private:
         static const std::string name_;
-        virtual const std::string &do_get_name() const { return name_; }
+        static const std::string &do_get_name() { return name_; }
         virtual unsigned int do_iterate(unsigned int current, unsigned int length);
 };
 
@@ -85,7 +86,7 @@ class YoyoIterator : public PlayheadIterator
          */
         int yoyo_direction_;
         static const std::string name_;
-        virtual const std::string &do_get_name() const { return name_; }
+        static const std::string &do_get_name() { return name_; }
         virtual unsigned int do_iterate(unsigned int current, unsigned int length);
 };
 
@@ -100,7 +101,7 @@ class RandomIterator : public PlayheadIterator
         {}
     private:
         static const std::string name_;
-        virtual const std::string &do_get_name() const { return name_; }
+        static const std::string &do_get_name() { return name_; }
         virtual unsigned int do_iterate(unsigned int current, unsigned int length);
 };
 
@@ -115,7 +116,7 @@ class DrunkIterator : public PlayheadIterator
         {}
     private:
         static const std::string name_;
-        virtual const std::string &do_get_name() const { return name_; }
+        static const std::string &do_get_name() { return name_; }
         virtual unsigned int do_iterate(unsigned int current, unsigned int length);
 };
 #endif

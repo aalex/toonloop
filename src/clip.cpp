@@ -34,14 +34,10 @@
 //typedef std::vector< std::tr1::shared_ptr<Image> >::iterator ImageIterator;
 namespace fs = boost::filesystem;
 
-// FIXME: vector is not thread safe. You need to protect it with a mutex or such.
 /** Each clip needs a unique ID.
  */
 Clip::Clip(unsigned int id)
 {
-    // FIXME: How to use a 2-int vector?
-    //intervalometer_rate_(1, 1); // default: 1 FPS
-    //fps_(12, 1); // default: 12 FPS
     id_ = id;
     writehead_ = 0;
     playhead_ = 0;
@@ -51,7 +47,12 @@ Clip::Clip(unsigned int id)
     yoyo_sub_direction_ = DIRECTION_FORWARD;
     last_time_grabbed_image_ = timing::get_timestamp_now();
     intervalometer_rate_ = 10.0f; // 10 seconds is a reasonable default for a timelapse
-    //mutex_;
+    playhead_iterators_[ForwardIterator::get_name()] = std::tr1::shared_ptr<PlayheadIterator>(new ForwardIterator());
+    playhead_iterators_[BackwardIterator::get_name()] = std::tr1::shared_ptr<PlayheadIterator>(new BackwardIterator());
+    playhead_iterators_[YoyoIterator::get_name()] = std::tr1::shared_ptr<PlayheadIterator>(new YoyoIterator());
+    playhead_iterators_[RandomIterator::get_name()] = std::tr1::shared_ptr<PlayheadIterator>(new RandomIterator());
+    playhead_iterators_[DrunkIterator::get_name()] = std::tr1::shared_ptr<PlayheadIterator>(new DrunkIterator());
+    current_playhead_direction_ = ForwardIterator::get_name();
 }
 
 void Clip::set_intervalometer_rate(const float rate)

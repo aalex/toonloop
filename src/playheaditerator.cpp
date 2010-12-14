@@ -20,11 +20,20 @@
  */
 
 #include "playheaditerator.h"
+#include "unused.h"
+#include <glib.h>
 
 // base class
-const std::string &PlayheadIterator::get_name() const
+const std::string PlayheadIterator::default_name_ = "none";
+
+const std::string &PlayheadIterator::get_name()
 {
     return do_get_name();
+}
+
+const std::string &PlayheadIterator::do_get_name()
+{
+    return default_name_;
 }
 
 unsigned int PlayheadIterator::iterate(unsigned int current, unsigned int length)
@@ -89,6 +98,7 @@ const std::string RandomIterator::name_ = "random";
 
 unsigned int RandomIterator::do_iterate(unsigned int current, unsigned int length)
 {
+    UNUSED(current);
     return (unsigned int) g_random_int_range(0, length - 1);
 }
 

@@ -114,7 +114,6 @@ class Application
         boost::scoped_ptr<Configuration> config_;
         boost::scoped_ptr<MovieSaver> movie_saver_;
         unsigned int selected_clip_;
-        // Aug 25 2010:tmatth:TODO:use shared_ptr, not raw pointers for clips_
         std::tr1::unordered_map<int, std::tr1::shared_ptr<Clip> > clips_;
 };
 
