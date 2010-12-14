@@ -117,6 +117,7 @@ class Clip
         void remove_image_file(unsigned int index);
         std::map< std::string, std::tr1::shared_ptr<PlayheadIterator> > playhead_iterators_;
         std::string current_playhead_direction_;
+        void init_playhead_iterators();
 };
 
 #endif // __CLIP_H__

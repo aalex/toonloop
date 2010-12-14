@@ -47,12 +47,29 @@ Clip::Clip(unsigned int id)
     yoyo_sub_direction_ = DIRECTION_FORWARD;
     last_time_grabbed_image_ = timing::get_timestamp_now();
     intervalometer_rate_ = 10.0f; // 10 seconds is a reasonable default for a timelapse
-    playhead_iterators_[ForwardIterator::get_name()] = std::tr1::shared_ptr<PlayheadIterator>(new ForwardIterator());
-    playhead_iterators_[BackwardIterator::get_name()] = std::tr1::shared_ptr<PlayheadIterator>(new BackwardIterator());
-    playhead_iterators_[YoyoIterator::get_name()] = std::tr1::shared_ptr<PlayheadIterator>(new YoyoIterator());
-    playhead_iterators_[RandomIterator::get_name()] = std::tr1::shared_ptr<PlayheadIterator>(new RandomIterator());
-    playhead_iterators_[DrunkIterator::get_name()] = std::tr1::shared_ptr<PlayheadIterator>(new DrunkIterator());
-    current_playhead_direction_ = ForwardIterator::get_name();
+    
+    init_playhead_iterators();
+}
+/**
+ * Populates the map of playhead iterator objects.
+ */
+void Clip::init_playhead_iterators()
+{
+    PlayheadIterator *tmp = new ForwardIterator();
+    current_playhead_direction_ = tmp->get_name();
+    playhead_iterators_[tmp->get_name()] = std::tr1::shared_ptr<PlayheadIterator>(tmp);
+    
+    tmp = new BackwardIterator();
+    playhead_iterators_[tmp->get_name()] = std::tr1::shared_ptr<PlayheadIterator>(tmp);
+    
+    tmp = new YoyoIterator();
+    playhead_iterators_[tmp->get_name()] = std::tr1::shared_ptr<PlayheadIterator>(tmp);
+    
+    tmp = new RandomIterator();
+    playhead_iterators_[tmp->get_name()] = std::tr1::shared_ptr<PlayheadIterator>(tmp);
+    
+    tmp = new DrunkIterator();
+    playhead_iterators_[tmp->get_name()] = std::tr1::shared_ptr<PlayheadIterator>(tmp);
 }
 
 void Clip::set_intervalometer_rate(const float rate)

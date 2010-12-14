@@ -24,16 +24,9 @@
 #include <glib.h>
 
 // base class
-const std::string PlayheadIterator::default_name_ = "none";
-
 const std::string &PlayheadIterator::get_name()
 {
     return do_get_name();
-}
-
-const std::string &PlayheadIterator::do_get_name()
-{
-    return default_name_;
 }
 
 unsigned int PlayheadIterator::iterate(unsigned int current, unsigned int length)
