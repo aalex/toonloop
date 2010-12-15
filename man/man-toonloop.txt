@@ -121,8 +121,8 @@ Toonloop is an idea of Alexandre Quessy, and is his research project for his mas
 See http://www.toonloop.com for the URL of the Toonloop mailing list.
 
 [COPYRIGHT]
-Copyright 2010 Alexandre Quessy
-<alexandre@quessy.net>
+Copyright (c) 2010 Alexandre Quessy <alexandre@quessy.net>
+Copyright (c) 2010 Tristan Matthews <le.businessman@gmail.com>
 
 Toonloop is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

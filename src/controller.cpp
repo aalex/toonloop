@@ -1,9 +1,8 @@
 /*
  * Toonloop
  *
- * Copyright 2010 Alexandre Quessy
- * <alexandre@quessy.net>
- * http://www.toonloop.com
+ * Copyright (c) 2010 Alexandre Quessy <alexandre@quessy.net>
+ * Copyright (c) 2010 Tristan Matthews <le.businessman@gmail.com>
  *
  * Toonloop is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -256,72 +255,18 @@ void Controller::set_playhead_fps(unsigned int fps)
 void Controller::change_current_clip_direction()
 {
     Clip *current_clip = owner_->get_current_clip();
-    clip_direction current = current_clip->get_direction();
-    clip_direction change_to = DIRECTION_FORWARD; // default
-    std::string signal_arg = "FORWARD";
-    switch (current)
-    {
-        case DIRECTION_FORWARD:
-            change_to = DIRECTION_BACKWARD;
-            signal_arg = "BACKWARD";
-            break;
-        case DIRECTION_BACKWARD:
-            change_to = DIRECTION_YOYO;
-            signal_arg = "YOYO";
-            break;
-        case DIRECTION_YOYO:
-            change_to = DIRECTION_RANDOM;
-            signal_arg = "RANDOM";
-            break;
-        case DIRECTION_RANDOM:
-            change_to = DIRECTION_DRUNK;
-            signal_arg = "DRUNK";
-            break;
-        case DIRECTION_DRUNK:
-            change_to = DIRECTION_FORWARD;
-            signal_arg = "FORWARD";
-            break;
-    }
-    current_clip->set_direction(change_to);
-    clip_direction_changed_signal_(current_clip->get_id(), signal_arg);
+    current_clip->change_direction();
+    clip_direction_changed_signal_(current_clip->get_id(), current_clip->get_direction());
 }
 
-void Controller::set_current_clip_direction(clip_direction direction)
+void Controller::set_current_clip_direction(const std::string &direction)
 {
     Clip *current_clip = owner_->get_current_clip();
-    clip_direction current = current_clip->get_direction();
-    if (current != direction)
-    {
-        clip_direction change_to = DIRECTION_FORWARD; // default
-        //TODO: the clip_direction_changed_signal should accept a constant, not a string
-        // That will be way simpler
-        std::string signal_arg = "FORWARD";
-        switch (current)
-        {
-            case DIRECTION_FORWARD:
-                change_to = DIRECTION_BACKWARD;
-                signal_arg = "BACKWARD";
-                break;
-            case DIRECTION_BACKWARD:
-                change_to = DIRECTION_YOYO;
-                signal_arg = "YOYO";
-                break;
-            case DIRECTION_YOYO:
-                change_to = DIRECTION_FORWARD;
-                signal_arg = "FORWARD";
-                break;
-            case DIRECTION_RANDOM:
-                change_to = DIRECTION_RANDOM;
-                signal_arg = "RANDOM";
-                break;
-            case DIRECTION_DRUNK:
-                change_to = DIRECTION_DRUNK;
-                signal_arg = "DRUNK";
-                break;
-        }
-        current_clip->set_direction(change_to);
-        clip_direction_changed_signal_(current_clip->get_id(), signal_arg);
-    }
+    bool success = current_clip->set_direction(direction);
+    if (success)
+        clip_direction_changed_signal_(current_clip->get_id(), direction);
+    else
+        std::cout << "Invalid playhead direction: " << direction << std::endl;
 }
 
 void Controller::clear_current_clip()

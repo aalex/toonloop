@@ -1,9 +1,8 @@
 /*
  * Toonloop
  *
- * Copyright 2010 Alexandre Quessy
- * <alexandre@quessy.net>
- * http://www.toonloop.com
+ * Copyright (c) 2010 Alexandre Quessy <alexandre@quessy.net>
+ * Copyright (c) 2010 Tristan Matthews <le.businessman@gmail.com>
  *
  * Toonloop is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,7 +113,6 @@ class Application
         boost::scoped_ptr<Configuration> config_;
         boost::scoped_ptr<MovieSaver> movie_saver_;
         unsigned int selected_clip_;
-        // Aug 25 2010:tmatth:TODO:use shared_ptr, not raw pointers for clips_
         std::tr1::unordered_map<int, std::tr1::shared_ptr<Clip> > clips_;
 };
 

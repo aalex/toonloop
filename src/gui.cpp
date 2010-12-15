@@ -1,9 +1,8 @@
 /*
  * Toonloop
  *
- * Copyright 2010 Alexandre Quessy
- * <alexandre@quessy.net>
- * http://www.toonloop.com
+ * Copyright (c) 2010 Alexandre Quessy <alexandre@quessy.net>
+ * Copyright (c) 2010 Tristan Matthews <le.businessman@gmail.com>
  *
  * Toonloop is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1091,7 +1090,7 @@ void Gui::update_info_text()
     os << std::endl;
     os << std::endl;
     os << "Current clip: " << current_clip->get_id() << std::endl;
-    os << "Direction: " << Clip::get_direction_name(current_clip->get_direction()) << std::endl;
+    os << "Direction: " << current_clip->get_direction() << std::endl;
     os << "FPS: " << current_clip->get_playhead_fps() << std::endl;
     os << "Playhead: " << current_clip->get_playhead() << std::endl;
     os << "Writehead: " << current_clip->get_writehead() << "/" << current_clip->size() << std::endl;

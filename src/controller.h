@@ -1,9 +1,8 @@
 /*
  * Toonloop
  *
- * Copyright 2010 Alexandre Quessy
- * <alexandre@quessy.net>
- * http://www.toonloop.com
+ * Copyright (c) 2010 Alexandre Quessy <alexandre@quessy.net>
+ * Copyright (c) 2010 Tristan Matthews <le.businessman@gmail.com>
  *
  * Toonloop is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -239,7 +238,7 @@ class Controller
          *
          * Triggers the clip_direction_changed_signal_
          */
-        void set_current_clip_direction(clip_direction direction);
+        void set_current_clip_direction(const std::string &direction);
         /**
          * Clears the current clip of all its images.
          *
