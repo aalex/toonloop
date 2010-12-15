@@ -32,15 +32,6 @@
 // forward declarations
 class Image;
 
-enum clip_direction 
-{
-    DIRECTION_FORWARD, 
-    DIRECTION_BACKWARD,
-    DIRECTION_YOYO,
-    DIRECTION_RANDOM,
-    DIRECTION_DRUNK
-};
-
 /** The Clip class contains a list of image paths */
 class Clip 
 {
@@ -91,9 +82,6 @@ class Clip
         unsigned int height_;
         unsigned int nchannels_;
         float intervalometer_rate_;
-        clip_direction direction_;
-        clip_direction yoyo_sub_direction_;
-        //std::vector<int> intervalometer_rate_;
         /**
          * This is a list of images
          * Their order can change.

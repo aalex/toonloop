@@ -43,8 +43,6 @@ Clip::Clip(unsigned int id)
     playhead_ = 0;
     playhead_fps_ = 12; // some default for now
     has_recorded_a_frame_ = false;
-    direction_ = DIRECTION_FORWARD;
-    yoyo_sub_direction_ = DIRECTION_FORWARD;
     last_time_grabbed_image_ = timing::get_timestamp_now();
     intervalometer_rate_ = 10.0f; // 10 seconds is a reasonable default for a timelapse
     
@@ -403,6 +401,7 @@ void Clip::remove_image_file(unsigned int index)
  */
 void Clip::change_direction()
 {
+    // TODO:2010-12-14:aalex: get rid of these if-else for clip direction
     std::string current = get_direction();
     std::string change_to;
     if (current.compare("forward") == 0)
