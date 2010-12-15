@@ -18,6 +18,7 @@ Top Priorities
  * effects: review and simplify effect.h and saturationeffect.h
  * editing: switch to a clip and add a frame to it in a single key stroke
  * playback: scratch video
+ * playback: Be able to change looping bounds
 
 Things to do in priority
 ------------------------
