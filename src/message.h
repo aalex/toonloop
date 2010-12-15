@@ -17,6 +17,18 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+// TODO:2010-12-14:aalex: replace by a hierarchy of classes
+// With an apply(Controller &controller) method
+// and a different constructor for each.
+// The MidiRule class could contain an instance of Message, and duplicate it on demand.
+/*
+class BaseMessage
+{
+    Message() {}
+    virtual void apply(Application *application);
+}
+*/
 #ifndef _MESSAGE_H_
 #define _MESSAGE_H_
 /**
