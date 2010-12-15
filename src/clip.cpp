@@ -32,6 +32,7 @@
 
 //typedef std::vector< std::tr1::shared_ptr<Image> >::iterator ImageIterator;
 namespace fs = boost::filesystem;
+typedef std::map<std::string, std::tr1::shared_ptr<PlayheadIterator> >::iterator PlayheadIteratorIterator;
 
 /** Each clip needs a unique ID.
  */
@@ -47,6 +48,7 @@ Clip::Clip(unsigned int id)
     last_time_grabbed_image_ = timing::get_timestamp_now();
     intervalometer_rate_ = 10.0f; // 10 seconds is a reasonable default for a timelapse
     
+    current_playhead_direction_ = std::string("invalid");
     init_playhead_iterators();
 }
 /**
@@ -274,89 +276,21 @@ unsigned int Clip::iterate_playhead()
     if (len <= 1)
         playhead_ = 0;
     else 
-    {
-        // clip has at leat 1 of length
-        switch (direction_)
-        {
-            case DIRECTION_FORWARD:
-                if (playhead_ >= len - 1)
-                    playhead_ = 0;
-                else 
-                    ++playhead_;
-                break;
-            case DIRECTION_BACKWARD:
-                if (playhead_ == 0)
-                    playhead_ = len - 1;
-                else 
-                    --playhead_;
-                break;
-                // a slightly more complex type is the yoyo:
-            case DIRECTION_YOYO:
-                if (yoyo_sub_direction_ == DIRECTION_BACKWARD)
-                {
-                    if (playhead_ == 0)
-                    {
-                        playhead_ = 1;
-                        yoyo_sub_direction_ = DIRECTION_FORWARD;
-                    } else 
-                        --playhead_;
-                } 
-                else 
-                {
-                    if (playhead_ >= len - 1)
-                    {
-                        if (len == 1)
-                            playhead_ = 0;
-                        else
-                            playhead_ = len - 2;
-                        yoyo_sub_direction_ = DIRECTION_BACKWARD;
-                    } 
-                    else 
-                        ++playhead_;
-                }
-                break;
-            case DIRECTION_RANDOM:
-                {
-                    if (len > 1)
-                        playhead_ = (unsigned int) g_random_int_range(0, len - 1);
-                    else
-                        playhead_ = 0;
-                }
-                break;
-            case DIRECTION_DRUNK:
-                {
-                    // TODO: make drunk steps configurable
-                    gint32 difference = len;
-                    playhead_ += (unsigned int) g_random_int_range(-difference, difference);
-                    playhead_ %= len;
-                }
-                break;
-        } // switch
-    } // else
+        playhead_ = playhead_iterators_[current_playhead_direction_].get()->iterate(playhead_, len);
     return playhead_;
 }
 
-std::string Clip::get_direction_name(clip_direction direction)
+bool Clip::set_direction(const std::string direction)
 {
-    switch (direction)
+    PlayheadIteratorIterator iter;
+    iter = playhead_iterators_.find(direction);
+    if (iter != playhead_iterators_.end())
     {
-        case DIRECTION_FORWARD:
-            return std::string("forward");
-            break;
-        case DIRECTION_BACKWARD:
-            return std::string("backward");
-            break;
-        case DIRECTION_YOYO:
-            return std::string("yoyo");
-            break;
-        case DIRECTION_RANDOM:
-            return std::string("random");
-            break;
-        case DIRECTION_DRUNK:
-            return std::string("drunk");
-            break;
+        current_playhead_direction_ = direction;
+        return true;
     }
-    return std::string("unknown");
+    else
+        return false;
 }
 
 unsigned int Clip::size() const
@@ -463,5 +397,26 @@ void Clip::remove_image_file(unsigned int index)
         else
             std::cout << "File " << file_name << " does not exist!" << std::endl;
     }
+}
+/**
+ * Chooses the next playhead direction.
+ */
+void Clip::change_direction()
+{
+    std::string current = get_direction();
+    std::string change_to;
+    if (current.compare("forward") == 0)
+       change_to = "backward";
+    else if (current.compare("backward") == 0)
+       change_to = "yoyo";
+    else if (current.compare("yoyo") == 0)
+       change_to = "random";
+    else if (current.compare("random") == 0)
+       change_to = "drunk";
+    else if (current.compare("drunk") == 0)
+       change_to = "forward";
+    else
+       change_to = "forward";
+    set_direction(change_to);
 }
 

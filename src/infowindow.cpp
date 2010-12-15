@@ -297,7 +297,7 @@ void InfoWindow::update_info_window()
     os << "  FPS: " << current_clip->get_playhead_fps() << std::endl;
     os << "  Playhead: " << current_clip->get_playhead() << std::endl;
     os << "  Writehead: " << current_clip->get_writehead() << "/" << current_clip->size() << std::endl;
-    os << "  Direction: " << Clip::get_direction_name(current_clip->get_direction()) << std::endl;
+    os << "  Direction: " << current_clip->get_direction() << std::endl;
     os << std::endl;
     os << "  Intervalometer rate: " << current_clip->get_intervalometer_rate() << std::endl;
     os << "  Intervalometer enabled: " << (app_->get_pipeline()->get_intervalometer_is_on() ? "yes" : "no") << std::endl;

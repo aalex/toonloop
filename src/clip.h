@@ -59,8 +59,8 @@ class Clip
         void set_writehead(unsigned int new_value);
         void set_width(unsigned int width);
         void set_height(unsigned int height);
-        void set_direction(clip_direction direction) { direction_ = direction; }
-        clip_direction get_direction() { return direction_; }
+        bool set_direction(const std::string direction);
+        const std::string &get_direction() { return current_playhead_direction_; }
         unsigned int get_width() const;
         unsigned int get_height() const;
         unsigned int get_playhead_fps() const;
@@ -82,9 +82,7 @@ class Clip
         bool remove_last_image();
         bool remove_first_image();
         void set_remove_deleted_images(bool enabled);
-        static std::string get_direction_name(clip_direction direction);
-        const std::string &get_current_playhead_direction() const { return current_playhead_direction_; }
-        void set_current_playhead_direction(const std::string &name);
+        void change_direction();
     private:
         unsigned int id_;
         unsigned int playhead_;

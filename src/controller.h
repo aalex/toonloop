@@ -238,7 +238,7 @@ class Controller
          *
          * Triggers the clip_direction_changed_signal_
          */
-        void set_current_clip_direction(clip_direction direction);
+        void set_current_clip_direction(const std::string &direction);
         /**
          * Clears the current clip of all its images.
          *
