@@ -321,7 +321,7 @@ Image* Clip::get_image(unsigned int index) const
     {
         // Aug 25 2010:tmatth:FIXME we should actually prevent callers' 
         // logic from trying to get invalid framenumbers
-        std::cerr << "Clip::get_image: Got exception " << e.what() << std::endl;
+        std::cerr << "Clip::get_image(" << index << "): Got exception " << e.what() << std::endl;
         return 0;
     }
 }
@@ -401,21 +401,12 @@ void Clip::remove_image_file(unsigned int index)
  */
 void Clip::change_direction()
 {
-    // TODO:2010-12-14:aalex: get rid of these if-else for clip direction
     std::string current = get_direction();
-    std::string change_to;
-    if (current.compare("forward") == 0)
-       change_to = "backward";
-    else if (current.compare("backward") == 0)
-       change_to = "yoyo";
-    else if (current.compare("yoyo") == 0)
-       change_to = "random";
-    else if (current.compare("random") == 0)
-       change_to = "drunk";
-    else if (current.compare("drunk") == 0)
-       change_to = "forward";
-    else
-       change_to = "forward";
-    set_direction(change_to);
+    
+    PlayheadIteratorIterator iter = playhead_iterators_.find(current);
+    iter++;
+    if (iter == playhead_iterators_.end())
+        iter = playhead_iterators_.begin();
+    set_direction((*iter).first);
 }
 
