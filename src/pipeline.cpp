@@ -497,7 +497,8 @@ Pipeline::Pipeline(Application* owner) :
         {
             link_or_die(videosrc_, dv_queue0);
             link_or_die(dv_queue0, dv_decoder0);
-            //XXX Linked when pad show up: link_or_die(dv_decoder0, dv_queue1);
+            //XXX Linked when pad show up: 
+            //link_or_die(dv_decoder0, dv_queue1);
             link_or_die(dv_queue1, capsfilter0);
         } 
         else // hdv
