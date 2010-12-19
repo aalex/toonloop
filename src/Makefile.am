@@ -81,6 +81,7 @@ toonloop_CXXFLAGS = \
 	$(LIBLO_CFLAGS) \
 	$(LIBM_CXXFLAGS) \
 	$(LIBTHREAD_CXXFLAGS) \
+	$(RAW1394_CFLAGS) \
 	$(STK_CXXFLAGS)
  
 toonloop_LDADD = \
@@ -95,4 +96,5 @@ toonloop_LDADD = \
 	$(LIBM_LIBS) \
 	$(LIBTHREAD_LIBS) \
 	$(LDFLAGS) \
+	$(RAW1394_LIBS) \
 	$(STK_LIBS)

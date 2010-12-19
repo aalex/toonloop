@@ -96,6 +96,13 @@ fi
 AC_SUBST([CLUTTERGST_LIBS])
 AC_SUBST([CLUTTERGST_CFLAGS])
 
+
+#Set libraw1394 with pkg-config
+PKG_CHECK_MODULES(RAW1394, libraw1394, have_raw1394=true, have_raw1394=false)
+if test "x${have_raw1394}" = "xfalse" ; then
+    AC_MSG_ERROR([Missing libraw1394])
+fi
+
 # TODO: maybe check explicitely for libxml2
 
 # BOOST
