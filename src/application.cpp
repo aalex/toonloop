@@ -215,7 +215,7 @@ void Application::run(int argc, char *argv[])
     if (options.count("video-source"))
     {
         video_source = options["video-source"].as<std::string>();
-        if (video_source != "test" && video_source != "x")
+        if (video_source != "test" && video_source != "x" && video_source != "dv" && video_source != "hdv")
         {
             if (! fs::exists(video_source))
             {
@@ -414,7 +414,6 @@ Application::~Application()
  *
  * Returns whether the directories exist or not once done.
  */
-
 bool Application::setup_project_home(const std::string &project_home)
 {
     if (not make_sure_directory_exists(project_home))

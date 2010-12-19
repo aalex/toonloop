@@ -57,6 +57,7 @@ class Pipeline
         static void on_new_live_pixbuf(GstBus* bus, GstMessage* message, gpointer user_data);
         std::string guess_source_caps(unsigned int framerateIndex) const;
         static void bus_message_cb(GstBus *bus, GstMessage *msg,  gpointer user_data);
+        void link_or_die(GstElement *from, GstElement *to);
 };
 
 #endif // __PIPELINE_H__

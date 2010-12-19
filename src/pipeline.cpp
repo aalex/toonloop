@@ -292,6 +292,20 @@ void Pipeline::stop()
     // gtk main quit?
 }
 
+void Pipeline::link_or_die(GstElement *from, GstElement *to)
+{
+    bool is_linked = gst_element_link(from, to);
+    gchar *from_name = gst_element_get_name(from);
+    gchar *to_name = gst_element_get_name(to);
+    if (!is_linked) 
+    {
+        g_print("Could not link %s to %s.\n", from_name, to_name);
+        exit(1); 
+    }
+    g_free(from_name);
+    g_free(to_name);
+}
+
 /**
  * Constructor which create the GStreamer pipeline.
  * This pipeline grabs the video and render the OpenGL.
@@ -305,20 +319,39 @@ Pipeline::Pipeline(Application* owner) :
     set_intervalometer_is_on(false);
     pipeline_ = NULL;
     pipeline_ = GST_PIPELINE(gst_pipeline_new("pipeline"));
-    
+
+    GstElement* dv_decoder0 = NULL;
+    GstElement* hdv_decoder0 = NULL;
+    GstElement* dv_queue0 = NULL;
+    GstElement* dv_queue1 = NULL;
+
+    bool is_dv_enabled = config->videoSource() == "dv";
+    bool is_hdv_enabled = config->videoSource() == "hdv";
     // Video source element
     // TODO: add more input types like in Ekiga
+    if (verbose)
+        std::cout << "Video source: " << config->videoSource() << std::endl;
     if (config->videoSource() == "test")
     {
-        if (verbose)
-            std::cout << "Video source: videotestsrc" << std::endl;
         videosrc_  = gst_element_factory_make("videotestsrc", "videosrc0");
     } 
     else if (config->videoSource() == "x") 
     {
-        if (verbose)
-            std::cout << "Video source: ximagesrc" << std::endl;
         videosrc_  = gst_element_factory_make("ximagesrc", "videosrc0");
+    } 
+    else if (config->videoSource() == "dv") 
+    {
+        videosrc_  = gst_element_factory_make("dv1394src", "videosrc0");
+        dv_queue0  = gst_element_factory_make("queue", "dv_queue0");
+        dv_decoder0 = gst_element_factory_make("dvdemux", "dv_decoder0");
+        dv_queue1  = gst_element_factory_make("queue", "dv_queue1");
+        g_assert(dv_decoder0);
+    } 
+    else if (config->videoSource() == "hdv") 
+    {
+        videosrc_  = gst_element_factory_make("hdv1394src", "videosrc0");
+        hdv_decoder0 = gst_element_factory_make("decodebin", "hdv_decoder0");
+        g_assert(hdv_decoder0);
     } 
     else  // v4l2src
     {
@@ -373,6 +406,16 @@ Pipeline::Pipeline(Application* owner) :
 
     // add elements
     gst_bin_add(GST_BIN(pipeline_), videosrc_); // capture
+    if (is_dv_enabled)
+    {
+        gst_bin_add(GST_BIN(pipeline_), dv_queue0);
+        gst_bin_add(GST_BIN(pipeline_), dv_decoder0);
+        gst_bin_add(GST_BIN(pipeline_), dv_queue1);
+    } 
+    else if (is_hdv_enabled)
+    {
+        gst_bin_add(GST_BIN(pipeline_), hdv_decoder0);
+    }
     gst_bin_add(GST_BIN(pipeline_), capsfilter0);
     gst_bin_add(GST_BIN(pipeline_), ffmpegcolorspace0);
     gst_bin_add(GST_BIN(pipeline_), tee0);
@@ -390,8 +433,6 @@ Pipeline::Pipeline(Application* owner) :
 
     // link pads:
     gboolean is_linked = FALSE; 
-    bool source_is_linked = false;
-    int frame_rate_index = 0;
     if (config->videoSource() == std::string("test") || config->videoSource() == std::string("x")) 
     {
         if (config->videoSource() == std::string("x")) 
@@ -408,13 +449,27 @@ Pipeline::Pipeline(Application* owner) :
             g_object_set(capsfilter0, "caps", the_caps, NULL);
             gst_caps_unref(the_caps);
         }
-        is_linked = gst_element_link(videosrc_, capsfilter0);
-        if (!is_linked) {
-            g_print("Could not link %s to %s.\n", "videosrc_", "capfilter0"); 
-            exit(1); 
+
+        link_or_die(videosrc_, capsfilter0);
+    } 
+    else if (is_dv_enabled || is_hdv_enabled) 
+    {
+        if (is_dv_enabled)
+        {
+            link_or_die(videosrc_, dv_queue0);
+            link_or_die(dv_queue0, dv_decoder0);
+            link_or_die(dv_decoder0, dv_queue1);
+            link_or_die(dv_queue1, capsfilter0);
+        } 
+        else // hdv
+        {
+            g_error("HDV is not yet implemented."); // quits
         }
-        source_is_linked = true;
-    } else {     // it's a v4l2src
+    } 
+    else // it's a v4l2src
+    {     
+        bool source_is_linked = false;
+        int frame_rate_index = 0;
         // Guess the right FPS to use with the video capture device
         while (not source_is_linked)
         {
@@ -434,16 +489,8 @@ Pipeline::Pipeline(Application* owner) :
         }
     }
     //Will now link capfilter0--ffmpegcolorspace0--tee.
-    is_linked = gst_element_link(capsfilter0, ffmpegcolorspace0);
-    if (!is_linked) {
-        g_print("Could not link %s to %s.\n", "capsfilter0", "ffmpegcolorspace0"); 
-        exit(1);
-    }
-    is_linked = gst_element_link(ffmpegcolorspace0, tee0);
-    if (!is_linked) {
-        g_print("Could not link %s to %s.\n", "ffmpegcolorspace0", "tee0"); 
-        exit(1);
-    }
+    link_or_die(capsfilter0, ffmpegcolorspace0);
+    link_or_die(ffmpegcolorspace0, tee0);
     //Will now link tee--queue--videosink.
     is_linked = gst_element_link_pads(tee0, "src0", queue0, "sink");
     if (!is_linked) {
@@ -451,12 +498,7 @@ Pipeline::Pipeline(Application* owner) :
         exit(1);
     }
     // output 0: the OpenGL uploader.
-    is_linked = gst_element_link(queue0, videosink_);
-    if (!is_linked) {
-        // FIXME:2010-08-06:aalex:We could get the name of the GST element for the clutter sink using gst_element_get_name
-        g_print("Could not link %s to %s.\n", "queue0", "cluttervideosink0");
-        exit(1); 
-    }
+    link_or_die(queue0, videosink_);
 
     // output 1: the GdkPixbuf sink
     //Will now link tee--queue--pixbufsink.
@@ -465,11 +507,7 @@ Pipeline::Pipeline(Application* owner) :
         g_print("Could not link %s to %s.\n", "tee0", "queue1"); 
         exit(1); 
     }
-    is_linked = gst_element_link(queue1, gdkpixbufsink_);
-    if (!is_linked) { 
-        g_print("Could not link %s to %s.\n", "queue1", "gdkpixbufsink0"); 
-        exit(1); 
-    }
+    link_or_die(queue1, gdkpixbufsink_);
 
     if (is_preview_enabled)
     {
