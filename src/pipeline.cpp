@@ -34,6 +34,7 @@
 #include "log.h" // TODO: make it async and implement THROW_ERROR
 #include "pipeline.h"
 #include "timing.h"
+#include "raw1394util.h"
 #include "v4l2util.h"
 
 //const bool USE_SHADER = false;
@@ -306,6 +307,38 @@ void Pipeline::link_or_die(GstElement *from, GstElement *to)
     g_free(to_name);
 }
 
+/// Called due to incoming dv stream, either video or audio, links appropriately
+void Pipeline::cb_new_dvdemux_src_pad(GstElement * /*srcElement*/, GstPad * srcPad, gpointer data)
+{
+    GstElement *sinkElement = static_cast<GstElement*>(data);;
+    if (std::string("video") == gst_pad_get_name(srcPad))
+    {
+        LOG_DEBUG("Got video stream from DV");
+    }
+    else 
+    {
+        LOG_DEBUG("Ignoring unknown stream from DV");
+        return;
+    }
+
+    GstPad *sinkPad;
+    sinkPad = gst_element_get_static_pad(sinkElement, "sink");
+
+    if (GST_PAD_IS_LINKED(sinkPad))
+    {
+        g_object_unref(sinkPad); // don't link more than once
+        return;
+    }
+    LOG_DEBUG("Dv1394: linking new srcpad to sinkpad.");
+    bool is_linked = gst_pad_link(srcPad, sinkPad);
+    if (!is_linked) 
+    {
+        g_print("Could not link %s to %s.\n", "dv_decoder0", "dv_queue1"); 
+        exit(1);
+    }
+    gst_object_unref(sinkPad);
+}
+
 /**
  * Constructor which create the GStreamer pipeline.
  * This pipeline grabs the video and render the OpenGL.
@@ -341,10 +374,16 @@ Pipeline::Pipeline(Application* owner) :
     } 
     else if (config->videoSource() == "dv") 
     {
+        if (! Raw1394::cameraIsReady())
+            g_error("There is no DV camera that is ready.");
         videosrc_  = gst_element_factory_make("dv1394src", "videosrc0");
         dv_queue0  = gst_element_factory_make("queue", "dv_queue0");
         dv_decoder0 = gst_element_factory_make("dvdemux", "dv_decoder0");
         dv_queue1  = gst_element_factory_make("queue", "dv_queue1");
+        // register connection callback for demux
+        g_signal_connect(dv_decoder0, "pad-added",
+            G_CALLBACK(cb_new_dvdemux_src_pad),
+            static_cast<gpointer>(dv_queue1));
         g_assert(dv_decoder0);
     } 
     else if (config->videoSource() == "hdv") 
@@ -458,7 +497,7 @@ Pipeline::Pipeline(Application* owner) :
         {
             link_or_die(videosrc_, dv_queue0);
             link_or_die(dv_queue0, dv_decoder0);
-            link_or_die(dv_decoder0, dv_queue1);
+            //XXX Linked when pad show up: link_or_die(dv_decoder0, dv_queue1);
             link_or_die(dv_queue1, capsfilter0);
         } 
         else // hdv
