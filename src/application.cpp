@@ -93,6 +93,7 @@ Application::Application() :
         clips_[i] = shared_ptr<Clip>(new Clip(i));
 }
 
+// TODO:2010-12-18:aalex:Should we return shared_ptr<Clip>, not Clip*?
 Clip* Application::get_current_clip()
 {
     return clips_[selected_clip_].get();
