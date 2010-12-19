@@ -103,6 +103,12 @@ if test "x${have_raw1394}" = "xfalse" ; then
     AC_MSG_ERROR([Missing libraw1394])
 fi
 
+#Trying to set LIBAVC1394 using pkg-config
+PKG_CHECK_MODULES(AVC1394, [libavc1394], have_avc1394=true, have_avc1394=false)
+if test "x${have_avc1394}" = "xfalse" ; then
+	AC_MSG_ERROR([missing package: libavc1394-dev ])
+fi
+
 # TODO: maybe check explicitely for libxml2
 
 # BOOST
