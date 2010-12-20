@@ -148,11 +148,11 @@ void Pipeline::end_stream_cb(GstBus* /*bus*/, GstMessage* message, gpointer user
         GError *err = NULL;
         gst_message_parse_error(message, &err, &debug);
         g_printerr("GStreamer ERROR from element %s: %s\n", GST_OBJECT_NAME(message->src), err->message);
-        if (message->src == GST_OBJECT(context->videosrc_))
-        {
-            g_print("The error message comes from %s. Not stopping the pipeline.\n", GST_OBJECT_NAME(message->src));
-            stop_it = false;
-        }
+        //if (message->src == GST_OBJECT(context->videosrc_))
+        //{
+        //    g_print("The error message comes from %s. Not stopping the pipeline.\n", GST_OBJECT_NAME(message->src));
+        //    stop_it = false;
+        //}
         g_error_free(err);
         if (debug) 
         {
@@ -323,11 +323,11 @@ void Pipeline::cb_new_dvdemux_src_pad(GstElement * /*srcElement*/, GstPad * srcP
     GstElement *sinkElement = static_cast<GstElement*>(data);
     if (std::string("video") == gst_pad_get_name(srcPad))
     {
-        LOG_DEBUG("Got video stream from DV");
+        LOG_DEBUG("Got video stream from DV\n");
     }
     else 
     {
-        g_print("Ignoring %s stream from DV", gst_pad_get_name(srcPad));
+        g_print("Ignoring %s stream from DV\n", gst_pad_get_name(srcPad));
         return;
     }
 
@@ -338,13 +338,14 @@ void Pipeline::cb_new_dvdemux_src_pad(GstElement * /*srcElement*/, GstPad * srcP
         g_object_unref(sinkPad); // don't link more than once
         return;
     }
-    g_print("Pipeline::%s: Dv1394: linking new srcpad to sinkpad.", __FUNCTION__);
+    g_print("Pipeline::%s: Dv1394: linking new srcpad to %s's %s sinkpad.", __FUNCTION__, gst_element_get_name(sinkElement), gst_pad_get_name(sinkPad));
     bool is_linked = gst_pad_link(srcPad, sinkPad);
     if (!is_linked) 
     {
         g_print("Could not link %s to %s.\n", "dv_decoder0", "dv_queue1"); 
         exit(1);
     }
+    g_print("Success!\n");
     gst_object_unref(sinkPad);
 }
 
@@ -364,8 +365,10 @@ Pipeline::Pipeline(Application* owner) :
 
     GstElement* dv_decoder0 = NULL;
     GstElement* hdv_decoder0 = NULL;
-    GstElement* dv_queue0 = NULL;
-    GstElement* dv_queue1 = NULL;
+    //GstElement* dv_queue0 = NULL;
+    //GstElement* dv_queue1 = NULL;
+    // capsfilter0, for the capture FPS and size
+    GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
 
     bool is_dv_enabled = config->videoSource() == "dv";
     bool is_hdv_enabled = config->videoSource() == "hdv";
@@ -386,9 +389,9 @@ Pipeline::Pipeline(Application* owner) :
         if (! Raw1394::cameraIsReady())
             g_error("There is no DV camera that is ready.");
         videosrc_  = gst_element_factory_make("dv1394src", "videosrc0");
-        dv_queue0  = gst_element_factory_make("queue", "dv_queue0");
+        //dv_queue0  = gst_element_factory_make("queue", "dv_queue0");
         dv_decoder0 = gst_element_factory_make("dvdemux", "dv_decoder0");
-        dv_queue1  = gst_element_factory_make("queue", "dv_queue1");
+        //dv_queue1  = gst_element_factory_make("queue", "dv_queue1");
         // register connection callback for the dvdemux element.
         // Note that the demuxer will be linked to whatever after it dynamically.
         // The reason is that the DV may contain various streams (for example
@@ -398,7 +401,7 @@ Pipeline::Pipeline(Application* owner) :
         // when the "pad-added" is emitted.
         g_signal_connect(dv_decoder0, "pad-added",
             G_CALLBACK(cb_new_dvdemux_src_pad),
-            static_cast<gpointer>(dv_queue1));
+            static_cast<gpointer>(capsfilter0));
         g_assert(dv_decoder0);
     } 
     else if (config->videoSource() == "hdv") 
@@ -422,8 +425,6 @@ Pipeline::Pipeline(Application* owner) :
     // TODO: use something else than g_assert to see if we could create the elements.
     g_assert(videosrc_); 
     
-    // capsfilter0, for the capture FPS and size
-    GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
 
     // ffmpegcolorspace0 element
     GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
@@ -462,9 +463,9 @@ Pipeline::Pipeline(Application* owner) :
     gst_bin_add(GST_BIN(pipeline_), videosrc_); // capture
     if (is_dv_enabled)
     {
-        gst_bin_add(GST_BIN(pipeline_), dv_queue0);
+        //gst_bin_add(GST_BIN(pipeline_), dv_queue0);
         gst_bin_add(GST_BIN(pipeline_), dv_decoder0);
-        gst_bin_add(GST_BIN(pipeline_), dv_queue1);
+        //gst_bin_add(GST_BIN(pipeline_), dv_queue1);
     } 
     else if (is_hdv_enabled)
     {
@@ -510,11 +511,12 @@ Pipeline::Pipeline(Application* owner) :
     {
         if (is_dv_enabled)
         {
-            link_or_die(videosrc_, dv_queue0);
-            link_or_die(dv_queue0, dv_decoder0);
+            link_or_die(videosrc_, dv_decoder0);
+            //link_or_die(videosrc_, dv_queue0);
+            //link_or_die(dv_queue0, dv_decoder0);
             //XXX Linked when pad show up: 
             //link_or_die(dv_decoder0, dv_queue1);
-            link_or_die(dv_queue1, capsfilter0);
+            //link_or_die(dv_queue1, capsfilter0);
         } 
         else // hdv
         {
