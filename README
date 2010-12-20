@@ -92,6 +92,7 @@ Here is the list of Debian package that you will need to build Toonloop 2.x.
  gstreamer0.10-x,
  help2man,
  libasound-dev,
+ libavc1394-dev,
  libboost-program-options-dev,
  libboost-filesystem-dev,
  libboost-thread-dev,
