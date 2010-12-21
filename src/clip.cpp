@@ -71,12 +71,12 @@ void Clip::init_playhead_iterators()
     playhead_iterators_[tmp->get_name()] = std::tr1::shared_ptr<PlayheadIterator>(tmp);
 }
 
-void Clip::set_intervalometer_rate(const float rate)
+void Clip::set_intervalometer_rate(float rate)
 {
     intervalometer_rate_ = rate;
 }
 
-void Clip::set_last_time_grabbed_image(const long timestamp)
+void Clip::set_last_time_grabbed_image(long timestamp)
 {
     last_time_grabbed_image_ = timestamp;
 }
@@ -278,7 +278,7 @@ unsigned int Clip::iterate_playhead()
     return playhead_;
 }
 
-bool Clip::set_direction(const std::string direction)
+bool Clip::set_direction(const std::string &direction)
 {
     PlayheadIteratorIterator iter;
     iter = playhead_iterators_.find(direction);

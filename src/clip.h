@@ -50,7 +50,7 @@ class Clip
         void set_writehead(unsigned int new_value);
         void set_width(unsigned int width);
         void set_height(unsigned int height);
-        bool set_direction(const std::string direction);
+        bool set_direction(const std::string &direction);
         const std::string &get_direction() { return current_playhead_direction_; }
         unsigned int get_width() const;
         unsigned int get_height() const;
@@ -66,10 +66,10 @@ class Clip
         std::string get_image_full_path(Image* image) const;
         void clear_all_images();
         long get_last_time_grabbed_image() const { return last_time_grabbed_image_; }
-        void set_last_time_grabbed_image(const long timestamp);
+        void set_last_time_grabbed_image(long timestamp);
         /** The intervalometer speed is in seconds */
         float get_intervalometer_rate() const { return intervalometer_rate_; }
-        void set_intervalometer_rate(const float rate);
+        void set_intervalometer_rate(float rate);
         bool remove_last_image();
         bool remove_first_image();
         void set_remove_deleted_images(bool enabled);
