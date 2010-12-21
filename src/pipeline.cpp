@@ -383,6 +383,7 @@ Pipeline::Pipeline(Application* owner) :
     GstElement* hdv_decoder0 = NULL;
     GstElement* dv_videoscale0 = NULL;
     GstElement* dv_ffmpegcolorspace = NULL;
+    GstElement* dvdec = NULL;
     //GstElement* dv_queue0 = NULL;
     //GstElement* dv_queue1 = NULL;
     // capsfilter0, for the capture FPS and size
@@ -409,6 +410,7 @@ Pipeline::Pipeline(Application* owner) :
         videosrc_  = gst_element_factory_make("dv1394src", "videosrc0");
         //dv_queue0  = gst_element_factory_make("queue", "dv_queue0");
         dv_decoder0 = gst_element_factory_make("dvdemux", "dv_decoder0");
+        dvdec = gst_element_factory_make("dvdec", "dvdec");
         dv_videoscale0 = gst_element_factory_make("videoscale", "dv_videoscale0");
         dv_ffmpegcolorspace = gst_element_factory_make("ffmpegcolorspace", "dv_ffmpegcolorspace");
         //dv_queue1  = gst_element_factory_make("queue", "dv_queue1");
@@ -421,7 +423,7 @@ Pipeline::Pipeline(Application* owner) :
         // when the "pad-added" is emitted.
         g_signal_connect(dv_decoder0, "pad-added",
             G_CALLBACK(cb_new_dvdemux_src_pad),
-            static_cast<gpointer>(dv_videoscale0));
+            static_cast<gpointer>(dvdec));
         g_assert(dv_decoder0);
     } 
     else if (config->videoSource() == "hdv") 
@@ -486,6 +488,7 @@ Pipeline::Pipeline(Application* owner) :
     {
         //gst_bin_add(GST_BIN(pipeline_), dv_queue0);
         gst_bin_add(GST_BIN(pipeline_), dv_decoder0);
+        gst_bin_add(GST_BIN(pipeline_), dvdec);
         gst_bin_add(GST_BIN(pipeline_), dv_videoscale0);
         gst_bin_add(GST_BIN(pipeline_), dv_ffmpegcolorspace);
         //gst_bin_add(GST_BIN(pipeline_), dv_queue1);
@@ -536,7 +539,8 @@ Pipeline::Pipeline(Application* owner) :
         if (is_dv_enabled)
         {
             link_or_die(videosrc_, dv_decoder0);
-            // dv_decoder0 is linked to dv_videoscale0 when its src pads appear
+            // dv_decoder0 is linked to dvdec when its src pads appear
+            link_or_die(dvdec, dv_videoscale0); // FIXME: rename dv_decoder0 to dvdemux0
             link_or_die(dv_videoscale0, dv_ffmpegcolorspace);
             link_or_die(dv_ffmpegcolorspace, capsfilter0);
         } 
