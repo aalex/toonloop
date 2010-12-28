@@ -80,8 +80,8 @@ class SelectClipAction : public Action
             Action(),
             clip_number_(clip_number)
         {}
-        void set_clip_number(unsigned int clip_number) { clip_number_ = clip_number; }
-        unsigned int get_clip_number() const { return clip_number_; }
+//        void set_clip_number(unsigned int clip_number) { clip_number_ = clip_number; }
+//        unsigned int get_clip_number() const { return clip_number_; }
     private:
         static const std::string name_;
         virtual const std::string &do_get_name() const { return name_; }
