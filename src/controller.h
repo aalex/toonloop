@@ -308,6 +308,11 @@ class Controller
          * Triggers the writehead_moved_signal_
          */
         void move_writehead_to(unsigned int position);
+
+        /**
+         * Quits the application.
+         */
+        void quit();
     private:
         Application* owner_;
 };

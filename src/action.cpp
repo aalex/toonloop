@@ -24,26 +24,66 @@
 #include "controller.h"
 
 // add_image
-const std::string AddImageAction::name_ = "add_image";
+const std::string AddImageCommand::name_ = "add_image";
 
-void AddImageAction::do_apply(Controller &controller) const
+void AddImageCommand::do_apply(Controller &controller) const
 {
     controller.add_frame();
 }
 
 // remove_image
-const std::string RemoveImageAction::name_ = "remove_image";
+const std::string RemoveImageCommand::name_ = "remove_image";
 
-void RemoveImageAction::do_apply(Controller &controller) const
+void RemoveImageCommand::do_apply(Controller &controller) const
 {
     controller.remove_frame();
 }
 
 // select_clip(i: clip_number)
-const std::string SelectClipAction::name_ = "select_clip";
+const std::string SelectClipCommand::name_ = "select_clip";
 
-void SelectClipAction::do_apply(Controller &controller) const
+void SelectClipCommand::do_apply(Controller &controller) const
 {
     controller.choose_clip(clip_number_);
+}
+
+// quit
+const std::string QuitCommand::name_ = "quit";
+
+void QuitCommand::do_apply(Controller &controller) const
+{
+    controller.quit();
+}
+
+// video_record_on
+const std::string VideoRecordOnCommand::name_ = "video_record_on";
+
+void VideoRecordOnCommand::do_apply(Controller &controller) const
+{
+    controller.enable_video_grabbing(true);
+}
+
+// video_record_off
+const std::string VideoRecordOffCommand::name_ = "video_record_off";
+
+void VideoRecordOffCommand::do_apply(Controller &controller) const
+{
+    controller.enable_video_grabbing(false);
+}
+
+// set_float(s: name, f: value)
+const std::string SetFloatCommand::name_ = "set_float";
+
+void SetFloatCommand::do_apply(Controller &controller) const
+{
+    controller.set_float_value(property_name_, property_value_);
+}
+
+// set_int(s: name, i: value)
+const std::string SetIntCommand::name_ = "set_int";
+
+void SetIntCommand::do_apply(Controller &controller) const
+{
+    controller.set_int_value(property_name_, property_value_);
 }
 

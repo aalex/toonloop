@@ -17,24 +17,26 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef __ACTION_H__
-#define __ACTION_H__
+#ifndef __COMMAND_H__
+#define __COMMAND_H__
 
 #include <string>
 
 class Controller;
 
 /**
- * Action for the controller to do.
+ * Action for the controller to do. It's an implementation of the command design pattern.
  * 
- * Abstract base class for all actions.
+ * Abstract base class for all commands.
  */
-class Action
+class Command
 {
     public:
-        Action() {}
+        Command() {}
         const std::string &get_name() const;
         void apply(Controller &controller) const;
+        virtual bool is_reversible() { return false; }
+        virtual void undo() { }
     private:
         virtual const std::string &do_get_name() const = 0;
         virtual void do_apply(Controller &controller) const = 0;
@@ -43,11 +45,11 @@ class Action
 /**
  * Adds an image to the currently edited clip.
  */
-class AddImageAction : public Action
+class AddImageCommand : public Command
 {
     public:
-        AddImageAction() : 
-            Action()
+        AddImageCommand() : 
+            Command()
         {}
     private:
         static const std::string name_;
@@ -58,11 +60,11 @@ class AddImageAction : public Action
 /**
  * Removes an image from the currently edited clip.
  */
-class RemoveImageAction : public Action
+class RemoveImageCommand : public Command
 {
     public:
-        RemoveImageAction() : 
-            Action()
+        RemoveImageCommand() : 
+            Command()
         {}
     private:
         static const std::string name_;
@@ -73,11 +75,11 @@ class RemoveImageAction : public Action
 /**
  * Selects a clip to edit.
  */
-class SelectClipAction : public Action
+class SelectClipCommand : public Command
 {
     public:
-        SelectClipAction(unsigned int clip_number) : 
-            Action(),
+        SelectClipCommand(unsigned int clip_number) : 
+            Command(),
             clip_number_(clip_number)
         {}
 //        void set_clip_number(unsigned int clip_number) { clip_number_ = clip_number; }
@@ -88,16 +90,93 @@ class SelectClipAction : public Action
         virtual void do_apply(Controller &controller) const;
         unsigned int clip_number_;
 };
+
+
+/**
+ * Quits the application.
+ */
+class QuitCommand : public Command
+{
+    public:
+        QuitCommand() : 
+            Command()
+        {}
+    private:
+        static const std::string name_;
+        virtual const std::string &do_get_name() const { return name_; }
+        virtual void do_apply(Controller &controller) const;
+};
+
+
+/**
+ * Starts video grabbing.
+ */
+class VideoRecordOnCommand : public Command
+{
+    public:
+        VideoRecordOnCommand() : 
+            Command()
+        {}
+    private:
+        static const std::string name_;
+        virtual const std::string &do_get_name() const { return name_; }
+        virtual void do_apply(Controller &controller) const;
+};
+
+/**
+ * Stops video grabbing.
+ */
+class VideoRecordOffCommand : public Command
+{
+    public:
+        VideoRecordOffCommand() : 
+            Command()
+        {}
+    private:
+        static const std::string name_;
+        virtual const std::string &do_get_name() const { return name_; }
+        virtual void do_apply(Controller &controller) const;
+};
+
+/**
+ * Sets the value of a float property.
+ */
+class SetFloatCommand : public Command
+{
+    public:
+        SetFloatCommand(const std::string name, float value) : 
+            Command(),
+            property_name_(name),
+            property_value_(value)
+        {}
+    private:
+        static const std::string name_;
+        virtual const std::string &do_get_name() const { return name_; }
+        virtual void do_apply(Controller &controller) const;
+        std::string property_name_;
+        float property_value_;
+};
+
+/**
+ * Sets the value of an int property.
+ */
+class SetIntCommand : public Command
+{
+    public:
+        SetIntCommand(const std::string name, int value) : 
+            Command(),
+            property_name_(name),
+            property_value_(value)
+        {}
+    private:
+        static const std::string name_;
+        virtual const std::string &do_get_name() const { return name_; }
+        virtual void do_apply(Controller &controller) const;
+        std::string property_name_;
+        int property_value_;
+};
+
 /*
-            NOP,
-            ADD_IMAGE,
-            REMOVE_IMAGE,
-            VIDEO_RECORD_ON,
-            VIDEO_RECORD_OFF,
-            SELECT_CLIP,
-            QUIT,
-            SET_FLOAT,
-            SET_INT
             // TODO: implement the other messages:
             //SAVE_CLIP,
             //SAVE_PROJECT,

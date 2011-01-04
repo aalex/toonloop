@@ -373,3 +373,8 @@ void Controller::move_writehead_to(unsigned int position)
     }
 }
 
+void Controller::quit()
+{
+    owner_->quit();
+}
+
