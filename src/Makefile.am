@@ -13,9 +13,9 @@ clean-local:
 	rm -rf html
 
 headers = \
-	action.h \
 	application.h \
 	clip.h \
+	command.h \
 	concurrentqueue.h \
 	config.h \
 	configuration.h \
@@ -47,9 +47,9 @@ headers = \
 	v4l2util.h
 
 toonloop_SOURCES = \
-	action.cpp \
 	application.cpp \
 	clip.cpp \
+	command.cpp \
 	configuration.cpp \
 	controller.cpp \
     effect.cpp \
