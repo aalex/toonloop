@@ -201,19 +201,17 @@ bool MidiInput::find_rule_for_control_map(int controller_number, int control_val
         {
             float f_val = map_float((float) control_value , 0.0f, 127.0f, rule->from_, rule->to_);
             push_message(Message(Message::SET_FLOAT).set_string(rule->args_).set_float(f_val));
-            return true;
         }
         else if (rule->action_ == "set_int")
         {
             int i_val = map_int((int) control_value , 0, 127, (int) rule->from_, (int) rule->to_);
             push_message(Message(Message::SET_INT).set_string(rule->args_).set_int(i_val));
-            return true;
         }
         else
         {
             g_critical("Control map MIDI rules only support set_float and set_int commands. Found %s", rule->action_.c_str());
-            return true; // it found a rule, even if invalid
         }
+        return true; // it found a rule, even if invalid
     }
     else
         return false;
@@ -230,13 +228,12 @@ bool MidiInput::find_rule_for_program_change(int program_number)
         if (rule->action_ == "select_clip")
         {
             push_message(Message(Message::SELECT_CLIP).set_int(program_number));
-            return true;
         }
         else
         {
             g_critical("Program change MIDI rules only support select_clip command. Found %s", rule->action_.c_str());
-            return true; // it found a rule, even if invalid
         }
+        return true; // it found a rule, even if invalid
     }
     else
         return false;
@@ -253,15 +250,13 @@ bool MidiInput::find_rule_for_pitch_wheel(int pitch_bend)
         if (rule->action_ == "set_float")
         {
             float f_val = map_float((float) pitch_bend , 0.0f, 127.0f, rule->from_, rule->to_);
-            // FIXME: set_float is hard-coded here
             push_message(Message(Message::SET_FLOAT).set_string(rule->args_).set_float(f_val));
-            return true;
         }
         else
         {
             g_critical("Pitch bend MIDI rules only support set_float command. Found %s", rule->action_.c_str());
-            return true; // it found a rule, even if invalid
         }
+        return true; // it found a rule, even if invalid
     }
     else
         return false;
@@ -282,7 +277,6 @@ bool MidiInput::find_rule_for_pitch_wheel(int pitch_bend)
 void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned char > *message, void *user_data )
 {
     MidiInput* context = static_cast<MidiInput*>(user_data);
-    //std::cout << __FUNCTION__ << std::endl;
     if (context->verbose_)
     {
         std::cout << "MIDI message: (";
@@ -307,8 +301,6 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             int note_pitch = int(message->at(1));
             if (message->at(2) == 0x00) // if velocity is 0, it's actually a note off message
             {
-                //if (context->verbose_)
-                //    std::cout << "it's actually a note off " << std::endl;
                 if (context->find_rule_for_note_off(note_pitch))
                     return;
             } else {
@@ -327,11 +319,9 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             break;
         }
         case MIDICONTROLCHANGE:
-        { // we declare some scope variables:
+        {
             int controller_number = int(message->at(1));
             int control_value = int(message->at(2));
-            //if (context->verbose_)
-            //    std::cout << "MIDICONTROLCHANGE #" << controller_number << " i:" << control_value << std::endl;
             if (control_value == 0)
             {
                 if (context->find_rule_for_control_off(controller_number))
@@ -339,15 +329,13 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             } else {
                 if (context->find_rule_for_control_on(controller_number, control_value))
                     return;
-            } // and if not of those found try to find a control_map:
-            if (context->find_rule_for_control_map(controller_number, control_value))
-                return;
+                if (context->find_rule_for_control_map(controller_number, control_value))
+                    return;
+            }
             break;
         }
         case MIDIPROGRAMCHANGE:
         {
-            //if (context->verbose_)
-            //    std::cout << "MIDIPROGRAMCHANGE" << std::endl;
             int program_number = int(message->at(0) & 0x0f);
             if (context->find_rule_for_program_change(program_number))
                 return;
@@ -356,12 +344,6 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
         case MIDIPITCHBEND:
         {
             int val(message->at(2));
-            if (context->verbose_)
-            {
-                //std::cout << "MIDIPITCHBEND";
-                //std::cout << " " << val << std::endl;
-                // The use of the LSB and MSB might differ from a device to another.
-            }
             if (context->find_rule_for_pitch_wheel(val))
                 return;
             break;
