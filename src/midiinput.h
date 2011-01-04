@@ -57,6 +57,13 @@ class MidiInput
         void push_message(Message &message);
         RtMidiIn *midi_in_;
         Message make_message(const std::string &action);
+        bool find_rule_for_note_off(int note_pitch);
+        bool find_rule_for_note_on(int note_pitch);
+        bool find_rule_for_control_off(int controller_number);
+        bool find_rule_for_control_on(int controller_number, int control_value);
+        bool find_rule_for_control_map(int controller_number, int control_value);
+        bool find_rule_for_program_change(int program_number);
+        bool find_rule_for_pitch_wheel(int pitch_bend);
 };
 
 #endif // _MIDI_H_
