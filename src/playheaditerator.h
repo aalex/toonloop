@@ -30,7 +30,7 @@ class PlayheadIterator
 {
     public:
         PlayheadIterator() {}
-        const std::string &get_name();
+        const std::string &get_name() const;
         unsigned int iterate(unsigned int current, unsigned int length);
     private:
         virtual const std::string &do_get_name() const = 0;
