@@ -21,9 +21,11 @@
 #ifndef _MIDI_H_
 #define _MIDI_H_
 
+// TODO: #include "command.h"
 #include "concurrentqueue.h"
 #include "message.h"
 #include "midibinder.h"
+// TODO: #include <tr1/memory>
 
 class Application;
 class RtMidiIn;
@@ -50,6 +52,7 @@ class MidiInput
     private:
         Application *owner_;
         ConcurrentQueue<Message> messaging_queue_;
+        //TODO: ConcurrentQueue<std::tr1::shared_ptr<Command> > messaging_queue_;
         unsigned int port_;
         unsigned int ports_count_;
         bool opened_;

@@ -22,8 +22,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <stk/RtMidi.h>
+#include <tr1/memory> // shared_ptr
 #include "application.h"
 #include "configuration.h"
+#include "command.h"
 #include "controller.h"
 #include "message.h"
 #include "midiinput.h"
@@ -121,6 +123,28 @@ int map_int(int value, int istart, int istop, int ostart, int ostop)
     //g_print("%f = %d + (%d-%d) * ((%d-%d) / (%d-%d))", ret, ostart, ostop, ostart, value, istart, istop, istart);
     // In Processing, they don't do the following: (clipping)
     return std::max(std::min(int(ret), ostop), ostart);
+}
+
+typedef std::tr1::shared_ptr<Command> CommandPtr;
+
+/**
+ * Factory for commands with no argument.
+ */
+CommandPtr make_command(MidiRule *rule)
+{
+    // Try to sort them by popularity order
+    if (rule->action_ == "add_image")
+        return CommandPtr(new AddImageCommand);
+    else if (rule->action_ == "remove_image")
+        return CommandPtr(new RemoveImageCommand);
+    else if (rule->action_ == "video_record_on")
+        return CommandPtr(new VideoRecordOnCommand);
+    else if (rule->action_ == "video_record_off")
+        return CommandPtr(new VideoRecordOffCommand);
+    else if (rule->action_ == "quit")
+        return CommandPtr(new QuitCommand);
+    else
+        return CommandPtr();
 }
 
 /**
