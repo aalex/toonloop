@@ -270,9 +270,14 @@ bool MidiInput::find_rule_for_program_change(int program_number)
     const MidiRule *rule = midi_binder_.find_program_change_rule();
     if (rule != 0)
     {
-        unsigned int clip_number = (unsigned int) program_number;
-        CommandPtr c = CommandPtr(new SelectClipCommand(clip_number));
-        push_command(c);
+        if (rule->action_ == "select_clip")
+        {
+            unsigned int clip_number = (unsigned int) program_number;
+            CommandPtr c = CommandPtr(new SelectClipCommand(clip_number));
+            push_command(c);
+        }
+        else
+            g_critical("Program change MIDI event supports only support select_clip command. Found %s", rule->action_.c_str());
         return true;
     }
     else
