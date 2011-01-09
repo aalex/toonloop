@@ -125,12 +125,28 @@ int map_int(int value, int istart, int istop, int ostart, int ostop)
     return std::max(std::min(int(ret), ostop), ostart);
 }
 
-typedef std::tr1::shared_ptr<Command> CommandPtr;
+/**
+ * Casts the args_ member of a MidiRule to any type.
+ */
+template <typename T>
+bool cast_arg(const MidiRule &rule, T *ret)
+{
+    try
+    {
+        *ret = boost::lexical_cast<T>(rule.args_);
+    }
+    catch (boost::bad_lexical_cast &e)
+    {
+        g_critical("Bad argument type for MIDI rule %s: %s\n", rule.action_.c_str(), e.what());
+        return false;
+    }
+    return true;
+}
 
 /**
  * Factory for commands with no argument.
  */
-CommandPtr make_command(MidiRule *rule)
+MidiInput::CommandPtr MidiInput::make_command(const MidiRule *rule)
 {
     // Try to sort them by popularity order
     if (rule->action_ == "add_image")
@@ -143,6 +159,14 @@ CommandPtr make_command(MidiRule *rule)
         return CommandPtr(new VideoRecordOffCommand);
     else if (rule->action_ == "quit")
         return CommandPtr(new QuitCommand);
+    else if (rule->action_ == "select_clip")
+    {
+        unsigned int clip_number;
+        if (cast_arg<unsigned int>(*rule, &clip_number))
+            return CommandPtr(new SelectClipCommand(clip_number));
+        else
+            return CommandPtr();
+    }
     else
         return CommandPtr();
 }
@@ -155,6 +179,7 @@ bool MidiInput::find_rule_for_note_off(int note_pitch)
     const MidiRule *rule = midi_binder_.find_rule(NOTE_OFF_RULE, note_pitch);
     if (rule != 0)
     {
+        CommandPtr c = make_command(rule);
         Message m = make_message(rule->action_).set_string(rule->args_).set_int(note_pitch);
         if (m.get_command() == Message::SELECT_CLIP)
             m.set_int(boost::lexical_cast<int>(rule->args_));
