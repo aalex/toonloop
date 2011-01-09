@@ -34,12 +34,13 @@ class Command
     public:
         Command() {}
         const std::string &get_name() const;
-        void apply(Controller &controller) const;
+        void apply(Controller &controller);
         virtual bool is_reversible() { return false; }
         virtual void undo() { }
     private:
-        virtual const std::string &do_get_name() const = 0;
-        virtual void do_apply(Controller &controller) const = 0;
+        static const std::string default_name_;
+        virtual const std::string &do_get_name() const { return default_name_; }
+        virtual void do_apply(Controller &controller);
 };
 
 /**
@@ -54,7 +55,7 @@ class AddImageCommand : public Command
     private:
         static const std::string name_;
         virtual const std::string &do_get_name() const { return name_; }
-        virtual void do_apply(Controller &controller) const;
+        virtual void do_apply(Controller &controller);
 };
 
 /**
@@ -69,7 +70,7 @@ class RemoveImageCommand : public Command
     private:
         static const std::string name_;
         virtual const std::string &do_get_name() const { return name_; }
-        virtual void do_apply(Controller &controller) const;
+        virtual void do_apply(Controller &controller);
 };
 
 /**
@@ -87,7 +88,7 @@ class SelectClipCommand : public Command
     private:
         static const std::string name_;
         virtual const std::string &do_get_name() const { return name_; }
-        virtual void do_apply(Controller &controller) const;
+        virtual void do_apply(Controller &controller);
         unsigned int clip_number_;
 };
 
@@ -104,7 +105,7 @@ class QuitCommand : public Command
     private:
         static const std::string name_;
         virtual const std::string &do_get_name() const { return name_; }
-        virtual void do_apply(Controller &controller) const;
+        virtual void do_apply(Controller &controller);
 };
 
 
@@ -120,7 +121,7 @@ class VideoRecordOnCommand : public Command
     private:
         static const std::string name_;
         virtual const std::string &do_get_name() const { return name_; }
-        virtual void do_apply(Controller &controller) const;
+        virtual void do_apply(Controller &controller);
 };
 
 /**
@@ -135,7 +136,7 @@ class VideoRecordOffCommand : public Command
     private:
         static const std::string name_;
         virtual const std::string &do_get_name() const { return name_; }
-        virtual void do_apply(Controller &controller) const;
+        virtual void do_apply(Controller &controller);
 };
 
 /**
@@ -152,7 +153,7 @@ class SetFloatCommand : public Command
     private:
         static const std::string name_;
         virtual const std::string &do_get_name() const { return name_; }
-        virtual void do_apply(Controller &controller) const;
+        virtual void do_apply(Controller &controller);
         std::string property_name_;
         float property_value_;
 };
@@ -171,7 +172,7 @@ class SetIntCommand : public Command
     private:
         static const std::string name_;
         virtual const std::string &do_get_name() const { return name_; }
-        virtual void do_apply(Controller &controller) const;
+        virtual void do_apply(Controller &controller);
         std::string property_name_;
         int property_value_;
 };

@@ -22,11 +22,30 @@
 #include <iostream>
 #include "command.h"
 #include "controller.h"
+#include "unused.h"
+
+// generic methods
+const std::string Command::default_name_ = "default";
+
+const std::string &Command::get_name() const
+{
+    return do_get_name();
+}
+
+void Command::apply(Controller &controller)
+{
+    do_apply(controller);
+}
+
+void Command::do_apply(Controller &controller)
+{
+    UNUSED(controller);
+}
 
 // add_image
 const std::string AddImageCommand::name_ = "add_image";
 
-void AddImageCommand::do_apply(Controller &controller) const
+void AddImageCommand::do_apply(Controller &controller)
 {
     controller.add_frame();
 }
@@ -34,7 +53,7 @@ void AddImageCommand::do_apply(Controller &controller) const
 // remove_image
 const std::string RemoveImageCommand::name_ = "remove_image";
 
-void RemoveImageCommand::do_apply(Controller &controller) const
+void RemoveImageCommand::do_apply(Controller &controller)
 {
     controller.remove_frame();
 }
@@ -42,7 +61,7 @@ void RemoveImageCommand::do_apply(Controller &controller) const
 // select_clip(i: clip_number)
 const std::string SelectClipCommand::name_ = "select_clip";
 
-void SelectClipCommand::do_apply(Controller &controller) const
+void SelectClipCommand::do_apply(Controller &controller)
 {
     controller.choose_clip(clip_number_);
 }
@@ -50,7 +69,7 @@ void SelectClipCommand::do_apply(Controller &controller) const
 // quit
 const std::string QuitCommand::name_ = "quit";
 
-void QuitCommand::do_apply(Controller &controller) const
+void QuitCommand::do_apply(Controller &controller)
 {
     controller.quit();
 }
@@ -58,7 +77,7 @@ void QuitCommand::do_apply(Controller &controller) const
 // video_record_on
 const std::string VideoRecordOnCommand::name_ = "video_record_on";
 
-void VideoRecordOnCommand::do_apply(Controller &controller) const
+void VideoRecordOnCommand::do_apply(Controller &controller)
 {
     controller.enable_video_grabbing(true);
 }
@@ -66,7 +85,7 @@ void VideoRecordOnCommand::do_apply(Controller &controller) const
 // video_record_off
 const std::string VideoRecordOffCommand::name_ = "video_record_off";
 
-void VideoRecordOffCommand::do_apply(Controller &controller) const
+void VideoRecordOffCommand::do_apply(Controller &controller)
 {
     controller.enable_video_grabbing(false);
 }
@@ -74,7 +93,7 @@ void VideoRecordOffCommand::do_apply(Controller &controller) const
 // set_float(s: name, f: value)
 const std::string SetFloatCommand::name_ = "set_float";
 
-void SetFloatCommand::do_apply(Controller &controller) const
+void SetFloatCommand::do_apply(Controller &controller)
 {
     controller.set_float_value(property_name_, property_value_);
 }
@@ -82,7 +101,7 @@ void SetFloatCommand::do_apply(Controller &controller) const
 // set_int(s: name, i: value)
 const std::string SetIntCommand::name_ = "set_int";
 
-void SetIntCommand::do_apply(Controller &controller) const
+void SetIntCommand::do_apply(Controller &controller)
 {
     controller.set_int_value(property_name_, property_value_);
 }

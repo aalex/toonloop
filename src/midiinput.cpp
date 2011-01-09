@@ -27,7 +27,6 @@
 #include "configuration.h"
 #include "command.h"
 #include "controller.h"
-#include "message.h"
 #include "midiinput.h"
 #include "midibinder.h"
 
@@ -129,7 +128,7 @@ int map_int(int value, int istart, int istop, int ostart, int ostop)
  * Casts the args_ member of a MidiRule to any type.
  */
 template <typename T>
-bool cast_arg(const MidiRule &rule, T *ret)
+static bool cast_arg(const MidiRule &rule, T *ret)
 {
     try
     {
@@ -180,10 +179,7 @@ bool MidiInput::find_rule_for_note_off(int note_pitch)
     if (rule != 0)
     {
         CommandPtr c = make_command(rule);
-        Message m = make_message(rule->action_).set_string(rule->args_).set_int(note_pitch);
-        if (m.get_command() == Message::SELECT_CLIP)
-            m.set_int(boost::lexical_cast<int>(rule->args_));
-        push_message(m);
+        push_command(c);
         return true;
     }
     else
@@ -198,10 +194,8 @@ bool MidiInput::find_rule_for_note_on(int note_pitch)
     const MidiRule *rule = midi_binder_.find_rule(NOTE_ON_RULE, note_pitch);
     if (rule != 0)
     {
-        Message m = make_message(rule->action_).set_string(rule->args_).set_int(note_pitch);
-        if (m.get_command() == Message::SELECT_CLIP)
-            m.set_int(boost::lexical_cast<int>(rule->args_));
-        push_message(m);
+        CommandPtr c = make_command(rule);
+        push_command(c);
         return true;
     }
     else
@@ -216,8 +210,9 @@ bool MidiInput::find_rule_for_control_off(int controller_number)
     const MidiRule *rule = midi_binder_.find_rule(CONTROL_OFF_RULE, controller_number);
     if (rule != 0)
     {
-         push_message(make_message(rule->action_).set_string(rule->args_).set_int(0));
-         return true;
+        CommandPtr c = make_command(rule);
+        push_command(c);
+        return true;
     }
     else
         return false;
@@ -226,13 +221,14 @@ bool MidiInput::find_rule_for_control_off(int controller_number)
 /**
  * Returns true if it finds a rule.
  */
-bool MidiInput::find_rule_for_control_on(int controller_number, int control_value)
+bool MidiInput::find_rule_for_control_on(int controller_number)
 {
     const MidiRule *rule = midi_binder_.find_rule(CONTROL_ON_RULE, controller_number);
     if (rule != 0)
     {
-         push_message(make_message(rule->action_).set_string(rule->args_).set_int(control_value));
-         return true;
+        CommandPtr c = make_command(rule);
+        push_command(c);
+        return true;
     }
     else
         return false;
@@ -249,12 +245,12 @@ bool MidiInput::find_rule_for_control_map(int controller_number, int control_val
         if (rule->action_ == "set_float")
         {
             float f_val = map_float((float) control_value , 0.0f, 127.0f, rule->from_, rule->to_);
-            push_message(Message(Message::SET_FLOAT).set_string(rule->args_).set_float(f_val));
+            push_command(CommandPtr(new SetFloatCommand(rule->args_, f_val)));
         }
         else if (rule->action_ == "set_int")
         {
             int i_val = map_int((int) control_value , 0, 127, (int) rule->from_, (int) rule->to_);
-            push_message(Message(Message::SET_INT).set_string(rule->args_).set_int(i_val));
+            push_command(CommandPtr(new SetIntCommand(rule->args_, i_val)));
         }
         else
         {
@@ -274,15 +270,10 @@ bool MidiInput::find_rule_for_program_change(int program_number)
     const MidiRule *rule = midi_binder_.find_program_change_rule();
     if (rule != 0)
     {
-        if (rule->action_ == "select_clip")
-        {
-            push_message(Message(Message::SELECT_CLIP).set_int(program_number));
-        }
-        else
-        {
-            g_critical("Program change MIDI rules only support select_clip command. Found %s", rule->action_.c_str());
-        }
-        return true; // it found a rule, even if invalid
+        unsigned int clip_number = (unsigned int) program_number;
+        CommandPtr c = CommandPtr(new SelectClipCommand(clip_number));
+        push_command(c);
+        return true;
     }
     else
         return false;
@@ -299,7 +290,7 @@ bool MidiInput::find_rule_for_pitch_wheel(int pitch_bend)
         if (rule->action_ == "set_float")
         {
             float f_val = map_float((float) pitch_bend , 0.0f, 127.0f, rule->from_, rule->to_);
-            push_message(Message(Message::SET_FLOAT).set_string(rule->args_).set_float(f_val));
+            push_command(CommandPtr(new SetFloatCommand(rule->args_, f_val)));
         }
         else
         {
@@ -376,7 +367,7 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                 if (context->find_rule_for_control_off(controller_number))
                     return;
             } else {
-                if (context->find_rule_for_control_on(controller_number, control_value))
+                if (context->find_rule_for_control_on(controller_number))
                     return;
                 if (context->find_rule_for_control_map(controller_number, control_value))
                     return;
@@ -402,6 +393,7 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             break;
     }
 }
+#if 0
 /**
  * Maps action name to a message enum.
  */
@@ -430,6 +422,7 @@ Message MidiInput::make_message(const std::string &action)
         return Message(Message::NOP);
     }
 }
+#endif
 
 void MidiInput::enumerate_devices() const
 {
@@ -453,12 +446,11 @@ bool MidiInput::is_open() const
     return opened_;
 }
 
-void MidiInput::push_message(Message &message)
+void MidiInput::push_command(CommandPtr command)
 {
-    // TODO: pass this message argument by reference?
     if (verbose_)
-        std::cout << __FUNCTION__ << " " << message.get_command() << " i:" << message.get_int() << " f:" << message.get_float() << " s:" << message.get_string() << std::endl;
-    messaging_queue_.push(message);
+        std::cout << __FUNCTION__ << "(" << command->get_name() << ")" << std::endl;
+    messaging_queue_.push(command);
 }
 
 /**
@@ -466,17 +458,19 @@ void MidiInput::push_message(Message &message)
  *
  * Should be called when it's time to take action, before rendering a frame, for example.
  */
-void MidiInput::consume_messages()
+void MidiInput::consume_commands()
 {
     // TODO:2010-10-03:aalex:Move this handling to Application.
     bool success = true;
     while (success)
     {
-        Message message(Message::NOP);
-        success = messaging_queue_.try_pop(message);
+        CommandPtr command;
+        success = messaging_queue_.try_pop(command);
         if (success)
         {
-            owner_->handle_message(message);
+            if (verbose_)
+                std::cout << __FUNCTION__ << ": apply " << command->get_name() << std::endl;
+            command->apply(*(owner_->get_controller()));
         }
     }
 }

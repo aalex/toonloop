@@ -483,7 +483,7 @@ void Application::quit()
 void Application::check_for_messages()
 {
     // TODO: move message handling here.
-    get_midi_input()->consume_messages();    
+    get_midi_input()->consume_commands();    
     get_osc_interface()->consume_messages();    
 }
 /**
