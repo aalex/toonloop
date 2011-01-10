@@ -64,7 +64,7 @@ class Property
         /**
          * Returns the name of this property.
          */
-        std::string &get_name() const { return name_; }
+        const std::string &get_name() const { return name_; }
 
         void set_value(T value)
         {

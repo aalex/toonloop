@@ -99,16 +99,16 @@ template <typename T> class Properties
             return properties_;
         }
 
-#if 0
         void print_properties()
         {
-            std::map<std::string, std::tr1::shared_ptr< Property<T> > >::iterator iter;
+            typename std::map<std::string, PropertyPtr>::iterator iter;
             for (iter = properties_.begin(); iter != properties_.end(); iter++)
-                std::cout << " * " << iter->second->name_ << " = " iter->second()->value_ << std::endl;
+                std::cout << " * " << iter->second->get_name() << " = " << iter->second->get_value() << std::endl;
         }
-#endif
 
     private:
         std::map<std::string, PropertyPtr> properties_;
 };
+
 #endif
+
