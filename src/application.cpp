@@ -136,6 +136,7 @@ static void check_for_mencoder()
     if (! ret)
         g_critical("Could not find mencoder\n");
 }
+
 /**
  * Parses the command line and runs the application.
  */
@@ -171,6 +172,7 @@ void Application::run(int argc, char *argv[])
         ("enable-info-window,I", po::bool_switch(), "Enables a window for information text.")
         ("image-on-top", po::value<std::string>()->default_value(""), "Shows an unscaled image on top of all.")
         ("enable-preview-window", po::bool_switch(), "Enables a preview of the live camera feed.")
+        ("print-properties", po::bool_switch(), "Prints a list of the Toonloop properties once running.")
         ;
     po::variables_map options;
     
@@ -390,10 +392,17 @@ void Application::run(int argc, char *argv[])
     // Run the main loop
     if (verbose)
         std::cout << "Running toonloop" << std::endl;
+
+    if (options["print-properties"].as<bool>())
+    {
+        get_controller()->print_properties();
+        // not exiting
+    }
     // This call is blocking:
     // Starts it all:
     gtk_main();
 }
+
 /**
  * Destructor of a toon looper.
  */
@@ -403,12 +412,12 @@ Application::~Application()
     //for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
     //    delete iter->second;
 }
+
 /**
  * Creates all the project directories.
  *
  * Returns whether the directories exist or not once done.
  */
-
 bool Application::setup_project_home(const std::string &project_home)
 {
     if (not make_sure_directory_exists(project_home))
@@ -426,6 +435,7 @@ void Application::update_project_home_for_each_clip()
     for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
         iter->second.get()->set_directory_path(get_configuration()->get_project_home());
 }
+
 Pipeline* Application::get_pipeline() 
 {
     return pipeline_.get();
@@ -468,6 +478,7 @@ void Application::quit()
     pipeline_->stop();
     gtk_main_quit();
 }
+
 /**
  * Checks for asynchronous messages.
  * 
@@ -479,45 +490,4 @@ void Application::check_for_messages()
     get_midi_input()->consume_commands();    
     get_osc_interface()->consume_commands();    
 }
-#if 0
-/**
- * Handles asynchronous messages.
- */
-void Application::handle_message(Message &message)
-{
-    switch (message.get_command())
-    {
-        case Message::ADD_IMAGE:
-            get_controller()->add_frame();
-            break;
-        case Message::REMOVE_IMAGE:
-            get_controller()->remove_frame();
-            break;
-        case Message::VIDEO_RECORD_ON:
-            get_controller()->enable_video_grabbing(true);
-            break;
-        case Message::VIDEO_RECORD_OFF:
-            get_controller()->enable_video_grabbing(false);
-            break;
-        case Message::SELECT_CLIP:
-            get_controller()->choose_clip(message.get_int());
-            break;
-        case Message::SET_FLOAT:
-            get_controller()->set_float_value(message.get_string(), message.get_float());
-            break;
-        case Message::SET_INT:
-            if (config_->get_verbose())
-                std::cout << "set_int_value(" << message.get_string() << ", " << message.get_int() << ")" << std::endl;
-            get_controller()->set_int_value(message.get_string(), message.get_int());
-            break;
-        case Message::QUIT:
-            quit();
-            break;
-        case Message::NOP:
-            if (config_->get_verbose())
-                std::cout << "Got an empty message" << std::endl;
-            break;
-    }
-}
-#endif
 
