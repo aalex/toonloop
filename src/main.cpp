@@ -17,11 +17,14 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/** Main entry for the Toonloop program.
+ */
+
 #include <iostream>
 
 #include "application.h"
 
-// gint gint gchar
 int main(int argc, char* argv[])
 {
     Application app;

@@ -17,6 +17,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
