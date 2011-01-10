@@ -22,6 +22,7 @@ Bug fixes:
     * Added Tristan Matthews to the list of copyright holders.
     * Replaced playhead_direction enum by a hierarchy of classes
     * Replaced message by a hierarchy of Command classes
+    * Fixed default livefeed opacity
 
 Many thanks to:
     * Tristan Matthews for helping with the refactoring.
