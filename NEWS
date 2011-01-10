@@ -2,6 +2,43 @@ See the RELEASE file for the latest new features and bug fixes.
 See the ChangeLog file for a log of previous releases informations.
 
 
+2011-01-10 Toonloop 2.1.6
+-------------------------
+
+This release is a snapshot in the 2.1 unstable series. 
+
+This version contains new features and bug fixes. 
+
+New features:
+    * Added --enable-preview-window option, which shows a window with the livefeed
+    * Adding the --image-on-top option. It shows an unscaled image on top of everything except info and help text.
+    * Added the --print-properties option. It prints the Toonloop properties.
+    * Adding playback_opacity property
+    * Updated man page about midi binding rules
+    * Added random and drunk playback directions
+    * New OSC callback: /toon/clip/save_current
+    * New OSC callback: /toon/clip/select i:clip_number
+
+Bug fixes: 
+    * Pass movie size to mencoder args
+    * Gui: fixed memory leak, fixed delete event callback signature in infowindow
+    * Less verbose MIDI input
+    * Added Tristan Matthews to the list of copyright holders.
+    * Replaced playhead_direction enum by a hierarchy of classes
+    * Replaced message by a hierarchy of Command classes
+    * Fixed default livefeed opacity
+    * Avoid counter-intuitive short options
+    * --enable-preview-window and enable-info-window both used -I as a shortcut
+    * Splitted MidiInput::on_message_cb into many methods.
+
+Many thanks to:
+    * Tristan Matthews for helping with the refactoring.
+
+Have fun with Toonloop!
+
+Alexandre Quessy <alexandre@quessy.net>
+
+
 2010-12-02 Toonloop 2.1.4 ("pas de deux")
 -----------------------------------------
 
