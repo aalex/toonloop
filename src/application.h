@@ -17,6 +17,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
@@ -77,6 +78,7 @@ class Application
         Application();
         ~Application();
         void run(int argc, char *argv[]);
+        /** Quits. */
         void quit();
         Gui *get_gui();
         /** Returns the video Pipeline */
@@ -97,10 +99,9 @@ class Application
         unsigned int get_current_clip_number();
         /** Should be only called directly by Controller::choose_clip */
         void set_current_clip_number(unsigned int clipnumber);
-        /** Checks for asynchronous messages and treat them */
-        void check_for_messages();
-        //TODO: deprecate this: void handle_message(Message &message);
+        /** Returns the OscInterface. */
         OscInterface* get_osc_interface();
+        void check_for_messages();
 
     private:
         void update_project_home_for_each_clip();

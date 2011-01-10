@@ -113,7 +113,8 @@ Here is the list of Debian package that you will need to build Toonloop 2.x.
  libstk0-dev,
  libxml2-dev,
  libxv-dev,
- mencoder
+ mencoder,
+ mscgen (not mandatory)
 
 
 How to build Toonloop

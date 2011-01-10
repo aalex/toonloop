@@ -1,5 +1,3 @@
-#ifndef __PROPERTIES_H__
-#define __PROPERTIES_H__
 /*
  * Toonloop
  *
@@ -20,11 +18,16 @@
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** Map or Property instances. */
+
+#ifndef __PROPERTIES_H__
+#define __PROPERTIES_H__
+
 #include <map>
 // TODO: use tr1:unordered_map, since lookup is faster with it
 #include <string>
 #include <iostream>
-#include <boost/shared_ptr.hpp>
+#include <tr1/memory> // shared_ptr
 #include "property.h"
 
 /**
@@ -33,7 +36,7 @@
 template <typename T> class Properties
 {
     public:
-        typedef boost::shared_ptr< Property<T> > PropertyPtr;
+        typedef std::tr1::shared_ptr< Property<T> > PropertyPtr;
 
         Property<T> *add_property(const std::string &name, T value)
         {
@@ -87,8 +90,25 @@ template <typename T> class Properties
         {
             return properties_.find(name) != properties_.end();
         }
+        
+        /**
+         * Returns a copy of this map of smart pointers to Property<T>.
+         */
+        std::map<std::string, PropertyPtr> get_properties()
+        {
+            return properties_;
+        }
+
+        void print_properties()
+        {
+            typename std::map<std::string, PropertyPtr>::iterator iter;
+            for (iter = properties_.begin(); iter != properties_.end(); iter++)
+                std::cout << " * " << iter->second->get_name() << " = " << iter->second->get_value() << std::endl;
+        }
 
     private:
         std::map<std::string, PropertyPtr> properties_;
 };
+
 #endif
+

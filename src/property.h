@@ -1,5 +1,3 @@
-#ifndef __PROPERTY_H__
-#define __PROPERTY_H__
 /*
  * Toonloop
  *
@@ -19,6 +17,12 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/** The Property template class holds a single value. */
+
+#ifndef __PROPERTY_H__
+#define __PROPERTY_H__
+
 #include <boost/bind.hpp>
 #include <boost/signals2.hpp>
 #include <string>
@@ -60,7 +64,7 @@ class Property
         /**
          * Returns the name of this property.
          */
-        std::string &get_name() const { return name_; }
+        const std::string &get_name() const { return name_; }
 
         void set_value(T value)
         {

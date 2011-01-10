@@ -156,6 +156,15 @@ void OscInterface::on_clip_cleared(unsigned int clip_number)
     sender_.sendMessage("/toon/clip/cleared", "i", (int) clip_number, LO_ARGS_END);
 }
 
+/**
+ * Handles /ping. Answers with /pong
+ *
+ * \msc
+ * Client,Toonloop;
+ * Client->Toonloop [ label = "/ping" ];
+ * Toonloop->Client [ label = "/pong" ];
+ * \endmsc
+ */
 int OscInterface::ping_cb(
         const char *path, 
         const char * /*types*/, lo_arg ** /*argv*/,
@@ -170,6 +179,9 @@ int OscInterface::ping_cb(
     return 0;
 } 
 
+/**
+ * Handles /pong. Does nothing.
+ */
 int OscInterface::pong_cb(
         const char *path,
         const char * /*types*/, 

@@ -378,3 +378,11 @@ void Controller::quit()
     owner_->quit();
 }
 
+void Controller::print_properties()
+{
+    std::cout << "Toonloop int properties:" << std::endl;
+    int_properties_.print_properties();
+    std::cout << "Toonloop float properties:" << std::endl;
+    float_properties_.print_properties();
+}
+

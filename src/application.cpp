@@ -136,6 +136,7 @@ static void check_for_mencoder()
     if (! ret)
         g_critical("Could not find mencoder\n");
 }
+
 /**
  * Parses the command line and runs the application.
  */
@@ -149,13 +150,7 @@ void Application::run(int argc, char *argv[])
         ("project-home,H", po::value<std::string>()->default_value(project_home), "Path to the saved files")
         ("version", "Show program's version number and exit")
         ("verbose,v", po::bool_switch(), "Enables a verbose output")
-        //("enable-effects,e", po::bool_switch(), "Enables the GLSL effects")
-        //("intervalometer-on,i", po::bool_switch(), "Enables the intervalometer to create time lapse animations")
-        //("intervalometer-interval,I", po::value<double>()->default_value(5.0), "Sets the intervalometer rate in seconds")
-        //("project-name,p", po::value<std::string>()->default_value("default"), "Sets the name of the project for image saving")
         ("display,D", po::value<std::string>()->default_value(std::getenv("DISPLAY")), "Sets the X11 display name")
-        //("rendering-fps", po::value<int>()->default_value(30), "Rendering frame rate") // FIXME: can we get a FPS different for the rendering?
-        //("capture-fps,r", po::value<int>()->default_value(30), "Rendering frame rate")
         ("playhead-fps", po::value<int>()->default_value(12), "Sets the initial playback rate of clips")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode")
         ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device. Use \"test\" for color bars. Use \"x\" to capture the screen")
@@ -169,15 +164,16 @@ void Application::run(int argc, char *argv[])
         ("width", po::value<int>()->default_value(DEFAULT_CAPTURE_WIDTH), "Image capture width")
         ("height", po::value<int>()->default_value(DEFAULT_CAPTURE_HEIGHT), "Image capture height")
         ("max-images-per-clip", po::value<int>()->default_value(0), "If not zero, sets a maximum number of images per clip. The first image is then removed when one is added.")
-        ("enable-intervalometer", po::bool_switch(), "Enables the intervalometer for the default clip at startup.")
-        ("intervalometer-rate", po::value<float>()->default_value(10.0), "Sets the default intervalometer rate.")
+        ("enable-intervalometer,i", po::bool_switch(), "Enables the intervalometer for the default clip at startup.")
+        ("intervalometer-rate,I", po::value<float>()->default_value(10.0), "Sets the default intervalometer rate.")
         ("layout", po::value<unsigned int>()->default_value(0), "Sets the layout number.") // TODO:2010-10-05:aalex:Print the NUM_LAYOUTS
         ("remove-deleted-images", po::bool_switch(), "Enables the removal of useless image files.")
         ("enable-shaders,S", po::bool_switch(), "Enables GLSL shader effects.")
         ("enable-info-window,I", po::bool_switch(), "Enables a window for information text.")
         ("image-on-top", po::value<std::string>()->default_value(""), "Shows an unscaled image on top of all.")
         ("enable-preview-window", po::bool_switch(), "Enables a preview of the live camera feed.")
-        ; // <-- important semi-colon
+        ("print-properties", po::bool_switch(), "Prints a list of the Toonloop properties once running.")
+        ;
     po::variables_map options;
     
     po::store(po::parse_command_line(argc, argv, desc), options);
@@ -396,10 +392,17 @@ void Application::run(int argc, char *argv[])
     // Run the main loop
     if (verbose)
         std::cout << "Running toonloop" << std::endl;
+
+    if (options["print-properties"].as<bool>())
+    {
+        get_controller()->print_properties();
+        // not exiting
+    }
     // This call is blocking:
     // Starts it all:
     gtk_main();
 }
+
 /**
  * Destructor of a toon looper.
  */
@@ -409,6 +412,7 @@ Application::~Application()
     //for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
     //    delete iter->second;
 }
+
 /**
  * Creates all the project directories.
  *
@@ -431,6 +435,7 @@ void Application::update_project_home_for_each_clip()
     for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
         iter->second.get()->set_directory_path(get_configuration()->get_project_home());
 }
+
 Pipeline* Application::get_pipeline() 
 {
     return pipeline_.get();
@@ -473,6 +478,7 @@ void Application::quit()
     pipeline_->stop();
     gtk_main_quit();
 }
+
 /**
  * Checks for asynchronous messages.
  * 
@@ -484,45 +490,4 @@ void Application::check_for_messages()
     get_midi_input()->consume_commands();    
     get_osc_interface()->consume_commands();    
 }
-#if 0
-/**
- * Handles asynchronous messages.
- */
-void Application::handle_message(Message &message)
-{
-    switch (message.get_command())
-    {
-        case Message::ADD_IMAGE:
-            get_controller()->add_frame();
-            break;
-        case Message::REMOVE_IMAGE:
-            get_controller()->remove_frame();
-            break;
-        case Message::VIDEO_RECORD_ON:
-            get_controller()->enable_video_grabbing(true);
-            break;
-        case Message::VIDEO_RECORD_OFF:
-            get_controller()->enable_video_grabbing(false);
-            break;
-        case Message::SELECT_CLIP:
-            get_controller()->choose_clip(message.get_int());
-            break;
-        case Message::SET_FLOAT:
-            get_controller()->set_float_value(message.get_string(), message.get_float());
-            break;
-        case Message::SET_INT:
-            if (config_->get_verbose())
-                std::cout << "set_int_value(" << message.get_string() << ", " << message.get_int() << ")" << std::endl;
-            get_controller()->set_int_value(message.get_string(), message.get_int());
-            break;
-        case Message::QUIT:
-            quit();
-            break;
-        case Message::NOP:
-            if (config_->get_verbose())
-                std::cout << "Got an empty message" << std::endl;
-            break;
-    }
-}
-#endif
 

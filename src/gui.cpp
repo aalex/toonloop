@@ -133,7 +133,6 @@ void Gui::hideCursor()
     gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), cursor);
 }
 
-
 /**
  * In windowed mode, shows the cursor.
  */
@@ -171,7 +170,6 @@ void Gui::showCursor()
  * - o: toggles onion skinning
  * - []: increase/decrease opacity of the live input image in the overlay layout.
  */
-
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
     // TODO: Ctrl-s: save the whole project
@@ -367,6 +365,7 @@ void Gui::on_crossfade_ratio_changed(std::string &name, float value)
             std::cout << "Crossfade ratio: " << value << std::endl;
     }
 }
+
 /**
  * Adds a certain amount of crossfading duration to the crossfade between images.
  * The given value can be negative.
@@ -421,6 +420,7 @@ void Gui::on_delete_event(GtkWidget* /*widget*/, GdkEvent* /*event*/, gpointer u
     g_print("Window has been deleted.\n");
     context->owner_->quit();
 }
+
 /**
  * Toggles fullscreen mode on/off.
  */
@@ -429,6 +429,7 @@ void Gui::toggleFullscreen(GtkWidget *widget)
     // toggle fullscreen state
     isFullscreen_ ? makeUnfullscreen(widget) : makeFullscreen(widget);
 }
+
 /** 
  * Makes the window fullscreen.
  */
@@ -437,6 +438,7 @@ void Gui::makeFullscreen(GtkWidget *widget)
     gtk_window_stick(GTK_WINDOW(widget)); // window is visible on all workspaces
     gtk_window_fullscreen(GTK_WINDOW(widget));
 }
+
 /**
  * Makes the window not fullscreen.
  */
@@ -445,6 +447,7 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
     gtk_window_unstick(GTK_WINDOW(widget)); // window is not visible on all workspaces
     gtk_window_unfullscreen(GTK_WINDOW(widget));
 }
+
 /**
  * Slot for the Controller's next_image_to_play_signal_ signal.
  *
@@ -778,6 +781,7 @@ void Gui::toggle_layout()
     else if (current_layout_ == LAYOUT_LIVEFEED_ONLY)
         set_layout(LAYOUT_PLAYBACK_ONLY);
 }
+
 /**
  * Sets the current layout.
  * Also makes some actors visible or not.

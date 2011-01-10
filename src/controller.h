@@ -313,6 +313,12 @@ class Controller
          * Quits the application.
          */
         void quit();
+
+        /**
+         * Prints all the Toonloop properties.
+         */
+        void print_properties();
+
     private:
         Application* owner_;
 };
