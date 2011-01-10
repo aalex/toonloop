@@ -1015,7 +1015,7 @@ Gui::Gui(Application* owner) :
     // add properties:
     controller->add_int_property("blending_mode", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_blending_mode_int_property_changed, this, _1, _2));
     controller->add_float_property("crossfade_ratio", 0.0)->value_changed_signal_.connect(boost::bind(&Gui::on_crossfade_ratio_changed, this, _1, _2));
-    controller->add_int_property("livefeed_opacity", 127)->value_changed_signal_.connect(boost::bind(&Gui::on_livefeed_opacity_changed, this, _1, _2));
+    controller->add_int_property("livefeed_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_livefeed_opacity_changed, this, _1, _2));
     controller->add_int_property("black_out", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_changed, this, _1, _2));
     controller->add_int_property("black_out_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_opacity_changed, this, _1, _2));
     controller->add_int_property("playback_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_playback_opacity_changed, this, _1, _2));
