@@ -1,3 +1,546 @@
+commit c035a8c403bef38a6dd429b64d5a1800de83108f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 12:02:47 2011 -0500
+
+    updated release notes
+
+commit 0875ece8199604a27c9c9a723a745482d3c40644
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 12:01:55 2011 -0500
+
+    default livefeed_opacity was wrong
+
+commit 5a87d37a9205f94a4deb10385268624a5ed0c61b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 11:53:35 2011 -0500
+
+    updated RELEASE
+
+commit 20dd91354b50273eecf40b6938359cdf6f81dd0b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 11:52:24 2011 -0500
+
+    Implemeted --print-properties option
+
+commit dd5ce7589825bf81e4338a06c64bea8feccc3dfe
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 11:29:58 2011 -0500
+
+    added a lot of doc strings
+
+commit 248575e5372869464792aa019e6f4e89f08dd14a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 09:51:56 2011 -0500
+
+    More cleanup
+
+commit 8bdafb2e39f2adaa223349e7cd64745880a2a126
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 09:46:32 2011 -0500
+
+    cleanup in configuration.cpp
+
+commit 65213d7b8ec7e5edd057e59181eebb815ce2b5d0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 09:36:45 2011 -0500
+
+    cleanup in midibinder.cpp
+
+commit 05501b1ce96d21a8c3b6e245aa332eed76e6c281
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 09:20:39 2011 -0500
+
+    padding a bit
+
+commit 053292e198d00ac782e052c05bc61b02aa340c24
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 09:16:34 2011 -0500
+
+    updated MIDI test patch
+
+commit 195ba88ee3d04fbaec9b6849eab97db98682ca5b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 08:38:03 2011 -0500
+
+    updated release notes
+
+commit a4c382785ea0e4eea9029258f4407f454e9725fd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 08:36:18 2011 -0500
+
+    updated TODO
+
+commit 643047e63eb3a5fb073fd5525f864f6e60b4ea7c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 08:34:49 2011 -0500
+
+    Implemeted OSC callback for /toon/clip/save_current
+
+commit bcfa26f4710ccdceab7a516955833071382e434e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 08:12:11 2011 -0500
+
+    added /toon/select_clip OSC handler
+
+commit cd2d433835057c756d629b8cd5215815bc2536d4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 08:03:06 2011 -0500
+
+    Removed message.h : ported OSC to queue of Command
+
+commit b9393ceb08b3b7709e812d14d3ed6504b123e360
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 9 22:16:22 2011 -0500
+
+    removed unused text in midiinput.cpp
+
+commit 09bac5f400b8736f0e9661d3ca29ebe5d2eef31a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 9 17:25:30 2011 -0500
+
+    program change supports only select_clip command
+
+commit 8908c72ed7d0165893dbd36b5255d599e7b8c167
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 9 17:22:57 2011 -0500
+
+    Using commands for the MIDI input async queue
+
+commit 4f0a3026a8a0053373ee252fbeb49f65729b699f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 9 13:15:31 2011 -0500
+
+    towards a simple way to read binding args
+
+commit b86f6986a5971ad4d98566aa68dcaece6d1a2740
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 8 11:40:46 2011 -0500
+
+    towards a queue of shared pointers
+
+commit 446a088b74475e20a154557b020d312e6e46eb19
+Merge: e1934df 1470f6c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 4 04:02:38 2011 -0500
+
+    Merge branch 'master' into action
+
+commit 1470f6cdd02110509a400d5547fcf7d3087cebc6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 4 04:00:49 2011 -0500
+
+    cleaned up style a bit in midiinput.cpp
+
+commit e1934dfae04aef807f4596755a9d77d8a38469e2
+Merge: 985ce2f 159714a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 4 03:51:35 2011 -0500
+
+    Merge branch 'master' into action
+
+commit 159714a29cd42a8f519661ee2323853ee829f701
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 4 03:50:34 2011 -0500
+
+    Splitted MidiInput::on_message_cb into many methods.
+
+commit 985ce2ff62579686b714d6e5086d5de0a12cd3d7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 4 02:22:12 2011 -0500
+
+    renamed action.{h,cpp} to command.{h,cpp}
+
+commit e582c16052c002652643eed04048dc3b8f3fb241
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 4 02:19:33 2011 -0500
+
+    Implemented all commands we use - they're not used yet
+
+commit edb1587e180cf2c5ab4ae68ed40a898dc27af3a6
+Merge: 25a0e21 9719b3c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 4 01:48:31 2011 -0500
+
+    Merge branch 'master' into action
+
+commit 9719b3ce5f7d3d0026ea5f952a29e588587c7b4e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Dec 31 00:49:29 2010 -0500
+
+    heavily updated TODO
+
+commit 25a0e21fbf352d9e452db3078c3cc3baf6dc160c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Dec 28 11:10:44 2010 -0500
+
+    updated the command pattern class diagram
+
+commit 848947085288f768081c7637d410082e6f52b5c8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Dec 28 11:10:30 2010 -0500
+
+    removed useless get/set methods
+
+commit 80d7aaee7268c89c94a3fc4132c4f05c185023c1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Dec 28 09:12:54 2010 -0500
+
+    removed Property constructor with no argument
+
+commit 0185dbd55fc9db6014b807ae00cd1d20c089226a
+Author: Tristan Matthews <le.businessman@gmail.com>
+Date:   Tue Dec 21 17:18:42 2010 -0500
+
+    "get" methods should be declared const. When passing parameters by value, they should not be declared const
+
+commit e02091dc773ff13831691b71ff41384cc0c97ac7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 18 19:04:23 2010 -0500
+
+    progress in the class diagram
+
+commit 98e99a9a1abc4fc85704988674265ee0fe6bca83
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 18 18:41:42 2010 -0500
+
+    added a todo note
+
+commit 0a126b3bf15eaf24851a7b4199b305c909430185
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 18 18:20:15 2010 -0500
+
+    adding a UML diagram for the command pattern in the MIDI bindings
+
+commit 6840ff11235f16e9fe41f83adcb34b4e5ac54fb2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 18 16:58:54 2010 -0500
+
+    adding action.{h,cpp}
+
+commit 18e90e81bd53b2db094def61263f73aa8bbc153e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 18 16:58:35 2010 -0500
+
+    cosmetic changes
+
+commit 0ea57e90f3c020cdcb3dcf1b1c6fa673a5c85b89
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 16 23:09:16 2010 -0500
+
+    Improved method that changes the direction
+
+commit 3fbe0e1382f331990784b6d3ef95b8b213d6ae1a
+Merge: 632672d 669ab6b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Dec 15 08:33:35 2010 -0500
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 632672d84b01362a5ef9e08467ba756165339f0b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Dec 15 08:33:16 2010 -0500
+
+    updated TODO
+
+commit 669ab6b73b471c5c5af8484eae08f47319c9f945
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Dec 14 21:58:53 2010 -0500
+
+    added a todo
+
+commit a8ebf9391e0bcb732a82ec0773d79bd923ee65f4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Dec 14 21:46:50 2010 -0500
+
+    updated RELEASE
+
+commit 607baf46c178025f1ee36b26b1583de169696d0d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Dec 14 21:45:34 2010 -0500
+
+    removed enum for playhead direction
+
+commit 3f658a73ff9bd4312479be7864a50d49420f558b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Dec 14 21:42:32 2010 -0500
+
+    PlayheadIterator hierarchy seem to work
+
+commit 265c623bb48444770d081865e4e53d61f2c2905c
+Merge: d2e8fe2 8a0df25
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Dec 13 21:08:30 2010 -0500
+
+    Merge branch 'master' into direction
+
+commit d2e8fe29f14dac0da15e50859e334beca6b18de4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Dec 13 21:01:50 2010 -0500
+
+    PlayheadIterator::get_name() must be a virtual member
+
+commit 70de6f2775aa6e328b6916cceebe2a2530172e52
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Dec 13 19:58:39 2010 -0500
+
+    each clip owns a map of PlayheadIterator*
+
+commit 51ea78425e2c9d65e128dd08400c4d621bb965fe
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Dec 13 15:23:50 2010 -0500
+
+    implemented random and drunk playhead iterators
+
+commit 8a0df251949d92cb6a00998e18b684b59598d484
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Dec 13 15:16:06 2010 -0500
+
+    Updating the list of copyright holders
+
+commit 29708a7040a2042fc4d5b03b78bca3594241d1a9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Dec 13 15:04:15 2010 -0500
+
+    adding playheaditerator.{h,cpp} and it compiles
+
+commit 2f8c24304af5df2e91657ce2d7fd5170373b0b2f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 11 10:48:03 2010 -0500
+
+    updated TODO
+
+commit 20d77da02cc04f4359097587b7722a70416527ea
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 11 10:44:13 2010 -0500
+
+    DATADIR and PIXMAPS constants are now strings
+
+commit 73d084f80fb9f8dfa0352b876d321b321a8841ee
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 11 10:25:15 2010 -0500
+
+    removed unused code in glslang.cpp
+
+commit 24ab05168999f5ae61b4042aa910931acb4914d9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 11 10:22:49 2010 -0500
+
+    removed unused tween.{h,cpp}
+
+commit b1d77a7f89dacb3b52487d2509c388e656bad09b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 11 10:13:44 2010 -0500
+
+    renamed saturationeffect.h to brcosaeffect.h
+
+commit 0535f628e70512733aaec3f214653bcd864b80e1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 11 10:04:25 2010 -0500
+
+    renamed SaturationEffect to BrCoSaEffect
+
+commit 0b680a052cc3610c06db88377d9fd9d72f7d70c5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 11 10:00:02 2010 -0500
+
+    renamed properties of saturationeffect
+
+commit d56fabe5caaa8c90b244254c6a6e3f85e890c1aa
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 11 09:55:56 2010 -0500
+
+    Made Effect::init_properties() private. (it's virtual)
+
+commit 64b8ef35d70bcbc0dde87a75e126b2d3f4ef0ac1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Dec 10 09:07:39 2010 -0500
+
+    updated RELEASE
+
+commit 86792cf4023bb315fbc093fda69b32a5d96127d6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Dec 10 09:00:24 2010 -0500
+
+    updated RELEASE
+
+commit cb0dff526d0c38de8c9c4c6a85d3a4f12909097d
+Merge: b4391c6 33ea384
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Dec 10 08:59:57 2010 -0500
+
+    Merge branch 'preview'
+
+commit 33ea384ab897f6649e1a4f8223696bd17ecf19da
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Dec 10 08:59:12 2010 -0500
+
+    updated RELEASE
+
+commit acb68f0fa31294d0fe9c63af4b61c696fdece34d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Dec 10 08:52:49 2010 -0500
+
+    avoid counter-intuitive short options
+
+commit cc1cb1514dc5cebfbf5891d09696bb0e7911eb97
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Fri Dec 10 08:04:56 2010 -0500
+
+    Fixed preview window by adding another ffmpegcolorspace element
+
+commit c2351b69afd01e1f6b62d05bdf329126ab6f86bc
+Author: Tristan Matthews <tristan@sat.qc.ca>
+Date:   Fri Dec 10 07:41:34 2010 -0500
+
+    enable-preview-window and enable-info-window both used -I as a shortcut
+
+commit f1936f8a10c2e3b525c2a115b4f15ddcc8f72539
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 9 22:53:11 2010 -0500
+
+    still cannot use xvimagesink right
+
+commit b8d136c2f1ec5e3f5659e40c360456c262081762
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 9 22:41:36 2010 -0500
+
+    fixed a few critical pipeline bugs - still no preview
+
+commit b4391c605c850408d9cb59722f03604f452716fa
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 9 12:46:00 2010 -0500
+
+    added drunk playback direction
+
+commit d8c33cf4e9a018a6d8946def64a9d9c969d37b2a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 9 12:09:07 2010 -0500
+
+    added a todo
+
+commit 9d5a04c185dd966dce73985cb9e07d95d0e737d8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 9 12:07:14 2010 -0500
+
+    adding random playback direction
+
+commit c57e7b26a8c3dc37f7d082a074f4879d0e8c9998
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 9 11:55:51 2010 -0500
+
+    MAX_FPS is now member of Clip
+
+commit c4e9564ce4919b274715ea991276eb961c198b7b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Dec 7 23:38:50 2010 -0500
+
+    work in progress - maybe not compiling
+
+commit 61cfdc9ec79c4f04e22797e02d4d793af079ce27
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Dec 7 12:10:19 2010 -0500
+
+    added --enable-preview-window (not yet working)
+
+commit d85d09510fd0b1abecd89a2c40eed277a97de8fa
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Dec 6 16:05:53 2010 -0500
+
+    try to pass movie size to mencoder args
+
+commit 584f48dced30a9915b45be8c3f6dab6f9d8518d0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Dec 6 15:15:40 2010 -0500
+
+    updated TODO
+
+commit e593ff5d9d3127f62c5c1e1f7d9b047f73c63f14
+Author: Tristan Matthews <le.businessman@gmail.com>
+Date:   Sun Dec 5 16:24:59 2010 -0500
+
+    no using declarations in headers
+
+commit f013ce4de07de140d3b91bdf11f20f747c7cd47a
+Author: Tristan Matthews <le.businessman@gmail.com>
+Date:   Sun Dec 5 16:23:47 2010 -0500
+
+    should not have "using" declarations in headers
+
+commit 2cf4516576ddc5b6d866b1f7c1ab657347ad1fba
+Author: Tristan Matthews <le.businessman@gmail.com>
+Date:   Sun Dec 5 16:21:06 2010 -0500
+
+    Gui: fixed memory leak, fixed delete event callback signature in infowindow
+    
+    Infowindow still does not exit properly.
+
+commit bb10ee43ba3484c3045fe6d68612db08414720e8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Dec 5 05:10:14 2010 -0500
+
+    adding a sample HDV pipeline
+
+commit 7ecee7fb01428ba3b726676fb72c63c49f9257e4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Dec 3 20:00:55 2010 -0500
+
+    less verbose midi input
+
+commit c6443078f4e40a39f2c80b28b0886829993f17c7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Dec 3 20:00:35 2010 -0500
+
+    changed midi bindings
+
+commit ec7578a8df6669ed62fbb6ae73a0df8f21677f3f
+Merge: 3fe1736 76f5cfd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Dec 3 09:18:08 2010 -0500
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 76f5cfd2f729f4bcdb8fc8a8d8a6cddeb8f03605
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Dec 3 09:01:48 2010 -0500
+
+    makes more sense if the info and help are over the image-on-top
+
+commit 0451f3320370aec8339a9d1739c26c5d4aa7656c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Dec 3 08:54:37 2010 -0500
+
+    Adding the --image-on-top option
+
+commit 2884601ca20ed9f8d486e1db1aa6f33ac1a52912
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Dec 3 08:02:37 2010 -0500
+
+    a little less verbose
+
+commit 11b9b45164fe364b542a939cd81d68744a82c301
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Dec 3 08:00:54 2010 -0500
+
+    updated man page about midi binding rules
+
+commit 3fe1736f5950a6ca5846cd57027151ff6cd89d34
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 20:09:51 2010 -0500
+
+    adding playback_opacity property
+
+commit f7fda6f9c050c0d807255f361570e4313d83796a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 14:55:08 2010 -0500
+
+    updated version number
+
+commit 115f5e0eef08a5e784e441ea4b36bc1584c7dc77
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Dec 2 14:51:53 2010 -0500
+
+    updated ChangeLog
+
 commit eb26a7dad5bd0fa90a4d95bf94cbb7d30b904f04
 Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Thu Dec 2 14:50:02 2010 -0500
