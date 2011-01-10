@@ -149,13 +149,7 @@ void Application::run(int argc, char *argv[])
         ("project-home,H", po::value<std::string>()->default_value(project_home), "Path to the saved files")
         ("version", "Show program's version number and exit")
         ("verbose,v", po::bool_switch(), "Enables a verbose output")
-        //("enable-effects,e", po::bool_switch(), "Enables the GLSL effects")
-        //("intervalometer-on,i", po::bool_switch(), "Enables the intervalometer to create time lapse animations")
-        //("intervalometer-interval,I", po::value<double>()->default_value(5.0), "Sets the intervalometer rate in seconds")
-        //("project-name,p", po::value<std::string>()->default_value("default"), "Sets the name of the project for image saving")
         ("display,D", po::value<std::string>()->default_value(std::getenv("DISPLAY")), "Sets the X11 display name")
-        //("rendering-fps", po::value<int>()->default_value(30), "Rendering frame rate") // FIXME: can we get a FPS different for the rendering?
-        //("capture-fps,r", po::value<int>()->default_value(30), "Rendering frame rate")
         ("playhead-fps", po::value<int>()->default_value(12), "Sets the initial playback rate of clips")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode")
         ("video-source,d", po::value<std::string>()->default_value(video_source), "Sets the video source or device. Use \"test\" for color bars. Use \"x\" to capture the screen")
@@ -169,15 +163,15 @@ void Application::run(int argc, char *argv[])
         ("width", po::value<int>()->default_value(DEFAULT_CAPTURE_WIDTH), "Image capture width")
         ("height", po::value<int>()->default_value(DEFAULT_CAPTURE_HEIGHT), "Image capture height")
         ("max-images-per-clip", po::value<int>()->default_value(0), "If not zero, sets a maximum number of images per clip. The first image is then removed when one is added.")
-        ("enable-intervalometer", po::bool_switch(), "Enables the intervalometer for the default clip at startup.")
-        ("intervalometer-rate", po::value<float>()->default_value(10.0), "Sets the default intervalometer rate.")
+        ("enable-intervalometer,i", po::bool_switch(), "Enables the intervalometer for the default clip at startup.")
+        ("intervalometer-rate,I", po::value<float>()->default_value(10.0), "Sets the default intervalometer rate.")
         ("layout", po::value<unsigned int>()->default_value(0), "Sets the layout number.") // TODO:2010-10-05:aalex:Print the NUM_LAYOUTS
         ("remove-deleted-images", po::bool_switch(), "Enables the removal of useless image files.")
         ("enable-shaders,S", po::bool_switch(), "Enables GLSL shader effects.")
         ("enable-info-window,I", po::bool_switch(), "Enables a window for information text.")
         ("image-on-top", po::value<std::string>()->default_value(""), "Shows an unscaled image on top of all.")
         ("enable-preview-window", po::bool_switch(), "Enables a preview of the live camera feed.")
-        ; // <-- important semi-colon
+        ;
     po::variables_map options;
     
     po::store(po::parse_command_line(argc, argv, desc), options);
