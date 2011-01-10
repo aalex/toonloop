@@ -23,7 +23,7 @@
 #include <glib.h>
 
 // base class
-const std::string &PlayheadIterator::get_name()
+const std::string &PlayheadIterator::get_name() const
 {
     return do_get_name();
 }

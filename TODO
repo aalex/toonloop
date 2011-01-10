@@ -6,6 +6,22 @@ Here we list taks to be done. Once they are done, they should go in the RELEASE 
 Once the tag is done for the version number in the RELEASE notes, they are moved to the NEWS file, (most recent first) and we update the version number in the RELEASE notes and the configure.ac file, and we remove all the task that are done from the RELEASE notes. We often put the tasks that are done in the doc/DONE document.
 
 
+In progress
+-----------
+Those issues are being worked on in some branches. They need some work so that we can delete those branches.
+
+ * video: Support DV: gst-launch dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink
+ * video: Support HDV (hdvdec)
+
+
+Review needed
+-------------
+Can anyone else than me (Alexandre) please review and comment or modify those?
+
+ * midi: review and simplify multithread messaging
+ * effects: review and simplify effect.h and saturationeffect.h
+
+
 Top Priorities
 --------------
 
@@ -13,27 +29,27 @@ Top Priorities
  * video: detect what frame rate should work with each web cam, at fallback to the closest that would work if the one provided on the command-line is not supported. For example: (Logitech HD Pro Webcam C910) Caps structure from v4l2src srcpad: video/x-raw-yuv, format=(fourcc)YUY2, width=(int)704, height=(int)576, framerate=(fraction){ 25/1, 45/2, 20/1, 35/2, 15/1, 25/2, 10/1, 15/2, 5/1, 5/2, 1/1 }; Video source caps are video/x-raw-yuv, width=704, height=576, framerate=25/1
  * editing: allow an infinity of clips. Paging could allow more than ten clips. Use <>
  * gui: Why does closing the info window makes the app unresponsive?
- * midi: review and simplify multithread messaging
  * controller: review and simplify properties.h and controller.h
  * controller: If a property already exists, trying to create it should return a pointer to the other one. (to avoid race conditions upon property creation?) 
  * controller: Implement the --list-properties option. (maybe we'll need not to start the GUI before setting up the controller and effects)
- * effects: review and simplify effect.h and saturationeffect.h
  * editing: switch to a clip and add a frame to it in a single key stroke
  * playback: scratch video
  * playback: Be able to change looping bounds
+ * controls: Add direct controls for playback direction.
+ * refactoring: Turn MIDI mapping rules into classes. (maybe use template policies)
+
 
 Things to do in priority
 ------------------------
-
 Right now, here is the list of tasks to prioritize: 
 
  * BUG: Auto-record video sometimes doesn't work
+ * BUG: Auto-record video is very slow. We should save pixbufs asynchronously. (it's not provided by their library! see "optimization")
  * BUG: Auto-record video sometimes keeps recording and is impossible to stop!
  * BUG: Sometimes, in one-image clips, the playhead tries to change to 1. Clip::get_image: Got exception vector::_M_range_check \n Controller::update_playback_image: The image is NULL
  * BUG: check for runtime dep (mencoder) in the executable.
  * BUG: the first live input image is white (hence the first recorded one if using timelapse)
  * architecture: create the ToonLooper and ToonGrabber classes. (take those from gui and pipeline)
- * controls: Add direct controls for playback direction.
  * doc: Make sure the keystroke instructions are in only one place.
  * editing: Add the overdub control message. (erases and starts recording)
  * editing: Allow to edit a clip when playing another.
@@ -51,31 +67,20 @@ Right now, here is the list of tasks to prioritize:
  * onionskin: load the image just before writehead's position
  * osc: When saving a movie, we should send the name of the saved file via OSC
  * packaging: add AM_MAINTAINER_MODE to configure.ac
- * video: Support DV: gst-launch dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink
- * video: Support HDV (hdvdec)
  * video: Use an inputswitcher element. The video capture element in the Gstreamer pipeline must be dynamic. It means that the user could choose v4l2src, or an other source, depending on the hardware available. Ideally, some detection could be done. See ekiga. (well, we could have many pipelines)
  * video: Use the default GStreamer-properties camera when none is given (or when "gst" is given)
+ * playback: Multi layers (multi clips at a time) There can be one clip in each layer. Each layer could have a different playhead iterator. (either the same of different clips)
 
 
 To be done later
 ----------------
-
  * controls: Joystick input.
  * controls: Press 'p' to pause playback.
- * controls: plug with community vision, or opencv.
  * edit: add an option to delete JPEG images when deleted from a clip
  * edit: mirror
  * edit: support playing back a single clip or all of them
  * editing: Load a movie file to a clip.
  * editing: Load images to a clip.
- * effects: Min/max values for effects attributes.
- * effects: Port the shaders from 1.x (See doc/effects.txt)
- * effects: Support for video mapping. (needs a matte + separating the rectangle in a grid of rectangles, with coordinates that are interpolated linearily)
- * effects: contour
- * effects: diff
- * effects: invert
- * effects: masks (matte)
- * effects: threshold
  * gui: Advanced GUI for controlling clips and sequences
  * gui: Clutter Mx GUI (buttons, sliders, etc.) 
  * gui: dialog which allows the user to choose the name of the saved clip.
@@ -85,25 +90,13 @@ To be done later
  * optimization: Optimize the pixbuf saving either #1: Write the pixbuf to a memory stream and then splice_async() it to the file, or #2: fork(), then call gdk_pixbuf_save() in the child process. Use a pipe to handle the return value in the parent. Probably that the glib mainloop should shut itself down with pthread_atfork(). Look for screenshot_save_start() in gnome-utils/gnome-screenshot/screenshot-save.c
  * optimization: Read a few bytes from an image to trigger the kernel's read-ahead. (?)
  * optimization: Use boost::any for the message args. See http://www.boost.org/doc/libs/1_43_0/doc/html/any/s02.html
- * osc: choose the best OSC API
- * osc: receive  /toon/clip/save
- * osc: receive  /toon/clip/select <i>
- * osc: receive  /toon/playhead/goto <i>
- * osc: receive /toon/playhead/iterate
- * osc: send  /sampler/play/start <i>
- * osc: send  /sampler/play/stop <i>
- * osc: send  /sampler/record/start <i>
- * osc: send  /sampler/record/stop <i>
- * osc: send  /toon/writehead <i>
  * packaging: Improve STK packaging
  * packaging: Re-add previous tests, including headers from src.
  * packaging: Remove dependency to GTK. (GUI controls should use Clutter)
  * playback: Allow to move playhead to the beginning of a clip when we switch to it.
  * playback: Basic sequences of clips.
- * playback: Multi layers (multi clips at a time)
  * playback: allow to play all clips from 0 to 9
  * playback: multiple sequences at a time
- * playback: playing two clips at a time (layers)
  * playback: translation *paths* 
  * saving: Add PNG and TGA saving image formats.
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
@@ -117,6 +110,70 @@ To be done later
 
 See also doc/nice-to-have.txt
 
+
+Misc effects
+------------
+
+ * effects: Min/max values for effects attributes.
+ * effects: Port the shaders from 1.x (See doc/effects.txt)
+ * effects: Support for video mapping. (needs a matte + separating the rectangle in a grid of rectangles, with coordinates that are interpolated linearily)
+ * effects: contour
+ * effects: diff
+ * effects: invert
+ * effects: masks (matte)
+ * effects: threshold
+
+OSC messages to support and work to do
+--------------------------------------
+
+ * osc: choose the best OSC API
+ * osc: receive  /toon/playhead/goto <i>
+ * osc: receive /toon/playhead/iterate
+ * osc: send  /sampler/play/start <i>
+ * osc: send  /sampler/play/stop <i>
+ * osc: send  /sampler/record/start <i>
+ * osc: send  /sampler/record/stop <i>
+ * osc: send  /toon/writehead <i>
+
+MIDI
+----
+
+// TODO:2010-11-07:aalex:Support other MIDI event types.
+ * static const unsigned char MIDIPOLYTOUCH =     0xa0; // channel, pitch, velocity
+ * static const unsigned char MIDICHANNELTOUCH=   0xd0; /* 1 */
+ * static const unsigned char MIDISTARTSYSEX =    0xf0; /* (until F7) */
+ * static const unsigned char MIDITIMECODE =      0xf1; /* 1 */
+ * static const unsigned char MIDISONGPOS =       0xf2; /* 2 */
+ * static const unsigned char MIDISONGSELECT =    0xf3; /* 1 */
+ * static const unsigned char MIDIRESERVED1 =     0xf4; /* ? */
+ * static const unsigned char MIDIRESERVED2 =     0xf5; /* ? */
+ * static const unsigned char MIDITUNEREQUEST =   0xf6; /* 0 */
+ * static const unsigned char MIDIENDSYSEX =      0xf7; /* 0 */
+ * static const unsigned char MIDICLOCK =         0xf8; /* 0 */
+ * static const unsigned char MIDITICK =          0xf9; /* 0 */
+ * static const unsigned char MIDISTART =         0xfa; /* 0 */
+ * static const unsigned char MIDICONT =          0xfb; /* 0 */
+ * static const unsigned char MIDISTOP =          0xfc; /* 0 */
+ * static const unsigned char MIDIACTIVESENSE =   0xfe; /* 0 */
+ * static const unsigned char MIDIRESET =         0xff; /* 0 */
+
+Document MIDI bindings
+----------------------
+ * Historically:
+ * - Pressing the sustain pedal down grabs a frame.
+ *   MIDI controller 64 is the sustain pedal controller. It looks like this:
+ *   <channel and status> <controller> <value>
+ *   Where the controller number is 64 and the value is either 0 or 127.
+ *
+ * - The MIDI controller 80 is also a pedal on the Roland GFC-50.
+ *   It controls video grabbing. (on / off)
+ *
+ * - The program change should allow the user to choose another instrument.
+ *   This way, the Roland GFC-50 allows to select any of ten clips.
+ *   The MIDI spec allows for 128 programs, numbered 0-127.
+ *
+ * - Main volume is control 7. It controls the playback speed.
+ *   Volume is from 0 to 127.
 
 Done?
 -----

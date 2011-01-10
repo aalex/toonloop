@@ -31,7 +31,6 @@
 
 #include "application.h"
 #include "controller.h"
-#include "message.h"
 #include "moviesaver.h"
 #include "oscinterface.h"
 #include "clip.h"
@@ -482,9 +481,10 @@ void Application::quit()
 void Application::check_for_messages()
 {
     // TODO: move message handling here.
-    get_midi_input()->consume_messages();    
-    get_osc_interface()->consume_messages();    
+    get_midi_input()->consume_commands();    
+    get_osc_interface()->consume_commands();    
 }
+#if 0
 /**
  * Handles asynchronous messages.
  */
@@ -524,4 +524,5 @@ void Application::handle_message(Message &message)
             break;
     }
 }
+#endif
 

@@ -99,7 +99,7 @@ class Application
         void set_current_clip_number(unsigned int clipnumber);
         /** Checks for asynchronous messages and treat them */
         void check_for_messages();
-        void handle_message(Message &message);
+        //TODO: deprecate this: void handle_message(Message &message);
         OscInterface* get_osc_interface();
 
     private:

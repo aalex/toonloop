@@ -31,9 +31,13 @@
  * When its value changes, its signal is triggered with its name
  * and its new value as arguments.
  */
-template <typename T> class Property
+template <typename T>
+class Property
 {
     public:
+        /** 
+         * Typedef for the value_changed_signal_ signal.
+         */
         typedef boost::signals2::signal<void (std::string, T)> OnChanged;
 #if 0
         typedef OnChanged::slot_type OnChangedSlotType;
@@ -42,18 +46,20 @@ template <typename T> class Property
         {
             return value_changed_signal_.connect(slot);
         }
-#endif        
-        Property() :
-            name_(""),
-            value_(0) // FIXME:2010-11-28:aalex:what if value is not an int?
-        {}
-        
+#endif
+        /**
+         * Constructor with name and value as arguments.
+         */
         Property(const std::string &name, T value) : 
             name_(name),
             value_(value) {}
-
+        /**
+         * Returns the current value of this property.
+         */
         T get_value() const { return value_; }
-
+        /**
+         * Returns the name of this property.
+         */
         std::string &get_name() const { return name_; }
 
         void set_value(T value)

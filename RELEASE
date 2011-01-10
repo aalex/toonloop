@@ -11,13 +11,16 @@ New features:
     * Adding playback_opacity property
     * Updated man page about midi binding rules
     * Added random and drunk playback directions
+    * New OSC callback: /toon/clip/save_current
+    * New OSC callback: /toon/clip/select i:clip_number
 
 Bug fixes: 
     * Pass movie size to mencoder args
     * Gui: fixed memory leak, fixed delete event callback signature in infowindow
-    * Less verbose midi input
+    * Less verbose MIDI input
     * Added Tristan Matthews to the list of copyright holders.
-    * Replace playhead_direction enum by a hierarchy of classes
+    * Replaced playhead_direction enum by a hierarchy of classes
+    * Replaced message by a hierarchy of Command classes
 
 Many thanks to:
     * Tristan Matthews for helping with the refactoring.
