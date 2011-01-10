@@ -75,6 +75,9 @@ class OscInterface
         static int removeFrameCb(const char *path, 
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
+        static int select_clip_cb(const char *path, 
+                const char *types, lo_arg **argv, 
+                int argc, void *data, void *user_data);
         void connect_signals_to_sending_slots();
         void push_command(std::tr1::shared_ptr<Command> command);
         ConcurrentQueue<std::tr1::shared_ptr<Command> > messaging_queue_;

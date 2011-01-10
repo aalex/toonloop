@@ -58,6 +58,7 @@ OscInterface::OscInterface(
         receiver_.addHandler("/toon/quit", "", quitCb, this);
         receiver_.addHandler("/toon/frame/add", "", addFrameCb, this);
         receiver_.addHandler("/toon/frame/remove", "", removeFrameCb, this);
+        receiver_.addHandler("/toon/select_clip", "i", select_clip_cb, this);
         std::cout << "OSC message handlers:" << std::endl;
         std::cout << " * /ping : Answers with /pong" << std::endl;
         std::cout << " * /pong" << std::endl;
@@ -236,6 +237,26 @@ int OscInterface::quitCb(
     if (context->is_verbose())
         std::cout << "Got /toon/quit" << std::endl;
     context->push_command(std::tr1::shared_ptr<Command>(new QuitCommand));
+    return 0;
+}
+
+/** Handles /toon/select_clip i:clip_number
+ *
+ * Selects a clip
+ */
+int OscInterface::select_clip_cb(
+        const char * /*path*/,
+        const char * /*types*/, 
+        lo_arg **argv,
+        int /* argc */, 
+        void * /*data*/, 
+        void *user_data)
+{
+    OscInterface* context = static_cast<OscInterface*>(user_data);
+    unsigned int clip_number = (unsigned int) argv[0]->i;
+    if (context->is_verbose())
+        std::cout << "Got /toon/select_clip " << clip_number << std::endl;
+    context->push_command(std::tr1::shared_ptr<Command>(new SelectClipCommand(clip_number)));
     return 0;
 }
 
