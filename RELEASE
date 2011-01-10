@@ -1,4 +1,4 @@
-2010-??-?? Toonloop 2.1.6
+2011-01-10 Toonloop 2.1.6
 -------------------------
 
 This release is a snapshot in the 2.1 unstable series. 
@@ -23,6 +23,9 @@ Bug fixes:
     * Replaced playhead_direction enum by a hierarchy of classes
     * Replaced message by a hierarchy of Command classes
     * Fixed default livefeed opacity
+    * Avoid counter-intuitive short options
+    * --enable-preview-window and enable-info-window both used -I as a shortcut
+    * Splitted MidiInput::on_message_cb into many methods.
 
 Many thanks to:
     * Tristan Matthews for helping with the refactoring.
