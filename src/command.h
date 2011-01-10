@@ -177,6 +177,21 @@ class SetIntCommand : public Command
         int property_value_;
 };
 
+/**
+ * Saves the currently selected clip.
+ */
+class SaveCurrentClipCommand : public Command
+{
+    public:
+        SaveCurrentClipCommand() : 
+            Command()
+        {}
+    private:
+        static const std::string name_;
+        virtual const std::string &do_get_name() const { return name_; }
+        virtual void do_apply(Controller &controller);
+};
+
 /*
             // TODO: implement the other messages:
             //SAVE_CLIP,

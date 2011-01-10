@@ -60,22 +60,25 @@ class OscInterface
         bool sending_enabled_;
         bool receiving_enabled_;
         Application* owner_;
-        static int pingCb(const char *path, 
+        static int ping_cb(const char *path, 
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
-        static int pongCb(const char *path, 
+        static int pong_cb(const char *path, 
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
-        static int quitCb(const char *path, 
+        static int quit_cb(const char *path, 
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
-        static int addFrameCb(const char *path, 
+        static int add_image_cb(const char *path, 
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
-        static int removeFrameCb(const char *path, 
+        static int remove_image_cb(const char *path, 
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
         static int select_clip_cb(const char *path, 
+                const char *types, lo_arg **argv, 
+                int argc, void *data, void *user_data);
+        static int clip_save_current_cb(const char *path, 
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
         void connect_signals_to_sending_slots();

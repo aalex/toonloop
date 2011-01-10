@@ -106,3 +106,10 @@ void SetIntCommand::do_apply(Controller &controller)
     controller.set_int_value(property_name_, property_value_);
 }
 
+// save_clip
+const std::string SaveCurrentClipCommand::name_ = "save_current_clip";
+
+void SaveCurrentClipCommand::do_apply(Controller &controller)
+{
+    controller.save_current_clip();
+}
