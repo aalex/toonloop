@@ -12,8 +12,7 @@ Those issues are being worked on in some branches. They need some work so that w
 
  * video: Support DV: gst-launch dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink
  * video: Support HDV (hdvdec)
- * refactoring: Using the command design pattern for MIDI and OSC
- * refactoring: Turn MIDI mapping rules into classes. (maybe use template policies)
+
 
 Review needed
 -------------
@@ -21,6 +20,7 @@ Can anyone else than me (Alexandre) please review and comment or modify those?
 
  * midi: review and simplify multithread messaging
  * effects: review and simplify effect.h and saturationeffect.h
+
 
 Top Priorities
 --------------
@@ -34,6 +34,7 @@ Top Priorities
  * playback: scratch video
  * playback: Be able to change looping bounds
  * controls: Add direct controls for playback direction.
+ * refactoring: Turn MIDI mapping rules into classes. (maybe use template policies)
 
 
 Things to do in priority
@@ -124,8 +125,6 @@ OSC messages to support and work to do
 --------------------------------------
 
  * osc: choose the best OSC API
- * osc: receive  /toon/clip/save
- * osc: receive  /toon/clip/select <i>
  * osc: receive  /toon/playhead/goto <i>
  * osc: receive /toon/playhead/iterate
  * osc: send  /sampler/play/start <i>
