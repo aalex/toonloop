@@ -32,46 +32,12 @@
 
 /**
  * The MIDI bindings are now set up with a XML file in the MidiBinder class.
- *
- * Historically:
- * - Pressing the sustain pedal down grabs a frame.
- *   MIDI controller 64 is the sustain pedal controller. It looks like this:
- *   <channel and status> <controller> <value>
- *   Where the controller number is 64 and the value is either 0 or 127.
- *
- * - The MIDI controller 80 is also a pedal on the Roland GFC-50.
- *   It controls video grabbing. (on / off)
- *
- * - The program change should allow the user to choose another instrument.
- *   This way, the Roland GFC-50 allows to select any of ten clips.
- *   The MIDI spec allows for 128 programs, numbered 0-127.
- *
- * - Main volume is control 7. It controls the playback speed.
- *   Volume is from 0 to 127.
  */
 static const unsigned char MIDINOTEOFF =       0x80; // channel, pitch, velocity
 static const unsigned char MIDINOTEON =        0x90; // channel, pitch, velocity
 static const unsigned char MIDICONTROLCHANGE = 0xb0; // channel, controller, value
 static const unsigned char MIDIPROGRAMCHANGE = 0xc0; // channel, value
 static const unsigned char MIDIPITCHBEND =     0xe0; // channel, value
-// TODO:2010-11-07:aalex:Support other MIDI event types.
-//static const unsigned char MIDIPOLYTOUCH =     0xa0; // channel, pitch, velocity
-//static const unsigned char MIDICHANNELTOUCH=   0xd0; /* 1 */
-//static const unsigned char MIDISTARTSYSEX =    0xf0; /* (until F7) */
-//static const unsigned char MIDITIMECODE =      0xf1; /* 1 */
-//static const unsigned char MIDISONGPOS =       0xf2; /* 2 */
-//static const unsigned char MIDISONGSELECT =    0xf3; /* 1 */
-//static const unsigned char MIDIRESERVED1 =     0xf4; /* ? */
-//static const unsigned char MIDIRESERVED2 =     0xf5; /* ? */
-//static const unsigned char MIDITUNEREQUEST =   0xf6; /* 0 */
-//static const unsigned char MIDIENDSYSEX =      0xf7; /* 0 */
-//static const unsigned char MIDICLOCK =         0xf8; /* 0 */
-//static const unsigned char MIDITICK =          0xf9; /* 0 */
-//static const unsigned char MIDISTART =         0xfa; /* 0 */
-//static const unsigned char MIDICONT =          0xfb; /* 0 */
-//static const unsigned char MIDISTOP =          0xfc; /* 0 */
-//static const unsigned char MIDIACTIVESENSE =   0xfe; /* 0 */
-//static const unsigned char MIDIRESET =         0xff; /* 0 */
 static const unsigned char MIDI_NOT_SUPPORTED = 0x00;
 
 unsigned char get_midi_event_type(const unsigned char first_byte)
@@ -398,36 +364,6 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
             break;
     }
 }
-#if 0
-/**
- * Maps action name to a message enum.
- */
-Message MidiInput::make_message(const std::string &action)
-{
-    // TODO: use some map lookup, not else if
-    if (action == "add_image")
-        return Message(Message::ADD_IMAGE);
-    else if (action == "set_float")
-        return Message(Message::SET_FLOAT);
-    else if (action == "set_int")
-        return Message(Message::SET_INT);
-    else if (action == "remove_image")
-        return Message(Message::REMOVE_IMAGE);
-    else if (action == "video_record_on")
-        return Message(Message::VIDEO_RECORD_ON);
-    else if (action == "video_record_off")
-        return Message(Message::VIDEO_RECORD_OFF);
-    else if (action == "select_clip")
-        return Message(Message::SELECT_CLIP);
-    else if (action == "quit")
-        return Message(Message::QUIT);
-    else
-    {
-        g_critical("%s: Unknown action name: %s\n", __FUNCTION__, action.c_str());
-        return Message(Message::NOP);
-    }
-}
-#endif
 
 void MidiInput::enumerate_devices() const
 {
