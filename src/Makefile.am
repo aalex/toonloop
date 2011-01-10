@@ -26,7 +26,6 @@ headers = \
 	image.h \
     infowindow.h \
 	log.h \
-	message.h \
 	midiinput.h \
 	moviesaver.h \
     oscinterface.h \

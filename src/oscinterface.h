@@ -22,8 +22,10 @@
 #define __OSC_INTERFACE_H__
 
 #include <string>
+#include <tr1/memory>
+
 #include "concurrentqueue.h"
-#include "message.h"
+#include "command.h"
 #include "oscreceiver.h"
 #include "oscsender.h"
 
@@ -41,7 +43,7 @@ class OscInterface
         ~OscInterface();
         void start();
         /** Flushes the messages from the asynchronous messaging queue. */
-        void consume_messages();
+        void consume_commands();
     private:
         void on_add_frame(unsigned int clip_number, unsigned int frame_number);
         void on_remove_frame(unsigned int clip_number, unsigned int frame_number);
@@ -74,8 +76,9 @@ class OscInterface
                 const char *types, lo_arg **argv, 
                 int argc, void *data, void *user_data);
         void connect_signals_to_sending_slots();
-        void push_message(Message message);
-        ConcurrentQueue<Message> messaging_queue_;
+        void push_command(std::tr1::shared_ptr<Command> command);
+        ConcurrentQueue<std::tr1::shared_ptr<Command> > messaging_queue_;
+        bool is_verbose();
 };
 
 #endif // __OSC_INTERFACE_H__
