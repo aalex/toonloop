@@ -1,4 +1,4 @@
-2011-01-??: Toonloop 2.0.6
+2011-01-16: Toonloop 2.0.6
 --------------------------
 
 This release is a maintenance version in the 2.0 stable series. 
@@ -8,4 +8,5 @@ This version contains bug fixes. These were backported from the 2.1 development 
 Bug fixes: 
     * Avoid redefinition of PACKAGE_URL in configure.ac
     * Link with libboost-system
+    * Put -lSTK in LIBS, not LDFLAGS
 
