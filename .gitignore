@@ -53,3 +53,4 @@ src/core
 src/doxyfile
 src/html
 toonloop-*.*.*
+src/check_properties
