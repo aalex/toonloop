@@ -2,6 +2,19 @@ This file lists all the release notes for the former versions.
 See the RELEASE file for the current notes. (latest new features and bug fixes)
 See the ChangeLog file for a log of previous releases informations.
 
+2011-01-16: Toonloop 2.0.6
+--------------------------
+
+This release is a maintenance version in the 2.0 stable series. 
+
+This version contains bug fixes. These were backported from the 2.1 development branch.
+
+Bug fixes: 
+    * Avoid redefinition of PACKAGE_URL in configure.ac
+    * Link with libboost-system
+    * Put -lSTK in LIBS, not LDFLAGS
+
+
 2010-11-19: Toonloop 2.0.4
 --------------------------
 
