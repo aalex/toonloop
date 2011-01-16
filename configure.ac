@@ -35,14 +35,14 @@ AC_CHECK_LIB([m],[sin],[AC_SUBST([LIBM_CXXFLAGS],["-lm"])])
 # TODO: print some message when configuring STK is OK
 AC_LANG_PUSH(C++)
 # save original flags
-SAVED_LDFLAGS=$LDFLAGS
-LDFLAGS="$LDFLAGS -lstk"
+SAVED_LIBS=$LIBS
+LIBS="$LIBS -lstk"
 AC_LINK_IFELSE(
         [AC_LANG_PROGRAM([ #include <stk/RtMidi.h> ],
         [RtMidiIn input])],
         [AC_SUBST(STK_LIBS," -lstk -lrt -lm")],
         [AC_MSG_ERROR([libstk is not installed: alsa])])
-LDFLAGS=$SAVED_LDFLAGS # restore them
+LIBS=$SAVED_LIBS # restore them
 AC_SUBST(STK_CXXFLAGS, "-D__LINUX_ALSA__ -D__UNIX_JACK__ -D__LITTLE_ENDIAN__")
 AC_LANG_POP(C++)
 
