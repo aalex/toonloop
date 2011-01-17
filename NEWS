@@ -98,6 +98,19 @@ Notes:
     If you run toonloop from a directory in your home (not in /usr/local) it might use the midi.xml file in /usr/local, unless you are in the same directory as the executable. Be careful.
 
 
+2011-01-16: Toonloop 2.0.6
+--------------------------
+
+This release is a maintenance version in the 2.0 stable series.
+
+This version contains bug fixes. These were backported from the 2.1 development branch.
+
+Bug fixes:
+    * Avoid redefinition of PACKAGE_URL in configure.ac
+    * Link with libboost-system
+    * Put -lSTK in LIBS, not LDFLAGS
+
+
 2010-11-19: Toonloop 2.0.4
 --------------------------
 

@@ -1,15 +1,14 @@
-2011-??-?? Toonloop 2.1.8
+2011-01-17 Toonloop 2.1.8
 -------------------------
 
 This release is a snapshot in the 2.1 unstable series. 
 
-This version contains new features and bug fixes. 
+This version contains bug fixes that were backported to the stable 2.0 branch. 
 
-New features:
-    * 
-
-Bug fixes: 
-    * 
+Bug fixes:
+    * Avoid redefinition of PACKAGE_URL in configure.ac
+    * Link with libboost-system
+    * Put -lSTK in LIBS, not LDFLAGS
 
 Have fun with Toonloop!
 
