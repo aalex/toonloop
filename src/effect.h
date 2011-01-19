@@ -57,6 +57,7 @@ class Effect
          * It iterates over all actors and update them.
          */
         void update_all_actors();
+        virtual ~Effect() {}
     protected:
         bool loaded_;
         Controller *controller_;

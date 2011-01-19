@@ -418,7 +418,8 @@ void Gui::toggle_help()
 void Gui::on_delete_event(GtkWidget* /*widget*/, GdkEvent* /*event*/, gpointer user_data)
 {
     Gui *context = static_cast<Gui*>(user_data);
-    g_print("Window has been deleted.\n");
+    if (context->owner_->get_configuration()->get_verbose())
+        g_print("Window has been deleted.\n");
     context->owner_->quit();
 }
 

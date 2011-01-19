@@ -47,6 +47,7 @@ int main(int argc, char* argv[])
         std::cerr << "Exception of unknown type!\n";
         return 1;
     }
+    std::cout << "Leaving Toonloop." << std::endl;
     return 0;
 }
 
