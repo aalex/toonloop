@@ -33,6 +33,7 @@
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <iostream>
+#include <sstream>
 
 #include "application.h"
 #include "clip.h"
