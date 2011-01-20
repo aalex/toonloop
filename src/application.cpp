@@ -46,6 +46,8 @@ namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 typedef std::tr1::unordered_map<int, std::tr1::shared_ptr<Clip> >::iterator ClipIterator;
 
+namespace 
+{
 /**
  * Checks if a directory exists, create it and its parent directories if not.
  *
@@ -53,34 +55,33 @@ typedef std::tr1::unordered_map<int, std::tr1::shared_ptr<Clip> >::iterator Clip
  * This is in an anonymous namespace to keep it visible to this file only and to ensure 
  * it doesn't conflict with a function we link in.
  */
-namespace {
-    bool make_sure_directory_exists(const std::string &directory)
+bool make_sure_directory_exists(const std::string &directory)
+{
+    if (not fs::exists(directory))
     {
-        if (not fs::exists(directory))
+        try 
         {
-            try 
-            {
-                fs::create_directories(directory); // TODO: check if it returns true
-            } 
-            catch(const std::exception& e) 
-            {
-                // TODO: be more specific to fs::basic_filesystem_error<Path> 
-                std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
-                return false;
-            }
+            fs::create_directories(directory); // TODO: check if it returns true
         } 
-        else 
+        catch(const std::exception& e) 
         {
-            if (not fs::is_directory(directory))
-            {
-                std::cout << "Error: " << directory << " is not a directory." << std::endl;
-                return false;
-            }
+            // TODO: be more specific to fs::basic_filesystem_error<Path> 
+            std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
+            return false;
         }
-        return true;
+    } 
+    else 
+    {
+        if (not fs::is_directory(directory))
+        {
+            std::cout << "Error: " << directory << " is not a directory." << std::endl;
+            return false;
+        }
     }
+    return true;
 }
 
+} // end of anonymous namespace
 
 Application::Application() : 
         selected_clip_(0)
@@ -110,6 +111,7 @@ Clip* Application::get_clip(unsigned int clip_number)
         return clips_[clip_number].get();
     }
 }
+
 unsigned int Application::get_current_clip_number()
 {
     return selected_clip_;
@@ -408,9 +410,6 @@ void Application::run(int argc, char *argv[])
  */
 Application::~Application()
 {
-    // No need, since we use shared_ptr:
-    //for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
-    //    delete iter->second;
 }
 
 /**
