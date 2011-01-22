@@ -518,20 +518,25 @@ bool Application::save_project(std::string &file_name)
     for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
     {
         Clip *clip = iter->second.get();
-        xmlNodePtr clip_node = xmlNewChild(clips_node, NULL, XMLSTR ss::CLIP_NODE, NULL);
-        sprintf(buff, "%d", clip->get_id()); // clip id
-        xmlNewProp(clip_node, XMLSTR ss::CLIP_ID_PROPERTY, XMLSTR buff);
-        xmlNodePtr images_node = xmlNewChild(clip_node, NULL, XMLSTR ss::IMAGES_NODE, NULL);
-        for (unsigned int image_num = 0; image_num < clip->size(); image_num++)
+        if (clip->size() > 0) // do not save empty clips
         {
-            Image *image = clip->get_image(image_num);
-            xmlNodePtr image_node = xmlNewChild(images_node, NULL, XMLSTR ss::IMAGE_NODE, NULL);
-            xmlNewProp(image_node, XMLSTR ss::IMAGE_NAME_ATTR, XMLSTR image->get_name().c_str());
+            xmlNodePtr clip_node = xmlNewChild(clips_node, NULL, XMLSTR ss::CLIP_NODE, NULL);
+            sprintf(buff, "%d", clip->get_id());
+            xmlNewProp(clip_node, XMLSTR ss::CLIP_ID_PROPERTY, XMLSTR buff);
+            xmlNodePtr images_node = xmlNewChild(clip_node, NULL, XMLSTR ss::IMAGES_NODE, NULL);
+            for (unsigned int image_num = 0; image_num < clip->size(); image_num++)
+            {
+                Image *image = clip->get_image(image_num);
+                xmlNodePtr image_node = xmlNewChild(images_node, NULL, XMLSTR ss::IMAGE_NODE, NULL);
+                xmlNewProp(image_node, XMLSTR ss::IMAGE_NAME_ATTR, XMLSTR image->get_name().c_str());
+            }
         }
     }
 
     // Save document to file
     xmlSaveFormatFileEnc(file_name.c_str(), doc, "UTF-8", 1);
+    if (config_->get_verbose())
+        std::cout << "Saved the project to " << file_name << std::endl;
     // Free the document + global variables that may have been allocated by the parser.
     xmlFreeDoc(doc);
     xmlCleanupParser();
