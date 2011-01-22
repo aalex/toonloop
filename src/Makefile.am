@@ -82,7 +82,8 @@ toonloop_CXXFLAGS = \
 	$(LIBLO_CFLAGS) \
 	$(LIBM_CXXFLAGS) \
 	$(LIBTHREAD_CXXFLAGS) \
-	$(STK_CXXFLAGS)
+	$(STK_CXXFLAGS) \
+	$(LIBXML_XFLAGS)
  
 toonloop_LDADD = \
 	$(BOOST_FILESYSTEM_LIB) \
@@ -97,4 +98,5 @@ toonloop_LDADD = \
 	$(LIBM_LIBS) \
 	$(LIBTHREAD_LIBS) \
 	$(LDFLAGS) \
-	$(STK_LIBS)
+	$(STK_LIBS) \
+	$(LIBXML_LIBS)

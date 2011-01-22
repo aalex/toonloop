@@ -95,7 +95,13 @@ fi
 AC_SUBST([CLUTTERGST_LIBS])
 AC_SUBST([CLUTTERGST_CFLAGS])
 
-# TODO: maybe check explicitely for libxml2
+# libxml2
+PKG_CHECK_MODULES([LIBXML], [libxml-2.0], have_libxml=true, have_libxml=false)
+if test "x${have_libxml}" = "xfalse" ; then
+    AC_MSG_ERROR([missing package: libxml2-dev])
+fi
+AC_SUBST([LIBXML_LIBS])
+AC_SUBST([LIBXML_CFLAGS])
 
 # BOOST
 AX_BOOST_BASE([1.35])
