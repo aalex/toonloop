@@ -350,6 +350,9 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
                 std::cout << "Blending mode:" << context->blending_mode_ << std::endl;
             }
             break;
+        case GDK_F2: // TODO: change this key for save
+            controller->save_project();
+            break;
         default:
             break;
     }
