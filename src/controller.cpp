@@ -23,6 +23,7 @@
 #include "moviesaver.h"
 #include "pipeline.h"
 #include "controller.h"
+#include "statesaving.h"
 #include "timer.h"
 #include "log.h"
 
@@ -384,5 +385,13 @@ void Controller::print_properties()
     int_properties_.print_properties();
     std::cout << "Toonloop float properties:" << std::endl;
     float_properties_.print_properties();
+}
+
+void Controller::save_project()
+{
+    namespace ss = statesaving;
+    std::string file_name = owner_->get_configuration()->get_project_home() + "/" + ss::FILE_NAME;
+    owner_->save_project(file_name);
+    save_project_signal_(file_name);
 }
 
