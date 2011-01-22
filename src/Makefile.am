@@ -64,7 +64,6 @@ toonloop_SOURCES = \
     midibinder.cpp \
     brcosaeffect.cpp \
 	saverworker.cpp \
-	statesaving.cpp \
 	subprocess.cpp \
 	timer.cpp \
 	timing.cpp \

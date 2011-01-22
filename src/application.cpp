@@ -26,20 +26,25 @@
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <iostream>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <stdio.h> // for snprintf
 #include <string>
 #include <tr1/memory>
 
 #include "application.h"
-#include "controller.h"
-#include "moviesaver.h"
-#include "oscinterface.h"
 #include "clip.h"
 #include "config.h"
 #include "configuration.h"
+#include "controller.h"
 #include "gui.h"
 #include "midiinput.h"
+#include "moviesaver.h"
+#include "oscinterface.h"
 #include "pipeline.h"
+#include "statesaving.h"
 #include "subprocess.h"
+#include "unused.h"
 #include "v4l2util.h"
 
 namespace po = boost::program_options;
@@ -488,5 +493,48 @@ void Application::check_for_messages()
     // TODO: move message handling here.
     get_midi_input()->consume_commands();    
     get_osc_interface()->consume_commands();    
+}
+
+bool Application::load_project(std::string &file_name)
+{
+    UNUSED(file_name);
+    std::cerr << __FUNCTION__ << " not implemented yet." << std::endl;
+    return false;
+}
+
+bool Application::save_project(std::string &file_name)
+{
+    namespace ss = statesaving;
+
+    xmlDocPtr doc = xmlNewDoc(XMLSTR "1.0");
+    // "project" node with its "name" attribute
+    xmlNodePtr root_node = xmlNewNode(NULL, XMLSTR ss::ROOT_NODE);
+    xmlDocSetRootElement(doc, root_node);
+    xmlNewProp(root_node, XMLSTR ss::PROJECT_NAME_ATTR, XMLSTR ss::DEFAULT_PROJECT_NAME);
+    // "clips" node
+    xmlNodePtr clips_node = xmlNewChild(root_node, NULL, XMLSTR ss::CLIPS_NODE, NULL); // No text contents
+
+    char buff[256]; // buff for node names
+    for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
+    {
+        Clip *clip = iter->second.get();
+        xmlNodePtr clip_node = xmlNewChild(clips_node, NULL, XMLSTR ss::CLIP_NODE, NULL);
+        sprintf(buff, "%d", clip->get_id()); // clip id
+        xmlNewProp(clip_node, XMLSTR ss::CLIP_ID_PROPERTY, XMLSTR buff);
+        xmlNodePtr images_node = xmlNewChild(clip_node, NULL, XMLSTR ss::IMAGES_NODE, NULL);
+        for (unsigned int image_num = 0; image_num < clip->size(); image_num++)
+        {
+            Image *image = clip->get_image(image_num);
+            xmlNodePtr image_node = xmlNewChild(images_node, NULL, XMLSTR ss::IMAGE_NODE, NULL);
+            xmlNewProp(image_node, XMLSTR ss::IMAGE_NAME_ATTR, XMLSTR image->get_name().c_str());
+        }
+    }
+
+    // Save document to file
+    xmlSaveFormatFileEnc(file_name.c_str(), doc, "UTF-8", 1);
+    // Free the document + global variables that may have been allocated by the parser.
+    xmlFreeDoc(doc);
+    xmlCleanupParser();
+    return true;
 }
 
