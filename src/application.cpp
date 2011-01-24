@@ -405,6 +405,10 @@ void Application::run(int argc, char *argv[])
         get_controller()->print_properties();
         // not exiting
     }
+
+    std::string project_file_name = config_->get_project_home() + "/" + statesaving::FILE_NAME;
+    if (fs::exists(project_file_name))
+        load_project(project_file_name);
     // This call is blocking:
     // Starts it all:
     gtk_main();
@@ -495,11 +499,93 @@ void Application::check_for_messages()
     get_osc_interface()->consume_commands();    
 }
 
+namespace
+{
+    bool node_name_is(xmlNode *node, const std::string &name)
+    {
+        return (node->type == XML_ELEMENT_NODE && node->name && (xmlStrcmp(node->name, BAD_CAST name.c_str()) == 0));
+    }
+
+    /** Returns a pointer to the XML child with the given name
+     * @return A pointer to the data, not a copy of it.
+     */
+    xmlNode *seek_child_named(xmlNode *parent, const std::string &name)
+    {
+        if (parent == NULL)
+            return NULL;
+        for (xmlNode *node = parent->children; node != NULL; node = node->next)
+        {
+            if (node_name_is(node, name))
+            {
+                return node;
+            }
+        }
+        return NULL;
+    }
+}
+
 bool Application::load_project(std::string &file_name)
 {
-    UNUSED(file_name);
-    std::cerr << __FUNCTION__ << " not implemented yet." << std::endl;
-    return false;
+    //UNUSED(file_name);
+    //std::cerr << __FUNCTION__ << " not implemented yet." << std::endl;
+    /* this initialize the library and check potential ABI mismatches
+     * between the version it was compiled for and the actual shared
+     * library used.
+     */
+    LIBXML_TEST_VERSION
+    
+    /* parse the file and get the DOM tree */
+    xmlDoc *doc = xmlReadFile(file_name.c_str(), NULL, 0);
+    if (doc == NULL)
+    {
+        printf("error: could not parse file %s\n", file_name.c_str());
+        return false;
+    }
+    else
+        std::cout << "Loading project file " << file_name << std::endl;
+    xmlNode *root = xmlDocGetRootElement(doc);
+    xmlNode *clips_node = seek_child_named(root, "clips");
+    if (clips_node != NULL)
+    {
+        //std::cout << "found clips node\n";
+        for (xmlNode *clip_node = clips_node->children; clip_node; clip_node = clip_node->next)
+        {
+            // clip:
+            if (node_name_is(clip_node, "clip"))
+            {
+                //std::cout << "clip node: " << clip_node->name << std::endl;
+                // clip ID:
+                xmlChar *clip_id = xmlGetProp(clip_node, BAD_CAST "id");
+                if (clip_id)
+                    printf("Clip ID: %d \n", boost::lexical_cast<unsigned int>(clip_id));
+                xmlFree(clip_id); // free the property string
+                // images:
+                xmlNode *images_node = seek_child_named(clip_node, "images");
+                if (images_node != NULL)
+                {
+                    for (xmlNode *image_node = images_node->children; image_node; image_node = image_node->next)
+                    {
+                        // image:
+                        if (node_name_is(image_node, "image"))
+                        {
+                            // image name
+                            xmlChar *image_name = xmlGetProp(image_node, BAD_CAST "name");
+                            if (image_name)
+                                printf(" * Image name: %s\n", image_name);
+                            xmlFree(image_name); // free the property string
+                        }
+                    } // end of image
+                }
+            }
+        } // end of clip
+    } // end of clips
+    /* free the document */
+    xmlFreeDoc(doc);
+    /* Free the global variables that may
+     * have been allocated by the parser.
+     */
+    xmlCleanupParser();
+    return true;
 }
 
 bool Application::save_project(std::string &file_name)
