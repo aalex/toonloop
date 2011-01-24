@@ -33,6 +33,7 @@
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <iostream>
+#include <sstream>
 
 #include "application.h"
 #include "clip.h"
@@ -349,6 +350,9 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
                 std::cout << "Blending mode:" << context->blending_mode_ << std::endl;
             }
             break;
+        case GDK_F2: // TODO: change this key for save
+            controller->save_project();
+            break;
         default:
             break;
     }
@@ -417,7 +421,8 @@ void Gui::toggle_help()
 void Gui::on_delete_event(GtkWidget* /*widget*/, GdkEvent* /*event*/, gpointer user_data)
 {
     Gui *context = static_cast<Gui*>(user_data);
-    g_print("Window has been deleted.\n");
+    if (context->owner_->get_configuration()->get_verbose())
+        g_print("Window has been deleted.\n");
     context->owner_->quit();
 }
 

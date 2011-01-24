@@ -20,6 +20,7 @@
 
 #include <clutter/clutter.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <sstream>
 #include "application.h"
 #include "clip.h"
 #include "gui.h"

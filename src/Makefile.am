@@ -65,7 +65,6 @@ toonloop_SOURCES = \
     midibinder.cpp \
     brcosaeffect.cpp \
 	saverworker.cpp \
-	statesaving.cpp \
 	subprocess.cpp \
 	raw1394util.cpp \
 	timer.cpp \
@@ -86,13 +85,15 @@ toonloop_CXXFLAGS = \
 	$(LIBTHREAD_CXXFLAGS) \
 	$(RAW1394_CFLAGS) \
 	$(AVC1394_CFLAGS) \
-	$(STK_CXXFLAGS)
+	$(STK_CXXFLAGS) \
+	$(LIBXML_XFLAGS)
  
 toonloop_LDADD = \
 	$(BOOST_FILESYSTEM_LIB) \
 	$(BOOST_LDFLAGS) \
 	$(BOOST_LIBS)  \
 	$(BOOST_PROGRAM_OPTIONS_LIB) \
+	$(BOOST_SYSTEM_LIB) \
 	$(BOOST_THREAD_LIB) \
 	$(CLUTTERGST_LIBS) \
 	$(CLUTTERGTK_LIBS) \
@@ -102,4 +103,5 @@ toonloop_LDADD = \
 	$(LDFLAGS) \
 	$(RAW1394_LIBS) \
 	$(AVC1394_LIBS) \
-	$(STK_LIBS)
+	$(STK_LIBS) \
+	$(LIBXML_LIBS)

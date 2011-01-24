@@ -93,6 +93,7 @@ class Controller
          * Returns 0.0 if it doesn't exist.
          */
         float get_float_value(const std::string &name);
+
         /** 
          * Called when a frame is added to a clip.
          * Arguments: clip number, new frame number.
@@ -164,6 +165,12 @@ class Controller
          * Arguments: clip number, writehead position.
          */
         boost::signals2::signal<void (unsigned int, unsigned int)> writehead_moved_signal_;
+        /**
+         * Called when the whole project has been saved to an XML file.
+         */
+        boost::signals2::signal<void (std::string)> save_project_signal_;
+
+        // ----------------------------------- methods ---------------------
         /**
          * Adds a frame to the current clip.
          */
@@ -318,6 +325,11 @@ class Controller
          * Prints all the Toonloop properties.
          */
         void print_properties();
+
+        /** 
+         * Saves the whole project to an XML file.
+         */
+        void save_project();
 
     private:
         Application* owner_;

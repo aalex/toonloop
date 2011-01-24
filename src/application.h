@@ -102,6 +102,38 @@ class Application
         /** Returns the OscInterface. */
         OscInterface* get_osc_interface();
         void check_for_messages();
+        /**
+         * Loads a project from an XML file.
+         * @param file_name XML file to read.
+         * @warning Not implemented yet.
+         */
+        bool load_project(std::string &project_path);
+        /**
+         * Saves the current project to an XML file.
+         * @param file_name XML file to write.
+         *
+         * The XML file looks like this:
+           \verbatim
+           <?xml version="1.0" encoding="UTF-8"?>
+           <toonloop_project name="default">
+             <clips>
+               <clip id="0">
+                 <images>
+                   <image path="image0.jpg"/>
+                   <image path="image1.jpg"/>
+                 </images>
+               </clip>
+               <clip id="1">
+                 <images>
+                   <image path="image2.jpg"/>
+                   <image path="image3.jpg"/>
+                 </images>
+               </clip>
+             </clips>
+           </project>
+           \endverbatim
+         */
+        bool save_project(std::string &project_path);
 
     private:
         void update_project_home_for_each_clip();

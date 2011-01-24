@@ -26,26 +26,33 @@
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <iostream>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <stdio.h> // for snprintf
 #include <string>
 #include <tr1/memory>
 
 #include "application.h"
-#include "controller.h"
-#include "moviesaver.h"
-#include "oscinterface.h"
 #include "clip.h"
 #include "config.h"
 #include "configuration.h"
+#include "controller.h"
 #include "gui.h"
 #include "midiinput.h"
+#include "moviesaver.h"
+#include "oscinterface.h"
 #include "pipeline.h"
+#include "statesaving.h"
 #include "subprocess.h"
+#include "unused.h"
 #include "v4l2util.h"
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 typedef std::tr1::unordered_map<int, std::tr1::shared_ptr<Clip> >::iterator ClipIterator;
 
+namespace 
+{
 /**
  * Checks if a directory exists, create it and its parent directories if not.
  *
@@ -53,34 +60,33 @@ typedef std::tr1::unordered_map<int, std::tr1::shared_ptr<Clip> >::iterator Clip
  * This is in an anonymous namespace to keep it visible to this file only and to ensure 
  * it doesn't conflict with a function we link in.
  */
-namespace {
-    bool make_sure_directory_exists(const std::string &directory)
+bool make_sure_directory_exists(const std::string &directory)
+{
+    if (not fs::exists(directory))
     {
-        if (not fs::exists(directory))
+        try 
         {
-            try 
-            {
-                fs::create_directories(directory); // TODO: check if it returns true
-            } 
-            catch(const std::exception& e) 
-            {
-                // TODO: be more specific to fs::basic_filesystem_error<Path> 
-                std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
-                return false;
-            }
+            fs::create_directories(directory); // TODO: check if it returns true
         } 
-        else 
+        catch(const std::exception& e) 
         {
-            if (not fs::is_directory(directory))
-            {
-                std::cout << "Error: " << directory << " is not a directory." << std::endl;
-                return false;
-            }
+            // TODO: be more specific to fs::basic_filesystem_error<Path> 
+            std::cerr << "An error occured while creating the directory: " << e.what() << std::endl;
+            return false;
         }
-        return true;
+    } 
+    else 
+    {
+        if (not fs::is_directory(directory))
+        {
+            std::cout << "Error: " << directory << " is not a directory." << std::endl;
+            return false;
+        }
     }
+    return true;
 }
 
+} // end of anonymous namespace
 
 Application::Application() : 
         selected_clip_(0)
@@ -110,6 +116,7 @@ Clip* Application::get_clip(unsigned int clip_number)
         return clips_[clip_number].get();
     }
 }
+
 unsigned int Application::get_current_clip_number()
 {
     return selected_clip_;
@@ -398,6 +405,10 @@ void Application::run(int argc, char *argv[])
         get_controller()->print_properties();
         // not exiting
     }
+
+    std::string project_file_name = config_->get_project_home() + "/" + statesaving::FILE_NAME;
+    if (fs::exists(project_file_name))
+        load_project(project_file_name);
     // This call is blocking:
     // Starts it all:
     gtk_main();
@@ -408,9 +419,6 @@ void Application::run(int argc, char *argv[])
  */
 Application::~Application()
 {
-    // No need, since we use shared_ptr:
-    //for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
-    //    delete iter->second;
 }
 
 /**
@@ -489,5 +497,186 @@ void Application::check_for_messages()
     // TODO: move message handling here.
     get_midi_input()->consume_commands();    
     get_osc_interface()->consume_commands();    
+}
+
+namespace
+{
+    bool node_name_is(xmlNode *node, const std::string &name)
+    {
+        return (node->type == XML_ELEMENT_NODE && node->name && (xmlStrcmp(node->name, XMLSTR name.c_str()) == 0));
+    }
+
+    /** Returns a pointer to the XML child with the given name
+     * @return A pointer to the data, not a copy of it.
+     */
+    xmlNode *seek_child_named(xmlNode *parent, const std::string &name)
+    {
+        if (parent == NULL)
+            return NULL;
+        for (xmlNode *node = parent->children; node != NULL; node = node->next)
+        {
+            if (node_name_is(node, name))
+            {
+                return node;
+            }
+        }
+        return NULL;
+    }
+}
+
+bool Application::load_project(std::string &file_name)
+{
+    namespace ss = statesaving;
+    // TODO: clear all the clips
+    // TODO: load FPS and direction as well
+    
+    // parse the file and get the DOM tree
+    xmlDoc *doc = xmlReadFile(file_name.c_str(), NULL, 0);
+    if (doc == NULL)
+    {
+        printf("error: could not parse file %s\n", file_name.c_str());
+        return false;
+    }
+    else
+        std::cout << "Loading project file " << file_name << std::endl;
+    xmlNode *root = xmlDocGetRootElement(doc);
+    xmlNode *clips_node = seek_child_named(root, ss::CLIPS_NODE);
+    if (clips_node != NULL)
+    {
+        //std::cout << "found clips node\n";
+        for (xmlNode *clip_node = clips_node->children; clip_node; clip_node = clip_node->next)
+        {
+            // clip:
+            if (node_name_is(clip_node, ss::CLIP_NODE))
+            {
+                //std::cout << "clip node: " << clip_node->name << std::endl;
+                xmlChar *clip_id = xmlGetProp(clip_node, XMLSTR ss::CLIP_ID_PROPERTY);
+                Clip *clip = 0;
+                if (clip_id != NULL)
+                {
+                    try
+                    {
+                        unsigned int clip_number = boost::lexical_cast<unsigned int>(clip_id);
+                        if (config_->get_verbose())
+                            printf("Clip ID: %d \n", clip_number);
+                        clip = get_clip(clip_number);
+                    }
+                    catch (boost::bad_lexical_cast &)
+                    {
+                        g_critical("Invalid int for %s in XML file: %s", clip_id, file_name.c_str());
+                    }
+                }
+                xmlFree(clip_id); // free the property string
+                if (clip)
+                {
+                    // images:
+                    xmlNode *images_node = seek_child_named(clip_node, ss::IMAGES_NODE);
+                    if (images_node != NULL)
+                    {
+                        for (xmlNode *image_node = images_node->children; image_node; image_node = image_node->next)
+                        {
+                            // image:
+                            if (node_name_is(image_node, ss::IMAGE_NODE))
+                            {
+                                // image name
+                                xmlChar *image_name = xmlGetProp(image_node, XMLSTR ss::IMAGE_NAME_ATTR);
+                                if (image_name != NULL)
+                                {
+                                    if (config_->get_verbose())
+                                        printf(" * Image name: %s\n", image_name);
+                                    clip->add_image((char *) image_name);
+                                }
+                                xmlFree(image_name); // free the property string
+                            }
+                        } // end of image
+                    } // end of images
+
+                    // FPS:
+                    xmlChar *fps_value = xmlGetProp(clip_node, XMLSTR ss::CLIP_FPS_PROPERTY);
+                    if (fps_value != NULL)
+                    {
+                        try
+                        {
+                            unsigned int fps = boost::lexical_cast<unsigned int>(fps_value);
+                            if (config_->get_verbose())
+                                printf("Clip FPS: %d \n", fps);
+                            clip->set_playhead_fps(fps);
+                        }
+                        catch (boost::bad_lexical_cast &)
+                        {
+                            g_critical("Invalid int for %s in XML file: %s", fps_value, file_name.c_str());
+                        }
+                    }
+                    xmlFree(fps_value); // free the property string
+
+                    // direction:
+                    xmlChar *direction_value = xmlGetProp(clip_node, XMLSTR ss::CLIP_DIRECTION_PROPERTY);
+                    if (direction_value != NULL)
+                    {
+                        if (config_->get_verbose())
+                            printf("Clip direction: %s \n", (char *) direction_value);
+                        bool ok = clip->set_direction((char *) direction_value);
+                        if (! ok)
+                            g_critical("Invalid direction name: %s", (char *) direction_value);
+                    }
+                    xmlFree(direction_value); // free the property string
+                } // end of valid Clip*
+            } // end of clip
+        }
+    } // end of clips
+    // Free the document + global variables that may have been allocated by the parser.
+    xmlFreeDoc(doc);
+    xmlCleanupParser();
+    return true;
+}
+
+bool Application::save_project(std::string &file_name)
+{
+    namespace ss = statesaving;
+
+    // TODO: save FPS and direction as well
+    xmlDocPtr doc = xmlNewDoc(XMLSTR "1.0");
+    // "project" node with its "name" attribute
+    xmlNodePtr root_node = xmlNewNode(NULL, XMLSTR ss::ROOT_NODE);
+    xmlDocSetRootElement(doc, root_node);
+    xmlNewProp(root_node, XMLSTR ss::PROJECT_NAME_ATTR, XMLSTR ss::DEFAULT_PROJECT_NAME);
+    xmlNewProp(root_node, XMLSTR ss::PROJECT_VERSION_ATTR, XMLSTR PACKAGE_VERSION);
+    // "clips" node
+    xmlNodePtr clips_node = xmlNewChild(root_node, NULL, XMLSTR ss::CLIPS_NODE, NULL); // No text contents
+
+    char buff[256]; // buff for node names
+    for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
+    {
+        Clip *clip = iter->second.get();
+        if (clip->size() > 0) // do not save empty clips
+        {
+            xmlNodePtr clip_node = xmlNewChild(clips_node, NULL, XMLSTR ss::CLIP_NODE, NULL);
+            // clip ID:
+            sprintf(buff, "%d", clip->get_id());
+            xmlNewProp(clip_node, XMLSTR ss::CLIP_ID_PROPERTY, XMLSTR buff);
+            // clip FPS:
+            sprintf(buff, "%d", clip->get_playhead_fps());
+            xmlNewProp(clip_node, XMLSTR ss::CLIP_FPS_PROPERTY, XMLSTR buff);
+            // clip direction:
+            xmlNewProp(clip_node, XMLSTR ss::CLIP_DIRECTION_PROPERTY, XMLSTR clip->get_direction().c_str());
+            // images:
+            xmlNodePtr images_node = xmlNewChild(clip_node, NULL, XMLSTR ss::IMAGES_NODE, NULL);
+            for (unsigned int image_num = 0; image_num < clip->size(); image_num++)
+            {
+                Image *image = clip->get_image(image_num);
+                xmlNodePtr image_node = xmlNewChild(images_node, NULL, XMLSTR ss::IMAGE_NODE, NULL);
+                xmlNewProp(image_node, XMLSTR ss::IMAGE_NAME_ATTR, XMLSTR image->get_name().c_str());
+            }
+        }
+    }
+
+    // Save document to file
+    xmlSaveFormatFileEnc(file_name.c_str(), doc, "UTF-8", 1);
+    if (config_->get_verbose())
+        std::cout << "Saved the project to " << file_name << std::endl;
+    // Free the document + global variables that may have been allocated by the parser.
+    xmlFreeDoc(doc);
+    xmlCleanupParser();
+    return true;
 }
 

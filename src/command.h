@@ -37,6 +37,7 @@ class Command
         void apply(Controller &controller);
         virtual bool is_reversible() { return false; }
         virtual void undo() { }
+        virtual ~Command() {}
     private:
         static const std::string default_name_;
         virtual const std::string &do_get_name() const { return default_name_; }
