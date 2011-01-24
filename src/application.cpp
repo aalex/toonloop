@@ -590,6 +590,36 @@ bool Application::load_project(std::string &file_name)
                             }
                         } // end of image
                     } // end of images
+
+                    // FPS:
+                    xmlChar *fps_value = xmlGetProp(clip_node, XMLSTR ss::CLIP_FPS_PROPERTY);
+                    if (fps_value != NULL)
+                    {
+                        try
+                        {
+                            unsigned int fps = boost::lexical_cast<unsigned int>(fps_value);
+                            if (config_->get_verbose())
+                                printf("Clip FPS: %d \n", fps);
+                            clip->set_playhead_fps(fps);
+                        }
+                        catch (boost::bad_lexical_cast &)
+                        {
+                            g_critical("Invalid int for %s in XML file: %s", fps_value, file_name.c_str());
+                        }
+                    }
+                    xmlFree(fps_value); // free the property string
+
+                    // direction:
+                    xmlChar *direction_value = xmlGetProp(clip_node, XMLSTR ss::CLIP_DIRECTION_PROPERTY);
+                    if (direction_value != NULL)
+                    {
+                        if (config_->get_verbose())
+                            printf("Clip direction: %s \n", (char *) direction_value);
+                        bool ok = clip->set_direction((char *) direction_value);
+                        if (! ok)
+                            g_critical("Invalid direction name: %s", (char *) direction_value);
+                    }
+                    xmlFree(direction_value); // free the property string
                 } // end of valid Clip*
             } // end of clip
         }
@@ -620,8 +650,15 @@ bool Application::save_project(std::string &file_name)
         if (clip->size() > 0) // do not save empty clips
         {
             xmlNodePtr clip_node = xmlNewChild(clips_node, NULL, XMLSTR ss::CLIP_NODE, NULL);
+            // clip ID:
             sprintf(buff, "%d", clip->get_id());
             xmlNewProp(clip_node, XMLSTR ss::CLIP_ID_PROPERTY, XMLSTR buff);
+            // clip FPS:
+            sprintf(buff, "%d", clip->get_playhead_fps());
+            xmlNewProp(clip_node, XMLSTR ss::CLIP_FPS_PROPERTY, XMLSTR buff);
+            // clip direction:
+            xmlNewProp(clip_node, XMLSTR ss::CLIP_DIRECTION_PROPERTY, XMLSTR clip->get_direction().c_str());
+            // images:
             xmlNodePtr images_node = xmlNewChild(clip_node, NULL, XMLSTR ss::IMAGES_NODE, NULL);
             for (unsigned int image_num = 0; image_num < clip->size(); image_num++)
             {

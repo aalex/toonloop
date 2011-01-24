@@ -37,6 +37,8 @@ namespace statesaving
     const char * const CLIPS_NODE = "clips";
     const char * const CLIP_NODE = "clip";
     const char * const CLIP_ID_PROPERTY = "id";
+    const char * const CLIP_FPS_PROPERTY = "framerate";
+    const char * const CLIP_DIRECTION_PROPERTY = "direction";
     const char * const IMAGES_NODE = "images";
     const char * const IMAGE_NODE = "image";
     const char * const IMAGE_NAME_ATTR = "name";
