@@ -12,6 +12,7 @@ Those issues are being worked on in some branches. They need some work so that w
 
  * video: Support DV: gst-launch dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink
  * video: Support HDV (hdvdec)
+ * statesaving: choose the right key bindings
 
 
 Review needed
@@ -98,10 +99,7 @@ To be done later
  * playback: translation *paths* 
  * saving: Add PNG and TGA saving image formats.
  * saving: Create a done_saving signal and make the moviesaver call it with the movie file name and the clip id
- * saving: Load projects from XML
- * saving: Load/save a whole project (many clips)
  * saving: Save all clips (all 10 from 0 to 9) with modifier (shift?)
- * saving: Save projects to XML (statesaving.cpp doesn't work currently)
  * saving: Support saving in AVI
  * saving: create a subdir for each clip in images and movies dirs
  * video: do not crash if the v4l2 device is busy
