@@ -640,6 +640,7 @@ bool Application::save_project(std::string &file_name)
     xmlNodePtr root_node = xmlNewNode(NULL, XMLSTR ss::ROOT_NODE);
     xmlDocSetRootElement(doc, root_node);
     xmlNewProp(root_node, XMLSTR ss::PROJECT_NAME_ATTR, XMLSTR ss::DEFAULT_PROJECT_NAME);
+    xmlNewProp(root_node, XMLSTR ss::PROJECT_VERSION_ATTR, XMLSTR PACKAGE_VERSION);
     // "clips" node
     xmlNodePtr clips_node = xmlNewChild(root_node, NULL, XMLSTR ss::CLIPS_NODE, NULL); // No text contents
 

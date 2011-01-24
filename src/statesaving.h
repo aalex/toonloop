@@ -32,6 +32,7 @@ namespace statesaving
 {
     const char * const ROOT_NODE = "toonloop_project";
     const char * const PROJECT_NAME_ATTR = "name";
+    const char * const PROJECT_VERSION_ATTR = "version";
     const char * const DEFAULT_PROJECT_NAME = "default";
     const char * const FILE_NAME = "project.xml";
     const char * const CLIPS_NODE = "clips";
