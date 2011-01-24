@@ -62,7 +62,6 @@ class Clip
         bool get_has_recorded_frame() const;
         void set_directory_path(const std::string &directory_path);
         std::string get_directory_path() const { return directory_path_; } 
-        std::string get_image_file_extension() const { return ".jpg"; };
         std::string get_image_full_path(Image* image) const;
         void clear_all_images();
         long get_last_time_grabbed_image() const { return last_time_grabbed_image_; }
@@ -76,8 +75,9 @@ class Clip
         void change_direction();
         /**
          * Used internally by frame_add, but also when loading a project.
+         * Return Its index.
          */
-        void add_image(const std::string &name);
+        unsigned int add_image(const std::string &name);
     private:
         unsigned int id_;
         unsigned int playhead_;
@@ -107,6 +107,8 @@ class Clip
         std::map< std::string, std::tr1::shared_ptr<PlayheadIterator> > playhead_iterators_;
         std::string current_playhead_direction_;
         void init_playhead_iterators();
+        static const std::string DEFAULT_FILE_EXTENSION;
+        const std::string &get_image_file_extension() const { return DEFAULT_FILE_EXTENSION; };
 };
 
 #endif // __CLIP_H__

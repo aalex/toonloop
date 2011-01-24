@@ -34,6 +34,8 @@
 namespace fs = boost::filesystem;
 typedef std::map<std::string, std::tr1::shared_ptr<PlayheadIterator> >::iterator PlayheadIteratorIterator;
 
+const std::string Clip::DEFAULT_FILE_EXTENSION = ".jpg";
+
 /** Each clip needs a unique ID.
  */
 Clip::Clip(unsigned int id)
@@ -90,7 +92,7 @@ void Clip::set_directory_path(const std::string &directory_path)
 std::string Clip::get_image_full_path(Image* image) const
 {
     std::string project_path = get_directory_path();
-    std::string image_name = image->get_name() + get_image_file_extension(); //".jpg";
+    std::string image_name = image->get_name();
     // TODO: use boost:file_system to append paths
     return project_path + "/" + IMAGES_DIRECTORY + "/" + image_name; 
 }
@@ -138,6 +140,13 @@ void Clip::set_height(unsigned int height)
  */
 unsigned int Clip::frame_add()
 {
+    std::string name = timing::get_iso_datetime_for_now() + get_image_file_extension(); // .jpg
+    return add_image(name);
+}
+
+unsigned int Clip::add_image(const std::string &name)
+{
+    using std::tr1::shared_ptr;
     if (writehead_ > size())
     {
         // Should not occur
@@ -148,16 +157,9 @@ unsigned int Clip::frame_add()
         std::cout << "Set the writehead position to " << writehead_ << std::endl;
     }
     unsigned int assigned = writehead_;
-    std::string name = timing::get_iso_datetime_for_now();
-    add_image(name);
-    return assigned;
-}
-
-void Clip::add_image(const std::string &name)
-{
-    using std::tr1::shared_ptr;
     images_.insert(images_.begin() + writehead_, shared_ptr<Image>(new Image(name)));
     writehead_++;
+    return assigned;
 }
 
 /**
@@ -366,10 +368,6 @@ void Clip::clear_all_images()
         for (unsigned int i = 0; i < images_.size(); i++)
             remove_image_file(i);
     }
-    //for (ImageIterator iter = images_.begin(); iter != images_.end(); ++iter)
-    //    &(*iter)
-
-    //    std::string Clip::get_image_full_path(Image* image) const
     images_.clear();
     playhead_ = 0;
     writehead_ = 0;
