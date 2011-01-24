@@ -1,3 +1,179 @@
+commit 08525bfc47440c4bd3952d72bd7b7f807cc9b7ac
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 24 08:52:44 2011 -0500
+
+    updated RELEASE
+
+commit 9830f8c6667e65607427619dcca0cc768f2d0c7d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 23 21:36:00 2011 -0500
+
+    Now saves and load images name with extension
+
+commit 2288be91933617fb973b230398302826f8872941
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 23 21:24:05 2011 -0500
+
+    save toonloop version as well
+
+commit 65b27919b110e1a3c41f92c70852de1cbbe667e4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 23 21:20:18 2011 -0500
+
+    save and restore clip FPS and direction as well
+
+commit 52c84cd095d60985741d4423626704212914f26e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 23 21:07:31 2011 -0500
+
+    restoring previous project's images in clips!
+
+commit 43668c18fa36d400676dcdafccbe389722aae8e7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 23 20:39:42 2011 -0500
+
+    print project XML data at startup
+
+commit 8802483f64d21b9aab66a0618e934f978cf2bc96
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 22 15:09:12 2011 -0500
+
+    deleted statesaving.cpp
+
+commit eb789da327ef69ea5f0f2dfcad0f760e8b8df28b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 22 15:08:26 2011 -0500
+
+    do not save empty clips
+
+commit f350de5a4bc4c23dfbaa1fd7b8f8757697f06862
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 22 15:08:18 2011 -0500
+
+    F2 saves the project
+
+commit ca45ea9097f5194103f3566b6d941e7525fe0ffd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 22 15:02:22 2011 -0500
+
+    implemented Controller::save_project (not tested)
+
+commit 389aa88dd5ea6c1560488f70362af1326c164557
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 22 14:31:13 2011 -0500
+
+    implmented Application::save_project (not tested)
+
+commit 6ccebb921a24f11b5a2100b6233dc7ac886f53cb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 22 11:18:14 2011 -0500
+
+    check for libxml2
+
+commit bdae9feef16f9a66368a346c63892e1ccaf91208
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jan 19 22:14:00 2011 -0500
+
+    little indentation changes
+
+commit 287020b0d3c08d68c6d5540be937330bfe390e1c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jan 19 22:09:23 2011 -0500
+
+    need <sstream> in infowindow.cpp as well
+
+commit 63fb1442042dba7fefa6aa2b4d37f55220642b87
+Merge: 8a7e50e b03209e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jan 19 18:32:53 2011 -0500
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 8a7e50e260ffc16382f73866261453c7f94e6353
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jan 19 18:19:37 2011 -0500
+
+    need to include <sstream>
+
+commit b03209e022f8649195258dc28dda9ef965d32af1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jan 19 09:09:31 2011 -0500
+
+    less verbose
+
+commit 4fc66cd30a379546b4dc6fade1e6f90fc50bf332
+Merge: 4590482 c8bb5a6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 18 18:51:27 2011 -0500
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 4590482021eceeb755cd4fa918913c40b6969d50
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jan 18 18:51:04 2011 -0500
+
+    virtual classes should have virtual destructors
+
+commit c8bb5a6cd023f0af8be422906a6313e25f1bb408
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 17 11:44:13 2011 -0500
+
+    post-release version bump
+
+commit ed95acc011c19921f4d07a3e7ff4c22fd82e39c5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 17 11:32:28 2011 -0500
+
+    updated version and logs for a release
+
+commit cce7f7d4f346c47ddbf9c2e07c6aeac92bea6341
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 16 05:39:22 2011 -0500
+
+    Put "-lstk" in LIBS, not LDFLAGS
+    
+    <geser> With "ld --as-needed" (which natty uses by default) the linking
+    order matters: a library gets only linked in when an object file
+    *before* it on the command line uses one of its symbols.
+    If you put "-lstk" into LDFLAGS it gets put before the object file
+    (here: conftest.cpp) while LIBS are put after it by configure.
+
+commit bb19e2acae8e5b3f3d4f9fa559c0888a8ba71134
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 16 04:04:55 2011 -0500
+
+    simplified defining PACKAGE_URL
+
+commit c43b29b9731840224fd78aa5c0305f89aa47e824
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jan 16 03:49:43 2011 -0500
+
+    added BOOST_SYSTEM_LIB which caused problem on natty
+
+commit 164ad75944abb8a7e2cb0fa9a5cf365dba390f5c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 12:36:46 2011 -0500
+
+    post-release version bump
+
+commit a341a09590fe1d614309e17e49f92fec27dbbb06
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 12:22:28 2011 -0500
+
+    preparing release 2.1.6
+
+commit 58c6b9e5786561e86c73bf3e8db362f3bc6e3d42
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 12:19:30 2011 -0500
+
+    updated man page about MIDI rules
+
+commit ea529a0656a4e53d7c86727cb0485a53f32777ba
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 12:16:09 2011 -0500
+
+    updated ChangeLog
+
 commit c035a8c403bef38a6dd429b64d5a1800de83108f
 Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Mon Jan 10 12:02:47 2011 -0500
