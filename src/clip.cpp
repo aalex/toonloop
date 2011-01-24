@@ -138,7 +138,6 @@ void Clip::set_height(unsigned int height)
  */
 unsigned int Clip::frame_add()
 {
-    using std::tr1::shared_ptr;
     if (writehead_ > size())
     {
         // Should not occur
@@ -150,11 +149,15 @@ unsigned int Clip::frame_add()
     }
     unsigned int assigned = writehead_;
     std::string name = timing::get_iso_datetime_for_now();
-    //images_.push_back(shared_ptr<Image>(new Image(name)));
-    images_.insert(images_.begin() + writehead_, shared_ptr<Image>(new Image(name)));
-    //images_[writehead_] = new Image(name);
-    writehead_++;
+    add_image(name);
     return assigned;
+}
+
+void Clip::add_image(const std::string &name)
+{
+    using std::tr1::shared_ptr;
+    images_.insert(images_.begin() + writehead_, shared_ptr<Image>(new Image(name)));
+    writehead_++;
 }
 
 /**

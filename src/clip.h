@@ -74,6 +74,10 @@ class Clip
         bool remove_first_image();
         void set_remove_deleted_images(bool enabled);
         void change_direction();
+        /**
+         * Used internally by frame_add, but also when loading a project.
+         */
+        void add_image(const std::string &name);
     private:
         unsigned int id_;
         unsigned int playhead_;
