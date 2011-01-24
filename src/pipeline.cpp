@@ -282,7 +282,9 @@ void Pipeline::save_image_to_current_clip(GdkPixbuf *pixbuf)
     if (!gdk_pixbuf_save(pixbuf, file_name.c_str(), "jpeg", NULL, "quality", "100", NULL))
     {
         g_print("Image %s could not be saved. Error\n", file_name.c_str());
-    } else {
+    }
+    else
+    {
         if (is_verbose)
             g_print("Image %s saved\n", file_name.c_str());
         owner_->get_controller()->add_frame_signal_(current_clip_id, new_image_number);
@@ -354,7 +356,7 @@ void Pipeline::cb_new_dvdemux_src_pad(GstElement * /*srcElement*/, GstPad * srcP
     gchar *sink_element_name = gst_element_get_name(sinkElement);
     g_print("Pipeline::%s: Dv1394: linking %s src pad to %s's %s sinkpad.", __FUNCTION__, "video", sink_element_name, sink_pad_name);
     bool is_linked = gst_pad_link(srcPad, sinkPad);
-    if (!is_linked) 
+    if (! is_linked) 
     {
         g_print("Could not link %s to %s.\n", "dv_decoder0", sink_element_name); 
         exit(1);
@@ -446,7 +448,6 @@ Pipeline::Pipeline(Application* owner) :
     }
     // TODO: use something else than g_assert to see if we could create the elements.
     g_assert(videosrc_); 
-    
 
     // ffmpegcolorspace0 element
     GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
@@ -524,7 +525,9 @@ Pipeline::Pipeline(Application* owner) :
             g_object_set(capsfilter0, "caps", the_caps, NULL);
             gst_caps_unref(the_caps);
             
-        } else {  // it's a videotestsrc
+        }
+        else
+        {   // it's a videotestsrc
             //TODO:2010-10-04:aalex:Use config.get_capture_* for test source as well
             // TODO: make videotestsrc size configurable as well!
             GstCaps *the_caps = gst_caps_from_string("video/x-raw-yuv, width=640, height=480, framerate=30/1");
