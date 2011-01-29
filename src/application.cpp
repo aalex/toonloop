@@ -369,8 +369,6 @@ void Application::run(int argc, char *argv[])
     // Sets the intervalometer stuff.
     if (verbose)
         std::cout << "Set the default intervalometer rate" << std::endl;
-    for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
-        iter->second.get()->set_intervalometer_rate(config_->get_default_intervalometer_rate());
     if (options["enable-intervalometer"].as<bool>())
     {
         if (verbose)
@@ -378,15 +376,18 @@ void Application::run(int argc, char *argv[])
         get_controller()->toggle_intervalometer();
     }
 
-    // Sets the remove_deleted_images thing
-    for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
-        iter->second.get()->set_remove_deleted_images(config_->get_remove_deleted_images());
-
-    // Clip size must be inherited...
+    // set various things for each clip
     for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
     {
+        // Clip size must be inherited...
         iter->second.get()->set_width(config_->get_capture_width());
         iter->second.get()->set_height(config_->get_capture_height());
+        // Sets the remove_deleted_images thing
+        iter->second.get()->set_remove_deleted_images(config_->get_remove_deleted_images());
+        // itervalometer rate
+        iter->second.get()->set_intervalometer_rate(config_->get_default_intervalometer_rate());
+        // verbosity
+        iter->second.get()->set_verbose(verbose);
     }
     // Choose layout
     unsigned int layout = options["layout"].as<unsigned int>();
