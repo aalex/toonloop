@@ -180,6 +180,7 @@ void Application::run(int argc, char *argv[])
         ("image-on-top", po::value<std::string>()->default_value(""), "Shows an unscaled image on top of all.")
         ("enable-preview-window", po::bool_switch(), "Enables a preview of the live camera feed.")
         ("print-properties", po::bool_switch(), "Prints a list of the Toonloop properties once running.")
+        ("no-load-project", po::bool_switch(), "Disables project file loading.")
         ;
     po::variables_map options;
     
@@ -406,9 +407,12 @@ void Application::run(int argc, char *argv[])
         // not exiting
     }
 
-    std::string project_file_name = config_->get_project_home() + "/" + statesaving::FILE_NAME;
-    if (fs::exists(project_file_name))
-        load_project(project_file_name);
+    if (! options["no-load-project"].as<bool>())
+    {
+        std::string project_file_name = config_->get_project_home() + "/" + statesaving::FILE_NAME;
+        if (fs::exists(project_file_name))
+            load_project(project_file_name);
+    }
     // This call is blocking:
     // Starts it all:
     gtk_main();
