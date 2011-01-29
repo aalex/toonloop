@@ -183,7 +183,6 @@ void Application::run(int argc, char *argv[])
         ("no-load-project", po::bool_switch(), "Disables project file loading.")
         ;
     po::variables_map options;
-    
     po::store(po::parse_command_line(argc, argv, desc), options);
     po::notify(options);
     
@@ -397,24 +396,23 @@ void Application::run(int argc, char *argv[])
     if (verbose)
         std::cout << "Check for mencoder" << std::endl;
     check_for_mencoder();
-    // Run the main loop
-    if (verbose)
-        std::cout << "Running toonloop" << std::endl;
-
+    // Print properties
     if (options["print-properties"].as<bool>())
-    {
         get_controller()->print_properties();
-        // not exiting
-    }
 
     if (! options["no-load-project"].as<bool>())
     {
         std::string project_file_name = config_->get_project_home() + "/" + statesaving::FILE_NAME;
+        if (verbose)
+            std::cout << "Checking for project file " << project_file_name << "..." << std::endl;
         if (fs::exists(project_file_name))
             load_project(project_file_name);
     }
+    // Run the main loop
     // This call is blocking:
     // Starts it all:
+    if (verbose)
+        std::cout << "Running toonloop" << std::endl;
     gtk_main();
 }
 
@@ -532,8 +530,6 @@ bool Application::load_project(std::string &file_name)
 {
     namespace ss = statesaving;
     // TODO: clear all the clips
-    // TODO: load FPS and direction as well
-    
     // parse the file and get the DOM tree
     xmlDoc *doc = xmlReadFile(file_name.c_str(), NULL, 0);
     if (doc == NULL)
@@ -638,7 +634,6 @@ bool Application::save_project(std::string &file_name)
 {
     namespace ss = statesaving;
 
-    // TODO: save FPS and direction as well
     xmlDocPtr doc = xmlNewDoc(XMLSTR "1.0");
     // "project" node with its "name" attribute
     xmlNodePtr root_node = xmlNewNode(NULL, XMLSTR ss::ROOT_NODE);
