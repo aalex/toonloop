@@ -402,7 +402,7 @@ void Application::run(int argc, char *argv[])
 
     if (! options["no-load-project"].as<bool>())
     {
-        std::string project_file_name = config_->get_project_home() + "/" + statesaving::FILE_NAME;
+        std::string project_file_name = get_project_file_name();
         if (verbose)
             std::cout << "Checking for project file " << project_file_name << "..." << std::endl;
         if (fs::exists(project_file_name))
@@ -414,6 +414,11 @@ void Application::run(int argc, char *argv[])
     if (verbose)
         std::cout << "Running toonloop" << std::endl;
     gtk_main();
+}
+
+std::string Application::get_project_file_name()
+{
+    config_->get_project_home() + "/" + statesaving::FILE_NAME;
 }
 
 /**

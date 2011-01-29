@@ -134,6 +134,7 @@ class Application
            \endverbatim
          */
         bool save_project(std::string &project_path);
+        std::string get_project_file_name();
 
     private:
         void update_project_home_for_each_clip();

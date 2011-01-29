@@ -390,7 +390,7 @@ void Controller::print_properties()
 void Controller::save_project()
 {
     namespace ss = statesaving;
-    std::string file_name = owner_->get_configuration()->get_project_home() + "/" + ss::FILE_NAME;
+    std::string file_name = owner_->get_project_file_name();
     owner_->save_project(file_name);
     save_project_signal_(file_name);
 }
