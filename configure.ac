@@ -16,6 +16,10 @@ AC_DEFINE_UNQUOTED(PACKAGE_VERSION_MICRO, $PACKAGE_VERSION_MICRO, [micro version
 # Check for C++ compiler
 AC_PROG_CXX
 
+# check for programs
+AC_PROG_INSTALL
+AC_PROG_LN_S
+
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([arpa/inet.h stdlib.h string.h sys/ioctl.h unistd.h])
