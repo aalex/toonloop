@@ -571,6 +571,26 @@ bool Application::load_project(std::string &file_name)
     else
         std::cout << "Loading project file " << file_name << std::endl;
     xmlNode *root = xmlDocGetRootElement(doc);
+
+    // current clip number
+    xmlChar *current_clip_str = xmlGetProp(root, XMLSTR ss::CURRENT_CLIP_ATTR);
+    if (current_clip_str != NULL)
+    {
+        try
+        {
+            unsigned int current_clip_number = boost::lexical_cast<unsigned int>(current_clip_str);
+            if (config_->get_verbose())
+                printf("Current clip: %d \n", current_clip_number);
+            set_current_clip_number(current_clip_number);
+        }
+        catch (boost::bad_lexical_cast &)
+        {
+            g_critical("Invalid int for %s in XML file: %s", current_clip_str, file_name.c_str());
+        }
+    }
+    xmlFree(current_clip_str); // free the property string
+
+    // CLIPS:
     xmlNode *clips_node = seek_child_named(root, ss::CLIPS_NODE);
     if (clips_node != NULL)
     {
@@ -665,16 +685,18 @@ bool Application::save_project(std::string &file_name)
 {
     namespace ss = statesaving;
 
+    char buff[256]; // buff for node names and int properties
     xmlDocPtr doc = xmlNewDoc(XMLSTR "1.0");
     // "project" node with its "name" attribute
     xmlNodePtr root_node = xmlNewNode(NULL, XMLSTR ss::ROOT_NODE);
     xmlDocSetRootElement(doc, root_node);
     xmlNewProp(root_node, XMLSTR ss::PROJECT_NAME_ATTR, XMLSTR ss::DEFAULT_PROJECT_NAME);
     xmlNewProp(root_node, XMLSTR ss::PROJECT_VERSION_ATTR, XMLSTR PACKAGE_VERSION);
+    sprintf(buff, "%d", get_current_clip_number());
+    xmlNewProp(root_node, XMLSTR ss::CURRENT_CLIP_ATTR, XMLSTR buff);
     // "clips" node
     xmlNodePtr clips_node = xmlNewChild(root_node, NULL, XMLSTR ss::CLIPS_NODE, NULL); // No text contents
 
-    char buff[256]; // buff for node names
     for (ClipIterator iter = clips_.begin(); iter != clips_.end(); ++iter)
     {
         Clip *clip = iter->second.get();

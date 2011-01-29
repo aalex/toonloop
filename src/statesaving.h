@@ -43,6 +43,7 @@ namespace statesaving
     const char * const IMAGES_NODE = "images";
     const char * const IMAGE_NODE = "image";
     const char * const IMAGE_NAME_ATTR = "name";
+    const char * const CURRENT_CLIP_ATTR = "current_clip";
 }
 
 #endif
