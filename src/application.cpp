@@ -181,6 +181,7 @@ void Application::run(int argc, char *argv[])
         ("enable-preview-window", po::bool_switch(), "Enables a preview of the live camera feed.")
         ("print-properties", po::bool_switch(), "Prints a list of the Toonloop properties once running.")
         ("no-load-project", po::bool_switch(), "Disables project file loading.")
+        ("auto-save-project", po::bool_switch(), "Enables project auto saving.")
         ;
     po::variables_map options;
     po::store(po::parse_command_line(argc, argv, desc), options);
@@ -399,7 +400,7 @@ void Application::run(int argc, char *argv[])
     // Print properties
     if (options["print-properties"].as<bool>())
         get_controller()->print_properties();
-
+    // load project
     if (! options["no-load-project"].as<bool>())
     {
         std::string project_file_name = get_project_file_name();
@@ -408,17 +409,42 @@ void Application::run(int argc, char *argv[])
         if (fs::exists(project_file_name))
             load_project(project_file_name);
     }
+    // auto save project
+    if (options["auto-save-project"].as<bool>())
+    {
+        g_timeout_add_seconds(10, Application::on_auto_save, (void *) this);
+    }
     // Run the main loop
     // This call is blocking:
     // Starts it all:
     if (verbose)
         std::cout << "Running toonloop" << std::endl;
     gtk_main();
+
+    // pre-shutdown actions
+    before_shutdown();
+}
+
+void Application::before_shutdown()
+{
+    // once done
+    if (config_->get_auto_save_project())
+        controller_->save_project();
+}
+
+gboolean Application::on_auto_save(gpointer user_data)
+{
+    Application *context = static_cast<Application *>(user_data);
+    context->get_controller()->save_project();
+    if (context->get_configuration()->get_auto_save_project())
+        return TRUE; // keep going
+    else
+        return FALSE;
 }
 
 std::string Application::get_project_file_name()
 {
-    config_->get_project_home() + "/" + statesaving::FILE_NAME;
+    return config_->get_project_home() + "/" + statesaving::FILE_NAME;
 }
 
 /**

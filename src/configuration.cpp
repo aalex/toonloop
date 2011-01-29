@@ -40,7 +40,8 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     osc_recv_port_(options.count("osc-receive-port") ? options["osc-receive-port"].as<std::string>() : OSC_PORT_NONE),
     osc_send_port_(options.count("osc-send-port") ? options["osc-send-port"].as<std::string>() : OSC_PORT_NONE),
     osc_send_addr_(options["osc-send-addr"].as<std::string>()),
-    image_on_top_(options["image-on-top"].as<std::string>())
+    image_on_top_(options["image-on-top"].as<std::string>()),
+    auto_save_project_(options["auto-save-project"].as<bool>())
 {
     if (midi_input_number_ != MIDI_INPUT_NONE) // Means disabled
         std::cout << "Using MIDI input " << midi_input_number_ << std::endl;

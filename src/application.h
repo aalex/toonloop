@@ -21,6 +21,7 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
+#include <glib.h>
 #include <boost/program_options.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <tr1/memory>
@@ -139,6 +140,8 @@ class Application
     private:
         void update_project_home_for_each_clip();
         bool setup_project_home(const std::string& project_home);
+        void before_shutdown();
+        static gboolean on_auto_save(gpointer user_data);
         boost::scoped_ptr<Controller> controller_;
         boost::scoped_ptr<Gui> gui_;
         boost::scoped_ptr<MidiInput> midi_input_;
