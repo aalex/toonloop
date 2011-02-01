@@ -10,7 +10,7 @@ New features:
     * State saving as a project.xml file (all clips with their FPS, direction and images)
 
 Bug fixes:
-    * 
+    * Removed gdk_pixbuf_unref since it is deprecated.
 
 Have fun with Toonloop!
 
