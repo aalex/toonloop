@@ -11,6 +11,7 @@ New features:
 
 Bug fixes:
     * Removed gdk_pixbuf_unref since it is deprecated.
+    * Check for raw1394 and avc1394
 
 Have fun with Toonloop!
 
