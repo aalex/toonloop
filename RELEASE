@@ -6,7 +6,8 @@ This release is a snapshot in the 2.1 unstable series.
 This version contains new features and bug fixes. 
 
 New features:
-    * state saving as a project.xml file (all clips with their FPS, direction and images)
+    * Added support for DV cameras
+    * State saving as a project.xml file (all clips with their FPS, direction and images)
 
 Bug fixes:
     * 
