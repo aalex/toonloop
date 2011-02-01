@@ -335,13 +335,16 @@ void Pipeline::link_or_die(GstElement *from, GstElement *to)
 void Pipeline::cb_new_dvdemux_src_pad(GstElement * /*srcElement*/, GstPad * srcPad, gpointer data)
 {
     GstElement *sinkElement = static_cast<GstElement*>(data);
+    bool verbose = false; // TODO
     if (std::string("video") == gst_pad_get_name(srcPad))
     {
-        LOG_DEBUG("Got video stream from DV\n");
+        if (verbose)
+            g_print("Got video stream from DV\n");
     }
     else 
     {
-        g_print("Ignoring %s stream from DV\n", gst_pad_get_name(srcPad));
+        if (verbose)
+            g_print("Ignoring %s stream from DV\n", gst_pad_get_name(srcPad));
         return;
     }
 
@@ -356,7 +359,8 @@ void Pipeline::cb_new_dvdemux_src_pad(GstElement * /*srcElement*/, GstPad * srcP
     gchar *src_pad_name = gst_pad_get_name(srcPad);
     gchar *sink_pad_name = gst_pad_get_name(sinkPad);
     gchar *sink_element_name = gst_element_get_name(sinkElement);
-    g_print("Pipeline::%s: Dv1394: linking %s src pad to %s's %s sinkpad.", __FUNCTION__, "video", sink_element_name, sink_pad_name);
+    if (verbose)
+        g_print("Pipeline::%s: Dv1394: linking %s src pad to %s's %s sinkpad.", __FUNCTION__, "video", sink_element_name, sink_pad_name);
     GstPadLinkReturn is_linked = gst_pad_link(srcPad, sinkPad);
     if (is_linked != GST_PAD_LINK_OK) 
     {
@@ -366,7 +370,8 @@ void Pipeline::cb_new_dvdemux_src_pad(GstElement * /*srcElement*/, GstPad * srcP
     g_free(src_pad_name);
     g_free(sink_pad_name);
     g_free(sink_element_name);
-    g_print("Success!\n");
+    if (verbose)
+        g_print("Success!\n");
     gst_object_unref(sinkPad);
 }
 
