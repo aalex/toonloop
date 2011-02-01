@@ -352,15 +352,18 @@ void Pipeline::cb_new_dvdemux_src_pad(GstElement * /*srcElement*/, GstPad * srcP
         g_object_unref(sinkPad); // don't link more than once
         return;
     }
+    //gchar *src_pad_name = gst_pad_get_name(srcPad);
+    gchar *src_pad_name = gst_pad_get_name(srcPad);
     gchar *sink_pad_name = gst_pad_get_name(sinkPad);
     gchar *sink_element_name = gst_element_get_name(sinkElement);
     g_print("Pipeline::%s: Dv1394: linking %s src pad to %s's %s sinkpad.", __FUNCTION__, "video", sink_element_name, sink_pad_name);
-    bool is_linked = gst_pad_link(srcPad, sinkPad);
-    if (! is_linked) 
+    GstPadLinkReturn is_linked = gst_pad_link(srcPad, sinkPad);
+    if (is_linked != GST_PAD_LINK_OK) 
     {
-        g_print("Could not link %s to %s.\n", "dv_decoder0", sink_element_name); 
+        g_print("Could not link %s to %s.\n", src_pad_name, sink_element_name); 
         exit(1);
     }
+    g_free(src_pad_name);
     g_free(sink_pad_name);
     g_free(sink_element_name);
     g_print("Success!\n");
@@ -381,12 +384,12 @@ Pipeline::Pipeline(Application* owner) :
     pipeline_ = NULL;
     pipeline_ = GST_PIPELINE(gst_pipeline_new("pipeline"));
 
-    GstElement* dv_decoder0 = NULL;
+    GstElement* dv_demux0 = NULL;
     GstElement* hdv_decoder0 = NULL;
     GstElement* dv_videoscale0 = NULL;
     GstElement* dv_ffmpegcolorspace = NULL;
     GstElement* dvdec = NULL;
-    //GstElement* dv_queue0 = NULL;
+    GstElement* dv_queue0 = NULL;
     //GstElement* dv_queue1 = NULL;
     // capsfilter0, for the capture FPS and size
     GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
@@ -410,8 +413,8 @@ Pipeline::Pipeline(Application* owner) :
         if (! Raw1394::cameraIsReady())
             g_error("There is no DV camera that is ready.");
         videosrc_  = gst_element_factory_make("dv1394src", "videosrc0");
-        //dv_queue0  = gst_element_factory_make("queue", "dv_queue0");
-        dv_decoder0 = gst_element_factory_make("dvdemux", "dv_decoder0");
+        dv_demux0 = gst_element_factory_make("dvdemux", "dv_demux0");
+        dv_queue0  = gst_element_factory_make("queue", "dv_queue0");
         dvdec = gst_element_factory_make("dvdec", "dvdec");
         dv_videoscale0 = gst_element_factory_make("videoscale", "dv_videoscale0");
         dv_ffmpegcolorspace = gst_element_factory_make("ffmpegcolorspace", "dv_ffmpegcolorspace");
@@ -423,10 +426,10 @@ Pipeline::Pipeline(Application* owner) :
         // by the demuxer when it detects the amount and nature of streams.
         // Therefore we connect a callback function which will be executed
         // when the "pad-added" is emitted.
-        g_signal_connect(dv_decoder0, "pad-added",
+        g_signal_connect(dv_demux0, "pad-added",
             G_CALLBACK(cb_new_dvdemux_src_pad),
-            static_cast<gpointer>(dvdec));
-        g_assert(dv_decoder0);
+            static_cast<gpointer>(dv_queue0));
+        //g_assert(dv_demux0);
     } 
     else if (config->videoSource() == "hdv") 
     {
@@ -487,11 +490,11 @@ Pipeline::Pipeline(Application* owner) :
     gst_bin_add(GST_BIN(pipeline_), capsfilter0);
     if (is_dv_enabled)
     {
-        //gst_bin_add(GST_BIN(pipeline_), dv_queue0);
-        gst_bin_add(GST_BIN(pipeline_), dv_decoder0);
+        gst_bin_add(GST_BIN(pipeline_), dv_demux0);
+        gst_bin_add(GST_BIN(pipeline_), dv_queue0);
         gst_bin_add(GST_BIN(pipeline_), dvdec);
-        gst_bin_add(GST_BIN(pipeline_), dv_videoscale0);
         gst_bin_add(GST_BIN(pipeline_), dv_ffmpegcolorspace);
+        gst_bin_add(GST_BIN(pipeline_), dv_videoscale0);
         //gst_bin_add(GST_BIN(pipeline_), dv_queue1);
         // Set the capsfilter caps for DV:
     } 
@@ -541,11 +544,12 @@ Pipeline::Pipeline(Application* owner) :
     {
         if (is_dv_enabled)
         {
-            link_or_die(videosrc_, dv_decoder0);
-            // dv_decoder0 is linked to dvdec when its src pads appear
-            link_or_die(dvdec, dv_videoscale0); // FIXME: rename dv_decoder0 to dvdemux0
-            link_or_die(dv_videoscale0, dv_ffmpegcolorspace);
-            link_or_die(dv_ffmpegcolorspace, capsfilter0);
+            link_or_die(videosrc_, dv_demux0);
+            // dv_demux0 is linked to dvdec when its src pads appear
+            link_or_die(dv_queue0, dvdec);
+            link_or_die(dvdec, dv_ffmpegcolorspace);
+            link_or_die(dv_ffmpegcolorspace, dv_videoscale0);
+            link_or_die(dv_videoscale0, capsfilter0);
         } 
         else // hdv
         {
