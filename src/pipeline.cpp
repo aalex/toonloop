@@ -268,7 +268,7 @@ void Pipeline::save_image_to_current_clip(GdkPixbuf *pixbuf)
     {
         // This is very unlikely to happen
         std::cerr << "No image at " << new_image_number << std::endl;
-        gdk_pixbuf_unref(pixbuf);
+        g_object_unref(pixbuf);
         return;
     }
     if (is_verbose)
