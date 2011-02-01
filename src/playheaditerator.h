@@ -1,9 +1,8 @@
 /*
  * Toonloop
  *
- * Copyright 2010 Alexandre Quessy
- * <alexandre@quessy.net>
- * http://www.toonloop.com
+ * Copyright (c) 2010 Alexandre Quessy <alexandre@quessy.net>
+ * Copyright (c) 2010 Tristan Matthews <le.businessman@gmail.com>
  *
  * Toonloop is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +30,9 @@ class PlayheadIterator
 {
     public:
         PlayheadIterator() {}
-        const std::string &get_name();
+        const std::string &get_name() const;
         unsigned int iterate(unsigned int current, unsigned int length);
+        virtual ~PlayheadIterator() {}
     private:
         virtual const std::string &do_get_name() const = 0;
         virtual unsigned int do_iterate(unsigned int current, unsigned int length) = 0;

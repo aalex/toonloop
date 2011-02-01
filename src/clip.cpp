@@ -34,9 +34,10 @@
 namespace fs = boost::filesystem;
 typedef std::map<std::string, std::tr1::shared_ptr<PlayheadIterator> >::iterator PlayheadIteratorIterator;
 
-/** Each clip needs a unique ID.
- */
-Clip::Clip(unsigned int id)
+const std::string Clip::DEFAULT_FILE_EXTENSION = ".jpg";
+
+Clip::Clip(unsigned int id) :
+    verbose_(false)
 {
     id_ = id;
     writehead_ = 0;
@@ -49,9 +50,7 @@ Clip::Clip(unsigned int id)
     current_playhead_direction_ = std::string("invalid");
     init_playhead_iterators();
 }
-/**
- * Populates the map of playhead iterator objects.
- */
+
 void Clip::init_playhead_iterators()
 {
     PlayheadIterator *tmp = new ForwardIterator();
@@ -71,12 +70,12 @@ void Clip::init_playhead_iterators()
     playhead_iterators_[tmp->get_name()] = std::tr1::shared_ptr<PlayheadIterator>(tmp);
 }
 
-void Clip::set_intervalometer_rate(const float rate)
+void Clip::set_intervalometer_rate(float rate)
 {
     intervalometer_rate_ = rate;
 }
 
-void Clip::set_last_time_grabbed_image(const long timestamp)
+void Clip::set_last_time_grabbed_image(long timestamp)
 {
     last_time_grabbed_image_ = timestamp;
 }
@@ -90,7 +89,7 @@ void Clip::set_directory_path(const std::string &directory_path)
 std::string Clip::get_image_full_path(Image* image) const
 {
     std::string project_path = get_directory_path();
-    std::string image_name = image->get_name() + get_image_file_extension(); //".jpg";
+    std::string image_name = image->get_name();
     // TODO: use boost:file_system to append paths
     return project_path + "/" + IMAGES_DIRECTORY + "/" + image_name; 
 }
@@ -132,11 +131,13 @@ void Clip::set_height(unsigned int height)
     height_ = height;
 }
 // TODO:2010-09-02:aalex:Maybe Clip::frame_add should take the image file name as argument.
-/**
- * Adds an image to the clip.
- * Returns the its index.
- */
 unsigned int Clip::frame_add()
+{
+    std::string name = timing::get_iso_datetime_for_now() + get_image_file_extension(); // .jpg
+    return add_image(name);
+}
+
+unsigned int Clip::add_image(const std::string &name)
 {
     using std::tr1::shared_ptr;
     if (writehead_ > size())
@@ -149,17 +150,11 @@ unsigned int Clip::frame_add()
         std::cout << "Set the writehead position to " << writehead_ << std::endl;
     }
     unsigned int assigned = writehead_;
-    std::string name = timing::get_iso_datetime_for_now();
-    //images_.push_back(shared_ptr<Image>(new Image(name)));
     images_.insert(images_.begin() + writehead_, shared_ptr<Image>(new Image(name)));
-    //images_[writehead_] = new Image(name);
     writehead_++;
     return assigned;
 }
 
-/**
- * Sets the write head position
- */
 void Clip::set_writehead(unsigned int new_value)
 {
     if (new_value > size())
@@ -168,10 +163,6 @@ void Clip::set_writehead(unsigned int new_value)
         writehead_ = new_value;
 }
 
-/**
- * Delete an image for the clip.
- * Returns how many images it has deleted. (0 or 1)
- */
 // FIXME: this is not thread-safe, isn't it? (we must used shared_ptr)
 unsigned int Clip::frame_remove()
 {
@@ -278,7 +269,7 @@ unsigned int Clip::iterate_playhead()
     return playhead_;
 }
 
-bool Clip::set_direction(const std::string direction)
+bool Clip::set_direction(const std::string &direction)
 {
     PlayheadIteratorIterator iter;
     iter = playhead_iterators_.find(direction);
@@ -296,22 +287,8 @@ unsigned int Clip::size() const
     return images_.size();
 }
 
-/**
- * Returns NULL if there is no image at the given index.
- */
 Image* Clip::get_image(unsigned int index) const
 {
-    // FIXME: will crash if no image at that index
-    //if (images_.empty())
-    //{
-    //    std::cout << "ERROR: There is no image in the clip!"<< std::endl;
-    //    return NULL;
-    //}
-    //else if (index > images_.size())
-    //{
-    //    std::cout << "ERROR: There is no image at index " << index << " in the clip! Total is " << images_.size() << "." << std::endl;
-    //    return NULL;
-    //}
     try 
     {
         Image *img = images_.at(index).get();
@@ -331,8 +308,8 @@ void Clip::increase_playhead_fps()
     if (playhead_fps_ < MAX_FPS)
     {
         ++playhead_fps_;
-        //TODO:2010-08-26:aalex:Do not print if not verbose
-        std::cout << "Playback FPS: " << playhead_fps_ << std::endl;
+        if (verbose_)
+            std::cout << "Playback FPS: " << playhead_fps_ << std::endl;
     }
 }
 
@@ -341,8 +318,8 @@ void Clip::decrease_playhead_fps()
     if (playhead_fps_ > 1)
     {
         -- playhead_fps_;
-        //TODO:2010-08-26:aalex:Do not print if not verbose
-        std::cout << "Playback FPS: " << playhead_fps_ << std::endl;
+        if (verbose_)
+            std::cout << "Playback FPS: " << playhead_fps_ << std::endl;
     }
 }
 
@@ -363,10 +340,6 @@ void Clip::clear_all_images()
         for (unsigned int i = 0; i < images_.size(); i++)
             remove_image_file(i);
     }
-    //for (ImageIterator iter = images_.begin(); iter != images_.end(); ++iter)
-    //    &(*iter)
-
-    //    std::string Clip::get_image_full_path(Image* image) const
     images_.clear();
     playhead_ = 0;
     writehead_ = 0;
@@ -390,15 +363,14 @@ void Clip::remove_image_file(unsigned int index)
         if (fs::exists(file_path))
         {
             fs::remove(file_path);
-            std::cout << "Removed file " << file_name << std::endl;
+            if (verbose_)
+                std::cout << "Removed file " << file_name << std::endl;
         }
         else
             std::cout << "File " << file_name << " does not exist!" << std::endl;
     }
 }
-/**
- * Chooses the next playhead direction.
- */
+
 void Clip::change_direction()
 {
     std::string current = get_direction();

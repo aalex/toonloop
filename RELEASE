@@ -1,27 +1,16 @@
-2010-??-?? Toonloop 2.1.6
--------------------------
+2011-??-?? Toonloop 2.1.10
+--------------------------
 
 This release is a snapshot in the 2.1 unstable series. 
 
 This version contains new features and bug fixes. 
 
 New features:
-    * Added --enable-preview-window option, which shows a window with the livefeed
-    * Adding the --image-on-top option. It shows an unscaled image on top of everything except info and help text.
-    * Adding playback_opacity property
-    * Updated man page about midi binding rules
-    * Added random and drunk playback directions
+    * Added support for DV cameras
+    * State saving as a project.xml file (all clips with their FPS, direction and images)
 
-Bug fixes: 
-    * Pass movie size to mencoder args
-    * Gui: fixed memory leak, fixed delete event callback signature in infowindow
-    * Less verbose midi input
-    * Added Tristan Matthews to the list of copyright holders.
-    * Replace playhead_direction enum by a hierarchy of classes
-
-Many thanks to:
-    * Tristan Matthews for helping with the refactoring.
+Bug fixes:
+    * Removed gdk_pixbuf_unref since it is deprecated.
 
 Have fun with Toonloop!
 
-Alexandre Quessy <alexandre@quessy.net>

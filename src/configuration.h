@@ -32,24 +32,27 @@
  * Integer value that means that no MIDI input has been selected.
  */
 const int MIDI_INPUT_NONE = 99;
+
 /**
  * Name of the directory to store images in the project directory.
  */
 const std::string IMAGES_DIRECTORY = "images";
+
 /**
  * Name of the directory to store movies in the project directory.
  */
 const std::string MOVIES_DIRECTORY = "movies";
-// /**
-//  * Name of the directory to store data in the project directory.
-//  */
-// const std::string DATA_DIRECTORY = "data";
+
 /**
  * Default project directory.
  */
 const std::string DEFAULT_PROJECT_HOME = "~/Documents/toonloop/default";
 
+/**
+ * Value to say that no OSC port has been chosen.
+ */
 const std::string OSC_PORT_NONE = "";
+
 /** Contains the configuration options for Toonloop.
  */
 class Configuration
@@ -59,8 +62,6 @@ class Configuration
          * A lot of configuration options are set in the constructor of the Configuration class.
          */
         Configuration(const boost::program_options::variables_map &options);
-        //int get_capture_fps() const { return capture_frame_rate_; }
-        //int get_rendering_fps() const { return rendering_frame_rate_; }
         int playheadFps() const { return playhead_fps_; }
         std::string videoSource() const { return video_source_; }
         std::string display() const { return display_; }
@@ -86,12 +87,10 @@ class Configuration
         bool get_info_window_enabled() const { return info_window_enabled_; }
         std::string get_image_on_top() const { return image_on_top_; }
         bool should_show_image_on_top() const { return image_on_top_.compare("") != 0; }
-
         bool get_preview_window_enabled() const { return preview_window_enabled_; }
+        bool get_auto_save_project() const { return auto_save_project_; }
         
     private:
-        //int capture_frame_rate_;
-        //int rendering_frame_rate_;
         int playhead_fps_;
         std::string video_source_;
         std::string display_;
@@ -113,6 +112,7 @@ class Configuration
         bool info_window_enabled_;
         std::string image_on_top_;
         bool preview_window_enabled_;
+        bool auto_save_project_;
 };
 #endif // __CONFIGURATION_H__
 

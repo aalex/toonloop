@@ -17,9 +17,11 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
+#include <glib.h>
 #include <boost/program_options.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <tr1/memory>
@@ -77,6 +79,7 @@ class Application
         Application();
         ~Application();
         void run(int argc, char *argv[]);
+        /** Quits. */
         void quit();
         Gui *get_gui();
         /** Returns the video Pipeline */
@@ -97,14 +100,48 @@ class Application
         unsigned int get_current_clip_number();
         /** Should be only called directly by Controller::choose_clip */
         void set_current_clip_number(unsigned int clipnumber);
-        /** Checks for asynchronous messages and treat them */
-        void check_for_messages();
-        void handle_message(Message &message);
+        /** Returns the OscInterface. */
         OscInterface* get_osc_interface();
+        void check_for_messages();
+        /**
+         * Loads a project from an XML file.
+         * @param file_name XML file to read.
+         * @warning Not implemented yet.
+         */
+        bool load_project(std::string &project_path);
+        /**
+         * Saves the current project to an XML file.
+         * @param file_name XML file to write.
+         *
+         * The XML file looks like this:
+           \verbatim
+           <?xml version="1.0" encoding="UTF-8"?>
+           <toonloop_project name="default">
+             <clips>
+               <clip id="0">
+                 <images>
+                   <image path="image0.jpg"/>
+                   <image path="image1.jpg"/>
+                 </images>
+               </clip>
+               <clip id="1">
+                 <images>
+                   <image path="image2.jpg"/>
+                   <image path="image3.jpg"/>
+                 </images>
+               </clip>
+             </clips>
+           </project>
+           \endverbatim
+         */
+        bool save_project(std::string &project_path);
+        std::string get_project_file_name();
 
     private:
         void update_project_home_for_each_clip();
         bool setup_project_home(const std::string& project_home);
+        void before_shutdown();
+        static gboolean on_auto_save(gpointer user_data);
         boost::scoped_ptr<Controller> controller_;
         boost::scoped_ptr<Gui> gui_;
         boost::scoped_ptr<MidiInput> midi_input_;

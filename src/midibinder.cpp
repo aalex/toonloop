@@ -18,8 +18,6 @@
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO: rename to midibinder.cpp
-
 #include "config.h"
 #include "midibinder.h"
 #include "unused.h"
@@ -36,14 +34,6 @@
 // Constant for the presets data directory: (/usr/share/toonloop/presets/)
 #define PRESETS_DIR DATADIR "/toonloop/presets/"
 
-// TODO:2010-11-07:aalex:override << for MidiRule
-#if 0
-std::ostream &MidiRule::operator<< (std::ostream &theStream, const MidiRule &self)
-{
-    theStream << "MidiRule: type=" << self.type_ << " action=" << self.action_ << " args=" << self.args_ << " number=" << self.number_ << " from|to=" << self.from_ << " " << self.to_;
-    return theStream;
-}
-#endif
 /**
  * Returns 0 if none found.
  */
@@ -75,6 +65,7 @@ const MidiRule *MidiBinder::find_pitch_wheel_rule()
     else
         return 0;
 }
+
 /**
  * Returns 0 if none found.
  */
@@ -283,6 +274,7 @@ gchar *toon_find_midi_preset_file(const gchar *file_name, bool verbose)
     }
     return NULL;
 }
+
 /**
  * Code to load the XML file into memory and parse it. 
  */
@@ -333,6 +325,7 @@ MidiBinder::MidiBinder(bool verbose) :
             g_print("successfully loaded XML file\n");
     }
 }
+
 void MidiBinder::set_verbose(bool verbose)
 {
     verbose_ = verbose;

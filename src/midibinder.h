@@ -17,6 +17,7 @@
  * You should have received a copy of the gnu general public license
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef __PRESETS_H__
 #define __PRESETS_H__
 
@@ -64,6 +65,61 @@ struct MidiRule
 
 typedef std::vector<MidiRule>::iterator MidiRuleIterator;
 
+/**
+ * Maps the MIDI input events to Toonloop actions using the rules set in the XML configuration file.
+ *
+ * The default MIDI preset file is in presets/midi.xml, which is installed to /usr/share/toonloop/presets/midi.xml
+ *
+ * Introducing the MIDI rules
+ * --------------------------
+ * The MIDI rules are set using a XML tag whose name is one or "note_on", "note_off", "control_on", etc. Their name match some MIDI input events. Here is the list of attribute each of these rule tag can have:
+ *  - "args": Argument that can be passed to the Toonloop command that will be called. It needs to be a valid int or float if the expected type for the given command is one of those.
+ *  - "number": The MIDI note or control number.
+ *  - "action": The Toonloop command to call.
+ *  - "from": Minimum output range of the mapping for a number value. Default is 0.0.
+ *  - "to": Maximum output range of the mapping for a number value. Default is 1.0.
+ *
+ * Supported rules
+ * ---------------
+ * Here is the list of supported rules:
+ *  - note_on: Its "number" attribute must match the MIDI note number.
+ *  - note_off: Its "number" attribute must match the MIDI note number.
+ *  - control_on: Its "number" attribute must match the MIDI control number.
+ *  - control_off: Its "number" attribute must match the MIDI control number.
+ *  - control_map: Its "number" attribute must match the MIDI control number.
+ *  - program_change: The program number is passed as an argument to the Toonloop action. Only supports the "select_clip" action.
+ *  - pitch_bend: Only supports the "set_float" Toonloop action.
+ *
+ * Supported Toonloop commands
+ * --------------------------
+ * The MIDI bindings are useful to trigger Toonloop commands. Each rule must have an "action" attribute, and maybe some "args" attribute as well.
+ *
+ * Here is the list of Toonloop commands that can be called:
+ *  - add_image
+ *  - remove_image
+ *  - quit
+ *  - video_record_on
+ *  - video_record_off
+ *  - save_current_clip
+ *  - select_clip i:clip_number (the rule's "args" attribute is passed as clip number)
+ *  - set_float s:name f:value (the rule's "args" attribute is used as property name, and the value is mapped if using the "control_map" MIDI rule type)
+ *  - set_int s:name i:value (the rule's "args" attribute is used as property name, and the value is mapped if using the "control_map" MIDI rule type)
+ *
+ * Examples
+ * --------
+ * For example, one would write the following rules in its ~/.toonloop/midi.xml file:
+ *   <note_on number="41" action="select_clip" args="0" />
+ *
+ * This way, everytime the note number 41 will be pressed, it will select clip zero.
+ *
+ * An other example:
+ *   <control_on  number="64" action="add_image" />
+ *
+ * To map control values to property, use the set_float action:
+ *   <control_map number="74" action="set_float" args="fx.brcosa.contrast" from="0.0" to="2.0" />
+ *
+ * Everytime the MIDI control 64 will have a non-zero value, it will add an image. Usually, 64 is the sustain pedal.
+ */
 class MidiBinder
 {
     public:
@@ -95,3 +151,4 @@ class MidiBinder
 };
 
 #endif
+

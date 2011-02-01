@@ -101,7 +101,7 @@ Other possible actions include setting the value of a float or int property of t
 
   <control_on number="64" action="add_image" />
 
-A list of the supported actions and the arguments they accept should follow soon.
+See the documentation for the MidiBinder class for more about MIDI rules. Run Toonloop with the --print-properties option to list the properties you can change using the "control_map" rule and the "set_float" or "set_int" action.
 
 [AUTHOR]
 Alexandre Quessy, Tristan Matthews and Vasilis Liaskovitis.

@@ -33,6 +33,7 @@
 #include <gst/gst.h>
 #include <gtk/gtk.h>
 #include <iostream>
+#include <sstream>
 
 #include "application.h"
 #include "clip.h"
@@ -133,7 +134,6 @@ void Gui::hideCursor()
     gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), cursor);
 }
 
-
 /**
  * In windowed mode, shows the cursor.
  */
@@ -171,7 +171,6 @@ void Gui::showCursor()
  * - o: toggles onion skinning
  * - []: increase/decrease opacity of the live input image in the overlay layout.
  */
-
 gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
     // TODO: Ctrl-s: save the whole project
@@ -351,6 +350,9 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
                 std::cout << "Blending mode:" << context->blending_mode_ << std::endl;
             }
             break;
+        case GDK_F2: // TODO: change this key for save
+            controller->save_project();
+            break;
         default:
             break;
     }
@@ -367,6 +369,7 @@ void Gui::on_crossfade_ratio_changed(std::string &name, float value)
             std::cout << "Crossfade ratio: " << value << std::endl;
     }
 }
+
 /**
  * Adds a certain amount of crossfading duration to the crossfade between images.
  * The given value can be negative.
@@ -418,9 +421,11 @@ void Gui::toggle_help()
 void Gui::on_delete_event(GtkWidget* /*widget*/, GdkEvent* /*event*/, gpointer user_data)
 {
     Gui *context = static_cast<Gui*>(user_data);
-    g_print("Window has been deleted.\n");
+    if (context->owner_->get_configuration()->get_verbose())
+        g_print("Window has been deleted.\n");
     context->owner_->quit();
 }
+
 /**
  * Toggles fullscreen mode on/off.
  */
@@ -429,6 +434,7 @@ void Gui::toggleFullscreen(GtkWidget *widget)
     // toggle fullscreen state
     isFullscreen_ ? makeUnfullscreen(widget) : makeFullscreen(widget);
 }
+
 /** 
  * Makes the window fullscreen.
  */
@@ -437,6 +443,7 @@ void Gui::makeFullscreen(GtkWidget *widget)
     gtk_window_stick(GTK_WINDOW(widget)); // window is visible on all workspaces
     gtk_window_fullscreen(GTK_WINDOW(widget));
 }
+
 /**
  * Makes the window not fullscreen.
  */
@@ -445,6 +452,7 @@ void Gui::makeUnfullscreen(GtkWidget *widget)
     gtk_window_unstick(GTK_WINDOW(widget)); // window is not visible on all workspaces
     gtk_window_unfullscreen(GTK_WINDOW(widget));
 }
+
 /**
  * Slot for the Controller's next_image_to_play_signal_ signal.
  *
@@ -778,6 +786,7 @@ void Gui::toggle_layout()
     else if (current_layout_ == LAYOUT_LIVEFEED_ONLY)
         set_layout(LAYOUT_PLAYBACK_ONLY);
 }
+
 /**
  * Sets the current layout.
  * Also makes some actors visible or not.
@@ -1011,7 +1020,7 @@ Gui::Gui(Application* owner) :
     // add properties:
     controller->add_int_property("blending_mode", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_blending_mode_int_property_changed, this, _1, _2));
     controller->add_float_property("crossfade_ratio", 0.0)->value_changed_signal_.connect(boost::bind(&Gui::on_crossfade_ratio_changed, this, _1, _2));
-    controller->add_int_property("livefeed_opacity", 127)->value_changed_signal_.connect(boost::bind(&Gui::on_livefeed_opacity_changed, this, _1, _2));
+    controller->add_int_property("livefeed_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_livefeed_opacity_changed, this, _1, _2));
     controller->add_int_property("black_out", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_changed, this, _1, _2));
     controller->add_int_property("black_out_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_opacity_changed, this, _1, _2));
     controller->add_int_property("playback_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_playback_opacity_changed, this, _1, _2));

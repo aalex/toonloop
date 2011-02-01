@@ -23,6 +23,7 @@
 #include "moviesaver.h"
 #include "pipeline.h"
 #include "controller.h"
+#include "statesaving.h"
 #include "timer.h"
 #include "log.h"
 
@@ -371,5 +372,26 @@ void Controller::move_writehead_to(unsigned int position)
         current_clip->set_writehead(position);
         writehead_moved_signal_(current_clip->get_id(), current_clip->get_writehead());
     }
+}
+
+void Controller::quit()
+{
+    owner_->quit();
+}
+
+void Controller::print_properties()
+{
+    std::cout << "Toonloop int properties:" << std::endl;
+    int_properties_.print_properties();
+    std::cout << "Toonloop float properties:" << std::endl;
+    float_properties_.print_properties();
+}
+
+void Controller::save_project()
+{
+    namespace ss = statesaving;
+    std::string file_name = owner_->get_project_file_name();
+    owner_->save_project(file_name);
+    save_project_signal_(file_name);
 }
 

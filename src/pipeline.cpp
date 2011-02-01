@@ -34,6 +34,7 @@
 #include "log.h" // TODO: make it async and implement THROW_ERROR
 #include "pipeline.h"
 #include "timing.h"
+#include "raw1394util.h"
 #include "v4l2util.h"
 
 //const bool USE_SHADER = false;
@@ -50,7 +51,8 @@ void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg, gpointer user_da
 {
     Pipeline *context = static_cast<Pipeline*>(user_data);
     bool verbose = context->owner_->get_configuration()->get_verbose();
-    switch (GST_MESSAGE_TYPE (msg)) {
+    switch (GST_MESSAGE_TYPE (msg)) 
+    {
     case GST_MESSAGE_ELEMENT:
     {
         const GValue *val;
@@ -127,7 +129,18 @@ void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg, gpointer user_da
     }
     default:
         break;
-  }
+    }
+}
+
+static void show_unlinked_pads(GstBin *bin)
+{
+    GstPad *pad = gst_bin_find_unlinked_pad(bin, GST_PAD_SRC);
+    if (pad)
+    {
+        gchar *pad_name = gst_pad_get_name(pad);
+        g_print("Pad %s is not linked.\n", pad_name);
+        g_free(pad_name);
+    }
 }
 
 /**
@@ -138,23 +151,33 @@ void Pipeline::end_stream_cb(GstBus* /*bus*/, GstMessage* message, gpointer user
     Pipeline *context = static_cast<Pipeline*>(user_data);
     bool is_verbose = context->owner_->get_configuration()->get_verbose();
     if (is_verbose)
-        std::cout << __FUNCTION__ << std::endl;
+        std::cout << "Pipeline::" << __FUNCTION__ << "(" << message << ")" << std::endl;
     bool stop_it = true;
     if (GST_MESSAGE_TYPE(message) == GST_MESSAGE_ERROR)
     {
         gchar *debug = NULL;
         GError *err = NULL;
         gst_message_parse_error(message, &err, &debug);
-        g_print("Error: %s\n", err->message);
+        g_printerr("GStreamer ERROR from element %s: %s\n", GST_OBJECT_NAME(message->src), err->message);
+        show_unlinked_pads(GST_BIN(context->pipeline_));
+        //if (message->src == GST_OBJECT(context->videosrc_))
+        //{
+        //    g_print("The error message comes from %s. Not stopping the pipeline.\n", GST_OBJECT_NAME(message->src));
+        //    stop_it = false;
+        //}
         g_error_free(err);
         if (debug) 
         {
-            g_print("Debug details: %s\n", debug);
+            g_print("Error message Debug details: %s\n", debug);
             g_free(debug);
         }
-    } else if (GST_MESSAGE_TYPE(message) == GST_MESSAGE_EOS) {
+    } 
+    else if (GST_MESSAGE_TYPE(message) == GST_MESSAGE_EOS) 
+    {
         std::cout << "EOS: End of stream" << std::endl;
-    } else if (GST_MESSAGE_TYPE(message) == GST_MESSAGE_WARNING) {
+    } 
+    else if (GST_MESSAGE_TYPE(message) == GST_MESSAGE_WARNING) 
+    {
         gchar *debug = NULL;
         GError *err = NULL;
         gst_message_parse_warning(message, &err, &debug);
@@ -245,7 +268,7 @@ void Pipeline::save_image_to_current_clip(GdkPixbuf *pixbuf)
     {
         // This is very unlikely to happen
         std::cerr << "No image at " << new_image_number << std::endl;
-        gdk_pixbuf_unref(pixbuf);
+        g_object_unref(pixbuf);
         return;
     }
     if (is_verbose)
@@ -259,7 +282,9 @@ void Pipeline::save_image_to_current_clip(GdkPixbuf *pixbuf)
     if (!gdk_pixbuf_save(pixbuf, file_name.c_str(), "jpeg", NULL, "quality", "100", NULL))
     {
         g_print("Image %s could not be saved. Error\n", file_name.c_str());
-    } else {
+    }
+    else
+    {
         if (is_verbose)
             g_print("Image %s saved\n", file_name.c_str());
         owner_->get_controller()->add_frame_signal_(current_clip_id, new_image_number);
@@ -292,6 +317,64 @@ void Pipeline::stop()
     // gtk main quit?
 }
 
+void Pipeline::link_or_die(GstElement *from, GstElement *to)
+{
+    bool is_linked = gst_element_link(from, to);
+    gchar *from_name = gst_element_get_name(from);
+    gchar *to_name = gst_element_get_name(to);
+    if (!is_linked) 
+    {
+        g_print("Could not link %s to %s.\n", from_name, to_name);
+        exit(1); 
+    }
+    g_free(from_name);
+    g_free(to_name);
+}
+
+/// Called due to incoming dv stream, either video or audio, links appropriately
+void Pipeline::cb_new_dvdemux_src_pad(GstElement * /*srcElement*/, GstPad * srcPad, gpointer data)
+{
+    GstElement *sinkElement = static_cast<GstElement*>(data);
+    bool verbose = false; // TODO
+    if (std::string("video") == gst_pad_get_name(srcPad))
+    {
+        if (verbose)
+            g_print("Got video stream from DV\n");
+    }
+    else 
+    {
+        if (verbose)
+            g_print("Ignoring %s stream from DV\n", gst_pad_get_name(srcPad));
+        return;
+    }
+
+    GstPad *sinkPad;
+    sinkPad = gst_element_get_static_pad(sinkElement, "sink");
+    if (GST_PAD_IS_LINKED(sinkPad))
+    {
+        g_object_unref(sinkPad); // don't link more than once
+        return;
+    }
+    //gchar *src_pad_name = gst_pad_get_name(srcPad);
+    gchar *src_pad_name = gst_pad_get_name(srcPad);
+    gchar *sink_pad_name = gst_pad_get_name(sinkPad);
+    gchar *sink_element_name = gst_element_get_name(sinkElement);
+    if (verbose)
+        g_print("Pipeline::%s: Dv1394: linking %s src pad to %s's %s sinkpad.", __FUNCTION__, "video", sink_element_name, sink_pad_name);
+    GstPadLinkReturn is_linked = gst_pad_link(srcPad, sinkPad);
+    if (is_linked != GST_PAD_LINK_OK) 
+    {
+        g_print("Could not link %s to %s.\n", src_pad_name, sink_element_name); 
+        exit(1);
+    }
+    g_free(src_pad_name);
+    g_free(sink_pad_name);
+    g_free(sink_element_name);
+    if (verbose)
+        g_print("Success!\n");
+    gst_object_unref(sinkPad);
+}
+
 /**
  * Constructor which create the GStreamer pipeline.
  * This pipeline grabs the video and render the OpenGL.
@@ -305,20 +388,59 @@ Pipeline::Pipeline(Application* owner) :
     set_intervalometer_is_on(false);
     pipeline_ = NULL;
     pipeline_ = GST_PIPELINE(gst_pipeline_new("pipeline"));
-    
+
+    GstElement* dv_demux0 = NULL;
+    GstElement* hdv_decoder0 = NULL;
+    GstElement* dv_videoscale0 = NULL;
+    GstElement* dv_ffmpegcolorspace = NULL;
+    GstElement* dvdec = NULL;
+    GstElement* dv_queue0 = NULL;
+    //GstElement* dv_queue1 = NULL;
+    // capsfilter0, for the capture FPS and size
+    GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
+
+    bool is_dv_enabled = config->videoSource() == "dv";
+    bool is_hdv_enabled = config->videoSource() == "hdv";
     // Video source element
     // TODO: add more input types like in Ekiga
+    if (verbose)
+        std::cout << "Video source: " << config->videoSource() << std::endl;
     if (config->videoSource() == "test")
     {
-        if (verbose)
-            std::cout << "Video source: videotestsrc" << std::endl;
         videosrc_  = gst_element_factory_make("videotestsrc", "videosrc0");
     } 
     else if (config->videoSource() == "x") 
     {
-        if (verbose)
-            std::cout << "Video source: ximagesrc" << std::endl;
         videosrc_  = gst_element_factory_make("ximagesrc", "videosrc0");
+    } 
+    else if (config->videoSource() == "dv") 
+    {
+        if (! Raw1394::cameraIsReady())
+            g_error("There is no DV camera that is ready.");
+        videosrc_  = gst_element_factory_make("dv1394src", "videosrc0");
+        dv_demux0 = gst_element_factory_make("dvdemux", "dv_demux0");
+        dv_queue0  = gst_element_factory_make("queue", "dv_queue0");
+        dvdec = gst_element_factory_make("dvdec", "dvdec");
+        dv_videoscale0 = gst_element_factory_make("videoscale", "dv_videoscale0");
+        dv_ffmpegcolorspace = gst_element_factory_make("ffmpegcolorspace", "dv_ffmpegcolorspace");
+        //dv_queue1  = gst_element_factory_make("queue", "dv_queue1");
+        // register connection callback for the dvdemux element.
+        // Note that the demuxer will be linked to whatever after it dynamically.
+        // The reason is that the DV may contain various streams (for example
+        // audio and video). The source pad(s) will be created at run time,
+        // by the demuxer when it detects the amount and nature of streams.
+        // Therefore we connect a callback function which will be executed
+        // when the "pad-added" is emitted.
+        g_signal_connect(dv_demux0, "pad-added",
+            G_CALLBACK(cb_new_dvdemux_src_pad),
+            static_cast<gpointer>(dv_queue0));
+        //g_assert(dv_demux0);
+    } 
+    else if (config->videoSource() == "hdv") 
+    {
+        videosrc_  = gst_element_factory_make("hdv1394src", "videosrc0");
+        hdv_decoder0 = gst_element_factory_make("decodebin", "hdv_decoder0");
+        g_assert(hdv_decoder0);
     } 
     else  // v4l2src
     {
@@ -334,9 +456,6 @@ Pipeline::Pipeline(Application* owner) :
     }
     // TODO: use something else than g_assert to see if we could create the elements.
     g_assert(videosrc_); 
-    
-    // capsfilter0, for the capture FPS and size
-    GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
 
     // ffmpegcolorspace0 element
     GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
@@ -374,6 +493,20 @@ Pipeline::Pipeline(Application* owner) :
     // add elements
     gst_bin_add(GST_BIN(pipeline_), videosrc_); // capture
     gst_bin_add(GST_BIN(pipeline_), capsfilter0);
+    if (is_dv_enabled)
+    {
+        gst_bin_add(GST_BIN(pipeline_), dv_demux0);
+        gst_bin_add(GST_BIN(pipeline_), dv_queue0);
+        gst_bin_add(GST_BIN(pipeline_), dvdec);
+        gst_bin_add(GST_BIN(pipeline_), dv_ffmpegcolorspace);
+        gst_bin_add(GST_BIN(pipeline_), dv_videoscale0);
+        //gst_bin_add(GST_BIN(pipeline_), dv_queue1);
+        // Set the capsfilter caps for DV:
+    } 
+    else if (is_hdv_enabled)
+    {
+        gst_bin_add(GST_BIN(pipeline_), hdv_decoder0);
+    }
     gst_bin_add(GST_BIN(pipeline_), ffmpegcolorspace0);
     gst_bin_add(GST_BIN(pipeline_), tee0);
     gst_bin_add(GST_BIN(pipeline_), queue0); // branch #0: videosink
@@ -390,8 +523,6 @@ Pipeline::Pipeline(Application* owner) :
 
     // link pads:
     gboolean is_linked = FALSE; 
-    bool source_is_linked = false;
-    int frame_rate_index = 0;
     if (config->videoSource() == std::string("test") || config->videoSource() == std::string("x")) 
     {
         if (config->videoSource() == std::string("x")) 
@@ -402,19 +533,38 @@ Pipeline::Pipeline(Application* owner) :
             g_object_set(capsfilter0, "caps", the_caps, NULL);
             gst_caps_unref(the_caps);
             
-        } else {  // it's a videotestsrc
+        }
+        else
+        {   // it's a videotestsrc
             //TODO:2010-10-04:aalex:Use config.get_capture_* for test source as well
+            // TODO: make videotestsrc size configurable as well!
             GstCaps *the_caps = gst_caps_from_string("video/x-raw-yuv, width=640, height=480, framerate=30/1");
             g_object_set(capsfilter0, "caps", the_caps, NULL);
             gst_caps_unref(the_caps);
         }
-        is_linked = gst_element_link(videosrc_, capsfilter0);
-        if (!is_linked) {
-            g_print("Could not link %s to %s.\n", "videosrc_", "capfilter0"); 
-            exit(1); 
+
+        link_or_die(videosrc_, capsfilter0);
+    } 
+    else if (is_dv_enabled || is_hdv_enabled) 
+    {
+        if (is_dv_enabled)
+        {
+            link_or_die(videosrc_, dv_demux0);
+            // dv_demux0 is linked to dvdec when its src pads appear
+            link_or_die(dv_queue0, dvdec);
+            link_or_die(dvdec, dv_ffmpegcolorspace);
+            link_or_die(dv_ffmpegcolorspace, dv_videoscale0);
+            link_or_die(dv_videoscale0, capsfilter0);
+        } 
+        else // hdv
+        {
+            g_error("HDV is not yet implemented."); // quits
         }
-        source_is_linked = true;
-    } else {     // it's a v4l2src
+    } 
+    else // it's a v4l2src
+    {     
+        bool source_is_linked = false;
+        int frame_rate_index = 0;
         // Guess the right FPS to use with the video capture device
         while (not source_is_linked)
         {
@@ -426,7 +576,9 @@ Pipeline::Pipeline(Application* owner) :
             { 
                 std::cout << "Failed to link video source. Trying another framerate." << std::endl;
                 ++frame_rate_index;
-            } else {
+            }
+            else 
+            {
                 if (verbose)
                     std::cout << "Success." << std::endl;
                 source_is_linked = true;
@@ -434,59 +586,47 @@ Pipeline::Pipeline(Application* owner) :
         }
     }
     //Will now link capfilter0--ffmpegcolorspace0--tee.
-    is_linked = gst_element_link(capsfilter0, ffmpegcolorspace0);
-    if (!is_linked) {
-        g_print("Could not link %s to %s.\n", "capsfilter0", "ffmpegcolorspace0"); 
-        exit(1);
-    }
-    is_linked = gst_element_link(ffmpegcolorspace0, tee0);
-    if (!is_linked) {
-        g_print("Could not link %s to %s.\n", "ffmpegcolorspace0", "tee0"); 
-        exit(1);
-    }
+    link_or_die(capsfilter0, ffmpegcolorspace0);
+    link_or_die(ffmpegcolorspace0, tee0);
     //Will now link tee--queue--videosink.
     is_linked = gst_element_link_pads(tee0, "src0", queue0, "sink");
-    if (!is_linked) {
+    if (!is_linked) 
+    {
         g_print("Could not link %s to %s.\n", "tee0", "sink"); 
         exit(1);
     }
     // output 0: the OpenGL uploader.
-    is_linked = gst_element_link(queue0, videosink_);
-    if (!is_linked) {
-        // FIXME:2010-08-06:aalex:We could get the name of the GST element for the clutter sink using gst_element_get_name
-        g_print("Could not link %s to %s.\n", "queue0", "cluttervideosink0");
-        exit(1); 
-    }
+    link_or_die(queue0, videosink_);
 
     // output 1: the GdkPixbuf sink
     //Will now link tee--queue--pixbufsink.
     is_linked = gst_element_link_pads(tee0, "src1", queue1, "sink");
-    if (!is_linked) { 
+    if (!is_linked) 
+    { 
         g_print("Could not link %s to %s.\n", "tee0", "queue1"); 
         exit(1); 
     }
-    is_linked = gst_element_link(queue1, gdkpixbufsink_);
-    if (!is_linked) { 
-        g_print("Could not link %s to %s.\n", "queue1", "gdkpixbufsink0"); 
-        exit(1); 
-    }
+    link_or_die(queue1, gdkpixbufsink_);
 
     if (is_preview_enabled)
     {
         
         is_linked = gst_element_link_pads(tee0, "src2", queue2, "sink");
-        if (!is_linked) { 
+        if (!is_linked) 
+        { 
             g_print("Could not link %s to %s.\n", "tee0", "queue2"); 
             exit(1); 
         }
        
         is_linked = gst_element_link(queue2, ffmpegcolorspace1);
-        if (!is_linked) { 
+        if (!is_linked) 
+        { 
             g_print("Could not link %s to %s.\n", "queue2", "ffmpegcolorspace1"); 
             exit(1); 
         }
         is_linked = gst_element_link(ffmpegcolorspace1, xvimagesink);
-        if (!is_linked) { 
+        if (!is_linked) 
+        { 
             g_print("Could not link %s to %s.\n", "ffmpegcolorspace1", "xvimagesink0"); 
             exit(1); 
         }
@@ -505,6 +645,13 @@ Pipeline::Pipeline(Application* owner) :
 
     /* run */
     GstStateChangeReturn ret;
+    if (verbose)
+        std::cout << "Set pipeline to READY" << std::endl;
+    ret = gst_element_set_state(GST_ELEMENT(pipeline_), GST_STATE_READY);
+    if (ret == GST_STATE_CHANGE_FAILURE)
+    {
+        g_print("Failed to make the video pipeline ready!\n");
+    }
     if (verbose)
         std::cout << "Set pipeline to PLAYING" << std::endl;
     ret = gst_element_set_state(GST_ELEMENT(pipeline_), GST_STATE_PLAYING);

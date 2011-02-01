@@ -36,23 +36,55 @@ class Image;
 class Clip 
 {
     public:
+        /** 
+         * Each clip needs a unique ID.
+         */
         Clip(unsigned int id);
         static const unsigned int MAX_FPS = 60;
         unsigned int get_id() const;
         //TODO: list<int>* get_all_images();
+        /**
+         * Adds an image to the clip.
+         * Once its added, the one who called this should fill that Image object with
+         * its file name.
+         * @return The index of the new image
+         */
         unsigned int frame_add();
+        /**
+         * Delete an image for the clip.
+         * @return How many images it has deleted. (0 or 1)
+         */
         unsigned int frame_remove();
         unsigned int iterate_playhead();
         unsigned int size() const;
+        /**
+         * Returns the given image.
+         * @return A valid Image pointer, or a null pointer if there is no image at the given index.
+         */
         Image* get_image(unsigned int index) const;
         unsigned int get_playhead() const;
         unsigned int get_writehead() const;
+        /**
+         * Sets the write head position
+         */
         void set_writehead(unsigned int new_value);
+        /**
+         * Only the Pipeline should call this.
+         */
         void set_width(unsigned int width);
+        /**
+         * Only the Pipeline should call this.
+         */
         void set_height(unsigned int height);
-        bool set_direction(const std::string direction);
+        bool set_direction(const std::string &direction);
         const std::string &get_direction() { return current_playhead_direction_; }
+        /**
+         * Useful to know the size of the movie clip to convert.
+         */
         unsigned int get_width() const;
+        /**
+         * Useful to know the size of the movie clip to convert.
+         */
         unsigned int get_height() const;
         unsigned int get_playhead_fps() const;
         void set_playhead_fps(unsigned int fps);
@@ -62,19 +94,28 @@ class Clip
         bool get_has_recorded_frame() const;
         void set_directory_path(const std::string &directory_path);
         std::string get_directory_path() const { return directory_path_; } 
-        std::string get_image_file_extension() const { return ".jpg"; };
         std::string get_image_full_path(Image* image) const;
         void clear_all_images();
         long get_last_time_grabbed_image() const { return last_time_grabbed_image_; }
-        void set_last_time_grabbed_image(const long timestamp);
+        void set_last_time_grabbed_image(long timestamp);
         /** The intervalometer speed is in seconds */
         float get_intervalometer_rate() const { return intervalometer_rate_; }
-        void set_intervalometer_rate(const float rate);
+        void set_intervalometer_rate(float rate);
         bool remove_last_image();
         bool remove_first_image();
         void set_remove_deleted_images(bool enabled);
+        /**
+         * Chooses the next playhead direction.
+         */
         void change_direction();
+        /**
+         * Used internally by frame_add, but also when loading a project.
+         * Return Its index.
+         */
+        unsigned int add_image(const std::string &name);
+        void set_verbose(bool verbose) { verbose_ = verbose; }
     private:
+        bool verbose_;
         unsigned int id_;
         unsigned int playhead_;
         unsigned int writehead_;
@@ -102,7 +143,12 @@ class Clip
         void remove_image_file(unsigned int index);
         std::map< std::string, std::tr1::shared_ptr<PlayheadIterator> > playhead_iterators_;
         std::string current_playhead_direction_;
+        /**
+         * Populates the map of playhead iterator objects.
+         */
         void init_playhead_iterators();
+        static const std::string DEFAULT_FILE_EXTENSION;
+        const std::string &get_image_file_extension() const { return DEFAULT_FILE_EXTENSION; };
 };
 
 #endif // __CLIP_H__
