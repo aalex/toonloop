@@ -385,22 +385,27 @@ Pipeline::Pipeline(Application* owner) :
 {
     Configuration *config = owner_->get_configuration();
     bool verbose = config->get_verbose();
+    bool is_dv_enabled = config->videoSource() == "dv";
+    bool is_hdv_enabled = config->videoSource() == "hdv";
+
     set_intervalometer_is_on(false);
     pipeline_ = NULL;
     pipeline_ = GST_PIPELINE(gst_pipeline_new("pipeline"));
 
+    // DV elements
     GstElement* dv_demux0 = NULL;
-    GstElement* hdv_decoder0 = NULL;
     GstElement* dv_videoscale0 = NULL;
     GstElement* dv_ffmpegcolorspace = NULL;
     GstElement* dvdec = NULL;
     GstElement* dv_queue0 = NULL;
-    //GstElement* dv_queue1 = NULL;
+    // HDV elements
+    GstElement* hdv_queue0 = NULL;
+    GstElement* hdv_decodebin0 = NULL;
+    GstElement* hdv_queue1 = NULL;
     // capsfilter0, for the capture FPS and size
     GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
+    GstElement *videoscale0 = gst_element_factory_make("videoscale", "videoscale0");
 
-    bool is_dv_enabled = config->videoSource() == "dv";
-    bool is_hdv_enabled = config->videoSource() == "hdv";
     // Video source element
     // TODO: add more input types like in Ekiga
     if (verbose)
@@ -413,7 +418,7 @@ Pipeline::Pipeline(Application* owner) :
     {
         videosrc_  = gst_element_factory_make("ximagesrc", "videosrc0");
     } 
-    else if (config->videoSource() == "dv") 
+    else if (is_dv_enabled)
     {
         if (! Raw1394::cameraIsReady())
             g_error("There is no DV camera that is ready.");
@@ -421,9 +426,9 @@ Pipeline::Pipeline(Application* owner) :
         dv_demux0 = gst_element_factory_make("dvdemux", "dv_demux0");
         dv_queue0  = gst_element_factory_make("queue", "dv_queue0");
         dvdec = gst_element_factory_make("dvdec", "dvdec");
+        // TODO remove dv_videoscale0
         dv_videoscale0 = gst_element_factory_make("videoscale", "dv_videoscale0");
         dv_ffmpegcolorspace = gst_element_factory_make("ffmpegcolorspace", "dv_ffmpegcolorspace");
-        //dv_queue1  = gst_element_factory_make("queue", "dv_queue1");
         // register connection callback for the dvdemux element.
         // Note that the demuxer will be linked to whatever after it dynamically.
         // The reason is that the DV may contain various streams (for example
@@ -436,11 +441,13 @@ Pipeline::Pipeline(Application* owner) :
             static_cast<gpointer>(dv_queue0));
         //g_assert(dv_demux0);
     } 
-    else if (config->videoSource() == "hdv") 
+    else if (is_hdv_enabled)
     {
         videosrc_  = gst_element_factory_make("hdv1394src", "videosrc0");
-        hdv_decoder0 = gst_element_factory_make("decodebin", "hdv_decoder0");
-        g_assert(hdv_decoder0);
+        hdv_queue0 = gst_element_factory_make("queue", "hdv_queue0");
+        hdv_decodebin0 = gst_element_factory_make("decodebin", "hdv_decodebin0");
+        hdv_queue1 = gst_element_factory_make("queue", "hdv_queue1");
+        g_assert(hdv_decodebin0);
     } 
     else  // v4l2src
     {
@@ -499,15 +506,16 @@ Pipeline::Pipeline(Application* owner) :
         gst_bin_add(GST_BIN(pipeline_), dv_queue0);
         gst_bin_add(GST_BIN(pipeline_), dvdec);
         gst_bin_add(GST_BIN(pipeline_), dv_ffmpegcolorspace);
-        gst_bin_add(GST_BIN(pipeline_), dv_videoscale0);
-        //gst_bin_add(GST_BIN(pipeline_), dv_queue1);
-        // Set the capsfilter caps for DV:
+        gst_bin_add(GST_BIN(pipeline_), dv_videoscale0);// TODO:remove dv_videoscale0
     } 
     else if (is_hdv_enabled)
     {
-        gst_bin_add(GST_BIN(pipeline_), hdv_decoder0);
+        gst_bin_add(GST_BIN(pipeline_), hdv_queue0);
+        gst_bin_add(GST_BIN(pipeline_), hdv_decodebin0);
+        gst_bin_add(GST_BIN(pipeline_), hdv_queue1);
     }
     gst_bin_add(GST_BIN(pipeline_), ffmpegcolorspace0);
+    gst_bin_add(GST_BIN(pipeline_), videoscale0);
     gst_bin_add(GST_BIN(pipeline_), tee0);
     gst_bin_add(GST_BIN(pipeline_), queue0); // branch #0: videosink
     //gst_bin_add(GST_BIN(pipeline_), capsfilter1);
@@ -558,7 +566,10 @@ Pipeline::Pipeline(Application* owner) :
         } 
         else // hdv
         {
-            g_error("HDV is not yet implemented."); // quits
+            link_or_die(videosrc_, hdv_queue0);
+            link_or_die(hdv_queue0, hdv_decodebin0);
+            link_or_die(hdv_decodebin0, hdv_queue1);
+            link_or_die(hdv_queue1, capsfilter0);
         }
     } 
     else // it's a v4l2src
@@ -587,6 +598,7 @@ Pipeline::Pipeline(Application* owner) :
     }
     //Will now link capfilter0--ffmpegcolorspace0--tee.
     link_or_die(capsfilter0, ffmpegcolorspace0);
+    link_or_die(ffmpegcolorspace0, videoscale0);
     link_or_die(ffmpegcolorspace0, tee0);
     //Will now link tee--queue--videosink.
     is_linked = gst_element_link_pads(tee0, "src0", queue0, "sink");
