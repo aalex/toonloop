@@ -99,6 +99,18 @@ fi
 AC_SUBST([CLUTTERGST_LIBS])
 AC_SUBST([CLUTTERGST_CFLAGS])
 
+#Set libraw1394 with pkg-config
+PKG_CHECK_MODULES(RAW1394, libraw1394, have_raw1394=true, have_raw1394=false)
+if test "x${have_raw1394}" = "xfalse" ; then
+    AC_MSG_ERROR([Missing libraw1394])
+fi
+
+#Trying to set LIBAVC1394 using pkg-config
+PKG_CHECK_MODULES(AVC1394, [libavc1394], have_avc1394=true, have_avc1394=false)
+if test "x${have_avc1394}" = "xfalse" ; then
+	AC_MSG_ERROR([missing package: libavc1394-dev ])
+fi
+
 # libxml2
 PKG_CHECK_MODULES([LIBXML], [libxml-2.0], have_libxml=true, have_libxml=false)
 if test "x${have_libxml}" = "xfalse" ; then

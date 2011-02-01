@@ -35,6 +35,7 @@ headers = \
     playheaditerator.h \
 	property.h \
 	properties.h \
+	raw1394util.h \
 	midibinder.h \
     brcosaeffect.h \
 	saverworker.h \
@@ -65,6 +66,7 @@ toonloop_SOURCES = \
     brcosaeffect.cpp \
 	saverworker.cpp \
 	subprocess.cpp \
+	raw1394util.cpp \
 	timer.cpp \
 	timing.cpp \
 	v4l2util.cpp \
@@ -81,6 +83,8 @@ toonloop_CXXFLAGS = \
 	$(LIBLO_CFLAGS) \
 	$(LIBM_CXXFLAGS) \
 	$(LIBTHREAD_CXXFLAGS) \
+	$(RAW1394_CFLAGS) \
+	$(AVC1394_CFLAGS) \
 	$(STK_CXXFLAGS) \
 	$(LIBXML_XFLAGS)
  
@@ -97,5 +101,7 @@ toonloop_LDADD = \
 	$(LIBM_LIBS) \
 	$(LIBTHREAD_LIBS) \
 	$(LDFLAGS) \
+	$(RAW1394_LIBS) \
+	$(AVC1394_LIBS) \
 	$(STK_LIBS) \
 	$(LIBXML_LIBS)
