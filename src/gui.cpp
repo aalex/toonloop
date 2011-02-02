@@ -156,7 +156,8 @@ void Gui::showCursor()
  * - 0, 1, 2, 3, 4, 5, 6, 7, 8, 9: choose a clip
  * - Ctrl-q: quit
  * - r: clears the contents of the current clip
- * - s: save the current clip
+ * - Ctrl-e: export the current clip
+ * - Ctrl-s: save the whole project
  * - period: toggle the layout
  * - Tab: changes the playback direction
  * - Caps_Lock: Toggle video grabbing on/off
@@ -281,16 +282,28 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             }
             break;
         case GDK_s:
-            // Ctrl-s: Saves the current clip, this quits the main loop
+            // Ctrl-s: Save the whole project
+            if (event->state & GDK_CONTROL_MASK)
+            {
+                if (verbose)
+                    g_print("Saving the whole project.");
+                controller->save_project();
+            } else // no Ctrl pressed
+                g_print("Warning: Use Ctrl-E to export the current clip as a movie file, or Ctrl-s to save the whole project.\n");
+            break;
+        case GDK_e:
+            // Ctrl-e: Exports the current clip
             // (if there is one)
             if (event->state & GDK_CONTROL_MASK)
             {
                 if (verbose)
-                    g_print("Ctrl-S key pressed, TODO: save the whole project.\n");
-                // For now, we save the clip anyways
+                    g_print("Exporting the current clip.");
                 controller->save_current_clip();
-            } else // no Ctrl pressed
-                controller->save_current_clip();
+            }
+            break;
+        case GDK_F2: // TODO: change this key for save
+            controller->save_project();
+            controller->save_current_clip();
             break;
         case GDK_a:
             //std::cout << "Toggle intervalometer." << std::endl; 
@@ -349,9 +362,6 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
                     //context->set_blending_mode(BLENDING_MODE_ADDITIVE);
                 std::cout << "Blending mode:" << context->blending_mode_ << std::endl;
             }
-            break;
-        case GDK_F2: // TODO: change this key for save
-            controller->save_project();
             break;
         default:
             break;
