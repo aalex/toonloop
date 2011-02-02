@@ -1,4 +1,4 @@
-2011-02-02 Toonloop 2.1.10
+2011-??-?? Toonloop 2.1.12
 --------------------------
 
 This release is a snapshot in the 2.1 unstable series. 
@@ -6,17 +6,13 @@ This release is a snapshot in the 2.1 unstable series.
 This version contains new features and bug fixes. It introduce a change in the user interface that is not backward-compatible. 
 
 New features:
-    * Added support for DV cameras
-    * State saving as a project.xml file (all clips with their FPS, direction and images)
+    * 
 
 Changes in the user interface:
-    * Now use Ctrl-e to export the current clip as a movie file. It used to be done by simply pressing the "s" key.
+    * 
 
 Bug fixes:
-    * Removed gdk_pixbuf_unref since it is deprecated.
-    * Check for raw1394 and avc1394
-    * Check for install and ln -s
-    * Removed "Leaving Toonloop" text which ended up in the man page
+    * 
 
 Have fun with Toonloop!
 
