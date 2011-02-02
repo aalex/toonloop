@@ -285,9 +285,9 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             // Ctrl-s: Save the whole project
             if (event->state & GDK_CONTROL_MASK)
             {
-                if (verbose)
-                    g_print("Saving the whole project.");
+                //if (verbose)
                 controller->save_project();
+                g_print("Saved the whole project.");
             } else // no Ctrl pressed
                 g_print("Warning: Use Ctrl-E to export the current clip as a movie file, or Ctrl-s to save the whole project.\n");
             break;
