@@ -16,6 +16,7 @@ Bug fixes:
     * Removed gdk_pixbuf_unref since it is deprecated.
     * Check for raw1394 and avc1394
     * Check for install and ln -s
+    * Removed "Leaving Toonloop" text which ended up in the man page
 
 Have fun with Toonloop!
 

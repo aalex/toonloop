@@ -421,6 +421,8 @@ void Application::run(int argc, char *argv[])
     if (verbose)
         std::cout << "Running toonloop" << std::endl;
     gtk_main();
+    if (verbose)
+        std::cout << "Leaving toonloop" << std::endl;
 
     // pre-shutdown actions
     before_shutdown();
