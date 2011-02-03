@@ -15,6 +15,10 @@ To use a V4L2 video camera:
 
  toonloop \-d /dev/video0
 
+To use a DV video Firewire camera:
+
+ toonloop \-d dv
+
 To display some color bars:
 
  toonloop \-d test
@@ -47,7 +51,8 @@ Toonloop interactive keyboard controls :
  - Page-up: Switch to the previous clip.
  - Number from 0 to 9: Switch to a specific clip.
  - Ctrl-number: Switch to a specific layout.
- - s: Save the current clip as a movie file.
+ - Ctrl-e: Save the current clip as a movie file.
+ - Ctrl-s: Save the whole project.
  - period (.): Toggle the layout.
  - Tab: Change the playback direction.
  - r: Clear the current clip.
