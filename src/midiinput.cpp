@@ -341,7 +341,11 @@ void MidiInput::input_message_cb(double /* delta_time */, std::vector< unsigned 
                 if (context->find_rule_for_control_on(controller_number))
                     return;
                 if (context->find_rule_for_control_map(controller_number, control_value))
+                {
+                    if (context->verbose_)
+                        std::cout << "Found control map rule\n";
                     return;
+                }
             }
             break;
         }
