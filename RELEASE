@@ -1,13 +1,15 @@
-2011-??-?? Toonloop 2.1.10
+2011-??-?? Toonloop 2.1.12
 --------------------------
 
 This release is a snapshot in the 2.1 unstable series. 
 
-This version contains new features and bug fixes. 
+This version contains new features and bug fixes. It introduce a change in the user interface that is not backward-compatible. 
 
 New features:
-    * Added support for DV cameras
-    * State saving as a project.xml file (all clips with their FPS, direction and images)
+    * 
+
+Changes in the user interface:
+    * 
 
 Bug fixes:
     * 
