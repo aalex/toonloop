@@ -22,7 +22,6 @@
 #include <clutter/clutter.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <iostream>
-//#include <stdlib.h>
 
 ImageImporter::ImageImporter(
     const std::string &input_file_name, 
