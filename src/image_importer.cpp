@@ -49,21 +49,10 @@ bool ImageImporter::resize()
 {
     GdkPixbuf *pixbuf;
     GError *error = NULL;
-#ifdef HAVE_BOOST_FILESYSTEM
-    namespace fs = boost::filesystem;
-    if (! fs::exists(input_file_name_))
-    {
-        std::cerr << "ERROR: Input file " << input_file_name_ << " does not exist." << std::endl;
+    if (! toonloop::file_exists(input_file_name_))
         return false;
-    }
-    if (fs::exists(output_file_name_))
-    {
-        std::cerr << "ERROR: Output file " << output_file_name_ << " already exists." << std::endl;
+    if (! toonloop::file_exists(output_file_name_))
         return false;
-    }
-#else
-    std::cerr << "Warning: HAVE_BOOST_FILESYSTEM is false" << std::endl;
-#endif // HAVE_BOOST_FILESYSTEM
     if (verbose_)
         g_print("Loading image %s at size of %dx%d\n", input_file_name_.c_str(), width_, height_);
     pixbuf = gdk_pixbuf_new_from_file_at_scale(input_file_name_.c_str(), width_, height_, FALSE, &error);
@@ -75,8 +64,7 @@ bool ImageImporter::resize()
         g_object_unref(pixbuf);
         return false;
     }
-    std::string img_type = "jpeg";
-    gboolean success = gdk_pixbuf_save(pixbuf, output_file_name_.c_str(), img_type.c_str(), &error, "quality", "100", NULL);
+    gboolean success = gdk_pixbuf_save(pixbuf, output_file_name_.c_str(), "jpeg", &error, "quality", "100", NULL);
     g_object_unref(pixbuf);
     if (error)
     {
@@ -92,3 +80,22 @@ bool ImageImporter::resize()
     return true;
 }
 
+namespace toonloop
+{
+
+bool file_exists(const std::string &file_name)
+{
+#ifdef HAVE_BOOST_FILESYSTEM
+    namespace fs = boost::filesystem;
+    if (! fs::exists(file_name))
+    {
+        std::cerr << "ERROR: File " << file_name << " does not exist." << std::endl;
+        return false;
+    }
+#else
+    std::cerr << "Warning: HAVE_BOOST_FILESYSTEM is false" << std::endl;
+#endif
+    return true;
+} // end of namespace toonloop
+
+}

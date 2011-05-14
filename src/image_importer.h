@@ -29,7 +29,7 @@
 class ImageImporter 
 {
     public: 
-        ImageImporter(const std::string &input_file_name, const std::string &output_file_name, unsigned int width, unsigned int heigth, bool verbose);
+        ImageImporter(const std::string &input_file_name, const std::string &output_file_name, unsigned int width, unsigned int height, bool verbose);
         ~ImageImporter();
         bool resize();
     private:
@@ -39,6 +39,11 @@ class ImageImporter
         unsigned int height_;
         bool verbose_;
 };
+
+namespace toonloop
+{
+bool file_exists(const std::string &file_name);
+} // end of namespace toonloop
 
 #endif // __IMAGE_IMPORTER_H__
 
