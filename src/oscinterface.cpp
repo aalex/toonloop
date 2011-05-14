@@ -58,7 +58,8 @@ OscInterface::OscInterface(
         receiver_.addHandler("/toon/frame/add", "", add_image_cb, this);
         receiver_.addHandler("/toon/frame/remove", "", remove_image_cb, this);
         receiver_.addHandler("/toon/clip/select", "i", select_clip_cb, this);
-        receiver_.addHandler("/toon/clip/save_current", "",  clip_save_current_cb, this);
+        receiver_.addHandler("/toon/clip/save_current", "", clip_save_current_cb, this);
+        receiver_.addHandler("/toon/clip/import_image", "s", import_image_cb, this);
         std::cout << "OSC message handlers:" << std::endl;
         std::cout << " * /ping : Answers with /pong" << std::endl;
         std::cout << " * /pong" << std::endl;
@@ -67,6 +68,7 @@ OscInterface::OscInterface(
         std::cout << " * /toon/frame/remove : Removes a frame" << std::endl;
         std::cout << " * /toon/clip/select i:clip_number : Selects a clip" << std::endl;
         std::cout << " * /toon/clip/save_current : Saves the currently selected clip" << std::endl;
+        std::cout << " * /toon/clip/import_image s:file_name: Imports an image" << std::endl;
     }
     if (sending_enabled_)
     {
@@ -207,6 +209,22 @@ int OscInterface::add_image_cb(
     if (context->is_verbose())
         std::cout << "Got " << path << std::endl;
     context->push_command(std::tr1::shared_ptr<Command>(new AddImageCommand));
+    return 0;
+}
+
+int OscInterface::import_image_cb(
+        const char *path,
+        const char * /*types*/, 
+        lo_arg **argv,
+        int /*argc*/, 
+        void * /*data*/, 
+        void *user_data)
+{
+    OscInterface* context = static_cast<OscInterface*>(user_data);
+    std::string file_name(static_cast<const char*>(&argv[0]->s));
+    if (context->is_verbose())
+        std::cout << "Got " << path << " " << file_name << std::endl;
+    context->push_command(std::tr1::shared_ptr<Command>(new ImportImageCommand(file_name)));
     return 0;
 }
 

@@ -51,7 +51,7 @@ bool ImageImporter::resize()
     GError *error = NULL;
     if (! toonloop::file_exists(input_file_name_))
         return false;
-    if (! toonloop::file_exists(output_file_name_))
+    if (toonloop::file_exists(output_file_name_))
         return false;
     if (verbose_)
         g_print("Loading image %s at size of %dx%d\n", input_file_name_.c_str(), width_, height_);

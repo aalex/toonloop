@@ -747,6 +747,8 @@ bool Pipeline::import_image(const std::string &file_name)
     bool is_verbose = owner_->get_configuration()->get_verbose();
     if (! toonloop::file_exists(file_name))
     {
+        if (is_verbose)
+            std::cout << __FUNCTION__ << ": " << std::endl;
         return false;
     }
     Clip *clip = owner_->get_current_clip();

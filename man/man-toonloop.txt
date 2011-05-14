@@ -79,6 +79,9 @@ Messages Toonloop can receive:
  - /toon/quit: Quit
  - /toon/frame/add: Grab a frame
  - /toon/frame/remove: Remove a frame
+ - /toon/clip/select i:clip_number : Selects a clip
+ - /toon/clip/save_current : Saves the currently selected clip
+ - /toon/clip/import_image s:file_name : Imports an image from the filesystem
 
 Toonloop sends the following OSC messages:
 

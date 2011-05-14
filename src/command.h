@@ -203,4 +203,21 @@ class SaveCurrentClipCommand : public Command
             //MOVE_WRITEHEAD_END,
             //SET_PLAYHEAD_FPS,
 */
+
+/**
+ * Imports an image to the current clip.
+ */
+class ImportImageCommand : public Command
+{
+    public:
+        ImportImageCommand(const std::string file_name) : 
+            Command(),
+            file_name_(file_name)
+        {}
+    private:
+        static const std::string name_;
+        virtual const std::string &do_get_name() const { return name_; }
+        virtual void do_apply(Controller &controller);
+        std::string file_name_;
+};
 #endif
