@@ -76,7 +76,7 @@ bool ImageImporter::resize()
         return false;
     }
     std::string img_type = "jpeg";
-    gboolean success = gdk_pixbuf_save(pixbuf, output_file_name_.c_str(), img_type.c_str(), &error, NULL);
+    gboolean success = gdk_pixbuf_save(pixbuf, output_file_name_.c_str(), img_type.c_str(), &error, "quality", "100", NULL);
     g_object_unref(pixbuf);
     if (error)
     {
