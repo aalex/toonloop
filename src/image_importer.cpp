@@ -19,9 +19,11 @@
  */
 
 #include "image_importer.h"
+#include "config.h"
 #include <clutter/clutter.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <iostream>
+#include <boost/filesystem.hpp>
 
 ImageImporter::ImageImporter(
     const std::string &input_file_name, 
@@ -47,6 +49,21 @@ bool ImageImporter::resize()
 {
     GdkPixbuf *pixbuf;
     GError *error = NULL;
+#ifdef HAVE_BOOST_FILESYSTEM
+    namespace fs = boost::filesystem;
+    if (! fs::exists(input_file_name_))
+    {
+        std::cerr << "ERROR: Input file " << input_file_name_ << " does not exist." << std::endl;
+        return false;
+    }
+    if (fs::exists(output_file_name_))
+    {
+        std::cerr << "ERROR: Output file " << output_file_name_ << " already exists." << std::endl;
+        return false;
+    }
+#else
+    std::cerr << "Warning: HAVE_BOOST_FILESYSTEM is false" << std::endl;
+#endif // HAVE_BOOST_FILESYSTEM
     if (verbose_)
         g_print("Loading image %s at size of %dx%d\n", input_file_name_.c_str(), width_, height_);
     pixbuf = gdk_pixbuf_new_from_file_at_scale(input_file_name_.c_str(), width_, height_, FALSE, &error);
