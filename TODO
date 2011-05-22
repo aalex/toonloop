@@ -12,7 +12,6 @@ Those issues are being worked on in some branches. They need some work so that w
 
  * video: Support DV: gst-launch dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink
  * video: Support HDV (hdvdec)
- * statesaving: choose the right key bindings
 
 
 Review needed
