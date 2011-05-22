@@ -331,6 +331,11 @@ class Controller
          */
         void save_project();
 
+        /**
+         * Imports an image to the current clip.
+         */
+        void import_image(const std::string &file_name);
+
     private:
         Application* owner_;
 };

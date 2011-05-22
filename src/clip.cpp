@@ -234,6 +234,21 @@ bool Clip::remove_last_image()
         return false;
 }
 
+bool Clip::remove_first_if_more_than(int max_num)
+{
+    if (max_num != 0)
+    {
+        if (size() > (unsigned int) max_num)
+        {
+            remove_first_image();
+            if (verbose_)
+                std::cout << "Removing the first image! Max of " << max_num << " has been reached." << std::endl;
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Clip::remove_first_image()
 {
     if (size() > 0)

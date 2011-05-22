@@ -113,3 +113,12 @@ void SaveCurrentClipCommand::do_apply(Controller &controller)
 {
     controller.save_current_clip();
 }
+
+// import_image (s: name)
+const std::string ImportImageCommand::name_ = "import_image";
+
+void ImportImageCommand::do_apply(Controller &controller)
+{
+    controller.import_image(file_name_);
+}
+

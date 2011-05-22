@@ -29,6 +29,7 @@
 #include "application.h"
 #include "clip.h"
 #include "configuration.h"
+#include "image_importer.h"
 #include "controller.h"
 #include "gui.h"
 #include "log.h" // TODO: make it async and implement THROW_ERROR
@@ -288,17 +289,7 @@ void Pipeline::save_image_to_current_clip(GdkPixbuf *pixbuf)
         if (is_verbose)
             g_print("Image %s saved\n", file_name.c_str());
         owner_->get_controller()->add_frame_signal_(current_clip_id, new_image_number);
-        // Removes the first image if the maximum number of frames has been reached.
-        if (owner_->get_configuration()->get_max_images_per_clip() != 0)
-        {
-            unsigned int max_num = (unsigned int) owner_->get_configuration()->get_max_images_per_clip();
-            if (thisclip->size() > max_num)
-            {
-                thisclip->remove_first_image();
-                if (is_verbose)
-                    std::cout << "Removing the first image! Max of " << max_num << " has been reached." << std::endl;
-            }
-        }
+        thisclip->remove_first_if_more_than(owner_->get_configuration()->get_max_images_per_clip());
     }
 }
 
@@ -761,6 +752,43 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
     if (ret not_eq GST_STATE_CHANGE_SUCCESS)
         THROW_ERROR("Could not change v4l2src state to NULL");
     return capsStr.str();
+}
+
+bool Pipeline::import_image(const std::string &file_name)
+{
+    bool is_verbose = owner_->get_configuration()->get_verbose();
+    if (! toonloop::file_exists(file_name))
+    {
+        if (is_verbose)
+            std::cout << __FUNCTION__ << ": " << std::endl;
+        return false;
+    }
+    Clip *clip = owner_->get_current_clip();
+    int clip_id = clip->get_id();
+    // TODO: set clip size if not set.
+    int new_image_number = clip->frame_add();
+    Image *new_image = clip->get_image(new_image_number);
+    if (new_image == 0)
+    {
+        // This is very unlikely to happen
+        std::cerr << __FUNCTION__ << ": No image at " << new_image_number << std::endl;
+        return false;
+    }
+    if (is_verbose)
+        std::cout << "Import an image. Current clip: " << clip_id << ". Image number: " << new_image_number << std::endl;
+    std::string save_as_file_name = clip->get_image_full_path(new_image);
+
+    unsigned int width = (unsigned int) owner_->get_configuration()->get_capture_width();
+    unsigned int height = (unsigned int) owner_->get_configuration()->get_capture_height();
+    ImageImporter img(file_name, save_as_file_name, width, height, is_verbose);
+    bool ok = img.resize();
+    if (! ok)
+        return false;
+    if (is_verbose)
+        g_print("Image %s saved\n", save_as_file_name.c_str());
+    owner_->get_controller()->add_frame_signal_(clip_id, new_image_number);
+    clip->remove_first_if_more_than(owner_->get_configuration()->get_max_images_per_clip());
+    return true;
 }
 
 void Pipeline::set_record_all_frames(bool enable)

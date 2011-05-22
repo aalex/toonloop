@@ -45,6 +45,7 @@ class Pipeline
         bool get_record_all_frames() const { return record_all_frames_enabled_; }
         void set_intervalometer_is_on(bool enable);
         bool get_intervalometer_is_on() const { return intervalometer_is_on_; }
+        bool import_image(const std::string &file_name);
     private:
         Application* owner_;
         GstElement* videosrc_;

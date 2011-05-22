@@ -26,6 +26,7 @@
 #include "statesaving.h"
 #include "timer.h"
 #include "log.h"
+#include "image_importer.h"
 
 Controller::Controller(Application* owner) : 
     owner_(owner)
@@ -61,6 +62,11 @@ int Controller::get_int_value(const std::string &name)
 float Controller::get_float_value(const std::string &name)
 {
     return float_properties_.get_property_value(name);
+}
+
+void Controller::import_image(const std::string &file_name)
+{
+    owner_->get_pipeline()->import_image(file_name);
 }
 
 void Controller::add_frame()

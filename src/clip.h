@@ -114,6 +114,12 @@ class Clip
          */
         unsigned int add_image(const std::string &name);
         void set_verbose(bool verbose) { verbose_ = verbose; }
+
+        /**
+         * Removes the first image if the maximum number of frames has been reached.
+         * Does not remove any if max_num is 0
+         */
+        bool remove_first_if_more_than(int max_num);
     private:
         bool verbose_;
         unsigned int id_;

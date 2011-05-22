@@ -20,29 +20,30 @@ headers = \
 	config.h \
 	configuration.h \
 	controller.h \
-    effect.h \
 	gui.h \
-    glslang.h \
 	image.h \
-    infowindow.h \
+	image_importer.h \
 	log.h \
+	midibinder.h \
 	midiinput.h \
 	moviesaver.h \
-    oscinterface.h \
-    oscreceiver.h \
-    oscsender.h \
 	pipeline.h \
-    playheaditerator.h \
-	property.h \
 	properties.h \
+	property.h \
 	raw1394util.h \
-	midibinder.h \
-    brcosaeffect.h \
 	saverworker.h \
 	statesaving.h \
 	subprocess.h \
 	timer.h \
 	timing.h \
+    brcosaeffect.h \
+    effect.h \
+    glslang.h \
+    infowindow.h \
+    oscinterface.h \
+    oscreceiver.h \
+    oscsender.h \
+    playheaditerator.h \
     unused.h \
 	v4l2util.h
 
@@ -52,27 +53,28 @@ toonloop_SOURCES = \
 	command.cpp \
 	configuration.cpp \
 	controller.cpp \
-    effect.cpp \
 	gui.cpp \
-    glslang.cpp \
 	image.cpp \
-    infowindow.cpp \
+	image_importer.cpp \
 	main.cpp \
 	midiinput.cpp \
 	moviesaver.cpp \
 	pipeline.cpp \
-    playheaditerator.cpp \
-    midibinder.cpp \
-    brcosaeffect.cpp \
+	raw1394util.cpp \
 	saverworker.cpp \
 	subprocess.cpp \
-	raw1394util.cpp \
 	timer.cpp \
 	timing.cpp \
 	v4l2util.cpp \
+    brcosaeffect.cpp \
+    effect.cpp \
+    glslang.cpp \
+    infowindow.cpp \
+    midibinder.cpp \
     oscinterface.cpp \
     oscreceiver.cpp \
     oscsender.cpp \
+    playheaditerator.cpp \
 	$(headers)
 
 toonloop_CXXFLAGS = \
