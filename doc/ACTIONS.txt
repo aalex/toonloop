@@ -1,0 +1,60 @@
+EDITING CONTROLS
+----------------
+add_frame();
+remove_frame();
+import_image(const std::string &file_name);
+clear_current_clip();
+
+VIDEO GRABBING
+---------------
+toggle_video_grabbing();
+enable_video_grabbing(bool enable);
+
+INTERVALOMETER
+--------------
+toggle_intervalometer();
+enable_intervalometer(bool enable);
+set_intervalometer_rate(float rate);
+increase_intervalometer_rate();
+decrease_intervalometer_rate();
+
+MOVE WRITEHEAD
+--------------
+move_writehead_to_next();
+move_writehead_to_previous();
+move_writehead_to_last();
+move_writehead_to_first();
+move_writehead_to(unsigned int position);
+
+CHOOSING CLIPS
+--------------
+choose_clip(unsigned int clip_number);
+choose_next_clip();
+choose_previous_clip();
+
+PLAYBACK CONTROLS
+-----------------
+increase_playhead_fps();
+decrease_playhead_fps();
+set_playhead_fps(unsigned int fps);
+change_current_clip_direction();
+set_current_clip_direction(const std::string &direction);
+
+STATE SAVING
+------------
+save_current_clip();
+save_project();
+
+INTERNAL STUFF
+--------------
+update_playback_image();
+
+MISC APP STUFF
+--------------
+quit();
+
+PROPERTIES
+----------
+set_int_value(const std::string &name, int value);
+set_float_value(const std::string &name, float value);
+print_properties();
