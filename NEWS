@@ -1,6 +1,17 @@
 See the RELEASE file for the latest new features and bug fixes.
 See the ChangeLog file for a log of previous releases informations.
 
+2011-06-03 Toonloop 2.2.0
+--------------------------
+
+This release is the first release in the stable 0.2 series. It's been a long time with no new features added. Let's make call it stable.
+
+New features:
+    * /toon/clip/import_image s:file_name : Imports an image from the filesystem
+
+Bug fixes:
+    * (none)
+
 
 2011-02-02 Toonloop 2.1.10
 --------------------------

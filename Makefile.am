@@ -4,5 +4,5 @@ ACLOCAL_AMFLAGS = -I m4
 desktopdir = $(datadir)/applications
 desktop_DATA = toonloop.desktop
 
-EXTRA_DIST = $(desktop_DATA) RELEASE NEWS CONTRIBUTING OSC
+EXTRA_DIST = $(desktop_DATA) NEWS CONTRIBUTING OSC
 

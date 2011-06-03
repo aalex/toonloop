@@ -28,5 +28,6 @@ Toonloop sends the following OSC messages:
  * /toon/frame/remove i:clip_number i:frame_number
  * /toon/playhead/direction i:clip_number s:direction
  * /toon/playhead/none
+ * /toon/clip/import_image s:file_name : Imports an image from the filesystem
 
 

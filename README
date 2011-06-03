@@ -11,7 +11,7 @@ Toonloop is a great tool for teaching new medias to children. It can also be use
 
 Toonloop can be controlled using MIDI input, or the Open Sound Control protocol. Images are saved to the disk in the JPEG format, and the clips are saved using the photo-JPEG video codec. (using mencoder)
 
-See the RELEASE file for up-to-date information about this version of Toonloop. See the NEWS file for its history.
+See the NEWS file for its history and up-to-date information about this version of Toonloop.
 
 Most of the information on how to use it is in the toonloop(1) man page.
 
