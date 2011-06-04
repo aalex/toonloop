@@ -1,4 +1,4 @@
-TESTS = check_looper check_classes check_threads check_bool check_symlinks check_containers check_statesaving check_signals check_imageimporter
+TESTS = check_looper check_classes check_threads check_bool check_symlinks check_containers check_statesaving check_signals check_imageimporter check_properties
 # check_midi check_moviesaver 
 
 noinst_PROGRAMS = $(TESTS)
@@ -61,3 +61,5 @@ check_imageimporter_SOURCES = check_imageimporter.cpp $(top_srcdir)/src/image_im
 check_imageimporter_CXXFLAGS = $(BOOST_CPPFLAGS) $(CLUTTERGTK_CFLAGS) -Wno-fatal-error -Wno-deprecated -I$(top_srcdir)/src
 check_imageimporter_LDADD = $(BOOST_LIBS) $(CLUTTERGTK_LIBS) $(BOOST_THREAD_LIB) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
 
+check_properties_SOURCES = $(top_srcdir)/src/properties.h $(top_srcdir)/src/property.h check_properties.cpp
+check_properties_CXXFLAGS = -I$(top_srcdir)/src
