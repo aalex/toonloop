@@ -60,6 +60,6 @@ check_signals_LDADD = $(BOOST_LIBS)
 # check_midi_LDADD = $(LDFLAGS) $(STK_LIBS) $(BOOST_LIBS) 
 
 check_imageimporter_SOURCES = check_imageimporter.cpp ../src/image_importer.cpp
-check_imageimporter_CXXFLAGS = $(BOOST_CPPFLAGS) $(CLUTTERGTK_CFLAGS) -Wno-fatal-error -Wno-deprecated
+check_imageimporter_CXXFLAGS = $(BOOST_CPPFLAGS) $(CLUTTERGTK_CFLAGS) -Wno-fatal-error -Wno-deprecated -I../src
 check_imageimporter_LDADD = $(BOOST_LIBS) $(CLUTTERGTK_LIBS) $(BOOST_THREAD_LIB) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
 
