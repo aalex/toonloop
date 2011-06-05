@@ -9,8 +9,10 @@ toonloop.1: all
 
 install: toonloop.1
 	python setup.py install --prefix=/usr/local
+	mkdir -p /usr/local/share/applications
 	install toonloop.desktop /usr/local/share/applications/
 	convert -geometry 48x48 -background none toonloop.svg toonloop.png
+	mkdir -p /usr/local/share/icons/hicolor/48x48/apps/
 	install toonloop.png /usr/local/share/icons/hicolor/48x48/apps/
 	install toonloop.svg /usr/local/share/icons/
 	install -D toonloop.1 /usr/local/share/man/man1/toonloop.1
