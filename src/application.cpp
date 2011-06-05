@@ -335,11 +335,19 @@ void Application::run(int argc, char *argv[])
     // TODO: create a directory for clips and one for images.
     movie_saver_->set_result_directory(config_->get_project_home() + "/" + MOVIES_DIRECTORY);
     // Init GTK, Clutter and GST:
+    // Seems we must set CLUTTER_VBLANK=none on Maverick.
+    if (! g_setenv("CLUTTER_VBLANK", "none", FALSE)) // do not override
+        g_print("Could not set CLUTTER_VBLANK to none\n");
+
     GError *error;
     error = NULL;
+    // FIXME: we should pass error to gtk_clutter_init
     gtk_clutter_init(&argc, &argv);
     if (error)
+    {
         g_error("Unable to initialize Clutter: %s", error->message);
+        g_error_free(error);
+    }
     clutter_gst_init(&argc, &argv);
     // start GUI
     if (verbose)
