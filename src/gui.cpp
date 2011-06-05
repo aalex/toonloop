@@ -904,6 +904,7 @@ Gui::Gui(Application* owner) :
     // Clutter widget:
     clutter_widget_ = gtk_clutter_embed_new();
     gtk_widget_set_size_request(clutter_widget_, WINWIDTH, WINHEIGHT);
+    GTK_WIDGET_UNSET_FLAGS (clutter_widget_, GTK_DOUBLE_BUFFERED);
     gtk_container_add(GTK_CONTAINER(vbox_), clutter_widget_);
     stage_ = gtk_clutter_embed_get_stage(GTK_CLUTTER_EMBED(clutter_widget_));
 
