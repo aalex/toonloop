@@ -70,7 +70,7 @@ class Gui
         
     private:
         void crossfade_increment(float value);
-        static void on_live_input_texture_size_changed(ClutterTexture *texture, gfloat width, gfloat height, gpointer user_data);
+        static void on_live_input_texture_size_changed(ClutterTexture *texture, gint width, gint height, gpointer user_data);
         void on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name);
         void on_frame_added(unsigned int clip_number, unsigned int image_number);
         static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer user_data);
