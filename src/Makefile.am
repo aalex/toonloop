@@ -104,3 +104,4 @@ toonloop_LDADD = \
 	$(AVC1394_LIBS) \
 	$(STK_LIBS) \
 	$(LIBXML_LIBS)
+

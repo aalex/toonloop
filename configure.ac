@@ -84,8 +84,9 @@ AC_SUBST([CLUTTER_CFLAGS])
 # libjson-glib-dev and others
 
 # Clutter-GTK
-PKG_CHECK_MODULES([CLUTTERGTK], [clutter-gtk-0.10 >= 0.10], have_clutter_gtk=true, 
-    PKG_CHECK_MODULES([CLUTTERGTK], [clutter-gtk-1.0 >= 1.0], have_clutter_gtk=true, have_clutter_gtk=false))
+PKG_CHECK_MODULES([CLUTTERGTK], [clutter-gtk-0.10 >= 0.10], have_clutter_gtk=true, have_clutter_gtk=false)
+# PKG_CHECK_MODULES([CLUTTERGTK], [clutter-gtk-1.0 >= 1.0], have_clutter_gtk=true, have_clutter_gtk=false))
+# FIXME: clutter-gtk-1.0 is linked with gtk-3
 if test "x${have_clutter_gtk}" = "xfalse" ; then
     AC_MSG_ERROR([missing package: libclutter-gtk])
 fi
