@@ -130,7 +130,7 @@ void Gui::hideCursor()
 void Gui::showCursor()
 {
     /// sets to default
-    gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), NULL);
+    gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), (GdkCursor *) NULL);
 }
 
 /**
