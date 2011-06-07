@@ -121,7 +121,7 @@ gboolean Gui::on_window_state_event(GtkWidget* /*widget*/, GdkEventWindowState *
  */
 void Gui::hideCursor()
 {
-    gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), GDK_BLANK_CURSOR);
+    gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), (GdkCursor *) GDK_BLANK_CURSOR);
 }
 
 /**
