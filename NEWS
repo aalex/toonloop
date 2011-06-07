@@ -16,13 +16,14 @@ Bug fixes:
     * Fix segfault upon texture size changes signal triggered. Change signature for texture size changes cb. Fix segfault on amd64.
     * Cast GDK_BLANK_CURSOR to GdkCursor* (was not working on amd64)
     * Set cursor to blank the proper way (gtk 2.16+) (was not working on amd64)
-    * avoid linking to libclutter-gtk-1.0, since it links to gtk+-3 on Natty
+    * Avoid linking to libclutter-gtk-1.0, since it links to gtk+-3 on Natty
     * Compile against clutter-gst either 1.0 or 0.10
     * Set CLUTTER_VBLANK=none before clutter_init
     * Disable double buffering in drawing area. (BadDrawable error)
-    * move check_properties to tests/
+    * Move check_properties to tests/
     * Use $(top_srcdir) in Makefile.am for tests
-    * fix check_imageimporter
+    * Fix check_imageimporter
+    * Do not hide cursor if on amd64, since it crashes.
 
 
 2011-02-02 Toonloop 2.1.10
