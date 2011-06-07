@@ -76,7 +76,7 @@ AC_SUBST([GSTAPP_LIBS])
 # Clutter
 PKG_CHECK_MODULES([CLUTTER], [clutter-1.0 >= 1.0], have_clutter=true, have_clutter=false)
 if test "x${have_clutter}" = "xfalse" ; then
-    AC_MSG_ERROR([missing package: libclutter-1.0-dev])
+    AC_MSG_ERROR([missing package: libclutter])
 fi
 AC_SUBST([CLUTTER_LIBS])
 AC_SUBST([CLUTTER_CFLAGS])
@@ -84,17 +84,19 @@ AC_SUBST([CLUTTER_CFLAGS])
 # libjson-glib-dev and others
 
 # Clutter-GTK
-PKG_CHECK_MODULES([CLUTTERGTK], [clutter-gtk-0.10 >= 0.10], have_clutter_gtk=true, have_clutter_gtk=false)
+PKG_CHECK_MODULES([CLUTTERGTK], [clutter-gtk-0.10 >= 0.10], have_clutter_gtk=true, 
+    PKG_CHECK_MODULES([CLUTTERGTK], [clutter-gtk-1.0 >= 1.0], have_clutter_gtk=true, have_clutter_gtk=false))
 if test "x${have_clutter_gtk}" = "xfalse" ; then
-    AC_MSG_ERROR([missing package: libclutter-gtk-0.10-dev])
+    AC_MSG_ERROR([missing package: libclutter-gtk])
 fi
 AC_SUBST([CLUTTERGTK_LIBS])
 AC_SUBST([CLUTTERGTK_CFLAGS])
 
 # Clutter-GST
-PKG_CHECK_MODULES([CLUTTERGST], [clutter-gst-0.10 >= 0.10], have_clutter_gst=true, have_clutter_gst=false)
+PKG_CHECK_MODULES([CLUTTERGST], [clutter-gst-0.10 >= 0.10], have_clutter_gst=true, 
+    PKG_CHECK_MODULES([CLUTTERGST], [clutter-gst-1.0 >= 1.0], have_clutter_gst=true, have_clutter_gst=false))
 if test "x${have_clutter_gst}" = "xfalse" ; then
-    AC_MSG_ERROR([missing package: libclutter-gst-0.10-dev])
+    AC_MSG_ERROR([missing package: libclutter-gst-dev])
 fi
 AC_SUBST([CLUTTERGST_LIBS])
 AC_SUBST([CLUTTERGST_CFLAGS])
