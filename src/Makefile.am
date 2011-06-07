@@ -1,4 +1,3 @@
-TESTS = check_properties
 SUBDIRS = shaders
 bin_PROGRAMS = toonloop
 EXTRA_DIST = doxyfile.in
