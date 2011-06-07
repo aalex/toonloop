@@ -76,7 +76,7 @@ class Gui
         static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer user_data);
         static gboolean key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data);
         static gboolean on_mouse_button_event(GtkWidget *widget, GdkEventButton *event, gpointer user_data);
-        static int on_window_state_event(_GtkWidget *widget, _GdkEventWindowState *event, gpointer user_data);
+        static int on_window_state_event(_GtkWidget *widget, GdkEvent *event, gpointer user_data);
         static void on_render_frame(ClutterTimeline * timeline, gint msecs, gpointer user_data);
         void on_blending_mode_int_property_changed(std::string &name, int value);
         void on_crossfade_ratio_changed(std::string &name, float value);

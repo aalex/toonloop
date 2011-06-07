@@ -106,10 +106,11 @@ void Gui::set_onionskin_opacity(int value)
 /**
  * In fullscreen mode, hides the cursor. In windowed mode, shows the cursor.
  */
-gboolean Gui::on_window_state_event(GtkWidget* /*widget*/, GdkEventWindowState *event, gpointer user_data)
+gboolean Gui::on_window_state_event(GtkWidget* /*widget*/, GdkEvent * event, gpointer user_data)
 {
     Gui *context = static_cast<Gui*>(user_data);
-    context->isFullscreen_ = (event->new_window_state & GDK_WINDOW_STATE_FULLSCREEN);
+    GdkEventWindowState *tmp = (GdkEventWindowState *) event;
+    context->isFullscreen_ = (tmp->new_window_state & GDK_WINDOW_STATE_FULLSCREEN);
     if (context->isFullscreen_)
         context->hideCursor();
     else
