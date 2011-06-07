@@ -809,7 +809,7 @@ void Gui::set_layout(layout_number layout)
  * Useful to update the layout. Calls Gui::resize_actors.
  */
 void on_playback_texture_size_changed(ClutterTexture *texture, 
-        gfloat /*width*/, gfloat /*height*/, gpointer user_data) 
+        gint /*width*/, gint /*height*/, gpointer user_data) 
 {
     //g_print("on_playback_texture_size_changed\n");
     // TODO:2010-08-06:aalex:Take into account size and ratio of the playback texture
