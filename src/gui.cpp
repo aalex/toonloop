@@ -117,12 +117,18 @@ gboolean Gui::on_window_state_event(GtkWidget* /*widget*/, GdkEvent * event, gpo
         context->showCursor();
     return TRUE;
 }
+
+bool is_amd64()
+{
+    return sizeof(void*) == 8;
+}
 /**
  * In fullscreen mode, hides the cursor.
  */
 void Gui::hideCursor()
 {
-    gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), (GdkCursor *) GDK_BLANK_CURSOR);
+    if (! is_amd64())
+    	gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), (GdkCursor *) GDK_BLANK_CURSOR);
 }
 
 /**
