@@ -28,7 +28,6 @@
 #include <clutter/clutter.h>
 #include <cmath>
 #include <gdk/gdk.h>
-#include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
 #include <gst/gst.h>
 #include <gtk/gtk.h>
