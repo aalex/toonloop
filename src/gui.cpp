@@ -101,11 +101,11 @@ static int clip_int(int value, int from, int to)
     return std::max(std::min(value, to), from);
 }
 
-gboolean Gui::on_mouse_button_event(GtkWidget* /* widget */, GdkEventButton *event, gpointer user_data)
+gboolean Gui::on_mouse_button_event(ClutterActor* /* actor */, ClutterEvent *event, gpointer user_data)
 {
     Gui *context = static_cast<Gui *>(user_data);
     // Before 2010-09-20 we tried to start/stop video recording but it was buggy
-    if (event->type == GDK_BUTTON_PRESS)
+    if (event->type == CLUTTER_BUTTON_PRESS)
     {
         if (context->owner_->get_configuration()->get_mouse_controls_enabled())
             context->owner_->get_controller()->add_frame();
@@ -943,7 +943,6 @@ Gui::Gui(Application* owner) :
     gtk_window_set_geometry_hints(GTK_WINDOW(window_), window_, &geometry, GDK_HINT_MIN_SIZE);
     // connect window signals:
     g_signal_connect(G_OBJECT(window_), "delete-event", G_CALLBACK(on_delete_event), this);
-    g_signal_connect(G_OBJECT(window_), "button-press-event", G_CALLBACK(on_mouse_button_event), this);
 
     // add listener for window-state-event to detect fullscreenness
     g_signal_connect(G_OBJECT(window_), "window-state-event", G_CALLBACK(on_window_state_event), this);
@@ -963,6 +962,7 @@ Gui::Gui(Application* owner) :
     stage_ = gtk_clutter_embed_get_stage(GTK_CLUTTER_EMBED(clutter_widget_));
 
     g_signal_connect(G_OBJECT(stage_), "key-press-event", G_CALLBACK(key_press_event), this);
+    g_signal_connect(G_OBJECT(stage_), "button-press-event", G_CALLBACK(on_mouse_button_event), this);
 
     clutter_stage_set_user_resizable(CLUTTER_STAGE(stage_), TRUE);
     g_signal_connect(stage_, "allocation-changed", G_CALLBACK(on_stage_allocation_changed), this);

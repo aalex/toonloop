@@ -75,7 +75,7 @@ class Gui
         void on_frame_added(unsigned int clip_number, unsigned int image_number);
         static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer user_data);
         static gboolean key_press_event(ClutterActor *stage, ClutterEvent *event, gpointer user_data);
-        static gboolean on_mouse_button_event(GtkWidget *widget, GdkEventButton *event, gpointer user_data);
+        static gboolean on_mouse_button_event(ClutterActor *actor, ClutterEvent *event, gpointer user_data);
         static int on_window_state_event(_GtkWidget *widget, GdkEvent *event, gpointer user_data);
         static void on_render_frame(ClutterTimeline * timeline, gint msecs, gpointer user_data);
         void on_blending_mode_int_property_changed(std::string &name, int value);
