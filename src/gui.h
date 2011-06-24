@@ -91,6 +91,11 @@ class Gui
         void update_info_text();
         void toggle_info();
         void toggle_help();
+        /** 
+         * Sets the window icon.
+         * (not used right now, since we use GTK)
+         */
+        void set_window_icon();
         
         float video_input_width_;
         float video_input_height_;

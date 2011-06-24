@@ -33,6 +33,10 @@
 #include <gtk/gtk.h>
 #include <iostream>
 #include <sstream>
+#include <clutter/x11/clutter-x11.h>
+#include <X11/Xlib.h>
+#include <X11/extensions/Xrandr.h>
+#include <X11/cursorfont.h>
 
 #include "application.h"
 #include "clip.h"
@@ -54,6 +58,51 @@ typedef std::vector<ClutterActor*>::iterator ActorIterator;
 static int clip_int(int value, int from, int to)
 {
     return std::max(std::min(value, to), from);
+}
+
+void Gui::set_window_icon()
+{
+    Display *dpy = clutter_x11_get_default_display();
+    Window win = clutter_x11_get_stage_window(CLUTTER_STAGE(stage_));
+    static Atom net_wm_icon = None;
+
+    if (! net_wm_icon)
+        net_wm_icon = XInternAtom(dpy, "_NET_WM_ICON", False);
+
+    GdkPixbuf *pixbuf = NULL;
+    GError *error = NULL;
+    std::string image_file_name = "";
+    bool verbose = true;
+
+    gint pixels_w = 32;
+    gint pixels_h = 32;
+    if (verbose)
+        g_print("Loading image at size of %dx%d\n", pixels_w, pixels_h);
+    pixbuf = gdk_pixbuf_new_from_file_at_scale(image_file_name.c_str(), pixels_w, pixels_h, FALSE, &error);
+    if (! pixbuf)
+    {
+        g_error("Error loading image %s: %s", image_file_name.c_str(), error->message);
+        g_error_free(error);
+        error = NULL;
+        g_object_unref(pixbuf);
+        return;
+    }
+    int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
+    if (n_channels != 3)
+    {
+        g_critical("Image has an alpha channel and we don't support it.");
+        g_object_unref(pixbuf);
+        return;
+    }
+
+    guchar *data = gdk_pixbuf_get_pixels(pixbuf);
+
+    /* Set the property */
+    XChangeProperty(dpy, win, net_wm_icon, XA_CARDINAL,
+        32, PropModeReplace, (unsigned char *) data,
+        (pixels_w * pixels_h) + 2);
+
+    g_object_unref(pixbuf);
 }
 
 gboolean Gui::on_mouse_button_event(ClutterActor* /* actor */, ClutterEvent *event, gpointer user_data)
