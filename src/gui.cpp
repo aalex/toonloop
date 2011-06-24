@@ -47,6 +47,52 @@
 #include "timer.h"
 #include "unused.h"
 
+#if CLUTTER_CHECK_VERSION(1,6,0)
+#else
+#define CLUTTER_KEY_0 CLUTTER_0
+#define CLUTTER_KEY_1 CLUTTER_1
+#define CLUTTER_KEY_2 CLUTTER_2
+#define CLUTTER_KEY_3 CLUTTER_3
+#define CLUTTER_KEY_4 CLUTTER_4
+#define CLUTTER_KEY_5 CLUTTER_5
+#define CLUTTER_KEY_6 CLUTTER_6
+#define CLUTTER_KEY_7 CLUTTER_7
+#define CLUTTER_KEY_8 CLUTTER_8
+#define CLUTTER_KEY_9 CLUTTER_9
+#define CLUTTER_KEY_BackSpace CLUTTER_BackSpace
+#define CLUTTER_KEY_Caps_Lock CLUTTER_Caps_Lock
+#define CLUTTER_KEY_Down CLUTTER_Down
+#define CLUTTER_KEY_Escape CLUTTER_Escape
+#define CLUTTER_KEY_F1 CLUTTER_F1
+#define CLUTTER_KEY_F2 CLUTTER_F2
+#define CLUTTER_KEY_Left CLUTTER_Left
+#define CLUTTER_KEY_Page_Down CLUTTER_Page_Down
+#define CLUTTER_KEY_Page_Up CLUTTER_Page_Up
+#define CLUTTER_KEY_Return CLUTTER_Return
+#define CLUTTER_KEY_Right CLUTTER_Right
+#define CLUTTER_KEY_Tab CLUTTER_Tab
+#define CLUTTER_KEY_Up CLUTTER_Up
+#define CLUTTER_KEY_a CLUTTER_a
+#define CLUTTER_KEY_b CLUTTER_b
+#define CLUTTER_KEY_bracketleft CLUTTER_bracketleft
+#define CLUTTER_KEY_bracketright CLUTTER_bracketright
+#define CLUTTER_KEY_e CLUTTER_e
+#define CLUTTER_KEY_f CLUTTER_f
+#define CLUTTER_KEY_i CLUTTER_i
+#define CLUTTER_KEY_j CLUTTER_j
+#define CLUTTER_KEY_k CLUTTER_k
+#define CLUTTER_KEY_o CLUTTER_o
+#define CLUTTER_KEY_parenleft CLUTTER_parenleft
+#define CLUTTER_KEY_parenright CLUTTER_parenright
+#define CLUTTER_KEY_period CLUTTER_period
+#define CLUTTER_KEY_q CLUTTER_q
+#define CLUTTER_KEY_r CLUTTER_r
+#define CLUTTER_KEY_s CLUTTER_s
+#define CLUTTER_KEY_semicolon CLUTTER_semicolon
+#define CLUTTER_KEY_space CLUTTER_space
+#define CLUTTER_KEY_x CLUTTER_x
+#endif
+
 namespace fs = boost::filesystem;
 using std::tr1::shared_ptr;
 typedef std::vector<ClutterActor*>::iterator ActorIterator;
@@ -169,87 +215,94 @@ void Gui::showCursor()
  * - o: toggles onion skinning
  * - []: increase/decrease opacity of the live input image in the overlay layout.
  */
-gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
+gboolean Gui::key_press_event(ClutterActor *stage, ClutterEvent *event, gpointer user_data)
 {
-    // TODO: Ctrl-s: save the whole project
     // TODO:2010-09-18:aalex:Use the accelerators to allow the user to configure the controls
     // TODO:2010-09-18:aalex:Use Clutter for mouse and keyboard controls (ClutterBindingPool)
+
+    UNUSED(stage);
+    guint keyval = clutter_event_get_key_symbol(event);
+    ClutterModifierType state = clutter_event_get_state(event);
+    //bool shift_pressed = (state & CLUTTER_SHIFT_MASK ? true : false);
+    bool ctrl_pressed = (state & CLUTTER_CONTROL_MASK ? true : false);
+    bool caps_lock_on = (state & CLUTTER_LOCK_MASK ? false : true); // FIXME: caps lock seems on when its off and vice versa
+
     Gui *context = static_cast<Gui*>(user_data);
     Controller *controller = context->owner_->get_controller();
     bool verbose = context->owner_->get_configuration()->get_verbose();
 
-    switch (event->keyval)
+    switch (keyval)
     {
-        case GDK_Caps_Lock:
+        case CLUTTER_KEY_Caps_Lock:
         {
-            if ((event->state & GDK_LOCK_MASK) != 0)
+            if (caps_lock_on)
             {
-                std::cout << "Caps_Lock off." << std::endl;
-                controller->enable_video_grabbing(false);
-            } else {
                 std::cout << "Caps_Lock on. Recording video." << std::endl;
                 controller->enable_video_grabbing(true);
+            } else {
+                std::cout << "Caps_Lock off." << std::endl;
+                controller->enable_video_grabbing(false);
             }
             break;
         }
-        case GDK_Up:
+        case CLUTTER_KEY_Up:
             controller->increase_playhead_fps();
             break;
-        case GDK_Down:
+        case CLUTTER_KEY_Down:
             controller->decrease_playhead_fps();
             break;
-        //case GDK_XXX:
+        //case CLUTTER_KEY_XXX:
         //    controller->set_current_clip_direction(DIRECTION_BACKWARD);
         //    break;
-        //case GDK_XXX:
+        //case CLUTTER_KEY_XXX:
         //    controller->set_current_clip_direction(DIRECTION_FORWARD);
         //    break;
-        case GDK_Tab:
+        case CLUTTER_KEY_Tab:
             controller->change_current_clip_direction();
             break;
-        case GDK_period:
+        case CLUTTER_KEY_period:
             //TODO:2010-08-27:aalex:Create Controller:toggle_layout
             context->toggle_layout();
             break;
-        case GDK_r:
+        case CLUTTER_KEY_r:
             // Ctrl-r or just r?
-            //if (event->state & GDK_CONTROL_MASK)
+            //if (event->state & CLUTTER_CONTROL_MASK)
             controller->clear_current_clip();
             break;
-        case GDK_BackSpace:
+        case CLUTTER_KEY_BackSpace:
             controller->remove_frame();
             break;
-        case GDK_f:
-        case GDK_Escape:
-            context->toggleFullscreen(widget);
+        case CLUTTER_KEY_f:
+        case CLUTTER_KEY_Escape:
+            context->toggleFullscreen(context->window_);
             break;
-        case GDK_space:
+        case CLUTTER_KEY_space:
             controller->add_frame();
             break;
-        case GDK_Page_Up:
+        case CLUTTER_KEY_Page_Up:
             controller->choose_previous_clip();
             break;
-        case GDK_Page_Down:
+        case CLUTTER_KEY_Page_Down:
             controller->choose_next_clip();
             break;
-        case GDK_0:
-        case GDK_1:
-        case GDK_2:
-        case GDK_3:
-        case GDK_4:
-        case GDK_5:
-        case GDK_6:
-        case GDK_7:
-        case GDK_8:
-        case GDK_9:
+        case CLUTTER_KEY_0:
+        case CLUTTER_KEY_1:
+        case CLUTTER_KEY_2:
+        case CLUTTER_KEY_3:
+        case CLUTTER_KEY_4:
+        case CLUTTER_KEY_5:
+        case CLUTTER_KEY_6:
+        case CLUTTER_KEY_7:
+        case CLUTTER_KEY_8:
+        case CLUTTER_KEY_9:
         {   // need to use brackets when declaring variable inside case
             //* Switch the current clip according to a gdk key value from 0 to 9
             //* keyval should be one of :
             //* GDK_0 GDK_1 GDK_2 GDK_3 GDK_4 GDK_5 GDK_6 GDK_7 GDK_8 GDK_9
             //* Of course, any other value might lead to a crash.
             // FIXME:2010-08-17:aalex:Doing arithmetics with a gdk keyval is a hack
-            unsigned int number_pressed = (event->keyval & 0x0F);
-            if (event->state & GDK_CONTROL_MASK)
+            unsigned int number_pressed = (keyval & 0x0F);
+            if (ctrl_pressed)
             {
                 if (number_pressed == 0)
                     context->set_layout(LAYOUT_SPLITSCREEN);
@@ -268,19 +321,19 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
                 controller->choose_clip(number_pressed);
             break;
         }
-        case GDK_q:
+        case CLUTTER_KEY_q:
             // Quit application on ctrl-q, this quits the main loop
             // (if there is one)
-            if (event->state & GDK_CONTROL_MASK)
+            if (ctrl_pressed)
             {
                 if (verbose)
                     g_print("Ctrl-Q key pressed, quitting.\n");
                 context->owner_->quit();
             }
             break;
-        case GDK_s:
+        case CLUTTER_KEY_s:
             // Ctrl-s: Save the whole project
-            if (event->state & GDK_CONTROL_MASK)
+            if (ctrl_pressed)
             {
                 //if (verbose)
                 controller->save_project();
@@ -288,67 +341,67 @@ gboolean Gui::key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer us
             } else // no Ctrl pressed
                 g_print("Warning: Use Ctrl-E to export the current clip as a movie file, or Ctrl-s to save the whole project.\n");
             break;
-        case GDK_e:
+        case CLUTTER_KEY_e:
             // Ctrl-e: Exports the current clip
             // (if there is one)
-            if (event->state & GDK_CONTROL_MASK)
+            if (ctrl_pressed)
             {
                 if (verbose)
                     g_print("Exporting the current clip.");
                 controller->save_current_clip();
             }
             break;
-        case GDK_F2: // TODO: change this key for save
+        case CLUTTER_KEY_F2: // TODO: change this key for save
             controller->save_project();
             controller->save_current_clip();
             break;
-        case GDK_a:
+        case CLUTTER_KEY_a:
             //std::cout << "Toggle intervalometer." << std::endl; 
             controller->toggle_intervalometer();
             break;
-        case GDK_k:
+        case CLUTTER_KEY_k:
             controller->increase_intervalometer_rate();
             break;
-        case GDK_j:
+        case CLUTTER_KEY_j:
             controller->decrease_intervalometer_rate();
             break;
-        case GDK_Left:
+        case CLUTTER_KEY_Left:
             controller->move_writehead_to_previous();
             break;
-        case GDK_Right:
+        case CLUTTER_KEY_Right:
             controller->move_writehead_to_next();
             break;
-        case GDK_Return:
+        case CLUTTER_KEY_Return:
             controller->move_writehead_to_last();
             break;
-        case GDK_semicolon:
+        case CLUTTER_KEY_semicolon:
             controller->move_writehead_to_first();
             break;
-        case GDK_bracketleft:
+        case CLUTTER_KEY_bracketleft:
             controller->set_int_value("livefeed_opacity", clip_int(controller->get_int_value("livefeed_opacity") - 1, 0, 255));
             break;
-        case GDK_bracketright:
+        case CLUTTER_KEY_bracketright:
             controller->set_int_value("livefeed_opacity", clip_int(controller->get_int_value("livefeed_opacity") + 1, 0, 255));
             break;
-        case GDK_parenleft:
+        case CLUTTER_KEY_parenleft:
             context->crossfade_increment(-0.1f);
             break;
-        case GDK_parenright:
+        case CLUTTER_KEY_parenright:
             context->crossfade_increment(0.1f);
             break;
-        case GDK_i:
+        case CLUTTER_KEY_i:
             context->toggle_info();
             break;
-        case GDK_F1:
+        case CLUTTER_KEY_F1:
             context->toggle_help();
             break;
-        case GDK_o:
+        case CLUTTER_KEY_o:
             context->enable_onionskin( ! context->onionskin_enabled_);
             break;
-        case GDK_x:
+        case CLUTTER_KEY_x:
             controller->set_int_value("black_out", 1 - controller->get_int_value("black_out")); // toggle [0,1]
             break;
-        case GDK_b:
+        case CLUTTER_KEY_b:
             {
                 Property<int> *blending_mode = controller->int_properties_.get_property("blending_mode");
                 if (blending_mode->get_value() == 1) //context->blending_mode_ == BLENDING_MODE_ADDITIVE)
@@ -891,7 +944,6 @@ Gui::Gui(Application* owner) :
     gtk_window_set_geometry_hints(GTK_WINDOW(window_), window_, &geometry, GDK_HINT_MIN_SIZE);
     // connect window signals:
     g_signal_connect(G_OBJECT(window_), "delete-event", G_CALLBACK(on_delete_event), this);
-    g_signal_connect(G_OBJECT(window_), "key-press-event", G_CALLBACK(key_press_event), this);
     g_signal_connect(G_OBJECT(window_), "button-press-event", G_CALLBACK(on_mouse_button_event), this);
 
     // add listener for window-state-event to detect fullscreenness
@@ -910,6 +962,8 @@ Gui::Gui(Application* owner) :
     GTK_WIDGET_UNSET_FLAGS (clutter_widget_, GTK_DOUBLE_BUFFERED);
     gtk_container_add(GTK_CONTAINER(vbox_), clutter_widget_);
     stage_ = gtk_clutter_embed_get_stage(GTK_CLUTTER_EMBED(clutter_widget_));
+
+    g_signal_connect(G_OBJECT(stage_), "key-press-event", G_CALLBACK(key_press_event), this);
 
     clutter_stage_set_user_resizable(CLUTTER_STAGE(stage_), TRUE);
     g_signal_connect(stage_, "allocation-changed", G_CALLBACK(on_stage_allocation_changed), this);

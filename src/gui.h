@@ -74,7 +74,7 @@ class Gui
         void on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name);
         void on_frame_added(unsigned int clip_number, unsigned int image_number);
         static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer user_data);
-        static gboolean key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data);
+        static gboolean key_press_event(ClutterActor *stage, ClutterEvent *event, gpointer user_data);
         static gboolean on_mouse_button_event(GtkWidget *widget, GdkEventButton *event, gpointer user_data);
         static int on_window_state_event(_GtkWidget *widget, GdkEvent *event, gpointer user_data);
         static void on_render_frame(ClutterTimeline * timeline, gint msecs, gpointer user_data);
