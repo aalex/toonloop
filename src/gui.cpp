@@ -122,6 +122,7 @@ bool is_amd64()
 {
     return sizeof(void*) == 8;
 }
+
 /**
  * In fullscreen mode, hides the cursor.
  */
@@ -781,7 +782,6 @@ void Gui::on_live_input_texture_size_changed(ClutterTexture *texture, gint width
     gui->video_input_height_ = (float) height;
 
     ClutterActor *stage;
-
     stage = clutter_actor_get_stage(CLUTTER_ACTOR(texture));
     if (stage == NULL)
         return;
@@ -883,7 +883,6 @@ Gui::Gui(Application* owner) :
     gtk_widget_set_size_request(window_, WINWIDTH, WINHEIGHT); 
     gtk_window_move(GTK_WINDOW(window_), 300, 10); // TODO: make configurable
     std::string window_title("Toonloop " PACKAGE_VERSION);
-    // TODO: version is "snapshot" if minor number is odd, "git" if micro is odd, "release" otherwise
     gtk_window_set_title(GTK_WINDOW(window_), window_title.c_str());
     // Set window icon
     fs::path iconPath(std::string(PIXMAPS_DIR) + "/toonloop.png");
