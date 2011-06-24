@@ -19,6 +19,7 @@ headers = \
 	gui.h \
 	image.h \
 	image_importer.h \
+	legacyclutter.h \
 	log.h \
 	midibinder.h \
 	midiinput.h \
