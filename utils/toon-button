@@ -2,30 +2,49 @@
 """
 Interface between Arduino and Toonloop.
 """
-import serial
-import time
+import sys
+from twisted.python import log
+from twisted.python import usage
+from twisted.internet import reactor
+from twisted.internet.serialport import SerialPort
+from twisted.internet.protocol import Protocol
 
-DEVICE_FILE = "/dev/ttyACM0"
-BAUD_RATE = 19200
+class Options(usage.Options):
+    optParameters = [
+        ['port', 'p', '/dev/ttyACM0', 'Device for serial button'],
+        ['baudrate', 'b', '19200', 'Baudrate for serial button'],
+        ['outfile', 'o', None, 'Logfile [default: sys.stdout]'],
+    ]
 
-CHAR_ZERO = 48
-CHAR_ONE = 49
+class ToonloopButton(Protocol):
+    def __init__(self):
+        pass
+
+    def dataReceived(self, data):
+        self.transport.write(data)
+        if data.startswith("1"):
+            print("bang")
 
 def run():
-    device = serial.Serial(
-        port=DEVICE_FILE, 
-        baudrate=BAUD_RATE)
+    o = Options()
     try:
-        while True:
-            data = device.readline()
-            if data.startswith("1"):
-                print("yes")
-            else:
-                print("no")
-            time.sleep(0.0001)
-    except KeyboardInterrupt, e:
-        print("Bye.")
+        o.parseOptions()
+    except usage.UsageError, errortext:
+        print("%s: %s" % (sys.argv[0], errortext))
+        print("%s: Try --help for usage details." % (sys.argv[0]))
+        sys.exit(1)
+
+    logFile = sys.stdout
+    if o.opts['outfile']:
+        logFile = o.opts['outfile']
+    log.startLogging(logFile)
+    
+    SerialPort(ToonloopButton(), o.opts['port'], reactor, baudrate=int(o.opts['baudrate']))
+    reactor.run()
 
 if __name__ == "__main__":
-    run()
+    try:
+        run()
+    except KeyboardInterrupt, e:
+        print("Bye.")
 
