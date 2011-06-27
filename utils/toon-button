@@ -2,28 +2,40 @@
 """
 Interface between Arduino and Toonloop.
 """
-import sys
+from twisted.internet import reactor
+from twisted.internet.protocol import Protocol
+from twisted.internet.serialport import SerialPort
 from twisted.python import log
 from twisted.python import usage
-from twisted.internet import reactor
-from twisted.internet.serialport import SerialPort
-from twisted.internet.protocol import Protocol
+from txosc import async
+from txosc import osc
+import sys
 
 class Options(usage.Options):
     optParameters = [
-        ['port', 'p', '/dev/ttyACM0', 'Device for serial button'],
-        ['baudrate', 'b', '19200', 'Baudrate for serial button'],
-        ['outfile', 'o', None, 'Logfile [default: sys.stdout]'],
+        ["serialport", "s", "/dev/ttyACM0", "Device for serial button"],
+        ["sendport", "p", "9999", "UDP port to send OSC messages to"],
+        ["host", "h", "127.0.0.1", "Host to send OSC messages to"],
+        ["baudrate", "b", "19200", "Baudrate for serial button"],
+        ["outfile", "o", None, "Logfile [default: sys.stdout]"],
     ]
 
 class ToonloopButton(Protocol):
-    def __init__(self):
-        pass
+    def __init__(self, port_number, host="127.0.0.1"):
+        self._port_number = port_number
+        self._host = host
+        self._client = async.DatagramClientProtocol()
+        self._client_port = reactor.listenUDP(0, self._client)
+
+    def _send(self, element):
+        self._client.send(element, (self._host, self._port_number))
+        print("Sent %s to %s:%d" % (element, self._host, self._port_number))
 
     def dataReceived(self, data):
         self.transport.write(data)
         if data.startswith("1"):
-            print("bang")
+            # print("bang")
+            self._send(osc.Message("/toon/frame/add"))
 
 def run():
     o = Options()
@@ -34,12 +46,23 @@ def run():
         print("%s: Try --help for usage details." % (sys.argv[0]))
         sys.exit(1)
 
+    # logging
     logFile = sys.stdout
-    if o.opts['outfile']:
-        logFile = o.opts['outfile']
+    if o.opts["outfile"]:
+        logFile = o.opts["outfile"]
     log.startLogging(logFile)
-    
-    SerialPort(ToonloopButton(), o.opts['port'], reactor, baudrate=int(o.opts['baudrate']))
+
+    # port
+    portnumber = 9999
+    if o.opts["sendport"]:
+        portnumber = int(o.opts["sendport"])
+
+    # host
+    host = "127.0.0.1"
+    if o.opts["host"]:
+        host = o.opts["host"]
+
+    SerialPort(ToonloopButton(portnumber, host), o.opts["serialport"], reactor, baudrate=int(o.opts["baudrate"]))
     reactor.run()
 
 if __name__ == "__main__":
