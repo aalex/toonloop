@@ -1301,7 +1301,7 @@ void Gui::animate_progress_bar()
     reset_progress_bar();
     gint duration = g_random_int_range(1000, 2000);
     // animate bar:
-    clutter_actor_animate(status_text_actor_, CLUTTER_EASE_IN_OUT_SINE, duration,
+    clutter_actor_animate(status_text_actor_, CLUTTER_EASE_IN_SINE, duration,
         "opacity", 0,
         NULL);
 
@@ -1316,7 +1316,7 @@ void Gui::animate_flash()
 {
     gint duration = 200;
     clutter_actor_set_opacity(flash_actor_, 60.0);
-    clutter_actor_animate(flash_actor_, CLUTTER_EASE_IN_OUT_SINE, duration,
+    clutter_actor_animate(flash_actor_, CLUTTER_EASE_OUT_SINE, duration,
         "opacity", 0,
         NULL);
 }
