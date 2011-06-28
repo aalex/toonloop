@@ -60,6 +60,7 @@ OscInterface::OscInterface(
         receiver_.addHandler("/toon/clip/select", "i", select_clip_cb, this);
         receiver_.addHandler("/toon/clip/save_current", "", clip_save_current_cb, this);
         receiver_.addHandler("/toon/clip/import_image", "s", import_image_cb, this);
+        receiver_.addHandler("/toon/clip/loop_bounds", "ff", loop_bounds_cb, this);
         std::cout << "OSC message handlers:" << std::endl;
         std::cout << " * /ping : Answers with /pong" << std::endl;
         std::cout << " * /pong" << std::endl;
@@ -307,6 +308,24 @@ int OscInterface::clip_save_current_cb(
     if (context->is_verbose())
         std::cout << "Got " << path << std::endl;
     context->push_command(std::tr1::shared_ptr<Command>(new SaveCurrentClipCommand));
+    return 0;
+}
+
+int OscInterface::loop_bounds_cb(
+        const char *path,
+        const char * /*types*/, 
+        lo_arg ** argv,
+        int /*argc*/, 
+        void * /*data*/, 
+        void *user_data)
+{
+    OscInterface* context = static_cast<OscInterface*>(user_data);
+    if (context->is_verbose())
+        std::cout << "Got " << path << std::endl;
+
+    double lower = (double) argv[0]->f;
+    double upper = (double) argv[1]->f;
+    context->push_command(std::tr1::shared_ptr<Command>(new LoopBoundsCommand(lower, upper)));
     return 0;
 }
 

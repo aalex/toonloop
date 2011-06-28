@@ -220,4 +220,23 @@ class ImportImageCommand : public Command
         virtual void do_apply(Controller &controller);
         std::string file_name_;
 };
+
+/**
+ * Sets the loop bounds for the current clip
+ */
+class LoopBoundsCommand : public Command
+{
+    public:
+        LoopBoundsCommand(double lower, double upper) : 
+            Command(),
+            lower_(lower),
+            upper_(upper)
+        {}
+    private:
+        static const std::string name_;
+        virtual const std::string &do_get_name() const { return name_; }
+        virtual void do_apply(Controller &controller);
+        double lower_;
+        double upper_;
+};
 #endif

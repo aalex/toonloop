@@ -122,3 +122,11 @@ void ImportImageCommand::do_apply(Controller &controller)
     controller.import_image(file_name_);
 }
 
+// loop_bounds (f: lower, f: upper)
+const std::string LoopBoundsCommand::name_ = "loop_bounds";
+
+void LoopBoundsCommand::do_apply(Controller &controller)
+{
+    controller.set_loop_bounds(lower_, upper_);
+}
+
