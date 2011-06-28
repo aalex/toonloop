@@ -23,7 +23,6 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gst/gst.h>
-#include <gtk/gtk.h>
 #include <string>
 #include "configuration.h"
 #include "image.h"

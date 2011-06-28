@@ -20,9 +20,7 @@
 #include <boost/filesystem.hpp>
 #include <clutter-gst/clutter-gst.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gdk/gdk.h>
 #include <gst/gst.h>
-#include <gtk/gtk.h>
 #include <iostream>
 #include <stdlib.h> // for itoa()
 
@@ -305,7 +303,6 @@ void Pipeline::stop()
     gst_element_set_state(GST_ELEMENT(pipeline_), GST_STATE_NULL);
     //std::cout << "Deleting the GStreamer pipeline." << std::endl;
     //gst_object_unref(pipeline_);
-    // gtk main quit?
 }
 
 void Pipeline::link_or_die(GstElement *from, GstElement *to)

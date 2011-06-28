@@ -57,12 +57,8 @@ if test "x${have_liblo}" = "xfalse" ; then
     AC_MSG_ERROR([Missing liblo])
 fi
 
-# GTK and GST
-PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.12.9 glib-2.0 >= 2.16.6 gdk-2.0])
+# GST
 PKG_CHECK_MODULES([GST], [gstreamer-0.10 >= 0.10.0 gstreamer-interfaces-0.10 >= 0.10.19])
-
-AC_SUBST([GTK_LIBS])
-AC_SUBST([GTK_CFLAGS])
 AC_SUBST([GST_LIBS])
 AC_SUBST([GST_CFLAGS])
 
@@ -82,16 +78,6 @@ AC_SUBST([CLUTTER_LIBS])
 AC_SUBST([CLUTTER_CFLAGS])
 # Clutter depends on:
 # libjson-glib-dev and others
-
-# Clutter-GTK
-PKG_CHECK_MODULES([CLUTTERGTK], [clutter-gtk-0.10 >= 0.10], have_clutter_gtk=true, have_clutter_gtk=false)
-# PKG_CHECK_MODULES([CLUTTERGTK], [clutter-gtk-1.0 >= 1.0], have_clutter_gtk=true, have_clutter_gtk=false))
-# FIXME: clutter-gtk-1.0 is linked with gtk-3
-if test "x${have_clutter_gtk}" = "xfalse" ; then
-    AC_MSG_ERROR([missing package: libclutter-gtk])
-fi
-AC_SUBST([CLUTTERGTK_LIBS])
-AC_SUBST([CLUTTERGTK_CFLAGS])
 
 # Clutter-GST
 PKG_CHECK_MODULES([CLUTTERGST], [clutter-gst-0.10 >= 0.10], have_clutter_gst=true, 

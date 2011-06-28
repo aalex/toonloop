@@ -24,13 +24,9 @@
 #include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
 #include <clutter-gst/clutter-gst.h>
-#include <clutter-gtk/clutter-gtk.h>
 #include <clutter/clutter.h>
 #include <cmath>
-#include <gdk/gdk.h>
-#include <gdk/gdkx.h>
 #include <gst/gst.h>
-#include <gtk/gtk.h>
 #include <iostream>
 #include <sstream>
 #include <clutter/x11/clutter-x11.h>
@@ -60,7 +56,7 @@ static int clip_int(int value, int from, int to)
     return std::max(std::min(value, to), from);
 }
 
-void Gui::set_window_icon()
+void Gui::set_window_icon(const std::string &path)
 {
     Display *dpy = clutter_x11_get_default_display();
     Window win = clutter_x11_get_stage_window(CLUTTER_STAGE(stage_));
@@ -71,17 +67,16 @@ void Gui::set_window_icon()
 
     GdkPixbuf *pixbuf = NULL;
     GError *error = NULL;
-    std::string image_file_name = "";
     bool verbose = true;
 
     gint pixels_w = 32;
     gint pixels_h = 32;
     if (verbose)
         g_print("Loading image at size of %dx%d\n", pixels_w, pixels_h);
-    pixbuf = gdk_pixbuf_new_from_file_at_scale(image_file_name.c_str(), pixels_w, pixels_h, FALSE, &error);
+    pixbuf = gdk_pixbuf_new_from_file_at_scale(path.c_str(), pixels_w, pixels_h, FALSE, &error);
     if (! pixbuf)
     {
-        g_error("Error loading image %s: %s", image_file_name.c_str(), error->message);
+        g_error("Error loading image %s: %s", path.c_str(), error->message);
         g_error_free(error);
         error = NULL;
         g_object_unref(pixbuf);
@@ -90,14 +85,15 @@ void Gui::set_window_icon()
     int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
     if (n_channels != 3)
     {
-        g_critical("Image has an alpha channel and we don't support it.");
-        g_object_unref(pixbuf);
-        return;
+        //g_critical("Image has an alpha channel and we don't support it.");
+        //g_object_unref(pixbuf);
+        //return;
     }
 
     guchar *data = gdk_pixbuf_get_pixels(pixbuf);
 
     /* Set the property */
+    // FIXME: it doesn't work
     XChangeProperty(dpy, win, net_wm_icon, XA_CARDINAL,
         32, PropModeReplace, (unsigned char *) data,
         (pixels_w * pixels_h) + 2);
@@ -153,23 +149,22 @@ void Gui::set_onionskin_opacity(int value)
         clutter_actor_set_opacity(CLUTTER_ACTOR(onionskin_textures_.at(0)), 0);
 }
 /**
- * In fullscreen mode, hides the cursor. In windowed mode, shows the cursor.
+ * In fullscreen mode, hides the cursor.
  */
-gboolean Gui::on_window_state_event(GtkWidget* /*widget*/, GdkEvent * event, gpointer user_data)
+void Gui::on_fullscreen(ClutterStage* /*stage*/, gpointer user_data)
 {
     Gui *context = static_cast<Gui*>(user_data);
-    GdkEventWindowState *tmp = (GdkEventWindowState *) event;
-    context->isFullscreen_ = (tmp->new_window_state & GDK_WINDOW_STATE_FULLSCREEN);
-    if (context->isFullscreen_)
-        context->hideCursor();
-    else
-        context->showCursor();
-    return TRUE;
+    context->isFullscreen_ = true;
+    context->hideCursor();
 }
-
-bool is_amd64()
+/**
+ * In windowed mode, shows the cursor.
+ */
+void Gui::on_unfullscreen(ClutterStage* /*stage*/, gpointer user_data)
 {
-    return sizeof(void*) == 8;
+    Gui *context = static_cast<Gui*>(user_data);
+    context->isFullscreen_ = false;
+    context->showCursor();
 }
 
 /**
@@ -177,10 +172,7 @@ bool is_amd64()
  */
 void Gui::hideCursor()
 {
-    if (! is_amd64())
-    {
-    	gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), (GdkCursor *) GDK_BLANK_CURSOR);
-    }
+    clutter_stage_hide_cursor(CLUTTER_STAGE(stage_));
 }
 
 /**
@@ -188,8 +180,7 @@ void Gui::hideCursor()
  */
 void Gui::showCursor()
 {
-    /// sets to default
-    gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), (GdkCursor *) NULL);
+    clutter_stage_show_cursor(CLUTTER_STAGE(stage_));
 }
 
 /**
@@ -280,7 +271,7 @@ gboolean Gui::key_press_event(ClutterActor *stage, ClutterEvent *event, gpointer
             break;
         case CLUTTER_KEY_f:
         case CLUTTER_KEY_Escape:
-            context->toggleFullscreen(context->window_);
+            context->toggleFullscreen();
             break;
         case CLUTTER_KEY_space:
             controller->add_frame();
@@ -484,7 +475,7 @@ void Gui::toggle_help()
 /**
  * Called when the window is deleted. Quits the application.
  */
-void Gui::on_delete_event(GtkWidget* /*widget*/, GdkEvent* /*event*/, gpointer user_data)
+void Gui::on_delete_event(ClutterStage* /*stage*/, ClutterEvent* /*event*/, gpointer user_data)
 {
     Gui *context = static_cast<Gui*>(user_data);
     if (context->owner_->get_configuration()->get_verbose())
@@ -495,28 +486,26 @@ void Gui::on_delete_event(GtkWidget* /*widget*/, GdkEvent* /*event*/, gpointer u
 /**
  * Toggles fullscreen mode on/off.
  */
-void Gui::toggleFullscreen(GtkWidget *widget)
+void Gui::toggleFullscreen()
 {
     // toggle fullscreen state
-    isFullscreen_ ? makeUnfullscreen(widget) : makeFullscreen(widget);
+    isFullscreen_ ? makeUnfullscreen() : makeFullscreen();
 }
 
 /** 
  * Makes the window fullscreen.
  */
-void Gui::makeFullscreen(GtkWidget *widget)
+void Gui::makeFullscreen()
 {
-    gtk_window_stick(GTK_WINDOW(widget)); // window is visible on all workspaces
-    gtk_window_fullscreen(GTK_WINDOW(widget));
+    clutter_stage_set_fullscreen(CLUTTER_STAGE(stage_), TRUE);
 }
 
 /**
  * Makes the window not fullscreen.
  */
-void Gui::makeUnfullscreen(GtkWidget *widget)
+void Gui::makeUnfullscreen()
 {
-    gtk_window_unstick(GTK_WINDOW(widget)); // window is not visible on all workspaces
-    gtk_window_unfullscreen(GTK_WINDOW(widget));
+    clutter_stage_set_fullscreen(CLUTTER_STAGE(stage_), FALSE);
 }
 
 /**
@@ -928,44 +917,28 @@ Gui::Gui(Application* owner) :
     controller->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
     controller->add_frame_signal_.connect(boost::bind(&Gui::on_frame_added, this, _1, _2));
     //TODO: controller->no_image_to_play_signals_.connect(boost::bind(&Gui::on_no_image_to_play, this))
-    // Main GTK window
-    window_ = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    // TODO:2010-08-06:aalex:make window size configurable
-    gtk_widget_set_size_request(window_, WINWIDTH, WINHEIGHT); 
-    gtk_window_move(GTK_WINDOW(window_), 300, 10); // TODO: make configurable
+    stage_ = clutter_stage_get_default();
+    clutter_stage_set_minimum_size(CLUTTER_STAGE(stage_), 640, 480);
+
+    // TODO: set size
+    // TODO: set position
+
     std::string window_title("Toonloop " PACKAGE_VERSION);
-    gtk_window_set_title(GTK_WINDOW(window_), window_title.c_str());
-    // Set window icon
+    clutter_stage_set_title(CLUTTER_STAGE(stage_), window_title.c_str());
+    // TODO: set window icon
     fs::path iconPath(std::string(PIXMAPS_DIR) + "/toonloop.png");
     if (fs::exists(iconPath))
-        gtk_window_set_icon_from_file(GTK_WINDOW(window_), iconPath.string().c_str(), NULL);
+    {
+        set_window_icon(iconPath.string());
+    }
 
-    GdkGeometry geometry;
-    geometry.min_width = 1;
-    geometry.min_height = 1;
-    geometry.max_width = -1;
-    geometry.max_height = -1;
-    gtk_window_set_geometry_hints(GTK_WINDOW(window_), window_, &geometry, GDK_HINT_MIN_SIZE);
     // connect window signals:
-    g_signal_connect(G_OBJECT(window_), "delete-event", G_CALLBACK(on_delete_event), this);
+    g_signal_connect(G_OBJECT(stage_), "delete-event", G_CALLBACK(on_delete_event), this);
 
-    // add listener for window-state-event to detect fullscreenness
-    g_signal_connect(G_OBJECT(window_), "window-state-event", G_CALLBACK(on_window_state_event), this);
-
-    // vbox:
-    vbox_ = gtk_vbox_new(FALSE, 0); // args: homogeneous, spacing
-    gtk_container_add(GTK_CONTAINER(window_), vbox_);
-
-    //some buttons:
-    //TODO:2010:08-17:aalex:Add a HBox with some buttons, plus a menu
-
-    // Clutter widget:
-    clutter_widget_ = gtk_clutter_embed_new();
-    gtk_widget_set_size_request(clutter_widget_, WINWIDTH, WINHEIGHT);
-    GTK_WIDGET_UNSET_FLAGS (clutter_widget_, GTK_DOUBLE_BUFFERED);
-    gtk_container_add(GTK_CONTAINER(vbox_), clutter_widget_);
-    stage_ = gtk_clutter_embed_get_stage(GTK_CLUTTER_EMBED(clutter_widget_));
-
+    // add listener to detect fullscreenness
+    g_signal_connect(G_OBJECT(stage_), "fullscreen", G_CALLBACK(on_fullscreen), this);
+    g_signal_connect(G_OBJECT(stage_), "unfullscreen", G_CALLBACK(on_unfullscreen), this);
+    // buttons, keys:
     g_signal_connect(G_OBJECT(stage_), "key-press-event", G_CALLBACK(key_press_event), this);
     g_signal_connect(G_OBJECT(stage_), "button-press-event", G_CALLBACK(on_mouse_button_event), this);
 
@@ -1077,7 +1050,7 @@ Gui::Gui(Application* owner) :
      * unrealized when the clutter foreign window is set. widget_show
      * will call show on the stage.
      */
-    gtk_widget_show_all(window_);
+    clutter_actor_show(stage_);
 
     // Set visibility for other things
     enable_onionskin(false);
@@ -1088,7 +1061,7 @@ Gui::Gui(Application* owner) :
     clutter_actor_hide_all(CLUTTER_ACTOR(playback_group_));
     // Makes fullscreen if needed
     if (owner_->get_configuration()->get_fullscreen())
-        toggleFullscreen(window_);
+        toggleFullscreen();
     // add properties:
     controller->add_int_property("blending_mode", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_blending_mode_int_property_changed, this, _1, _2));
     controller->add_float_property("crossfade_ratio", 0.0)->value_changed_signal_.connect(boost::bind(&Gui::on_crossfade_ratio_changed, this, _1, _2));

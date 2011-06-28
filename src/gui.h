@@ -23,8 +23,6 @@
 
 #include <GL/glx.h>
 #include <clutter/clutter.h>
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
 #include <tr1/memory> // for shared_ptr
 #include <vector>
 #include "infowindow.h"
@@ -55,11 +53,10 @@ class Gui
         ClutterActor* get_live_input_texture() const;
         Gui(Application* owner); 
         ~Gui();
-        void toggleFullscreen() { toggleFullscreen(window_); } // no argument version of the same method below.
+        void toggleFullscreen();
         void resize_actors();
-        void toggleFullscreen(GtkWidget* widget);
-        void makeFullscreen(GtkWidget* widget);
-        void makeUnfullscreen(GtkWidget* widget);
+        void makeFullscreen();
+        void makeUnfullscreen();
         layout_number get_layout() const { return current_layout_; }
         void set_layout(layout_number layout);
         void toggle_layout();
@@ -73,10 +70,11 @@ class Gui
         static void on_live_input_texture_size_changed(ClutterTexture *texture, gint width, gint height, gpointer user_data);
         void on_next_image_to_play(unsigned int clip_number, unsigned int image_number, std::string file_name);
         void on_frame_added(unsigned int clip_number, unsigned int image_number);
-        static void on_delete_event(GtkWidget* widget, GdkEvent* event, gpointer user_data);
+        static void on_delete_event(ClutterStage* stage, ClutterEvent* event, gpointer user_data);
         static gboolean key_press_event(ClutterActor *stage, ClutterEvent *event, gpointer user_data);
         static gboolean on_mouse_button_event(ClutterActor *actor, ClutterEvent *event, gpointer user_data);
-        static int on_window_state_event(_GtkWidget *widget, GdkEvent *event, gpointer user_data);
+        static void on_fullscreen(ClutterStage *stage, gpointer user_data);
+        static void on_unfullscreen(ClutterStage *stage, gpointer user_data);
         static void on_render_frame(ClutterTimeline * timeline, gint msecs, gpointer user_data);
         void on_blending_mode_int_property_changed(std::string &name, int value);
         void on_crossfade_ratio_changed(std::string &name, float value);
@@ -95,7 +93,7 @@ class Gui
          * Sets the window icon.
          * (not used right now, since we use GTK)
          */
-        void set_window_icon();
+        void set_window_icon(const std::string &path);
         
         float video_input_width_;
         float video_input_height_;
@@ -111,9 +109,6 @@ class Gui
         ClutterActor *help_text_actor_;
         ClutterActor *black_out_rectangle_;
         ClutterTimeline *timeline_;
-        GtkWidget *window_;
-        GtkWidget *clutter_widget_;
-        GtkWidget *vbox_;
         layout_number current_layout_;
         int onionskin_opacity_;
         bool onionskin_enabled_;
