@@ -544,7 +544,8 @@ void Gui::on_next_image_to_play(unsigned int clip_number, unsigned int/*image_nu
         //if (owner_->get_configuration()->get_verbose())
         //    std::cout << "animate texture for " << duration << " ms" << std::endl;
         // TODO:2010-11-10:aalex:If there is only one image in the clip, do not fade out.
-        clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(1)), CLUTTER_EASE_IN_OUT_CUBIC, duration, "opacity", 0, NULL);  
+        clutter_actor_animate(CLUTTER_ACTOR(playback_textures_.at(1)), CLUTTER_EASE_IN_OUT_CUBIC, duration,
+            "opacity", 0, NULL); 
     }
     else
         clutter_actor_set_opacity(CLUTTER_ACTOR(playback_textures_.at(1)), 0);
@@ -1301,13 +1302,13 @@ void Gui::animate_progress_bar()
     gint duration = g_random_int_range(1000, 2000);
     // animate bar:
     clutter_actor_animate(status_text_actor_, CLUTTER_EASE_IN_OUT_SINE, duration,
-        "opacity", 0.0,
+        "opacity", 0,
         NULL);
 
     // animate text:
     clutter_actor_animate(progress_bar_actor_, CLUTTER_EASE_IN_OUT_SINE, duration,
         "width", clutter_actor_get_width(stage_),
-        "opacity", 0.0,
+        "opacity", 0,
         NULL);
 }
 
@@ -1316,7 +1317,7 @@ void Gui::animate_flash()
     gint duration = 200;
     clutter_actor_set_opacity(flash_actor_, 60.0);
     clutter_actor_animate(flash_actor_, CLUTTER_EASE_IN_OUT_SINE, duration,
-        "opacity", 0.0,
+        "opacity", 0,
         NULL);
 }
 
