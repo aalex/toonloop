@@ -178,7 +178,9 @@ bool is_amd64()
 void Gui::hideCursor()
 {
     if (! is_amd64())
+    {
     	gdk_window_set_cursor(GDK_WINDOW(clutter_widget_->window), (GdkCursor *) GDK_BLANK_CURSOR);
+    }
 }
 
 /**
