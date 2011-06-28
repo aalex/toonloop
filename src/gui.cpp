@@ -1023,13 +1023,16 @@ Gui::Gui(Application* owner) :
     // status and progress bar
     status_group_ = clutter_group_new();
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(status_group_));
-    progress_bar_actor_ = clutter_rectangle_new_with_color(&white);
-    clutter_actor_set_opacity(progress_bar_actor_, 0.0);
-    clutter_actor_set_position(progress_bar_actor_, 0.0, 0.0);
-    clutter_container_add_actor(CLUTTER_CONTAINER(status_group_), progress_bar_actor_);
+    // status text:
     status_text_actor_ = clutter_text_new_full("Sans semibold 12px", "", &white);
     clutter_actor_set_position(status_text_actor_, 0.0, 0.0);
     clutter_container_add_actor(CLUTTER_CONTAINER(status_group_), CLUTTER_ACTOR(status_text_actor_));
+    // progress bar:
+    progress_bar_actor_ = clutter_rectangle_new_with_color(&white);
+    clutter_actor_set_height(progress_bar_actor_, 2.0);
+    clutter_actor_set_opacity(progress_bar_actor_, 0.0);
+    clutter_actor_set_position(progress_bar_actor_, 0.0, 16.0);
+    clutter_container_add_actor(CLUTTER_CONTAINER(status_group_), progress_bar_actor_);
     reset_progress_bar();
 
     // black out
@@ -1286,7 +1289,7 @@ void Gui::reset_progress_bar()
 void Gui::animate_progress_bar()
 {
     reset_progress_bar();
-    gint duration = g_random_int_range(2000, 6000);
+    gint duration = g_random_int_range(1000, 2000);
     // animate bar:
     clutter_actor_animate(status_text_actor_, CLUTTER_EASE_IN_OUT_SINE, duration,
         "opacity", 0.0,
