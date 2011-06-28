@@ -29,11 +29,11 @@ ctrl-q             : quit
 Page down          : next clip
 Page up            : previous clip
 Number from 0 to 9 : switch to a specific clip
-s                  : saves the current clip as a movie file
-Tab                : changes the playback direction
+ctrl-e             : export the current clip as a movie file
+Tab                : change the playback direction
 r                  : clear the current clip
 Caps Lock          : toggle video grabbing
-period             : Toggles the layout
+period             : toggle the layout
 F1                 : show help
 
 See the toonloop(1) man page, or press F1 for all the key controls.
@@ -78,7 +78,7 @@ These instructions are for Ubuntu GNU/Linux - and should work on Debian GNU/Linu
 Dependencies
 ------------
 
-Toonloop 1.9.x has been built successfully on Debian squeeze and Ubuntu 10.04 Lucid Lynx. It should build on Mac OS X and Windows too, but that might require some modifications. 
+Toonloop 1.9.x has been built successfully on many versions of Debian and Ubuntu. It should not currently build on Mac OS X and Windows, but the idea is to port it eventually to many platforms.
 
 Here is the list of Debian package that you will need to build Toonloop 2.x. 
 
@@ -102,13 +102,12 @@ Here is the list of Debian package that you will need to build Toonloop 2.x.
  liblo-dev,
  libclutter-1.0-dev,
  libclutter-gst-0.10-dev,
- libclutter-gtk-0.10-dev,
+ libgdk-pixbuf-dev,
  libglew1.5-dev,
  libglib2.0-dev,
  libglu1-mesa-dev,
  libgstreamer-plugins-base0.10-dev,
  libgstreamer0.10-dev (>= 0.10.23),
- libgtk2.0-dev,
  libraw1394-dev,
  libstk0-dev,
  libxml2-dev,
