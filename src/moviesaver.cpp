@@ -22,6 +22,7 @@
 #include <boost/date_time.hpp>  
 #include "moviesaver.h"
 #include "saverworker.h"
+#include "timing.h"
 
 MovieSaver::MovieSaver() : // const Clip &clip?
     current_task_(),
@@ -36,7 +37,7 @@ MovieSaver::MovieSaver() : // const Clip &clip?
  * Also checks if busy and join thread if done.
  */
 // TODO: store tasks and defer them to later.
-bool MovieSaver::add_saving_task(Clip& clip)
+bool MovieSaver::add_saving_task(Clip& clip, std::string &file_name)
 {
     //std::cout << "MovieSaver::add_saving_task" << std::endl;
     if (is_busy()) {
@@ -72,7 +73,13 @@ bool MovieSaver::add_saving_task(Clip& clip)
     //will call worker_.operator()() in a thread 
 
     //std::cout << "Starting thread to save movie #" << current_task_.clip_id_ << std::endl;
+    //
+    std::string datetime_started = timing::get_iso_datetime_for_now();
+    std::string final_file_name = get_result_directory() + "/movie-" + datetime_started  + ".mov"; 
+    worker_.set_final_options(datetime_started, final_file_name);
     worker_thread_ = boost::thread(worker_);
+    
+    file_name = final_file_name;
     return true;
 }
 

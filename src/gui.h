@@ -82,6 +82,8 @@ class Gui
         void on_black_out_changed(std::string &name, int value);
         void on_black_out_opacity_changed(std::string &name, int value);
         void on_playback_opacity_changed(std::string &name, int value);
+        void on_save_clip(unsigned int clip_number, std::string &file_name);
+        void on_save_project(std::string &file_name);
         void enable_onionskin(bool value);
         void set_onionskin_opacity(int value);
         void hideCursor();
@@ -89,6 +91,8 @@ class Gui
         void update_info_text();
         void toggle_info();
         void toggle_help();
+        void animate_progress_bar();
+        void reset_progress_bar();
         /** 
          * Sets the window icon.
          * (not used right now, since we use GTK)
@@ -107,6 +111,9 @@ class Gui
         std::vector< ClutterActor* > onionskin_textures_;
         ClutterActor *info_text_actor_;
         ClutterActor *help_text_actor_;
+        ClutterActor *status_text_actor_;
+        ClutterActor *progress_bar_actor_;
+        ClutterActor *status_group_;
         ClutterActor *black_out_rectangle_;
         ClutterTimeline *timeline_;
         layout_number current_layout_;

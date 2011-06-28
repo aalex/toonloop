@@ -30,10 +30,13 @@ class SaverWorker
 {
     public:
         SaverWorker(MovieSaver *owner);
+        void set_final_options(const std::string &datetime_started, const std::string &final_file_name);
         void operator()();
         bool success_;
     private:
         MovieSaver *owner_;
+        std::string datetime_started_;
+        std::string final_file_name_;
 };
 
 #endif

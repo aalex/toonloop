@@ -58,6 +58,7 @@ static int clip_int(int value, int from, int to)
 
 void Gui::set_window_icon(const std::string &path)
 {
+    bool verbose = owner_->get_configuration()->get_verbose();
     Display *dpy = clutter_x11_get_default_display();
     Window win = clutter_x11_get_stage_window(CLUTTER_STAGE(stage_));
     static Atom net_wm_icon = None;
@@ -67,7 +68,6 @@ void Gui::set_window_icon(const std::string &path)
 
     GdkPixbuf *pixbuf = NULL;
     GError *error = NULL;
-    bool verbose = true;
 
     gint pixels_w = 32;
     gint pixels_h = 32;
@@ -85,7 +85,7 @@ void Gui::set_window_icon(const std::string &path)
     int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
     if (n_channels != 3)
     {
-        //g_critical("Image has an alpha channel and we don't support it.");
+        g_critical("Image has an alpha channel and we don't support it.");
         //g_object_unref(pixbuf);
         //return;
     }
@@ -916,6 +916,9 @@ Gui::Gui(Application* owner) :
     Controller *controller = owner_->get_controller();
     controller->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
     controller->add_frame_signal_.connect(boost::bind(&Gui::on_frame_added, this, _1, _2));
+
+    controller->save_clip_signal_.connect(boost::bind(&Gui::on_save_clip, this, _1, _2));
+    controller->save_project_signal_.connect(boost::bind(&Gui::on_save_project, this, _1));
     //TODO: controller->no_image_to_play_signals_.connect(boost::bind(&Gui::on_no_image_to_play, this))
     stage_ = clutter_stage_get_default();
     clutter_stage_set_minimum_size(CLUTTER_STAGE(stage_), 640, 480);
@@ -1017,10 +1020,23 @@ Gui::Gui(Application* owner) :
     help_text_actor_ = clutter_text_new_full("Sans semibold 12px", HELP_TEXT.c_str(), &white);
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(help_text_actor_));
 
+    // status and progress bar
+    status_group_ = clutter_group_new();
+    clutter_container_add_actor(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(status_group_));
+    progress_bar_actor_ = clutter_rectangle_new_with_color(&white);
+    clutter_actor_set_opacity(progress_bar_actor_, 0.0);
+    clutter_actor_set_position(progress_bar_actor_, 0.0, 0.0);
+    clutter_container_add_actor(CLUTTER_CONTAINER(status_group_), progress_bar_actor_);
+    status_text_actor_ = clutter_text_new_full("Sans semibold 12px", "", &white);
+    clutter_actor_set_position(status_text_actor_, 0.0, 0.0);
+    clutter_container_add_actor(CLUTTER_CONTAINER(status_group_), CLUTTER_ACTOR(status_text_actor_));
+    reset_progress_bar();
+
     // black out
     black_out_rectangle_ = clutter_rectangle_new_with_color(&black);
     clutter_actor_hide(black_out_rectangle_);
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), black_out_rectangle_);
+
 
     // Sort actors and groups:
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_), NULL);
@@ -1083,6 +1099,7 @@ Gui::Gui(Application* owner) :
         saturation_effect_->add_actor(onionskin_group_);
         saturation_effect_->update_all_actors();
     }
+
 }
 
 void Gui::on_black_out_opacity_changed(std::string &name, int value)
@@ -1239,3 +1256,46 @@ std::string Gui::get_blending_mode_name(BlendingMode mode)
             break;
     }
 }
+
+void Gui::on_save_clip(unsigned int clip_number, std::string &file_name)
+{
+    std::ostringstream os;
+    os << "Saving clip " << clip_number << " as " << file_name;
+    std::cout << os.str() << std::endl;
+    clutter_text_set_text(CLUTTER_TEXT(status_text_actor_), os.str().c_str());
+    animate_progress_bar();
+}
+
+void Gui::on_save_project(std::string &file_name)
+{
+    std::ostringstream os;
+    os << "Saving project as " << file_name;
+    std::cout << os.str() << std::endl;
+    clutter_text_set_text(CLUTTER_TEXT(status_text_actor_), os.str().c_str());
+    animate_progress_bar();
+}
+
+void Gui::reset_progress_bar()
+{
+    clutter_actor_set_opacity(status_text_actor_, 255.0);
+
+    clutter_actor_set_opacity(progress_bar_actor_, 255.0);
+    clutter_actor_set_width(progress_bar_actor_, 0.0);
+}
+
+void Gui::animate_progress_bar()
+{
+    reset_progress_bar();
+    gint duration = g_random_int_range(2000, 6000);
+    // animate bar:
+    clutter_actor_animate(status_text_actor_, CLUTTER_EASE_IN_OUT_SINE, duration,
+        "opacity", 0.0,
+        NULL);
+
+    // animate text:
+    clutter_actor_animate(progress_bar_actor_, CLUTTER_EASE_IN_OUT_SINE, duration,
+        "width", clutter_actor_get_width(stage_),
+        "opacity", 0.0,
+        NULL);
+}
+

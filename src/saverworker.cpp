@@ -24,12 +24,18 @@
 #include "moviesaver.h"
 #include "saverworker.h"
 #include "subprocess.h" // TODO: use glib instead of subprocess.h
-#include "timing.h"
-//#include "timing.h" // get_iso_dateime_for_now
 
 SaverWorker::SaverWorker(MovieSaver *owner) :
     owner_(owner)
 {
+    datetime_started_ = "";
+    final_file_name_ = "";
+}
+
+void SaverWorker::set_final_options(const std::string &datetime_started, const std::string &final_file_name)
+{
+    datetime_started_ = datetime_started;
+    final_file_name_ = final_file_name;
 }
 
 /**
@@ -49,8 +55,7 @@ void SaverWorker::operator()()
     //std::cout << "In the saving thread for clip #" << clip_id << " with " << num_images << " images" << std::endl; // TODO
     
     // TODO: create symlinks
-    std::string datetime_started = timing::get_iso_datetime_for_now();
-    fs::path directory = fs::path(g_get_tmp_dir()) / fs::path("toonloop-" + datetime_started);
+    fs::path directory = fs::path(g_get_tmp_dir()) / fs::path("toonloop-" + datetime_started_);
     //std::cout << "----------------------------------" << std::endl;
     //std::cout << "tmp dir: " << directory.string() << std::endl;
     //std::cout << "----------------------------------" << std::endl;
@@ -119,10 +124,9 @@ void SaverWorker::operator()()
     else
         std::cout << "Success!" << std::endl;
     // rename movie file
-    std::string final_movie = owner_->get_result_directory() + "/movie-" + datetime_started  + ".mov"; 
     try 
     {
-        fs::copy_file(fs::path(output_movie), fs::path(final_movie));
+        fs::copy_file(fs::path(output_movie), fs::path(final_file_name_));
         // the old file will be deleted with the whole dir
     }
     catch(fs::filesystem_error e) 
@@ -140,7 +144,7 @@ void SaverWorker::operator()()
         success_ = false;
         return;
     }
-    std::cout << "Done creating movie " << final_movie << std::endl;
+    std::cout << "Done creating movie " << final_file_name_ << std::endl;
     success_ = true;
     return;
 }
