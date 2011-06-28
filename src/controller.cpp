@@ -99,6 +99,10 @@ void Controller::choose_clip(unsigned int clip_number)
     else 
     {
         owner_->set_current_clip_number(clip_number);
+        if (owner_->get_configuration()->get_home_when_choose())
+        {
+            owner_->get_current_clip()->goto_beginning();
+        }
         //LOG_DEBUG("choose_clip #" << clip_number);
         choose_clip_signal_(clip_number);
     }

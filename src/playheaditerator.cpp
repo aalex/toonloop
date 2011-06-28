@@ -36,6 +36,7 @@ unsigned int PlayheadIterator::iterate(unsigned int current, unsigned int length
         return do_iterate(current, length) % length;
 }
 
+
 // forward
 const std::string ForwardIterator::name_ = "forward";
 
@@ -46,6 +47,7 @@ unsigned int ForwardIterator::do_iterate(unsigned int current, unsigned int leng
     else 
         return current + 1;
 }
+
 
 // backward
 const std::string BackwardIterator::name_ = "backward";

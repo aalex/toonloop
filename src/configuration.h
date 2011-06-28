@@ -89,6 +89,7 @@ class Configuration
         bool should_show_image_on_top() const { return image_on_top_.compare("") != 0; }
         bool get_preview_window_enabled() const { return preview_window_enabled_; }
         bool get_auto_save_project() const { return auto_save_project_; }
+        bool get_home_when_choose() const { return home_when_choose_; }
         
     private:
         int playhead_fps_;
@@ -113,6 +114,7 @@ class Configuration
         std::string image_on_top_;
         bool preview_window_enabled_;
         bool auto_save_project_;
+        bool home_when_choose_;
 };
 #endif // __CONFIGURATION_H__
 

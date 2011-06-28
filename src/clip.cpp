@@ -397,3 +397,7 @@ void Clip::change_direction()
     set_direction((*iter).first);
 }
 
+void Clip::goto_beginning()
+{
+    playhead_ = 0;
+}

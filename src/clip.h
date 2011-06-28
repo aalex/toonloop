@@ -120,6 +120,7 @@ class Clip
          * Does not remove any if max_num is 0
          */
         bool remove_first_if_more_than(int max_num);
+        void goto_beginning();
     private:
         bool verbose_;
         unsigned int id_;

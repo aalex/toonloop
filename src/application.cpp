@@ -180,6 +180,7 @@ void Application::run(int argc, char *argv[])
         ("print-properties", po::bool_switch(), "Prints a list of the Toonloop properties once running.")
         ("no-load-project", po::bool_switch(), "Disables project file loading.")
         ("auto-save-project", po::bool_switch(), "Enables project auto saving.")
+        ("continue-when-choose,C", po::bool_switch(), "When a clip is chosen, continue where it was instead of going to beginning.")
         ;
     po::variables_map options;
     po::store(po::parse_command_line(argc, argv, desc), options);
