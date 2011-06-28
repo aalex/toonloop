@@ -594,6 +594,7 @@ void Gui::on_frame_added(unsigned int clip_number, unsigned int image_number)
             //std::cout << "Loaded image " <<  image_full_path << std::endl;
         }
     }
+    animate_flash();
 }
 
 /** 
@@ -1041,9 +1042,17 @@ Gui::Gui(Application* owner) :
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), black_out_rectangle_);
 
 
+    // flash
+    flash_actor_ = clutter_rectangle_new_with_color(&white);
+    clutter_actor_set_opacity(flash_actor_, 0.0);
+    clutter_actor_set_size(flash_actor_, 4000.0, 4000.0); // very large
+    clutter_container_add_actor(CLUTTER_CONTAINER(stage_), flash_actor_);
+
     // Sort actors and groups:
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(playback_group_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(live_input_texture_), NULL);
+
+    clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(flash_actor_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(onionskin_group_), NULL);
     clutter_container_raise_child(CLUTTER_CONTAINER(stage_), CLUTTER_ACTOR(black_out_rectangle_), NULL);
     // The image on top, if set:
@@ -1298,6 +1307,15 @@ void Gui::animate_progress_bar()
     // animate text:
     clutter_actor_animate(progress_bar_actor_, CLUTTER_EASE_IN_OUT_SINE, duration,
         "width", clutter_actor_get_width(stage_),
+        "opacity", 0.0,
+        NULL);
+}
+
+void Gui::animate_flash()
+{
+    gint duration = 200;
+    clutter_actor_set_opacity(flash_actor_, 60.0);
+    clutter_actor_animate(flash_actor_, CLUTTER_EASE_IN_OUT_SINE, duration,
         "opacity", 0.0,
         NULL);
 }

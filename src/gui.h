@@ -93,6 +93,7 @@ class Gui
         void toggle_help();
         void animate_progress_bar();
         void reset_progress_bar();
+        void animate_flash();
         /** 
          * Sets the window icon.
          * (not used right now, since we use GTK)
@@ -107,6 +108,7 @@ class Gui
         ClutterActor *playback_group_;
         ClutterActor *onionskin_group_;
         ClutterActor *live_input_texture_;
+        ClutterActor *flash_actor_;
         std::vector< ClutterActor* > playback_textures_;
         std::vector< ClutterActor* > onionskin_textures_;
         ClutterActor *info_text_actor_;
