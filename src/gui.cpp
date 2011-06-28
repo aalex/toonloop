@@ -930,7 +930,7 @@ Gui::Gui(Application* owner) :
     std::string window_title("Toonloop " PACKAGE_VERSION);
     clutter_stage_set_title(CLUTTER_STAGE(stage_), window_title.c_str());
     // TODO: set window icon
-    fs::path iconPath(std::string(PIXMAPS_DIR) + "/toonloop.png");
+    fs::path iconPath(std::string(PIXMAPS_DIR) + "/toonloop_window_icon.png");
     if (fs::exists(iconPath))
     {
         set_window_icon(iconPath.string());
