@@ -139,6 +139,7 @@ class MidiBinder
         std::vector<MidiRule> control_map_rules_;
         std::vector<MidiRule> program_change_rules_;
         std::vector<MidiRule> pitch_wheel_rules_;
+
         bool load_xml_file(const gchar *file_name);
         static void on_midi_xml_start_element(
             GMarkupParseContext *context,
