@@ -315,14 +315,19 @@ MidiBinder::MidiBinder(bool verbose) :
         std::cout << "$PWD=" << std::getenv("PWD") << std::endl;
     gchar *found = toon_find_midi_preset_file("midi.xml", verbose_);
     if (! found)
-        g_error("Could not find XML midi file!");
-    std::string full_name(found);
-    //if (verbose_)
-    std::cout << "Using MIDI bindings file " << full_name << std::endl;
-    if (load_xml_file(full_name.c_str()))
     {
-        if (verbose_)
-            g_print("successfully loaded XML file\n");
+        g_critical("Could not find XML midi file!");
+    }
+    else
+    {
+        std::string full_name(found);
+        //if (verbose_)
+        std::cout << "Using MIDI bindings file " << full_name << std::endl;
+        if (load_xml_file(full_name.c_str()))
+        {
+            if (verbose_)
+                g_print("successfully loaded XML file\n");
+        }
     }
 }
 
