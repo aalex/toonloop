@@ -46,6 +46,8 @@ Clip::Clip(unsigned int id) :
     has_recorded_a_frame_ = false;
     last_time_grabbed_image_ = timing::get_timestamp_now();
     intervalometer_rate_ = 10.0f; // 10 seconds is a reasonable default for a timelapse
+    lower_bound_ = 0.0;
+    upper_bound_ = 1.0;
     
     current_playhead_direction_ = std::string("invalid");
     init_playhead_iterators();
