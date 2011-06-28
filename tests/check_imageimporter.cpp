@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstdio> // tmpnam
-#include <clutter-gtk/clutter-gtk.h>
+#include <clutter/clutter.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <boost/filesystem.hpp>
 #include "image_importer.h"
@@ -80,7 +80,7 @@ bool check_image_resize()
 
 int main(int argc, char *argv[])
 {
-    gtk_clutter_init(&argc, &argv);
+    clutter_init(&argc, &argv);
     if (check_image_resize())
     {
         return 0;
