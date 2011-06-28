@@ -274,13 +274,33 @@ unsigned int Clip::get_writehead() const
     return writehead_;
 }
 
+void Clip::get_effective_bounds(unsigned int &lower, unsigned int &upper)
+{
+    if (lower_bound_ == 0.0 && upper_bound_ == 1.0)
+    {
+        lower = 0;
+        upper = size();
+        return;
+    }
+    lower = (unsigned int) (size() * lower_bound_);
+    upper = (unsigned int) (size() * upper_bound_);
+    if (upper > size())
+        upper = size();
+}
+
 unsigned int Clip::iterate_playhead()
 {
     unsigned int len = size();
     if (len <= 1)
         playhead_ = 0;
     else 
-        playhead_ = playhead_iterators_[current_playhead_direction_].get()->iterate(playhead_, len);
+    {
+        unsigned int lower;
+        unsigned int upper;
+        get_effective_bounds(lower, upper);
+        unsigned int max_num = upper - lower;
+        playhead_ = playhead_iterators_[current_playhead_direction_].get()->iterate(playhead_, max_num) + lower;
+    }
     return playhead_;
 }
 
@@ -401,3 +421,20 @@ void Clip::goto_beginning()
 {
     playhead_ = 0;
 }
+
+void Clip::set_loop_bounds(double lower, double upper)
+{
+    if (lower <= 0.0)
+        lower = 0.0;
+    if (upper >= 1.0)
+        upper = 1.0;
+    if (lower > upper)
+    {
+        double tmp = lower;
+        lower = upper;
+        upper = tmp;
+    }
+    lower_bound_ = lower;
+    upper_bound_ = upper;
+}
+

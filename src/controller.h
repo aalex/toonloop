@@ -170,6 +170,11 @@ class Controller
          */
         boost::signals2::signal<void (std::string)> save_project_signal_;
 
+        /**
+         * Called when the loop bounds for a clip are changed.
+         */
+        boost::signals2::signal<void (unsigned int, double, double)> loop_bounds_changed_signal_;
+
         // ----------------------------------- methods ---------------------
         /**
          * Adds a frame to the current clip.
@@ -335,6 +340,10 @@ class Controller
          * Imports an image to the current clip.
          */
         void import_image(const std::string &file_name);
+        /** 
+         * Changes the loop bounds for the current clip.
+         */
+        void set_loop_bounds(double lower, double upper);
 
     private:
         Application* owner_;

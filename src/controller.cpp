@@ -288,7 +288,6 @@ void Controller::clear_current_clip()
     clip_cleared_signal_(current_clip->get_id());
 }
 
-
 void Controller::set_intervalometer_rate(float rate)
 {
     Clip *current_clip = owner_->get_current_clip();
@@ -404,5 +403,12 @@ void Controller::save_project()
     std::string file_name = owner_->get_project_file_name();
     owner_->save_project(file_name);
     save_project_signal_(file_name);
+}
+
+void Controller::set_loop_bounds(double lower, double upper)
+{
+    Clip* clip = owner_->get_current_clip();
+    clip->set_loop_bounds(lower, upper);
+    loop_bounds_changed_signal_(clip->get_id(), lower, upper);
 }
 

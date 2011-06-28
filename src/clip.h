@@ -121,6 +121,17 @@ class Clip
          */
         bool remove_first_if_more_than(int max_num);
         void goto_beginning();
+        /**
+         * Set relative loop bounds.
+         * @param lower: From 0.0 to 1.0.
+         * @param upper: From 0.0 to 1.0.
+         */
+        void set_loop_bounds(double lower=0.0, double upper=1.0);
+        void get_loop_bounds(double &lower, double &upper) const
+        {
+            lower = lower_bound_;
+            upper = upper_bound_;
+        }
     private:
         bool verbose_;
         unsigned int id_;
@@ -156,6 +167,9 @@ class Clip
         void init_playhead_iterators();
         static const std::string DEFAULT_FILE_EXTENSION;
         const std::string &get_image_file_extension() const { return DEFAULT_FILE_EXTENSION; };
+        double lower_bound_;
+        double upper_bound_;
+        void get_effective_bounds(unsigned int &lower, unsigned int &upper);
 };
 
 #endif // __CLIP_H__
