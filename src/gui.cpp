@@ -96,37 +96,32 @@ void Gui::set_window_icon(const std::string &path)
     g_assert(gdk_pixbuf_get_has_alpha(pixbuf));
     g_assert(n_channels == 4);
 
-
-//     /* For some inexplicable reason XChangeProperty always takes
-//      * an array of longs when the format == 32 even on 64-bit
-//      * architectures where sizeof(long) != 32. Therefore we need
-//      * to pointlessly pad each 32-bit value with an extra 4
-//      * bytes so that libX11 can remove them again to send the
-//      * request. We can do this in-place if we start from the
-//      * end 
-//      */
-//     if (sizeof(gulong) != 4)
-//     {
-//         const guint32 *src = (guint32 *) (data + 2) + pixels_w * pixels_h;
-//         gulong *dst = data + 2 + pixels_w * pixels_h;
-// 
-//         while (dst > data + 2)
-//         {
-//             *(--dst) = *(--src);
-//         }
-//      }
-
-    guchar *data = (guchar *) g_malloc(pixels_w * pixels_h * sizeof(char) * 4 + (sizeof(gulong) * 2));
+    gulong bufsize = pixels_w * pixels_h * sizeof(char) * 4;
+    guchar *data = (guchar *) g_malloc(bufsize + (sizeof(gulong) * 2));
     ((gulong *)data)[0] = pixels_w;
     ((gulong *)data)[1] = pixels_h;
     guchar *pixels = gdk_pixbuf_get_pixels(pixbuf);
-    //g_strlcpy((gchar *) &data[2], (gchar *) pixels, pixels_w * pixels_h);
-    memcpy((void *) &data[2], (void *) pixels, pixels_w * pixels_h * 4 * sizeof(char));
+    memcpy((void *) &(((gulong *)data)[2]), (void *) pixels, bufsize);
 
-    g_print("Set ICON\n");
+    ///* For some inexplicable reason XChangeProperty always takes
+    // * an array of longs when the format == 32 even on 64-bit
+    // * architectures where sizeof(long) != 32. Therefore we need
+    // * to pointlessly pad each 32-bit value with an extra 4
+    // * bytes so that libX11 can remove them again to send the
+    // * request. We can do this in-place if we start from the
+    // * end 
+    // */
+    //if (sizeof(gulong) != 4)
+    //{
+    //    const guint32 *src = (guint32 *) (data + 2) + pixels_w * pixels_h;
+    //    gulong *dst = data + 2 + pixels_w * pixels_h;
+ 
+    //    while (dst > data + 2)
+    //    {
+    //        *(--dst) = *(--src);
+    //    }
+    //}
 
-    /* Set the property */
-    // FIXME: it doesn't work
     XChangeProperty(
         dpy, // X11 display
         win, // X11 window
@@ -137,10 +132,7 @@ void Gui::set_window_icon(const std::string &path)
         (unsigned char *) data, // data (we must cast it to unsigned char* if format is 32)
         pixels_w * pixels_h + 2); // nelements
 
-    g_print("%s\n", data);
-
-    // XSync(dpy, False);
-
+    g_free(data);
     g_object_unref(pixbuf);
 }
 
