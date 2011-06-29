@@ -29,6 +29,7 @@
 #include <gst/gst.h>
 #include <iostream>
 #include <sstream>
+#include <string.h> // memcpy
 #include <clutter/x11/clutter-x11.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
@@ -115,11 +116,12 @@ void Gui::set_window_icon(const std::string &path)
 //         }
 //      }
 
-    guchar *data = (guchar *) g_malloc(pixels_w * pixels_h + (sizeof(gulong) * 2));
+    guchar *data = (guchar *) g_malloc(pixels_w * pixels_h * sizeof(char) * 4 + (sizeof(gulong) * 2));
     ((gulong *)data)[0] = pixels_w;
     ((gulong *)data)[1] = pixels_h;
     guchar *pixels = gdk_pixbuf_get_pixels(pixbuf);
-    g_strlcpy((gchar *) &data[2], (gchar *) pixels, pixels_w * pixels_h);
+    //g_strlcpy((gchar *) &data[2], (gchar *) pixels, pixels_w * pixels_h);
+    memcpy((void *) &data[2], (void *) pixels, pixels_w * pixels_h * 4 * sizeof(char));
 
     g_print("Set ICON\n");
 
