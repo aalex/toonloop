@@ -58,6 +58,7 @@ static int clip_int(int value, int from, int to)
 
 void Gui::set_window_icon(const std::string &path)
 {
+    // see https://github.com/clutter-project/mx/blob/master/mx/x11/mx-window-x11.c#L274
     bool verbose = owner_->get_configuration()->get_verbose();
     Display *dpy = clutter_x11_get_default_display();
     Window win = clutter_x11_get_stage_window(CLUTTER_STAGE(stage_));
@@ -89,6 +90,25 @@ void Gui::set_window_icon(const std::string &path)
         //g_object_unref(pixbuf);
         //return;
     }
+
+//     /* For some inexplicable reason XChangeProperty always takes
+//      * an array of longs when the format == 32 even on 64-bit
+//      * architectures where sizeof(long) != 32. Therefore we need
+//      * to pointlessly pad each 32-bit value with an extra 4
+//      * bytes so that libX11 can remove them again to send the
+//      * request. We can do this in-place if we start from the
+//      * end 
+//      */
+//     if (sizeof(gulong) != 4)
+//     {
+//         const guint32 *src = (guint32 *) (data + 2) + pixels_w * pixels_h;
+//         gulong *dst = data + 2 + pixels_w * pixels_h;
+// 
+//         while (dst > data + 2)
+//         {
+//             *(--dst) = *(--src);
+//         }
+//      }
 
     guchar *data = gdk_pixbuf_get_pixels(pixbuf);
 
