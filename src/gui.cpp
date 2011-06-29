@@ -31,10 +31,6 @@
 #include <iostream>
 #include <sstream>
 #include <string.h> // memcpy
-#include <clutter/x11/clutter-x11.h>
-#include <X11/Xlib.h>
-#include <X11/extensions/Xrandr.h>
-#include <X11/cursorfont.h>
 
 #include "application.h"
 #include "clip.h"
