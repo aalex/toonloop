@@ -26,8 +26,11 @@
 #include <X11/extensions/Xrandr.h>
 #include <X11/cursorfont.h>
 
+// FIXME: it still displays an icon in double
+
 gboolean toon_clutter_stage_set_window_icon(ClutterStage *stage, const gchar *path, GError ** /*error*/ )
 {
+    // TODO: assign some GError* to error in case of failure.
     Display *dpy = clutter_x11_get_default_display();
     Window win = clutter_x11_get_stage_window(stage);
     static Atom net_wm_icon = None;
