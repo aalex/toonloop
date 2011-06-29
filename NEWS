@@ -7,13 +7,22 @@ See the ChangeLog file for a log of previous releases informations.
 
 This release is a snapshot in the 2.1 unstable series. 
 
-This version contains new features and bug fixes. It introduce a change in the user interface that is not backward-compatible. 
+This version contains new features and bug fixes.
 
 New features:
-    * (none)
+    * Fine tune animation curves
+    * Go to beginning of clip when choose it
+    * Flash when grab an image
+    * Display text and an animation when saving clip or project
+    * Get rid of GTK
+    * Interface to serial button sends OSC via Twisted
+    * Add doc/toonloop-title.svg
 
 Bug fixes:
-    * (none)
+    * Do not die if cannot find MIDI XML config file
+
+New bugs:
+    * window icon looks bad
 
 
 2011-06-07 Toonloop 2.1.12
@@ -21,7 +30,7 @@ Bug fixes:
 
 This release is a snapshot in the 2.1 unstable series. 
 
-This version contains new features and bug fixes. It introduce a change in the user interface that is not backward-compatible. 
+This version contains new features and bug fixes.
 
 New features:
     * /toon/clip/import_image s:file_name : Imports an image from the filesystem
