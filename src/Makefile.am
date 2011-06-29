@@ -11,6 +11,7 @@ clean-local:
 headers = \
 	application.h \
 	clip.h \
+    clutter-tools.h \
 	command.h \
 	concurrentqueue.h \
 	config.h \
@@ -47,6 +48,7 @@ headers = \
 toonloop_SOURCES = \
 	application.cpp \
 	clip.cpp \
+    clutter-tools.cpp \
 	command.cpp \
 	configuration.cpp \
 	controller.cpp \

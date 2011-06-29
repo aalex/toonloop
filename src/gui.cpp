@@ -27,6 +27,7 @@
 #include <clutter/clutter.h>
 #include <cmath>
 #include <gst/gst.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <iostream>
 #include <sstream>
 #include <string.h> // memcpy
@@ -47,6 +48,7 @@
 #include "timer.h"
 #include "unused.h"
 #include "legacyclutter.h"
+#include "clutter-tools.h"
 
 namespace fs = boost::filesystem;
 using std::tr1::shared_ptr;
@@ -60,80 +62,16 @@ static int clip_int(int value, int from, int to)
 void Gui::set_window_icon(const std::string &path)
 {
     // see https://github.com/clutter-project/mx/blob/master/mx/x11/mx-window-x11.c#L274
-    bool verbose = owner_->get_configuration()->get_verbose();
-    Display *dpy = clutter_x11_get_default_display();
-    Window win = clutter_x11_get_stage_window(CLUTTER_STAGE(stage_));
-    static Atom net_wm_icon = None;
-
-    if (! net_wm_icon)
-        net_wm_icon = XInternAtom(dpy, "_NET_WM_ICON", False);
-
-    GdkPixbuf *pixbuf = NULL;
     GError *error = NULL;
-
-    gint pixels_w = 32;
-    gint pixels_h = 32;
-    if (verbose)
-        g_print("Loading image at size of %dx%d\n", pixels_w, pixels_h);
-    pixbuf = gdk_pixbuf_new_from_file_at_scale(path.c_str(), pixels_w, pixels_h, FALSE, &error);
-    if (! pixbuf)
+    gboolean ok = toon_clutter_stage_set_window_icon(CLUTTER_STAGE(stage_), path.c_str(), &error);
+    if (ok)
     {
-        g_error("Error loading image %s: %s", path.c_str(), error->message);
-        g_error_free(error);
-        error = NULL;
-        g_object_unref(pixbuf);
-        return;
+        std::cout << "success" << std::endl;
     }
-    int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
-    if (n_channels != 4)
+    else
     {
-        g_critical("Image has no alpha channel and we require one.");
-        g_object_unref(pixbuf);
-        return;
+        // TODO: print error
     }
-    g_assert(gdk_pixbuf_get_colorspace(pixbuf) == GDK_COLORSPACE_RGB);
-    g_assert(gdk_pixbuf_get_bits_per_sample(pixbuf) == 8);
-    g_assert(gdk_pixbuf_get_has_alpha(pixbuf));
-    g_assert(n_channels == 4);
-
-    gulong bufsize = pixels_w * pixels_h * sizeof(char) * 4;
-    guchar *data = (guchar *) g_malloc(bufsize + (sizeof(gulong) * 2));
-    ((gulong *)data)[0] = pixels_w;
-    ((gulong *)data)[1] = pixels_h;
-    guchar *pixels = gdk_pixbuf_get_pixels(pixbuf);
-    memcpy((void *) &(((gulong *)data)[2]), (void *) pixels, bufsize);
-
-    ///* For some inexplicable reason XChangeProperty always takes
-    // * an array of longs when the format == 32 even on 64-bit
-    // * architectures where sizeof(long) != 32. Therefore we need
-    // * to pointlessly pad each 32-bit value with an extra 4
-    // * bytes so that libX11 can remove them again to send the
-    // * request. We can do this in-place if we start from the
-    // * end 
-    // */
-    //if (sizeof(gulong) != 4)
-    //{
-    //    const guint32 *src = (guint32 *) (data + 2) + pixels_w * pixels_h;
-    //    gulong *dst = data + 2 + pixels_w * pixels_h;
- 
-    //    while (dst > data + 2)
-    //    {
-    //        *(--dst) = *(--src);
-    //    }
-    //}
-
-    XChangeProperty(
-        dpy, // X11 display
-        win, // X11 window
-        net_wm_icon, // name of property
-        XA_CARDINAL, // type of property
-        32, // format
-        PropModeReplace, // mode
-        (unsigned char *) data, // data (we must cast it to unsigned char* if format is 32)
-        pixels_w * pixels_h + 2); // nelements
-
-    g_free(data);
-    g_object_unref(pixbuf);
 }
 
 gboolean Gui::on_mouse_button_event(ClutterActor* /* actor */, ClutterEvent *event, gpointer user_data)
