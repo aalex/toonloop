@@ -84,12 +84,17 @@ void Gui::set_window_icon(const std::string &path)
         return;
     }
     int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
-    if (n_channels != 3)
+    if (n_channels != 4)
     {
-        g_critical("Image has an alpha channel and we don't support it.");
-        //g_object_unref(pixbuf);
-        //return;
+        g_critical("Image has no alpha channel and we require one.");
+        g_object_unref(pixbuf);
+        return;
     }
+    g_assert(gdk_pixbuf_get_colorspace(pixbuf) == GDK_COLORSPACE_RGB);
+    g_assert(gdk_pixbuf_get_bits_per_sample(pixbuf) == 8);
+    g_assert(gdk_pixbuf_get_has_alpha(pixbuf));
+    g_assert(n_channels == 4);
+
 
 //     /* For some inexplicable reason XChangeProperty always takes
 //      * an array of longs when the format == 32 even on 64-bit
@@ -110,13 +115,29 @@ void Gui::set_window_icon(const std::string &path)
 //         }
 //      }
 
-    guchar *data = gdk_pixbuf_get_pixels(pixbuf);
+    guchar *data = (guchar *) g_malloc(pixels_w * pixels_h + (sizeof(gulong) * 2));
+    ((gulong *)data)[0] = pixels_w;
+    ((gulong *)data)[1] = pixels_h;
+    guchar *pixels = gdk_pixbuf_get_pixels(pixbuf);
+    g_strlcpy((gchar *) &data[2], (gchar *) pixels, pixels_w * pixels_h);
+
+    g_print("Set ICON\n");
 
     /* Set the property */
     // FIXME: it doesn't work
-    XChangeProperty(dpy, win, net_wm_icon, XA_CARDINAL,
-        32, PropModeReplace, (unsigned char *) data,
-        (pixels_w * pixels_h) + 2);
+    XChangeProperty(
+        dpy, // X11 display
+        win, // X11 window
+        net_wm_icon, // name of property
+        XA_CARDINAL, // type of property
+        32, // format
+        PropModeReplace, // mode
+        (unsigned char *) data, // data (we must cast it to unsigned char* if format is 32)
+        pixels_w * pixels_h + 2); // nelements
+
+    g_print("%s\n", data);
+
+    // XSync(dpy, False);
 
     g_object_unref(pixbuf);
 }
@@ -954,8 +975,11 @@ Gui::Gui(Application* owner) :
     fs::path iconPath(std::string(PIXMAPS_DIR) + "/toonloop_window_icon.png");
     if (fs::exists(iconPath))
     {
+        std::cout << "Image " << iconPath.string() << " exists." << std::endl;
         set_window_icon(iconPath.string());
     }
+    else
+        std::cout << "Image " << iconPath.string() << " does not exist." << std::endl;
 
     // connect window signals:
     g_signal_connect(G_OBJECT(stage_), "delete-event", G_CALLBACK(on_delete_event), this);
