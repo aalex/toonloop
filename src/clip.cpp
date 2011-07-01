@@ -42,7 +42,7 @@ Clip::Clip(unsigned int id) :
     id_ = id;
     writehead_ = 0;
     playhead_ = 0;
-    playhead_fps_ = 12; // some default for now
+    playhead_fps_ = 8; // some default for now
     has_recorded_a_frame_ = false;
     last_time_grabbed_image_ = timing::get_timestamp_now();
     intervalometer_rate_ = 10.0f; // 10 seconds is a reasonable default for a timelapse
