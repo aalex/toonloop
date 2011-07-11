@@ -220,4 +220,32 @@ class ImportImageCommand : public Command
         virtual void do_apply(Controller &controller);
         std::string file_name_;
 };
+/**
+ * Increases fps
+ */
+class IncreasePlayheadFpsCommand : public Command
+{
+    public:
+        IncreasePlayheadFpsCommand() : 
+            Command()
+        {}
+    private:
+        static const std::string name_;
+        virtual const std::string &do_get_name() const { return name_; }
+        virtual void do_apply(Controller &controller);
+};
+/**
+ * Decreases fps
+ */
+class DecreasePlayheadFpsCommand : public Command
+{
+    public:
+        DecreasePlayheadFpsCommand() : 
+            Command()
+        {}
+    private:
+        static const std::string name_;
+        virtual const std::string &do_get_name() const { return name_; }
+        virtual void do_apply(Controller &controller);
+};
 #endif
