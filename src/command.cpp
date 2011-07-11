@@ -122,3 +122,19 @@ void ImportImageCommand::do_apply(Controller &controller)
     controller.import_image(file_name_);
 }
 
+// increase_playhead_fps
+const std::string IncreasePlayheadFpsCommand::name_ = "increase_playhead_fps";
+
+void IncreasePlayheadFpsCommand::do_apply(Controller &controller)
+{
+    controller.increase_playhead_fps();
+}
+
+// decrease_playhead_fps
+const std::string DecreasePlayheadFpsCommand::name_ = "decrease_playhead_fps";
+
+void DecreasePlayheadFpsCommand::do_apply(Controller &controller)
+{
+    controller.decrease_playhead_fps();
+}
+
