@@ -122,6 +122,8 @@ MidiInput::CommandPtr MidiInput::make_command(const MidiRule *rule)
         return CommandPtr(new VideoRecordOnCommand);
     else if (rule->action_ == "video_record_off")
         return CommandPtr(new VideoRecordOffCommand);
+    else if (rule->action_ == "save_current_clip")
+        return CommandPtr(new SaveCurrentClipCommand); 
     else if (rule->action_ == "quit")
         return CommandPtr(new QuitCommand);
     else if (rule->action_ == "select_clip")
