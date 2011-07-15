@@ -20,6 +20,7 @@ New features:
 
 Bug fixes:
     * Do not die if cannot find MIDI XML config file
+    * Implement MIDI binding for SaveCurrentClip command (was crashing)
 
 New bugs:
     * window icon looks bad
