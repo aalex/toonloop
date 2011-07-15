@@ -10,12 +10,11 @@ This release is a snapshot in the 2.1 unstable series.
 This version contains new features and bug fixes.
 
 New features:
-    * Fine tune animation curves
-    * Go to beginning of clip when choose it
-    * Flash when grab an image
     * Display text and an animation when saving clip or project
+    * Go to beginning of clip when choose it (optional)
+    * Flash when grab an image
     * Get rid of GTK
-    * Interface to serial button sends OSC via Twisted
+    * Interface to serial button sends OSC via Twisted (separate Python script)
     * Add doc/toonloop-title.svg
 
 Bug fixes:
