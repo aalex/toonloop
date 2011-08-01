@@ -1,8 +1,682 @@
+commit e4b064b519df6436c869bcfb7827573c34224d95
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jul 15 23:54:19 2011 +0200
+
+    update NEWS
+
+commit 2f274cddd21036c472971cd5c5ef2c74b588d2be
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jul 15 23:37:22 2011 +0200
+
+    add Michal Seta to AUTHORS
+
+commit 6716bf6af50f34c3451efdf2536e1e126f1106f4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jul 15 23:31:16 2011 +0200
+
+    update NEWS
+
+commit e94e6f8c9f61e3ba3caad0d87ef205f3647dc8c0
+Author: Michal Seta <mis@artengine.ca>
+Date:   Mon Jul 11 18:00:20 2011 -0400
+
+    Saving current clip was unbound in MIDI control and resulted in a segfault
+
+commit 2277f72dd7a627968f72869eded4efce3d23b215
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jul 1 11:36:35 2011 -0400
+
+    change default fps to 8
+
+commit f14dcedf026dcfa649e51783befe391c6f8f0606
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Jun 30 10:47:58 2011 -0400
+
+    fix to version of clutter for key symbols
+
+commit c14912ea738d3c4ade0b3a9b9f62b3740b88c10e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jun 29 19:51:11 2011 -0400
+
+    more comments
+
+commit f6412fd36a295fa071829319ea93f85b323f436e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jun 29 19:46:28 2011 -0400
+
+    remove some headers
+
+commit c5fd2b619002fe866d6ecdad3ace6d8de4fbbf88
+Merge: 69a5f50 959aeb0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jun 29 19:29:48 2011 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 69a5f506a7cecbae577a30571366eed15884b9f2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jun 29 19:24:37 2011 -0400
+
+    move toon_clutter_stage_set_window_icon to clutter-tools.h
+
+commit 959aeb09d8f6e780440419141fb703cc9dfe9b81
+Merge: e3aa19d be97796
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jun 29 17:50:31 2011 -0400
+
+    Merge branch 'master' of https://github.com/aalex/toonloop
+
+commit 997309e0f6cc62a0933f82200a48e6859a902623
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jun 29 17:23:23 2011 -0400
+
+    see some window icon in double
+
+commit 4591f84537e106ee31d3fbc7e34c15c961241e07
+Merge: 934a626 be97796
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jun 29 16:52:24 2011 -0400
+
+    Merge branch 'master' into window-icon
+
+commit be97796cf1025a24990fccd961a07ea3435898fb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jun 29 16:50:54 2011 -0400
+
+    update NEWS
+
+commit 934a626914735ed98e1c8652064b9dbb385586bb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jun 29 16:42:30 2011 -0400
+
+    try to see some window icon
+
+commit 4e9477df1a5afbae0ae2b1d516015ad7eb2fb462
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jun 29 16:06:29 2011 -0400
+
+    add alpha channel to png
+
+commit b03250ad7c5b52dad2602c48c8ef867de74dcb24
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jun 29 16:06:18 2011 -0400
+
+    we see some buggy window icon
+
+commit 88eddf6d7eebff87d349de393154d0279762ef38
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jun 29 15:07:45 2011 -0400
+
+    add some notes about setting the window icon
+
+commit e3aa19d5ec09a8b683b6e355717cafad4d6d17a1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Jun 29 14:49:46 2011 -0400
+
+    adding install_maverick
+
+commit b36b37e3c11ebc054103a1c303b49837cbdd3cde
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 28 15:40:31 2011 -0400
+
+    use clutter, not clutter-gtk in a test
+
+commit 02b6c454239caa9031fcb3ecb888272b68b6d8f2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 28 14:11:30 2011 -0400
+
+    fine tune animation curves
+
+commit 4284b9d6e03d7a05cc9a5be15a9a28c564b8ec83
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 28 14:09:49 2011 -0400
+
+    fix segfault on 64 bits when animating opacity
+
+commit d127188126293cdc7a52f34d425f4d1f8b16176a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 28 03:29:10 2011 -0400
+
+    go to beginning of clip when choose it
+
+commit 206fa05dc454ac87369b0d7b0217de3042df3329
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 28 03:02:48 2011 -0400
+
+    add toonloop_window_icon.png to pixmaps
+
+commit d3747feed51f1c79101914ad14e2f045aacb2f24
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 28 02:33:46 2011 -0400
+
+    flash when grab an image
+
+commit 690aecde9502fd8e0cb144042780aee94b5b1e09
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 28 02:20:10 2011 -0400
+
+    fix progress bar so that we see it
+
+commit a888b01d1c124487e67f39a5ff8947009e6b4f9e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 28 01:58:14 2011 -0400
+
+    display text when saving clip or project
+
+commit 248f96a17cad68ed382ae9351d5899d5756104f4
+Merge: 463d5b4 069e3e2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 28 00:48:10 2011 -0400
+
+    Merge branch 'master' into nogtk
+
+commit 463d5b463fc9afcf70b25233b9c71e7bfaf5d7bc
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 28 00:43:19 2011 -0400
+
+    update CONTRIBUTING
+
+commit b908eeb44e0068d02e1d955b18f806b576955f25
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 28 00:42:11 2011 -0400
+
+    update README
+
+commit 5fe666d9eee42e7f8515dec09f7705739c081d0a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jun 27 22:08:55 2011 -0400
+
+    Get rid of GTK
+
+commit 4b4be544c8b7c69275ca49a6ca69692cf639ec9e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jun 27 21:13:13 2011 -0400
+
+    trivial change
+
+commit 069e3e29b4d98f99f51621b88dbd9ee6544b3db8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jun 27 20:50:09 2011 -0400
+
+    do not die if cannot find MIDI XML config file
+
+commit 44323cf834a73642f5b2cd3d038e099d6a70dcf8
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jun 27 18:09:30 2011 -0400
+
+    Interface to serial button sends OSC via Twisted
+
+commit 7b130aad1fb3bc634b10d1f927956c174170d55a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jun 27 17:53:29 2011 -0400
+
+    switch utils/toon-button to Twisted
+
+commit c4511102eb33502748dc87fda27f96f25fd2c91f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jun 24 17:26:45 2011 -0400
+
+    add Arduino sketch and Python serial reader
+
+commit a339b8083ad25fe333a806b752ffabafd017670e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jun 24 14:51:54 2011 -0400
+
+    add doc/toonloop-title.svg
+
+commit 1a554526d29063d4456d81c1d0573a84ff9d91b1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jun 24 11:46:02 2011 -0400
+
+    add Gui::set_window_icon
+
+commit 92dc04e8126083b7e63498e363770aaaf103bb3e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jun 24 10:58:59 2011 -0400
+
+    remove a todo
+
+commit 25331b3fc61687bb76ad03e6ea69301b84cdaa7f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jun 24 10:52:40 2011 -0400
+
+    add legacyclutter.h
+
+commit 4f55d89338e567edb304acd2ca6f2346dd9ef3d9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jun 24 10:48:18 2011 -0400
+
+    handle Clutter's button-press event, not GDK's
+
+commit 9d73cf5c907633e974f0edc3d74db085670dcf31
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jun 24 10:36:06 2011 -0400
+
+    remove unused include
+
+commit 064921bbaef6cd3356fe2ed6f2f26f25b4e60fc3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jun 24 10:10:44 2011 -0400
+
+    Use Clutter key symbols, not GDK's
+
+commit b61d1eb6b5e933c6c83968fdb5fbc0b29afecbac
+Merge: 7f6d704 8eedb55
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 18:10:37 2011 +0200
+
+    Merge branch 'fixmakecheck'
+
+commit 8eedb55a34e352edcc97a2ea3b3669eae9625a82
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 18:06:14 2011 +0200
+
+    fix make distcheck
+
+commit 7f6d704b17af9cace2695cfaa613cd0c4e9388a7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 17:54:28 2011 +0200
+
+    post-release version bump
+
+commit 458658067dfd2fc6ac9226b6940063d4cce5859c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 17:53:33 2011 +0200
+
+    update version to 2.1.12
+
+commit 1d1ff878b06fde12bc9e86a9adc5a3536edf8106
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 17:50:16 2011 +0200
+
+    update NEWS
+
+commit 4799b83026ba0dce6d4fa478707ac4e67ab00aff
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 17:34:26 2011 +0200
+
+    do not hide cursor if on amd64, since it crashes
+
+commit 487532e0eb13dbabb574de0a3f57df5c338c273e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 17:29:49 2011 +0200
+
+    use GtkEvent* in window-state-event cb
+
+commit 2c1cb2c728999cadb3c809ff208523b35c6a021b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 17:18:25 2011 +0200
+
+    cast null to GdkCursor * for amd64
+
+commit a0818b2c7228a909341278858a88555b8d24099f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 17:16:05 2011 +0200
+
+    update to NEWS
+
+commit bc27adc9fd036e46c5535430d72588e02974db9f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 17:09:35 2011 +0200
+
+    change signature for texture size changes cb
+
+commit 05743b02e272f542cc4a3dcc4ff2ac0748c900d9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 16:32:59 2011 +0200
+
+    Cast GDK_BLANK_CURSOR to GdkCursor*
+
+commit bf5d3aa8a0215fecf40e41924e835eea61c5239b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 16:16:04 2011 +0200
+
+    Set cursor to blank the proper way (gtk 2.16+)
+
+commit 1fd6d7ec8a5a4c649c5808bc87fc903b6c21a6be
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 16:12:35 2011 +0200
+
+    avoid linking to libclutter-gtk-1.0
+    
+    it relies on gtk-3
+
+commit df524c76c1541c28f954ffc8750e131f4ab7a11f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 15:53:28 2011 +0200
+
+    adding utils/list_deps_version
+
+commit 627d6e6993290cfdd184a9c12c6c1668be8cca9f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 14:37:52 2011 +0200
+
+    add utils/install_deps
+
+commit 10479ec6b3692dfe364354a3829e3e848cd8e887
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Jun 7 14:19:50 2011 +0200
+
+    Compile against clutter-gtk/gst either 1.0 or 0.10
+
+commit 6f3ffe4c662c30949efd505743b2dbb726455a3c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Jun 5 16:06:07 2011 -0400
+
+    Fix segfault upon texture size changes signal triggered
+
+commit dbca79dbff1e4fe8d957f2bff9e025ad7f16f79b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jun 4 21:52:03 2011 -0400
+
+    Set CLUTTER_VBLANK=none before clutter_init
+
+commit 4748a091a34fcf670b0213bbea53a82bdb789a87
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jun 4 21:04:52 2011 -0400
+
+    Disable double buffering in drawing area
+
+commit 917c0ba6bed2fd3115415f7228b87b99ce661e6e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jun 4 19:24:43 2011 -0400
+
+    move check_properties to tests/
+
+commit 743ad733ce5c6969f5923ce8b65d2ab72d26aef2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jun 4 19:12:58 2011 -0400
+
+    Use $(top_srcdir) in Makefile.am for tests
+
+commit 8f82d0d80a02290b4ae0dd78a62e1c65882af17b
+Merge: 2488d96 4cd06a5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jun 4 19:06:41 2011 -0400
+
+    Merge branch 'future'
+
+commit 4cd06a543b44b8a2bd603f11271db3d21c1bcb24
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jun 4 19:05:57 2011 -0400
+
+    back to 2.1.11
+
+commit 34c89498619bdf40704e890b002962ca8cbcbdb3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jun 3 01:33:44 2011 -0400
+
+    fix check_imageimporter
+
+commit 2488d96c4c640d5eb6d4a884626d02379f4c73b4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jun 3 01:23:35 2011 -0400
+
+    post-release version bump
+
+commit 5e18e3d3ec8745cfdb888a3eca9a6e7119f8e384
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jun 3 01:22:03 2011 -0400
+
+    update version to 0.2.0
+
+commit 80d6c713f6ae762ed20132bbdf72f8a811ea4e2b
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Jun 3 01:21:12 2011 -0400
+
+    prepare 0.2.0
+
+commit 330f2e00abb505bdd1b4ddd7af952b5bb82a8acd
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun May 22 19:31:31 2011 -0400
+
+    one item less to do
+
+commit 90193b9f82be2f6c9dc4473acba76ae18fecd3c9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat May 14 16:43:28 2011 -0400
+
+    implement /toon/clip/import_image ,s <file_name>
+
+commit adfa77dfd501efd770846f4a71856714d0620bf2
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat May 14 16:21:08 2011 -0400
+
+    implement Controller::import_image
+
+commit 7e689ea89e40dc03541842e134546b92fc549fb7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat May 14 15:40:01 2011 -0400
+
+    make sure all JPEG are 100%
+
+commit 6f7c8563ff597ab0235172a087f352cf3926891d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat May 14 15:20:32 2011 -0400
+
+    Improved check_imageimporter a lot
+
+commit 80bfa32f23bbb36752b7948529e7330eb871ad21
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri May 13 17:21:30 2011 -0400
+
+    towards a test for image_importer
+
+commit c187d3af93ff7e955a8c93085fbfe310f3d8fd5a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri May 13 17:07:51 2011 -0400
+
+    adding image_importer.cpp
+
+commit ea1ab044a5386e0a7d90adb450c0e2af8c6e6f06
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri May 13 10:15:59 2011 -0400
+
+    updated doc/midi_notes_and_controls.pd patch
+
+commit 07227f674ffd336216b5482780ae6ff6445f9cb9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri May 13 09:06:08 2011 -0400
+
+    updated to the gst-pipeline.odg diagram
+
+commit 0648477906382a836032c3964e09a4b85eb91add
+Merge: 1b09d61 ce3c8c1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 4 10:15:48 2011 -0400
+
+    Merge branch 'master' of github.com:aalex/toonloop
+
+commit 1b09d610599f05b1d56262f9c19917138f53b87d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Apr 4 10:15:03 2011 -0400
+
+    adding .description
+    
+    ln -s .description .git/description
+
+commit ce3c8c17b1cc737d8956fbbba6de380e88a84cd6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Mar 4 13:45:04 2011 -0500
+
+    critical bug fixed
+
+commit 3bc6f9bb6830e135b908249a1f2c495919d560ca
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 15 10:57:35 2011 +0100
+
+    more verbose midi
+
+commit 11c66b44c92a20e200f5209707da38c43105ba88
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 2 10:57:54 2011 -0500
+
+    post-release version bump
+
+commit 308fee43b5c62fe77e4ba920e438f61e71b42f01
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 2 10:56:29 2011 -0500
+
+    Updated to 2.1.10 for a release
+
+commit 1e167c78663db92152ab872d48d55094db619d66
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 2 10:50:48 2011 -0500
+
+    got rid of undesired text in man page
+
+commit 5771396947cacb6287695ed0024f9d1152411ecb
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 2 10:47:04 2011 -0500
+
+    missing end of line
+
+commit feba52e81d56054b344ccc5472cfd0aa7a6f2c1f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 2 10:46:23 2011 -0500
+
+    more verbose when save the project
+
+commit 628443123c67500fd62c69a0d07cdea68eb9ca3e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Feb 2 10:44:34 2011 -0500
+
+    Use ctrl-e to export the current clip.
+
+commit 40156ae56303d6c92051897c789fbb597046e61a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 1 14:19:50 2011 -0500
+
+    updated RELEASE
+
+commit 4ffd14e2012aa1ce3d423fa517d77e41dcbf1194
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 1 14:17:02 2011 -0500
+
+    updated RELEASE notes
+
+commit 9ad24a938d518616fd98120a05e241c56d6f0cf0
+Merge: b331d2a 75d2a04
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 1 14:15:55 2011 -0500
+
+    Merge branch 'master' into dv2
+
+commit 75d2a04ecc76d4f455a074d716053b4c6f5a9e66
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 1 14:08:44 2011 -0500
+
+    updated RELEASE notes
+
+commit 24b1fa411be677dbf9980987856b60f6b94e2771
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 1 13:47:43 2011 -0500
+
+    gdk_pixbuf_unref is deprecated
+
+commit a04bd944a8133b8ecdca18b47fbd17bfe3c82e57
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 1 13:32:13 2011 -0500
+
+    Less verbose pipeline
+
+commit 088466bd30fae1e87279e8bf796a777713ca3852
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 1 13:25:11 2011 -0500
+
+    updated RELEASE file
+
+commit a673d4a36c3fa7cb57a948d6586344c32a515bef
+Merge: bee2ca9 0459b23
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 1 13:22:49 2011 -0500
+
+    Merge branch 'dv'
+
+commit 0459b233a605b6b31fe5230639eab12eb67792b4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Feb 1 13:21:55 2011 -0500
+
+    Fixed DV pipeline!
+
+commit bee2ca933dce5185353a9d72914b7f384457ca95
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 29 11:04:16 2011 -0500
+
+    Decreased playback rate verbosity. Moved doc strs
+
+commit 51e521a42f2923798bc69260f516c521c8fc56e0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 29 10:49:18 2011 -0500
+
+    no private stuff in doxygen doc
+
+commit d385e2ebe57d58b3a46fc807ce9b44f1eba182f0
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 29 10:37:06 2011 -0500
+
+    saving current clip number
+
+commit fccaaf7c7e7ca54fe158fce983f7b090e39e591a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 29 10:27:31 2011 -0500
+
+    added --auto-save-project option
+
+commit 67dc3ae405f3c7170dc4935f90bd3e07a4a7381f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 29 10:09:38 2011 -0500
+
+    created Application::get_project_file_name()
+
+commit 7e3e1f938875ef149b7e84f501faab1036842f2e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 29 10:04:27 2011 -0500
+
+    updated some comments and prints
+
+commit 37b630b52d264c9e811436c95cbfcbb026a10168
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 29 09:56:27 2011 -0500
+
+    added --no-load-project option
+
+commit 04a7b37d75a5c311ee94ac62a54d078f5d9b058a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Jan 29 09:48:48 2011 -0500
+
+    check for install and ln -s
+
+commit c7057744b0ad317ba3bfbe614f5c4826470aaf7f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 24 09:30:49 2011 -0500
+
+    updated TODO
+
+commit b7b1e28c6d494914352b470cdedf0789dc952c74
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 24 08:53:07 2011 -0500
+
+    updated ChangeLog
+
 commit 08525bfc47440c4bd3952d72bd7b7f807cc9b7ac
 Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Mon Jan 24 08:52:44 2011 -0500
 
     updated RELEASE
+
+commit 5d0626f8fda5494e0eedefe1b2377a2f8dcfb4db
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 24 06:24:10 2011 -0500
+
+    style corrections
+
+commit 3b7bdd4a2bb02120cc6d28100783b57c14e82511
+Merge: 8b9b811 9830f8c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 24 06:17:32 2011 -0500
+
+    Merge branch 'master' into dv
 
 commit 9830f8c6667e65607427619dcca0cc768f2d0c7d
 Author: Alexandre Quessy <alexandre@quessy.net>
@@ -150,6 +824,13 @@ Date:   Sun Jan 16 03:49:43 2011 -0500
 
     added BOOST_SYSTEM_LIB which caused problem on natty
 
+commit 8b9b8115f669aea0f4dc3c03196633e468b5e9d3
+Merge: fe4eb6b 164ad75
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 12:37:06 2011 -0500
+
+    Merge branch 'master' into dv
+
 commit 164ad75944abb8a7e2cb0fa9a5cf365dba390f5c
 Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Mon Jan 10 12:36:46 2011 -0500
@@ -185,6 +866,13 @@ Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Mon Jan 10 12:01:55 2011 -0500
 
     default livefeed_opacity was wrong
+
+commit fe4eb6befe988f669e5a5b4729939b4176702a16
+Merge: 34951f5 5a87d37
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 11:54:49 2011 -0500
+
+    Merge branch 'master' into dv
 
 commit 5a87d37a9205f94a4deb10385268624a5ed0c61b
 Author: Alexandre Quessy <alexandre@quessy.net>
@@ -233,6 +921,13 @@ Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Mon Jan 10 09:16:34 2011 -0500
 
     updated MIDI test patch
+
+commit 34951f56dfcd0883ef598bf8eb8341249cdd042a
+Merge: 694cb03 195ba88
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Jan 10 08:39:18 2011 -0500
+
+    Merge branch 'master' into dv
 
 commit 195ba88ee3d04fbaec9b6849eab97db98682ca5b
 Author: Alexandre Quessy <alexandre@quessy.net>
@@ -368,6 +1063,103 @@ Author: Tristan Matthews <le.businessman@gmail.com>
 Date:   Tue Dec 21 17:18:42 2010 -0500
 
     "get" methods should be declared const. When passing parameters by value, they should not be declared const
+
+commit 694cb03f321a937849cdd67418c98b7aac35dd5f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Dec 20 22:34:03 2010 -0500
+
+    trying with a dvdec
+
+commit ff94b38003172086b3a63613b1aa1046c0e76c19
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Dec 20 22:16:55 2010 -0500
+
+    trying to add more element to make DV work
+
+commit b331d2a5d4aba53151e78241c6929006508c41d4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Dec 19 13:52:44 2010 -0500
+
+    adding raw1394util.cpp - depend on libavc1394
+
+commit ab066cb237a7b06dfdcce13edca662bdf732a855
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Dec 19 12:56:56 2010 -0500
+
+    checking for libraw1394
+
+commit ac0cc027d8d59eab7ccb8dae173a2f460c0afc10
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 18 19:27:06 2010 -0500
+
+    adding a test DV pipeline
+
+commit b0ea27b029fda620c3816db4a92ac46a8e68f747
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 18 18:41:42 2010 -0500
+
+    added a todo note
+
+commit 1dcb2156d62c47d5565e2ec58690d69d1177be49
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Dec 19 23:55:55 2010 -0500
+
+    added a dep to README
+
+commit 7e381d83771c5b27871a81f8554d7e2f019275ee
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Dec 19 23:48:31 2010 -0500
+
+    trying to simplify the pipeline - not need for queues if not reading audio
+
+commit ece1f9af016d0e4dea76f5d6789321ac1ae3dfe4
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Dec 19 21:44:35 2010 -0500
+
+    not quitting when the error comes from the videosrc in DV
+
+commit f8444a7bf27e784405bebdaf7b36d190c19157f3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Dec 19 18:57:45 2010 -0500
+
+    moved around comment
+
+commit 7ea6a40e079f9006a11e4ab366a5a0f162b7136d
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Dec 19 18:42:40 2010 -0500
+
+    check that a DV cam is ready + links when pad is added
+
+commit f72ca4a052129a275a0d07fa00c92d14fac77a93
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Dec 19 13:52:44 2010 -0500
+
+    adding raw1394util.cpp - depend on libavc1394
+
+commit 893695f0709bf83cbf19d2017f4ba3f83aa4c258
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Dec 19 12:56:56 2010 -0500
+
+    checking for libraw1394
+
+commit 8ead059d9cd096dd0bea7abaa92a668143e5219b
+Merge: 9cf93b9 e90ad68
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Dec 19 11:34:56 2010 -0500
+
+    Merge branch 'dv' of github.com:aalex/toonloop into dv
+
+commit 9cf93b9e1fb83a74ec4c928146fb3372d1e2179f
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sun Dec 19 11:34:29 2010 -0500
+
+    towards a DV pipeline - added the link_or_die method
+
+commit e90ad680f78da276a025eccfa04203690d38e042
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Dec 18 19:27:06 2010 -0500
+
+    adding a test DV pipeline
 
 commit e02091dc773ff13831691b71ff41384cc0c97ac7
 Author: Alexandre Quessy <alexandre@quessy.net>

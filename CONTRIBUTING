@@ -33,6 +33,7 @@ Creating a Tarball - The Release Process
 
 Make the NEWS file is up-to-date.
 Make sure the version number in configure.ac is correct.
+Update the ChangeLog file while you are at it.
 Commit any pending changes.
 
  $ ./autogen.sh
