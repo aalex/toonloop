@@ -178,7 +178,7 @@ void Application::run(int argc, char *argv[])
         ("enable-info-window,I", po::bool_switch(), "Enables a window for information text.")
         ("image-on-top", po::value<std::string>()->default_value(""), "Shows an unscaled image on top of all.")
         ("enable-preview-window", po::bool_switch(), "Enables a preview of the live camera feed.")
-        ("print-properties", po::bool_switch(), "Prints a list of the Toonloop properties once running.")
+        ("print-properties", po::bool_switch(), "Prints a list of the Toonloop properties and exit.")
         ("no-load-project", po::bool_switch(), "Disables project file loading.")
         ("auto-save-project", po::bool_switch(), "Enables project auto saving.")
         ("continue-when-choose,C", po::bool_switch(), "When a clip is chosen, continue where it was instead of going to beginning.")
@@ -353,6 +353,14 @@ void Application::run(int argc, char *argv[])
     if (verbose)
         std::cout << "Starting GUI." << std::endl;
     gui_.reset(new Gui(this));
+    // Print properties
+    if (options["print-properties"].as<bool>())
+    {
+        get_controller()->print_properties();
+        return;
+    }
+    // need to show the GUI before setting up the pipeline, but after
+    // printing the properties
     gui_.get()->show();
     // start Pipeline
     if (verbose)
@@ -407,9 +415,6 @@ void Application::run(int argc, char *argv[])
     if (verbose)
         std::cout << "Check for mencoder" << std::endl;
     check_for_mencoder();
-    // Print properties
-    if (options["print-properties"].as<bool>())
-        get_controller()->print_properties();
     // load project
     if (! options["no-load-project"].as<bool>())
     {
