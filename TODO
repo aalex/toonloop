@@ -44,7 +44,6 @@ Right now, here is the list of tasks to prioritize:
  * BUG: Auto-record video is very slow. We should save pixbufs asynchronously. (it's not provided by their library! see "optimization")
  * BUG: Auto-record video sometimes keeps recording and is impossible to stop!
  * BUG: Sometimes, in one-image clips, the playhead tries to change to 1. Clip::get_image: Got exception vector::_M_range_check \n Controller::update_playback_image: The image is NULL
- * BUG: check for runtime dep (mencoder) in the executable.
  * BUG: the first live input image is white (hence the first recorded one if using timelapse)
  * architecture: create the ToonLooper and ToonGrabber classes. (take those from gui and pipeline)
  * doc: Make sure the keystroke instructions are in only one place.
