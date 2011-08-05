@@ -30,7 +30,6 @@ Top Priorities
  * gui: Why does closing the info window makes the app unresponsive?
  * controller: review and simplify properties.h and controller.h
  * controller: If a property already exists, trying to create it should return a pointer to the other one. (to avoid race conditions upon property creation?) 
- * controller: Implement the --list-properties option. (maybe we'll need not to start the GUI before setting up the controller and effects)
  * playback: scratch video
  * playback: Be able to change looping bounds
  * controls: Add direct controls for playback direction.
