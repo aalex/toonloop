@@ -88,7 +88,6 @@ To be done later
  * optimization: Use boost::any for the message args. See http://www.boost.org/doc/libs/1_43_0/doc/html/any/s02.html
  * packaging: Improve STK packaging
  * packaging: Re-add previous tests, including headers from src.
- * packaging: Remove dependency to GTK. (GUI controls should use Clutter)
  * playback: Allow to move playhead to the beginning of a clip when we switch to it.
  * playback: Basic sequences of clips.
  * playback: allow to play all clips from 0 to 9
