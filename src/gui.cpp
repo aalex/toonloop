@@ -189,7 +189,7 @@ gboolean Gui::key_press_event(ClutterActor *stage, ClutterEvent *event, gpointer
     UNUSED(stage);
     guint keyval = clutter_event_get_key_symbol(event);
     ClutterModifierType state = clutter_event_get_state(event);
-    //bool shift_pressed = (state & CLUTTER_SHIFT_MASK ? true : false);
+    bool shift_pressed = (state & CLUTTER_SHIFT_MASK ? true : false);
     bool ctrl_pressed = (state & CLUTTER_CONTROL_MASK ? true : false);
     bool caps_lock_on = (state & CLUTTER_LOCK_MASK ? false : true); // FIXME: caps lock seems on when its off and vice versa
 
@@ -283,6 +283,8 @@ gboolean Gui::key_press_event(ClutterActor *stage, ClutterEvent *event, gpointer
                 else
                     std::cout << "No layout with number " << number_pressed << std::endl;
             }
+            else if (shift_pressed)
+                controller->choose_clip_and_add_frame(number_pressed);
             else
                 controller->choose_clip(number_pressed);
             break;

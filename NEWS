@@ -11,6 +11,7 @@ This version contains new features and bug fixes.
 New features:
     * append clip id to the name of exported video files
     * videotestsrc size is now configurable as well
+    * can now switch to a clip and add a frame to it in a single key stroke (shift-number)
 
 Bug fixes:
     * (none)

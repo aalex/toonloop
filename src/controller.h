@@ -336,6 +336,12 @@ class Controller
          */
         void import_image(const std::string &file_name);
 
+        /**
+         * Wrapper to choose a clip and add a frame in a single call.
+         * See Controller::choose_clip and Controller::add_frame.
+         */
+        void choose_clip_and_add_frame(unsigned int clip_number);
+
     private:
         Application* owner_;
 };

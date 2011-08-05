@@ -107,6 +107,13 @@ void Controller::choose_clip(unsigned int clip_number)
         choose_clip_signal_(clip_number);
     }
 }
+
+void Controller::choose_clip_and_add_frame(unsigned int clip_number)
+{
+    choose_clip(clip_number);
+    add_frame();
+}
+
 void Controller::choose_previous_clip()
 {
     unsigned int current_clip = owner_->get_current_clip_number();
