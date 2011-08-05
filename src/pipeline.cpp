@@ -525,9 +525,9 @@ Pipeline::Pipeline(Application* owner) :
         }
         else
         {   // it's a videotestsrc
-            //TODO:2010-10-04:aalex:Use config.get_capture_* for test source as well
-            // TODO: make videotestsrc size configurable as well!
-            GstCaps *the_caps = gst_caps_from_string("video/x-raw-yuv, width=640, height=480, framerate=30/1");
+            std::string caps_str = "video/x-raw-yuv, width=" + boost::lexical_cast<std::string>(config->get_capture_width()) + ", height=" + boost::lexical_cast<std::string>(config->get_capture_height()) + ", framerate=30/1";
+            std::cout << "CAPS: " << caps_str << std::endl;
+            GstCaps *the_caps = gst_caps_from_string(caps_str.c_str());
             g_object_set(capsfilter0, "caps", the_caps, NULL);
             gst_caps_unref(the_caps);
         }

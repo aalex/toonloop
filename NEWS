@@ -10,6 +10,7 @@ This version contains new features and bug fixes.
 
 New features:
     * append clip id to the name of exported video files
+    * videotestsrc size is now configurable as well
 
 Bug fixes:
     * (none)
