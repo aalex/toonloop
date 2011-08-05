@@ -353,6 +353,7 @@ void Application::run(int argc, char *argv[])
     if (verbose)
         std::cout << "Starting GUI." << std::endl;
     gui_.reset(new Gui(this));
+    gui_.get()->show();
     // start Pipeline
     if (verbose)
         std::cout << "Starting pipeline." << std::endl;

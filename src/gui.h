@@ -64,6 +64,7 @@ class Gui
         BlendingMode get_blending_mode() const { return blending_mode_; }
         static std::string get_blending_mode_name(BlendingMode mode);
         static std::string get_layout_name(layout_number layout);
+        void show();
         
     private:
         void crossfade_increment(float value);
@@ -137,6 +138,7 @@ class Gui
         BlendingMode blending_mode_;
         std::tr1::shared_ptr<Effect> saturation_effect_;
         InfoWindow info_window_;
+        bool is_shown_;
 };
 
 #endif // __GUI_H__

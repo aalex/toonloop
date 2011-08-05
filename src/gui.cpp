@@ -884,7 +884,8 @@ Gui::Gui(Application* owner) :
     fps_calculation_timer_(),
     number_of_frames_in_last_second_(0),
     rendering_fps_(0),
-    info_window_(owner)
+    info_window_(owner),
+    is_shown_(false)
 {
     Controller *controller = owner_->get_controller();
     controller->next_image_to_play_signal_.connect(boost::bind(&Gui::on_next_image_to_play, this, _1, _2, _3));
@@ -893,6 +894,23 @@ Gui::Gui(Application* owner) :
     controller->save_clip_signal_.connect(boost::bind(&Gui::on_save_clip, this, _1, _2));
     controller->save_project_signal_.connect(boost::bind(&Gui::on_save_project, this, _1));
     //TODO: controller->no_image_to_play_signals_.connect(boost::bind(&Gui::on_no_image_to_play, this))
+
+    // add properties:
+    controller->add_int_property("blending_mode", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_blending_mode_int_property_changed, this, _1, _2));
+    controller->add_float_property("crossfade_ratio", 0.0)->value_changed_signal_.connect(boost::bind(&Gui::on_crossfade_ratio_changed, this, _1, _2));
+    controller->add_int_property("livefeed_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_livefeed_opacity_changed, this, _1, _2));
+    controller->add_int_property("black_out", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_changed, this, _1, _2));
+    controller->add_int_property("black_out_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_opacity_changed, this, _1, _2));
+    controller->add_int_property("playback_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_playback_opacity_changed, this, _1, _2));
+}
+
+void Gui::show()
+{
+    if (is_shown_)
+        return;
+    is_shown_ = true;
+
+    Controller *controller = owner_->get_controller();
     stage_ = clutter_stage_get_default();
     clutter_stage_set_minimum_size(CLUTTER_STAGE(stage_), 640, 480);
 
@@ -1016,7 +1034,6 @@ Gui::Gui(Application* owner) :
     clutter_actor_hide(black_out_rectangle_);
     clutter_container_add_actor(CLUTTER_CONTAINER(stage_), black_out_rectangle_);
 
-
     // flash
     flash_actor_ = clutter_rectangle_new_with_color(&white);
     clutter_actor_set_opacity(flash_actor_, 0.0);
@@ -1065,14 +1082,6 @@ Gui::Gui(Application* owner) :
     // Makes fullscreen if needed
     if (owner_->get_configuration()->get_fullscreen())
         toggleFullscreen();
-    // add properties:
-    controller->add_int_property("blending_mode", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_blending_mode_int_property_changed, this, _1, _2));
-    controller->add_float_property("crossfade_ratio", 0.0)->value_changed_signal_.connect(boost::bind(&Gui::on_crossfade_ratio_changed, this, _1, _2));
-    controller->add_int_property("livefeed_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_livefeed_opacity_changed, this, _1, _2));
-    controller->add_int_property("black_out", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_changed, this, _1, _2));
-    controller->add_int_property("black_out_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_opacity_changed, this, _1, _2));
-    controller->add_int_property("playback_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_playback_opacity_changed, this, _1, _2));
-
     // saturation effect:
     clutter_actor_set_name(playback_group_, "playback_group_");
     clutter_actor_set_name(live_input_texture_, "live_input_texture_");
@@ -1086,7 +1095,6 @@ Gui::Gui(Application* owner) :
         saturation_effect_->add_actor(onionskin_group_);
         saturation_effect_->update_all_actors();
     }
-
 }
 
 void Gui::on_black_out_opacity_changed(std::string &name, int value)
