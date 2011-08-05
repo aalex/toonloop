@@ -18,6 +18,7 @@
  * along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 #include <clutter-gst/clutter-gst.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gst/gst.h>

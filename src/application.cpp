@@ -19,6 +19,7 @@
  */
 #include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
 #include <clutter-gst/clutter-gst.h>
 #include <cstdlib> // for getenv

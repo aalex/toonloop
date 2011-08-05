@@ -31,6 +31,7 @@
 #include <vector>
 #include <string>
 #include <boost/assign.hpp>
+#include <boost/lexical_cast.hpp>
 
 // for filesystem ops
 #include <boost/filesystem/operations.hpp>
