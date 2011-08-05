@@ -20,6 +20,7 @@
 #include <iostream>
 #include <boost/thread.hpp>  
 #include <boost/date_time.hpp>  
+#include <boost/lexical_cast.hpp>  
 #include "moviesaver.h"
 #include "saverworker.h"
 #include "timing.h"
@@ -75,7 +76,8 @@ bool MovieSaver::add_saving_task(Clip& clip, std::string &file_name)
     //std::cout << "Starting thread to save movie #" << current_task_.clip_id_ << std::endl;
     //
     std::string datetime_started = timing::get_iso_datetime_for_now();
-    std::string final_file_name = get_result_directory() + "/movie-" + datetime_started  + ".mov"; 
+    std::string clip_id = boost::lexical_cast<std::string>(current_task_.clip_id_);
+    std::string final_file_name = get_result_directory() + "/movie-" + datetime_started + "-" + clip_id + ".mov"; 
     worker_.set_final_options(datetime_started, final_file_name);
     worker_thread_ = boost::thread(worker_);
     
