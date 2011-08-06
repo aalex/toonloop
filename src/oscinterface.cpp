@@ -381,3 +381,4 @@ void OscInterface::push_command(std::tr1::shared_ptr<Command> command)
     // TODO: pass this message argument by reference?
     messaging_queue_.push(command);
 }
+

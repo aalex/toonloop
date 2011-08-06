@@ -17,14 +17,12 @@ std::string OscSender::toString() const
     return "host:" + host_ + ", port:" + port_;
 }
 
-
 void OscSender::sendMessage(const std::string &OSCpath, const char *types, ...) const
 {
     va_list ap;
     va_start(ap, types);
     sendMessage(OSCpath, types, ap);
 }
-
 
 void OscSender::sendMessage(const std::string &OSCpath, const char *types, va_list ap) const
 {
@@ -36,7 +34,6 @@ void OscSender::sendMessage(const std::string &OSCpath, const char *types, va_li
     else 
         std::cout << "ERROR (OscSender::sendMessage): " << err << std::endl;
 }
-
 
 void OscSender::sendMessage(const std::string &OSCpath, lo_message msg) const
 {

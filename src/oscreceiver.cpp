@@ -12,7 +12,6 @@ OscReceiver::OscReceiver(const std::string &port) :
 #endif
 }
 
-
 OscReceiver::~OscReceiver()
 {
 //    std::cout << "Freeing OSC server thread\n";
@@ -58,7 +57,6 @@ int OscReceiver::genericHandler(const char *path,
     return 1; 
 } 
 #endif // CONFIG_DEBUG
-
 
 std::string OscReceiver::toString() const
 {
