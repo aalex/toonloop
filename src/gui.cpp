@@ -902,6 +902,25 @@ Gui::Gui(Application* owner) :
     controller->add_int_property("black_out", 0)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_changed, this, _1, _2));
     controller->add_int_property("black_out_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_black_out_opacity_changed, this, _1, _2));
     controller->add_int_property("playback_opacity", 255)->value_changed_signal_.connect(boost::bind(&Gui::on_playback_opacity_changed, this, _1, _2));
+
+    if (owner_->get_configuration()->get_shaders_enabled())
+    {
+        load_effects();
+    }
+}
+
+void Gui::load_effects()
+{
+    Controller *controller = owner_->get_controller();
+    saturation_effect_.reset(new BrCoSaEffect(controller));
+}
+
+void Gui::apply_effects()
+{
+    saturation_effect_->add_actor(playback_group_);
+    saturation_effect_->add_actor(live_input_texture_);
+    saturation_effect_->add_actor(onionskin_group_);
+    saturation_effect_->update_all_actors();
 }
 
 void Gui::show()
@@ -910,7 +929,6 @@ void Gui::show()
         return;
     is_shown_ = true;
 
-    Controller *controller = owner_->get_controller();
     stage_ = clutter_stage_get_default();
     clutter_stage_set_minimum_size(CLUTTER_STAGE(stage_), 640, 480);
 
@@ -1089,11 +1107,7 @@ void Gui::show()
     
     if (owner_->get_configuration()->get_shaders_enabled())
     {
-        saturation_effect_.reset(new BrCoSaEffect(controller));
-        saturation_effect_->add_actor(playback_group_);
-        saturation_effect_->add_actor(live_input_texture_);
-        saturation_effect_->add_actor(onionskin_group_);
-        saturation_effect_->update_all_actors();
+        apply_effects();
     }
 }
 

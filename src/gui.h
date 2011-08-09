@@ -95,6 +95,14 @@ class Gui
         void animate_progress_bar();
         void reset_progress_bar();
         void animate_flash();
+        /**
+         * Loads all the effects and shaders.
+         */
+        void load_effects();
+        /**
+         * Inits all the effects and shaders once the ClutterActors are created.
+         */
+        void apply_effects();
         /** 
          * Sets the window icon.
          * (not used right now, since we use GTK)
@@ -136,7 +144,7 @@ class Gui
         static const int WINWIDTH = 640;
         static const int WINHEIGHT = 480;
         BlendingMode blending_mode_;
-        std::tr1::shared_ptr<Effect> saturation_effect_;
+        std::tr1::shared_ptr<Effect> saturation_effect_; // TODO: have a vector of effects
         InfoWindow info_window_;
         bool is_shown_;
 };
