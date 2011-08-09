@@ -8,6 +8,14 @@
 #include "controller.h"
 #include "unused.h"
 
+BrCoSaEffect::BrCoSaEffect(Controller *controller) : 
+    Effect(controller), 
+    contrast_(1.0),
+    saturation_(1.0)
+{
+    init_properties();
+}
+
 //TODO: check if verbose
 
 void BrCoSaEffect::update_actor(ClutterActor *actor)
@@ -77,6 +85,7 @@ void BrCoSaEffect::on_contrast_changed(std::string &name, float value)
     contrast_ = value;
     update_all_actors();
 }
+
 void BrCoSaEffect::on_saturation_changed(std::string &name, float value)
 {
     UNUSED(name);

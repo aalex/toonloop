@@ -29,14 +29,7 @@
 class BrCoSaEffect: public Effect
 {
     public:
-        BrCoSaEffect(Controller *controller) : 
-            Effect(controller), 
-            contrast_(1.0),
-            saturation_(1.0)
-        {
-            init_properties();
-        }
-            
+        BrCoSaEffect(Controller *controller);
     private:
         virtual void init_properties();
         virtual void update_actor(ClutterActor *actor);
