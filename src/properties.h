@@ -25,10 +25,17 @@
 
 #include <map>
 // TODO: use tr1:unordered_map, since lookup is faster with it
-#include <string>
 #include <iostream>
+#include <string>
 #include <tr1/memory> // shared_ptr
+#include <typeinfo> // typeid
+
 #include "property.h"
+
+namespace
+{
+
+}; // end of namespace
 
 /**
  * Holds many properties identified by their name.
@@ -103,7 +110,7 @@ template <typename T> class Properties
         {
             typename std::map<std::string, PropertyPtr>::iterator iter;
             for (iter = properties_.begin(); iter != properties_.end(); iter++)
-                std::cout << " * " << iter->second->get_name() << " = " << iter->second->get_value() << std::endl;
+                std::cout << " * " << typeid(T).name() << " " << iter->second->get_name() << " = " << iter->second->get_value() << std::endl;
         }
 
     private:
