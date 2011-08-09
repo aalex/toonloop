@@ -215,23 +215,6 @@ void Application::run(int argc, char *argv[])
         tmp_midi_input.enumerate_devices();
         return; 
     }
-    // Options to use in the normal mode:
-    if (options.count("video-source"))
-    {
-        video_source = options["video-source"].as<std::string>();
-        if (video_source != "test" && video_source != "x" && video_source != "dv" && video_source != "hdv")
-        {
-            if (! fs::exists(video_source))
-            {
-                std::cout << "Could not find device " << video_source << "." << std::endl;
-                std::cout << "Using the test source." << std::endl;
-                video_source = "test";
-                // exit(1); // exit with error
-            }
-        }
-        if (verbose)
-            std::cout << "video-source is set to " << video_source << std::endl;
-    }
     if (options.count("project-home")) // of course it will be there.
     {
         project_home = options["project-home"].as<std::string>();
@@ -262,6 +245,26 @@ void Application::run(int argc, char *argv[])
     {
         if (verbose)
             std::cout << "Fullscreen mode is on: " << options["fullscreen"].as<bool>() << std::endl;
+    }
+    // Options to use in the normal mode:
+    if (options.count("video-source"))
+    {
+        video_source = options["video-source"].as<std::string>();
+        if (video_source != "test" && video_source != "x" && video_source != "dv" && video_source != "hdv")
+        {
+            if (! fs::exists(video_source))
+            {
+                if (verbose)
+                {
+                    std::cout << "Could not find device " << video_source << "." << std::endl;
+                    std::cout << "Using the test source." << std::endl;
+                }
+                video_source = "test";
+                // exit(1); // exit with error
+            }
+        }
+        if (verbose)
+            std::cout << "video-source is set to " << video_source << std::endl;
     }
     
     // Stores the options in the Configuration class.
@@ -350,8 +353,6 @@ void Application::run(int argc, char *argv[])
     }
     clutter_gst_init(&argc, &argv);
     // start GUI
-    if (verbose)
-        std::cout << "Starting GUI." << std::endl;
     gui_.reset(new Gui(this));
     // Print properties
     if (options["list-properties"].as<bool>())
@@ -362,6 +363,7 @@ void Application::run(int argc, char *argv[])
     // need to show the GUI before setting up the pipeline, but after
     // printing the properties
     gui_.get()->show();
+
     // start Pipeline
     if (verbose)
         std::cout << "Starting pipeline." << std::endl;
