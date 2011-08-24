@@ -942,7 +942,8 @@ void Gui::show()
     if (fs::exists(iconPath))
     {
         std::cout << "Image " << iconPath.string() << " exists." << std::endl;
-        set_window_icon(iconPath.string());
+        std::cout << "Window icon is temporarily disabled." << std::endl;
+        //set_window_icon(iconPath.string());
     }
     else
         std::cout << "Image " << iconPath.string() << " does not exist." << std::endl;
