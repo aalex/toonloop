@@ -637,6 +637,7 @@ void on_stage_allocation_changed(ClutterActor * /*stage*/,
     Gui *gui = static_cast<Gui*>(user_data);
     gui->resize_actors();
 }
+
 /**
  * Called when it's time to resize the textures in the stage.
  *
@@ -657,7 +658,8 @@ void Gui::resize_actors()
     {    
         clutter_actor_show_all(CLUTTER_ACTOR(live_input_texture_));
         Property<int> *livefeed_opacity = controller->int_properties_.get_property("livefeed_opacity"); // TODO: use int_properties_.get_value() or it might crash if the property is not found!
-        clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), livefeed_opacity->get_value());
+        if (livefeed_opacity)
+            clutter_actor_set_opacity(CLUTTER_ACTOR(live_input_texture_), livefeed_opacity->get_value());
     } 
     else  // LAYOUT_SPLITSCREEN or LAYOUT_PORTRAIT or LAYOUT_LIVEFEED_ONLY
     {
@@ -669,6 +671,13 @@ void Gui::resize_actors()
         clutter_actor_hide(CLUTTER_ACTOR(playback_group_));
     else
         clutter_actor_show(CLUTTER_ACTOR(playback_group_));
+
+    if (current_layout_ == LAYOUT_OVERLAY)
+    {    
+        Property<int> *playback_opacity = controller->int_properties_.get_property("playback_opacity"); // TODO: use int_properties_.get_value() or it might crash if the property is not found!
+        if (playback_opacity)
+            clutter_actor_set_opacity(CLUTTER_ACTOR(playback_group_), playback_opacity->get_value());
+    } 
     // Figure out the size of the area on which we draw things
     gfloat area_x, area_y, area_width, area_height;
     gfloat stage_width, stage_height;
@@ -774,6 +783,7 @@ void Gui::resize_actors()
     }
     clutter_actor_set_size(black_out_rectangle_, stage_width, stage_height);
 }
+
 /**
  * Called when the size of the input image has changed.
  *
@@ -1288,7 +1298,6 @@ void Gui::on_save_project(std::string &file_name)
 void Gui::reset_progress_bar()
 {
     clutter_actor_set_opacity(status_text_actor_, 255.0);
-
     clutter_actor_set_opacity(progress_bar_actor_, 255.0);
     clutter_actor_set_width(progress_bar_actor_, 0.0);
 }
