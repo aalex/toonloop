@@ -60,6 +60,8 @@ OscInterface::OscInterface(
         receiver_.addHandler("/toon/clip/select", "i", select_clip_cb, this);
         receiver_.addHandler("/toon/clip/save_current", "", clip_save_current_cb, this);
         receiver_.addHandler("/toon/clip/import_image", "s", import_image_cb, this);
+        receiver_.addHandler("/toon/set_int", "si", set_int_cb, this);
+        receiver_.addHandler("/toon/set_float", "sf", set_float_cb, this);
         std::cout << "OSC message handlers:" << std::endl;
         std::cout << " * /ping : Answers with /pong" << std::endl;
         std::cout << " * /pong" << std::endl;
@@ -69,6 +71,8 @@ OscInterface::OscInterface(
         std::cout << " * /toon/clip/select i:clip_number : Selects a clip" << std::endl;
         std::cout << " * /toon/clip/save_current : Saves the currently selected clip" << std::endl;
         std::cout << " * /toon/clip/import_image s:file_name: Imports an image" << std::endl;
+        std::cout << " * /toon/set_int s:property_name i:value: Sets an int property value" << std::endl;
+        std::cout << " * /toon/set_float s:property_name f:value: Sets a float property value" << std::endl;
     }
     if (sending_enabled_)
     {
@@ -380,5 +384,45 @@ void OscInterface::push_command(std::tr1::shared_ptr<Command> command)
 {
     // TODO: pass this message argument by reference?
     messaging_queue_.push(command);
+}
+
+/**
+ * Handles /toon/set_int ,si
+ */
+int OscInterface::set_int_cb(
+        const char *path,
+        const char * /*types*/, 
+        lo_arg **argv,
+        int /*argc*/, 
+        void * /*data*/, 
+        void *user_data)
+{
+    OscInterface* context = static_cast<OscInterface*>(user_data);
+    if (context->is_verbose())
+        std::cout << "Got " << path <<  std::endl;
+    std::string name(static_cast<const char*>(&argv[0]->s));
+    int value = (unsigned int) argv[1]->i;
+    context->push_command(std::tr1::shared_ptr<Command>(new SetIntCommand(name, value)));
+    return 0;
+}
+
+/**
+ * Handles /toon/set_float ,sf
+ */
+int OscInterface::set_float_cb(
+        const char *path,
+        const char * /*types*/, 
+        lo_arg **argv,
+        int /*argc*/, 
+        void * /*data*/, 
+        void *user_data)
+{
+    OscInterface* context = static_cast<OscInterface*>(user_data);
+    if (context->is_verbose())
+        std::cout << "Got " << path <<  std::endl;
+    std::string name(static_cast<const char*>(&argv[0]->s));
+    float value = (float) argv[1]->f;
+    context->push_command(std::tr1::shared_ptr<Command>(new SetFloatCommand(name, value)));
+    return 0;
 }
 
