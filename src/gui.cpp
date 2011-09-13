@@ -1228,6 +1228,9 @@ void Gui::set_blending_mode(BlendingMode mode)
         case BLENDING_MODE_ADDITIVE:
             blend = ADD_BLEND_MODE;
             break;
+        default:
+            blend = NORMAL_BLEND_MODE;
+            break;
     } 
     // set mode for all textures:
     set_blending_mode_for_texture(CLUTTER_TEXTURE(live_input_texture_), blend);
