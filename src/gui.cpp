@@ -1169,7 +1169,7 @@ std::string Gui::get_layout_name(layout_number layout)
 void Gui::update_info_text()
 {
     static const bool isUnstable = PACKAGE_VERSION_MINOR % 2 == 1;
-    static const bool isGit = PACKAGE_VERSION_MICRO != 0;
+    static const bool isGit = PACKAGE_VERSION_MICRO % 2 == 1;
     std::ostringstream os;
     Clip* current_clip = owner_->get_current_clip();
     os << "Toonloop " << PACKAGE_VERSION << 
