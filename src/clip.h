@@ -65,6 +65,11 @@ class Clip
         unsigned int get_playhead() const;
         unsigned int get_writehead() const;
         /**
+         * Moves the playhead to the given index.
+         * @return success or not.
+         */
+        bool set_playhead(unsigned int index);
+        /**
          * Sets the write head position
          */
         void set_writehead(unsigned int new_value);

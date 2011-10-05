@@ -31,6 +31,7 @@
 #include "clip.h" // for clip_direction enum
 #include "properties.h"
 #include "property.h"
+#include "timer.h"
 
 typedef Property<int> IntProperty;
 typedef Property<float> FloatProperty;
@@ -169,6 +170,12 @@ class Controller
          * Called when the whole project has been saved to an XML file.
          */
         boost::signals2::signal<void (std::string)> save_project_signal_;
+
+        /** 
+         * Called when the playback is toggled.
+         * Arguments: enabled (true if not paused)
+         */
+        boost::signals2::signal<void (bool)> playback_toggled_signal_;
 
         // ----------------------------------- methods ---------------------
         /**
@@ -342,8 +349,21 @@ class Controller
          */
         void choose_clip_and_add_frame(unsigned int clip_number);
 
+        bool get_playback_enabled() const
+        {
+            return playback_enabled_;
+        }
+
+        void playback_toggle(bool enabled);
+
+        void move_playhead_to(unsigned int position);
     private:
         Application* owner_;
+        Timer playback_timer_;
+        unsigned int prev_clip_id_;
+        void advertise_current_image();
+        std::string prev_image_name_;
+        bool playback_enabled_; // false if paused
 };
 // TODO: 
 // /** 

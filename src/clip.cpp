@@ -401,3 +401,17 @@ void Clip::goto_beginning()
 {
     playhead_ = 0;
 }
+
+bool Clip::set_playhead(unsigned int index)
+{
+    if (index >= size())
+    {
+        std::cerr << "Clip::" << __FUNCTION__ << ": Index " << index << " too big" << std::endl;
+        return false;
+    }
+    else
+    {
+        playhead_ = index;
+        return true;
+    }
+}

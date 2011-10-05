@@ -381,6 +381,12 @@ gboolean Gui::key_press_event(ClutterActor *stage, ClutterEvent *event, gpointer
                 std::cout << "Blending mode:" << context->blending_mode_ << std::endl;
             }
             break;
+        case CLUTTER_KEY_p:
+            {
+                bool enabled = controller->get_playback_enabled();
+                controller->playback_toggle(! enabled);
+            }
+            break;
         default:
             break;
     }

@@ -29,7 +29,8 @@
 #include "image_importer.h"
 
 Controller::Controller(Application* owner) : 
-    owner_(owner)
+    owner_(owner),
+    playback_enabled_(true)
 {
     
 }
@@ -157,58 +158,51 @@ void Controller::save_current_clip()
 void Controller::update_playback_image()
 {
     namespace fs = boost::filesystem;
-
-    static std::string prev_image_name = "";
-    static Clip *prevclip = NULL;
-    static Timer playback_timer; // TODO: move to Clip
-
     Clip *thisclip = owner_->get_current_clip();
     bool move_playhead = false;
-    bool need_refresh = false;
 
-    playback_timer.tick();
-
+    playback_timer_.tick();
     // check if it is time to move the playhead
-    if ((playback_timer.get_elapsed()) >=  (1.0f / thisclip->get_playhead_fps() * 1.0) or playback_timer.get_elapsed() < 0.0f)
+    if ((playback_timer_.get_elapsed()) >=  (1.0f / thisclip->get_playhead_fps() * 1.0) || playback_timer_.get_elapsed() < 0.0f)
     {
         move_playhead = true;
-        playback_timer.reset();
+        playback_timer_.reset();
     }
+    if (! playback_enabled_)
+        move_playhead = false;
 
+    if (move_playhead) // if it's time to move the playhead
+        thisclip->iterate_playhead(); // updates the clip's playhead number
+    advertise_current_image();
+}
+
+void Controller::advertise_current_image()
+{
+    namespace fs = boost::filesystem;
+    Clip *thisclip = owner_->get_current_clip();
     if (thisclip->size() == 0)
         no_image_to_play_signal_();
-    
-    if (thisclip->size() > 0) 
+    else
     {     
-        if (move_playhead) // if it's time to move the playhead
-            thisclip->iterate_playhead(); // updates the clip's playhead number
         int image_number = thisclip->get_playhead();
-        //width = thisclip->get_width(); 
-        //height = thisclip->get_height();
-        
-        // Aug 25 2010:tmatth:FIXME: when deleting frames, image_number can be invalid
         Image* thisimage = thisclip->get_image(image_number);
         if (thisimage == 0)
+            std::cerr << "Controller::" << __FUNCTION__ << ": The image is NULL!" << std::endl;
+        else
         {
-            std::cerr << "Controller::update_playback_image: The image is NULL!" << std::endl;
-        } else {
-            if ((prevclip != thisclip) or (prev_image_name != thisimage->get_name()))
+            bool need_refresh = false;
+            if ((prev_clip_id_ != thisclip->get_id()) || (prev_image_name_ != thisimage->get_name()))
                   need_refresh = true;
-            if (prevclip != thisclip) 
-                prevclip = thisclip;
-            
-            if (thisimage == NULL)
-                std::cout << "No image at index" << image_number << "." << std::endl;
-            else 
+            prev_clip_id_ = thisclip->get_id();
+            if (need_refresh)
             {
-                if (need_refresh)
-                {
-                    std::string image_full_path = thisclip->get_image_full_path(thisimage);
-                    if (fs::exists(image_full_path))
-                        next_image_to_play_signal_(thisclip->get_id(), image_number, image_full_path);
-                    prev_image_name = thisimage->get_name();
-                }
-            } 
+                std::string image_full_path = thisclip->get_image_full_path(thisimage);
+                if (fs::exists(image_full_path))
+                    next_image_to_play_signal_(thisclip->get_id(), image_number, image_full_path);
+                else
+                    std::cerr << "Controller::" << __FUNCTION__ << ": The image does not exist: " << image_full_path << std::endl;
+                prev_image_name_ = thisimage->get_name();
+            }
         }
     }
 }
@@ -411,5 +405,19 @@ void Controller::save_project()
     std::string file_name = owner_->get_project_file_name();
     owner_->save_project(file_name);
     save_project_signal_(file_name);
+}
+
+void Controller::move_playhead_to(unsigned int position)
+{
+    Clip *current_clip = owner_->get_current_clip();
+    current_clip->set_playhead(position);
+    advertise_current_image();
+}
+
+void Controller::playback_toggle(bool enabled)
+{
+    playback_enabled_ = enabled;
+    //std::cout << "toggle playback " << enabled << std::endl;
+    playback_toggled_signal_(playback_enabled_);
 }
 
