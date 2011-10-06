@@ -122,3 +122,19 @@ void ImportImageCommand::do_apply(Controller &controller)
     controller.import_image(file_name_);
 }
 
+// playback_toggle T/F
+const std::string PlaybackToggleCommand::name_ = "playback_toggle";
+
+void PlaybackToggleCommand::do_apply(Controller &controller)
+{
+    controller.playback_toggle(enabled_);
+}
+
+// Moves playheah to ...
+const std::string PlayheadGoToCommand::name_ = "playhead_goto";
+
+void PlayheadGoToCommand::do_apply(Controller &controller)
+{
+    controller.move_playhead_to(index_);
+}
+

@@ -93,7 +93,6 @@ class SelectClipCommand : public Command
         unsigned int clip_number_;
 };
 
-
 /**
  * Quits the application.
  */
@@ -220,4 +219,39 @@ class ImportImageCommand : public Command
         virtual void do_apply(Controller &controller);
         std::string file_name_;
 };
+
+/**
+ * Toggles playback (pause/resume)
+ */
+class PlaybackToggleCommand : public Command
+{
+    public:
+        PlaybackToggleCommand(bool enabled) : 
+            Command(),
+            enabled_(enabled)
+        {}
+    private:
+        static const std::string name_;
+        virtual const std::string &do_get_name() const { return name_; }
+        virtual void do_apply(Controller &controller);
+        bool enabled_;
+};
+
+/**
+ * Moves the playhead to a given index in the current clip.
+ */
+class PlayheadGoToCommand : public Command
+{
+    public:
+        PlayheadGoToCommand(unsigned int index) : 
+            Command(),
+            index_(index)
+        {}
+    private:
+        static const std::string name_;
+        virtual const std::string &do_get_name() const { return name_; }
+        virtual void do_apply(Controller &controller);
+        unsigned int index_;
+};
+
 #endif

@@ -62,6 +62,8 @@ OscInterface::OscInterface(
         receiver_.addHandler("/toon/clip/import_image", "s", import_image_cb, this);
         receiver_.addHandler("/toon/set_int", "si", set_int_cb, this);
         receiver_.addHandler("/toon/set_float", "sf", set_float_cb, this);
+        receiver_.addHandler("/toon/playback/toggle", "i", playback_toggle_cb, this);
+        receiver_.addHandler("/toon/playhead/goto", "i", playhead_goto_cb, this);
         std::cout << "OSC message handlers:" << std::endl;
         std::cout << " * /ping : Answers with /pong" << std::endl;
         std::cout << " * /pong" << std::endl;
@@ -73,6 +75,8 @@ OscInterface::OscInterface(
         std::cout << " * /toon/clip/import_image s:file_name: Imports an image" << std::endl;
         std::cout << " * /toon/set_int s:property_name i:value: Sets an int property value" << std::endl;
         std::cout << " * /toon/set_float s:property_name f:value: Sets a float property value" << std::endl;
+        std::cout << " * /toon/playback/toggle i:enabled : pause if zero. Resume otherwise." << std::endl;
+        std::cout << " * /toon/playhead/goto i:image_number" << std::endl;
     }
     if (sending_enabled_)
     {
@@ -399,7 +403,7 @@ int OscInterface::set_int_cb(
 {
     OscInterface* context = static_cast<OscInterface*>(user_data);
     if (context->is_verbose())
-        std::cout << "Got " << path <<  std::endl;
+        std::cout << "Got " << path << std::endl;
     std::string name(static_cast<const char*>(&argv[0]->s));
     int value = (unsigned int) argv[1]->i;
     context->push_command(std::tr1::shared_ptr<Command>(new SetIntCommand(name, value)));
@@ -419,10 +423,42 @@ int OscInterface::set_float_cb(
 {
     OscInterface* context = static_cast<OscInterface*>(user_data);
     if (context->is_verbose())
-        std::cout << "Got " << path <<  std::endl;
+        std::cout << "Got " << path << std::endl;
     std::string name(static_cast<const char*>(&argv[0]->s));
     float value = (float) argv[1]->f;
     context->push_command(std::tr1::shared_ptr<Command>(new SetFloatCommand(name, value)));
+    return 0;
+}
+
+int OscInterface::playback_toggle_cb(
+        const char *path,
+        const char * /*types*/, 
+        lo_arg **argv,
+        int /*argc*/, 
+        void * /*data*/, 
+        void *user_data)
+{
+    OscInterface* context = static_cast<OscInterface*>(user_data);
+    if (context->is_verbose())
+        std::cout << "Got " << path << std::endl;
+    bool enabled = (argv[0]->i != 0);
+    context->push_command(std::tr1::shared_ptr<Command>(new PlaybackToggleCommand(enabled)));
+    return 0;
+}
+
+int OscInterface::playhead_goto_cb(
+        const char *path,
+        const char * /*types*/, 
+        lo_arg **argv,
+        int /*argc*/, 
+        void * /*data*/, 
+        void *user_data)
+{
+    OscInterface* context = static_cast<OscInterface*>(user_data);
+    if (context->is_verbose())
+        std::cout << "Got " << path <<  std::endl;
+    unsigned int index = (unsigned int) argv[0]->i;
+    context->push_command(std::tr1::shared_ptr<Command>(new PlayheadGoToCommand(index)));
     return 0;
 }
 
