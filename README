@@ -1,10 +1,12 @@
- _____                 _                   
-|_   _|__   ___  _ __ | | ___   ___  _ __  
-  | |/ _ \ / _ \| '_ \| |/ _ \ / _ \| '_ \ 
-  | | (_) | (_) | | | | | (_) | (_) | |_) |
-  |_|\___/ \___/|_| |_|_|\___/ \___/| .__/ 
-                                    |_|    
+::
 
+   _____                 _                   
+  |_   _|__   ___  _ __ | | ___   ___  _ __  
+    | |/ _ \ / _ \| '_ \| |/ _ \ / _ \| '_ \ 
+    | | (_) | (_) | | | | | (_) | (_) | |_) |
+    |_|\___/ \___/|_| |_|_|\___/ \___/| .__/ 
+                                      |_|    
+  
 Toonloop is a live animation software. It aims to show the creation process to the audience as well as the result of the creation. Frame by frame animation clips can made by adding images one by one. Clips are displayed in a never ending loop. Toonloop can also grab video images continuously.
 
 Toonloop is a great tool for teaching new medias to children. It can also be used as a professionnal software for movie creators, though it is mainly intended to be used in a live kiosk of show. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop.
@@ -64,7 +66,7 @@ Here is a list of known bugs. See also the TODO file. That is what we mainly use
 Basic Tools for Compiling
 -------------------------
 
-To build applications such as Toonloop, you should have the following packages installed on your system:
+To build applications such as Toonloop, you should have the following packages installed on your system::
 
  automake,
  bison,
@@ -80,7 +82,7 @@ Dependencies
 
 Toonloop 1.9.x has been built successfully on many versions of Debian and Ubuntu. It should not currently build on Mac OS X and Windows, but the idea is to port it eventually to many platforms.
 
-Here is the list of Debian package that you will need to build Toonloop 2.x. 
+Here is the list of Debian package that you will need to build Toonloop 2.x::
 
  ffmpeg,
  gettext,
@@ -119,6 +121,8 @@ Here is the list of Debian package that you will need to build Toonloop 2.x.
 How to build Toonloop
 ---------------------
 
+Here is how to build it::
+
  ./autogen.sh
  ./configure
  make
@@ -126,7 +130,7 @@ How to build Toonloop
 
 There is also the handy ./one_click_build.sh that does it in a single script. (except the `sudo make install`)
 
-If you want to install the bash completion script, you should set the sysconfdir command-line option given to ./configure to "/etc". Here is an example:
+If you want to install the bash completion script, you should set the sysconfdir command-line option given to ./configure to "/etc". Here is an example::
 
  ./configure --sysconfdir=/etc
 
@@ -137,11 +141,11 @@ How to run Toonloop
 
 Note that you need to have the GLX acceleration set up in order to use Clutter, and therefore Toonloop. 
 
-Here is how to lauch Toonloop using the default V4L2 video input: 
+Here is how to lauch Toonloop using the default V4L2 video input::
 
  toonloop -d /dev/video0
 
-You can also try the "test" and "x" video sources:
+You can also try the "test" and "x" video sources::
 
  toonloop -d test
  toonloop -d x
@@ -152,7 +156,7 @@ See the toonloop(1) man page for details.
 DEVELOPERS DOCUMENTATION
 ------------------------
 
-To build the HTML documentation, make sure you have doxygen installed, then:
+To build the HTML documentation, make sure you have doxygen installed, then::
 
  make html
 
@@ -170,7 +174,7 @@ You might need to properly configure your V4L2 video device::
   v4l2-ctl --set-fmt-video=width=768,height=480
   v4l2-ctl --set-ctrl=saturation=65535,contrast=32768
 
-You can try you r V4L2 camera with many different tools: 
+You can try you r V4L2 camera with many different tools::
 
   vlc v4l2:///dev/video0
 
