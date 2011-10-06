@@ -56,6 +56,7 @@
 #define CLUTTER_KEY_j CLUTTER_j
 #define CLUTTER_KEY_k CLUTTER_k
 #define CLUTTER_KEY_o CLUTTER_o
+#define CLUTTER_KEY_p CLUTTER_p
 #define CLUTTER_KEY_parenleft CLUTTER_parenleft
 #define CLUTTER_KEY_parenright CLUTTER_parenright
 #define CLUTTER_KEY_period CLUTTER_period
