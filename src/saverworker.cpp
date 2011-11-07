@@ -81,7 +81,8 @@ void SaverWorker::operator()()
         // Will containt the image_paths, file_extension and format, plus the path to the image directory, etc.
         snprintf(buffer, BUFSIZE, "%06d.jpg", i);
         fs::path to_p = fs::path(owner_->current_task_.image_paths_[i]);
-        fs::path from_p = directory / fs::path(buffer);
+        fs::path from_p = fs::path(directory.string());
+        from_p /= std::string(buffer);
         //std::cout << " $ ln -s " << to_p.string() << " " << from_p.string() << std::endl;
 
         if (!fs::exists(to_p)) 

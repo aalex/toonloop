@@ -19,6 +19,8 @@
  */
 
 #include <clutter/clutter.h>
+
+#if 0
 #include <string.h> // memcpy
 #include <clutter/x11/clutter-x11.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -27,9 +29,14 @@
 #include <X11/cursorfont.h>
 
 // FIXME: it still displays an icon in double
+//
+#endif
 
 gboolean toon_clutter_stage_set_window_icon(ClutterStage *stage, const gchar *path, GError ** /*error*/ )
 {
+    (void) stage;
+    (void) path;
+#if 0
     // TODO: assign some GError* to error in case of failure.
     Display *dpy = clutter_x11_get_default_display();
     Window win = clutter_x11_get_stage_window(stage);
@@ -103,6 +110,7 @@ gboolean toon_clutter_stage_set_window_icon(ClutterStage *stage, const gchar *pa
 
     g_free(data);
     g_object_unref(pixbuf);
+#endif
     return TRUE;
 }
 
