@@ -1,18 +1,17 @@
 See the ChangeLog file for the details of each commit.
 
 
-2011-??-?? Toonloop 2.1.18
+2011-11-07 Toonloop 2.1.18
 --------------------------
 
 This release is a snapshot in the 2.1 unstable series. 
 
-This version contains new features and bug fixes.
-
-New features:
-    * 
+This version contains new bug fixes.
 
 Bug fixes:
-    * 
+    * Use -Wno-unused-result for Ubuntu Oneiric
+    * Disable window icon for Oneiric
+    * Fix boost::file_system::path construction for Oneiric
 
 
 2011-10-05 Toonloop 2.1.16
