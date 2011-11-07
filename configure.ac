@@ -157,8 +157,7 @@ AC_MSG_NOTICE(Storing pixmaps files in $PIXMAPS_DIR)
 AC_DEFINE_UNQUOTED([DATADIR], "${DATADIR}", "Data dir")
 AC_DEFINE_UNQUOTED([PIXMAPS_DIR], "${PIXMAPS_DIR}", "Pixmaps dir")
 
-AC_SUBST(CXXFLAGS, " -O2 -Wall -Werror -Wextra -Wfatal-errors") 
-
+AC_SUBST(CXXFLAGS, " -O2 -Wall -Wextra -Werror -Wno-unused-result -Wfatal-errors") 
 AC_CONFIG_FILES([
     Makefile
     src/Makefile
