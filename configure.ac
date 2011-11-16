@@ -32,6 +32,9 @@ PKG_PROG_PKG_CONFIG
 AC_PROG_GCC_TRADITIONAL
 AC_CHECK_FUNCS([inet_ntoa memset socket])
 
+dnl check for python
+AM_PATH_PYTHON([2.5])
+
 AC_CHECK_LIB([pthread],[pthread_exit],[AC_SUBST([LIBTHREAD_CXXFLAGS],["-lpthread"])])
 AC_CHECK_LIB([m],[sin],[AC_SUBST([LIBM_CXXFLAGS],["-lm"])])
 
@@ -147,6 +150,13 @@ else
     HELP2MAN=:
 fi
 
+AX_PYTHON_MODULE([twisted], [Fatal])
+AX_PYTHON_MODULE([gtk], [Fatal])
+dnl AX_PYTHON_MODULE([lunch], [Fatal])
+dnl AX_PYTHON_MODULE([txosc], [Fatal])
+
+AC_CONFIG_FILES([scripts/toonloop-launcher], [chmod +x scripts/toonloop-launcher])
+
 AS_AC_EXPAND(DATADIR, $datadir)
 AC_MSG_NOTICE(Storing data files in $DATADIR)
 
@@ -164,6 +174,8 @@ AC_CONFIG_FILES([
     src/Makefile
     src/doxyfile
     src/shaders/Makefile
+    scripts/toonloop-launcher
+    glade/Makefile
     man/Makefile
     tests/Makefile
     pixmaps/Makefile

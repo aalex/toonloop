@@ -1,4 +1,4 @@
-SUBDIRS = src tests man pixmaps completion presets
+SUBDIRS = src tests man pixmaps completion presets glade toonloop scripts
 ACLOCAL_AMFLAGS = -I m4
 
 desktopdir = $(datadir)/applications
