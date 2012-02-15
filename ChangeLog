@@ -1,3 +1,220 @@
+commit f7498113cc2162d6bc22fc2abe95ab672cac8d0e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 7 17:04:06 2011 +0100
+
+    add -Wno-unused-result for Oneiric
+
+commit ad36a4faf45e9d495d202ed2e30f2b1f1d47bd5a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Nov 7 16:54:35 2011 +0100
+
+    fixes for Ubunto oneiric
+
+commit c7b5c61fcdc2b6fe8d53f514f5d750601987522e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 5 23:59:20 2011 -0400
+
+    post-release version bump
+
+commit 43f2ddc4167cf7e78231ec151d8528bba73f8eea
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 5 23:58:31 2011 -0400
+
+    prepare 2.1.16
+
+commit 187a844f59a99a90dff169bc0400916178db4274
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 5 23:42:02 2011 -0400
+
+    fix a bug on Lucid
+
+commit 03c80422936c080486fd70872914a647650de3ad
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 5 20:12:01 2011 -0400
+
+    implement osc callbacks for playhead_goto and playback_enable
+
+commit 8dda2930022dcb9d9ad80d61e71b7796d7605aff
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Oct 5 19:23:43 2011 -0400
+
+    can now pause with the p key
+
+commit 7fc0a62ce56cb82e6a6d96c7a183efaf21ffaba1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 26 16:42:12 2011 -0400
+
+    fix bug with info HUD saying it's Git while wrong
+
+commit 28ea3edc880135e5fa20c33703ce0896734244dd
+Merge: 4f07572 c6ed2bf
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Sep 19 13:10:01 2011 -0400
+
+    Merge branch 'experimental-bleuorange'
+
+commit 4f0757261ea80653ce48f43ea03b60680c618902
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Sep 13 12:44:34 2011 -0400
+
+    fix a critical error - gui.cpp:1237:69: error: ‘blend’ may be used uninitialized in this function
+
+commit c6ed2bf43ee85c6d09e791d32a22245636c11103
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 25 14:10:41 2011 -0400
+
+    trying to show the playback group if in overlay layout
+
+commit d92e633bd651d9fc85093e00c26dfdb05dafe8ba
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Thu Aug 25 00:07:51 2011 -0400
+
+    update BUGS
+
+commit 1db54af1b9e20c838755645738c6fcaab93740ba
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 24 23:21:40 2011 -0400
+
+    add /toon/set_int and /toon/set_float osc callbacks
+
+commit ce483850603ec43cee28036f7a4944e6e6f66809
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 24 11:42:28 2011 -0400
+
+    no icon window
+
+commit 3d076a30b2996307e6bb3f56f6b340e5a602f2b7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 24 11:42:11 2011 -0400
+
+    more BUGS
+
+commit 51faa949c5322cdf19105025fd5bc8bee53590f1
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Wed Aug 24 10:58:49 2011 -0400
+
+    prioritize clutter-gst 1.0, not 0.10
+
+commit 01eae34e4ae5388704c0fc5a77103ef559959ab6
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 9 20:53:47 2011 -0400
+
+    update NEWS
+
+commit f99a4089ae4c1d88615145812d9ff06ee3ba89f3
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 9 19:41:20 2011 -0400
+
+    less verbose
+
+commit bb0e365ec17d5fc1b07d7b3a3438fb56dc5cfd29
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 9 19:36:09 2011 -0400
+
+    improve parsability of --print-properties
+
+commit 2a6a7e8e9e6bf3a0fbcb96cdf7a3446d4f964a9c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 9 19:21:22 2011 -0400
+
+    change --print-properties to --list-properties
+
+commit 4d581ba3d7c874389665fa9431dbde204c1257ca
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 9 18:44:52 2011 -0400
+
+    Create Gui::load_effects and Gui::show_effects
+
+commit a9d9ca99760d620543e9f86f70a8fd9b50e96768
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Tue Aug 9 18:39:48 2011 -0400
+
+    move implementation of BrCoSaEffect's constructor into its cpp file.
+
+commit 432bacbee9f0630d68fb2617e00150b89e323bf9
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Sat Aug 6 11:49:41 2011 +0200
+
+    removed some newlines
+
+commit 507d88d073891e62f2a1cf529c3a8a79e29c85ec
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 5 21:40:45 2011 +0200
+
+    less to do
+
+commit 4760708e77aac184b5648001beff375d6a583246
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 5 21:39:04 2011 +0200
+
+    remove some todos that are done
+
+commit 3b5020793647a5babd897a2f336717b088ded25c
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 5 21:36:42 2011 +0200
+
+    less to do
+
+commit 5da8f2f449859ea9b670eb9c9df350044763bb04
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 5 21:36:13 2011 +0200
+
+    --print-properties prints all options and exits
+
+commit 5d6b7e439c9e13c5ca7d54e16d29ed10fef1a896
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 5 21:28:45 2011 +0200
+
+    separate Gui::show() from its contructor
+
+commit 8dbe054fdfdb7484da07d01e2cca01fdb60e1ee5
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 5 21:10:33 2011 +0200
+
+    add Controller::choose_clip_and_add_frame
+
+commit 5426e9d918479d58fb102fc47dfb43a8559b890e
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 5 21:01:12 2011 +0200
+
+    test source's size is now configurable as well
+
+commit 947dc5ada85e91b86d07790961a52698451d16d7
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 5 17:21:37 2011 +0200
+
+    update NEWS
+
+commit b8dbf50afe11271ce08d2f9225566cde7fca3845
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 5 17:20:19 2011 +0200
+
+    append clip id to name of exported video files
+
+commit 43b0dd17ceed29e56d971448637f7e5c9f7883fe
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 5 17:19:38 2011 +0200
+
+    Import boost/lexical_cast where we use it
+
+commit 8e27f02c93135699be534efb2f3455afcd0a1f2a
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 5 17:10:51 2011 +0200
+
+    post-release version bump
+
+commit 13349f8b8ad5cf4b0b00d872ed6af3db7f55a2da
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Fri Aug 5 17:07:03 2011 +0200
+
+    update date of release
+
+commit f165a79895c995b19fa1377a64a264afb4097d00
+Author: Alexandre Quessy <alexandre@quessy.net>
+Date:   Mon Aug 1 18:38:58 2011 +0200
+
+    prepare for 2.1.14
+
 commit e4b064b519df6436c869bcfb7827573c34224d95
 Author: Alexandre Quessy <alexandre@quessy.net>
 Date:   Fri Jul 15 23:54:19 2011 +0200
