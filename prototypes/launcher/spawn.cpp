@@ -47,7 +47,7 @@ void Subprocess::cb_child_watch(GPid pid, gint status, gpointer data)
 {
     Subprocess *context = static_cast<Subprocess*>(data);
     context->setRunning(false);
-    g_spawn_close_pid(pid); // useless on POSIX
+    // g_spawn_close_pid(pid); // useless on POSIX
 }
 
 bool Subprocess::run(void)
@@ -92,21 +92,24 @@ bool Subprocess::run(void)
     /* Create channels that will be used to read data from pipes. */
     // FIXME doesn't work on win32
     out_channel_ = g_io_channel_unix_new(std_output_);
+    is_running_ = true;
     return true;
 }
 
 std::string Subprocess::poll()
 {
-    std::string ret;
+    std::string ret = "";
     if (isRunning())
     {
         gchar *string;
         gsize size;
-
         g_io_channel_read_line(out_channel_, &string, &size, NULL, NULL);
-
-        ret = string;
-        g_free(string);
+        if (size > 0)
+        {
+            std::cout << "read " << size << " bytes:" << string << std::endl;
+            ret = string;
+            g_free(string);
+        }
     }
     else
         std::cerr << "Subprocess::" << __FUNCTION__ << ": not running" << std::endl;
@@ -125,6 +128,8 @@ int main(int argc, char *argv[])
     std::vector<std::string> args;
     Subprocess proc = Subprocess(args);
     proc.run();
+    for (int i = 0; i < 20; ++i)
+        proc.poll();
     return 0;
 }
 
