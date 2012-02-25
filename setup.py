@@ -42,7 +42,7 @@ from setuptools import setup
 import sys
 import subprocess
 
-__version__ = "1.2.8"
+__version__ = "1.3.1"
 
 setup(
     name = "toonloop",
@@ -55,7 +55,7 @@ setup(
     Requires: twisted, pygame 1.9, PyOpenGL, nevow and numpy.""",
     install_requires = [], # "twisted", "PyOpenGL", 
     # requires pygame 1.9,1 or later
-    scripts = ["toonloop"], #, "scripts/glslang-run"], 
+    scripts = ["toonloop1"], #, "scripts/glslang-run"], 
     license = "GPL",
     platforms = ["any"],
     zip_safe = False,
@@ -70,8 +70,9 @@ if sys.argv[1] == "build":
     #print("in setup.py: %s" % (command_icon))
     #retcode = subprocess.call(command_icon, shell=True)
     #print("in setup.py: Command returned %s" % (retcode))
-    command_man = """help2man --no-info --include=man_toonloop.txt --name="The Toonloop Live Stop Motion Tool" ./toonloop > toonloop.1"""
+    command_man = """help2man --no-info --include=man_toonloop.txt --name="The Toonloop Live Stop Motion Tool" ./toonloop1 > toonloop1.1"""
     print("in setup.py: %s" % (command_man))
     retcode = subprocess.call(command_man, shell=True)
     print("in setup.py: Command returned %s" % (retcode))
     print("Done with the setup.py.")
+
