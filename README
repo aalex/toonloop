@@ -1,0 +1,8 @@
+Build and install toonloop1 for Python
+======================================
+Date: 2012-02-25
+
+sudo apt-get install python-pygame python-twisted python-opengl help2man python-setuptools
+python setup.py build
+sudo python setup.py install
+
