@@ -751,8 +751,8 @@ class Toonloop(render.Game):
     def _draw_grid(self):
         # a grid of lines:
         GL.glColor4f(1.0, 1.0, 1.0, 0.2)
-        width = 4.0
-        height = 3.0
+        width = 4
+        height = 3
         for x in range(-width, width):
             draw.draw_line(float(x), -height, float(x), height)
         for y in range(-height, height):
