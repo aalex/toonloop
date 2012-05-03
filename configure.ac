@@ -20,6 +20,9 @@ AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_LN_S
 
+# check for endianness
+AC_C_BIGENDIAN([], [AC_DEFINE(__LITTLE_ENDIAN__, 1, [Define if architechture is little-endian])])
+
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([arpa/inet.h stdlib.h string.h sys/ioctl.h unistd.h])
@@ -47,7 +50,7 @@ AC_LINK_IFELSE(
         [AC_SUBST(STK_LIBS," -lstk -lrt -lm")],
         [AC_MSG_ERROR([libstk is not installed: alsa])])
 LIBS=$SAVED_LIBS # restore them
-AC_SUBST(STK_CXXFLAGS, "-D__LINUX_ALSA__ -D__UNIX_JACK__ -D__LITTLE_ENDIAN__")
+AC_SUBST(STK_CXXFLAGS, "-D__LINUX_ALSA__ -D__UNIX_JACK__")
 AC_LANG_POP(C++)
 
 
