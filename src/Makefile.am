@@ -102,6 +102,6 @@ toonloop_LDADD = \
 	$(LDFLAGS) \
 	$(RAW1394_LIBS) \
 	$(AVC1394_LIBS) \
-	$(STK_LIBS) \
+	$(RTMIDI_LIBS) \
 	$(LIBXML_LIBS)
 
