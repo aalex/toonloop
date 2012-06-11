@@ -35,21 +35,11 @@ AC_CHECK_FUNCS([inet_ntoa memset socket])
 AC_CHECK_LIB([pthread],[pthread_exit],[AC_SUBST([LIBTHREAD_CXXFLAGS],["-lpthread"])])
 AC_CHECK_LIB([m],[sin],[AC_SUBST([LIBM_CXXFLAGS],["-lm"])])
 
-# STK
-# TODO: print some message when configuring STK is OK
-AC_LANG_PUSH(C++)
-# save original flags
-SAVED_LIBS=$LIBS
-LIBS="$LIBS -lstk"
-AC_LINK_IFELSE(
-        [AC_LANG_PROGRAM([ #include <stk/RtMidi.h> ],
-        [RtMidiIn input])],
-        [AC_SUBST(STK_LIBS," -lstk -lrt -lm")],
-        [AC_MSG_ERROR([libstk is not installed: alsa])])
-LIBS=$SAVED_LIBS # restore them
-AC_SUBST(STK_CXXFLAGS, "-D__LINUX_ALSA__ -D__UNIX_JACK__ -D__LITTLE_ENDIAN__")
-AC_LANG_POP(C++)
-
+# check for the RTMIDI
+PKG_CHECK_MODULES([RTMIDI], [rtmidi], have_rtmidi=true, have_rtmidi=false)
+if test "x${have_rtmidi}" = "xfalse" ; then
+    AC_MSG_ERROR([Missing librtmidi-dev])
+fi
 
 #Set LIBLO with pkg-config
 PKG_CHECK_MODULES(LIBLO, liblo, have_liblo=true, have_liblo=false)
