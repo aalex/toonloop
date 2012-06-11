@@ -85,7 +85,7 @@ toonloop_CXXFLAGS = \
 	$(LIBTHREAD_CXXFLAGS) \
 	$(RAW1394_CFLAGS) \
 	$(AVC1394_CFLAGS) \
-	$(STK_CXXFLAGS) \
+	$(RTMIDI_CFLAGS) \
 	$(LIBXML_XFLAGS)
  
 toonloop_LDADD = \
@@ -102,6 +102,6 @@ toonloop_LDADD = \
 	$(LDFLAGS) \
 	$(RAW1394_LIBS) \
 	$(AVC1394_LIBS) \
-	$(STK_LIBS) \
+	$(RTMIDI_LIBS) \
 	$(LIBXML_LIBS)
 
