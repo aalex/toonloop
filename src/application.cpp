@@ -368,22 +368,28 @@ void Application::run(int argc, char *argv[])
     if (verbose)
         std::cout << "Starting pipeline." << std::endl;
     pipeline_.reset(new Pipeline(this));
-    // Start MIDI
-    if (verbose)
-        std::cout << "Starting MIDI input." << std::endl;
-    midi_input_.reset(new MidiInput(this, verbose));
-    if (verbose)
-    {
-        midi_input_->enumerate_devices();
-        midi_input_->set_verbose(true);
-    }
+    bool midi_needed = false;
     if (config_->get_midi_input_number() != MIDI_INPUT_NONE)
+        midi_needed = true;
+    if (midi_needed)
     {
-        bool midi_ok = midi_input_->open(config_->get_midi_input_number());
-        if (midi_ok)
-            std::cout << "MIDI: Opened port " << config_->get_midi_input_number() << std::endl;
-        else
-            std::cout << "MIDI: Failed to open port " << config_->get_midi_input_number() << std::endl;
+        // Start MIDI
+        if (verbose)
+            std::cout << "Starting MIDI input." << std::endl;
+        midi_input_.reset(new MidiInput(this, verbose));
+        if (verbose)
+        {
+            midi_input_->enumerate_devices();
+            midi_input_->set_verbose(true);
+        }
+        if (config_->get_midi_input_number() != MIDI_INPUT_NONE)
+        {
+            bool midi_ok = midi_input_->open(config_->get_midi_input_number());
+            if (midi_ok)
+                std::cout << "MIDI: Opened port " << config_->get_midi_input_number() << std::endl;
+            else
+                std::cout << "MIDI: Failed to open port " << config_->get_midi_input_number() << std::endl;
+        }
     }
     // Sets the intervalometer stuff.
     if (verbose)
@@ -547,7 +553,8 @@ void Application::quit()
 void Application::check_for_messages()
 {
     // TODO: move message handling here.
-    get_midi_input()->consume_commands();    
+    if (get_midi_input() != 0)
+        get_midi_input()->consume_commands();    
     get_osc_interface()->consume_commands();    
 }
 
