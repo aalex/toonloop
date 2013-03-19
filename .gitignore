@@ -56,3 +56,4 @@ src/presets
 src/doxyfile
 src/html
 toonloop-*.*.*
+!prototypes/spawn/Makefile

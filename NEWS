@@ -1,5 +1,18 @@
 See the ChangeLog file for the details of each commit.
 
+2013-03-19: Toonloop 2.2.2
+--------------------------
+
+This release is a new official release in the 2.2 stable series.
+
+This version provides a bug fix.
+
+Bug fixes:
+
+* No more need Jackd to be running when not using MIDI input.
+* Build against RtMidi, not STK
+
+
 2012-02-15: Toonloop 2.2.0
 --------------------------
 
