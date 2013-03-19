@@ -10,6 +10,7 @@ This version provides a bug fix.
 Bug fixes:
 
 * No more need Jackd to be running when not using MIDI input.
+* Build against RtMidi, not STK
 
 
 2012-02-15: Toonloop 2.2.0
