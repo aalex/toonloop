@@ -80,7 +80,7 @@ Toonloop 1.9.x has been built successfully on many versions of Debian and Ubuntu
 
 Here is the list of Debian package that you will need to build Toonloop 2.x::
 
- sudo apt-get install ffmpeg gettext gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-base gstreamer0.10-plugins-good gstreamer0.10-plugins-ugly gstreamer0.10-x help2man libasound-dev libavc1394-dev libboost-program-options-dev libboost-filesystem-dev libboost-thread-dev libboost-date-time-dev libboost-signals-dev libboost-system-dev liblo-dev libclutter-1.0-dev libclutter-gst-0.10-dev libgdk-pixbuf-dev libglew1.5-dev libglib2.0-dev libglu1-mesa-dev libgstreamer-plugins-base0.10-dev libgstreamer0.10-dev libraw1394-dev librtmidi-dev libxml2-dev libxv-dev mencoder mscgen
+ sudo apt-get install ffmpeg gettext gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-base gstreamer0.10-plugins-good gstreamer0.10-plugins-ugly gstreamer0.10-x help2man libasound2-dev libavc1394-dev libboost-program-options-dev libboost-filesystem-dev libboost-thread-dev libboost-date-time-dev libboost-signals-dev libboost-system-dev liblo-dev libclutter-1.0-dev libclutter-gst-dev libgdk-pixbuf-dev libglew1.5-dev libglib2.0-dev libglu1-mesa-dev libgstreamer-plugins-base0.10-dev libgstreamer0.10-dev libraw1394-dev librtmidi-dev libxml2-dev libxv-dev mencoder mscgen
 
 
 How to build Toonloop
