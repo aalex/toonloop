@@ -1,0 +1,15 @@
+sudo apt-get -y install vim git apt-show-versions lunch openssh-server  gitg build-essential gettext help2man mscgen doxygen automake bison  flex libtool  liblo0-dev libasound2-dev libavc1394-dev libboost-program-options-dev libboost-filesystem-dev libboost-thread-dev libboost-date-time-dev libboost-signals-dev libboost-system-dev libclutter-1.0-dev libclutter-gst-dev libgdk-pixbuf2.0-dev libglib2.0-dev libglu1-mesa-dev libgstreamer-plugins-base0.10-dev libgstreamer0.10-dev libraw1394-dev libxml2-dev libxv-dev  ffmpeg mencoder vlc gstreamer-tools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-base gstreamer0.10-plugins-good gstreamer0.10-plugins-ugly gstreamer0.10-x terminator librtmidi-dev wajig 
+
+git config --global user.name "Alexandre Quessy"
+git config --global user.email alexandre@quessy.net
+
+mkdir -p ~/src
+cd ~/src
+git clone https://github.com/aalex/toonloop.git
+cd toonloop
+git checkout develop
+./one_click_build.sh
+sudo make install
+
+echo "add_command(\"toonloop --project-home ~/Documents/toonloop/plasticien1\")" >> ~/.lunchrc
+
