@@ -21,7 +21,7 @@
 #include <boost/lexical_cast.hpp>
 #include <cstdlib>
 #include <iostream>
-#include <stk/RtMidi.h>
+#include <RtMidi.h>
 #include <tr1/memory> // shared_ptr
 #include "application.h"
 #include "configuration.h"
