@@ -1,19 +1,19 @@
-See the ChangeLog file for the details of each commit.
+Toonloop NEWS file
+==================
 
-2013-03-19: Toonloop 2.2.4
+2013-09-19: Toonloop 2.4.0
 --------------------------
 
-This release is a new official release in the 2.2 stable series.
+This release is a new official release in the 2.4 stable series.
 
-This version provides new features and bug fixes.
-
-New features:
-
-* 
+This version provides bug fixes.
 
 Bug fixes:
 
-* 
+* Check for rtmidi, not stk
+* Fix check for boost
+* Port to GStreamer 1.0, not 0.10 anymore
+* Fix scaling of incoming video images
 
 
 2013-03-19: Toonloop 2.2.2
