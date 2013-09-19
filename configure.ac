@@ -48,12 +48,12 @@ if test "x${have_liblo}" = "xfalse" ; then
 fi
 
 # GST
-PKG_CHECK_MODULES([GST], [gstreamer-0.10 >= 0.10.0 gstreamer-interfaces-0.10 >= 0.10.19])
+PKG_CHECK_MODULES([GST], [gstreamer-1.0 >= 1.0.0]) dnl gstreamer-interfaces-0.10 >= 0.10.19])
 AC_SUBST([GST_LIBS])
 AC_SUBST([GST_CFLAGS])
 
 # GST appsink 
-PKG_CHECK_MODULES(GSTAPP, gstreamer-app-0.10, have_gstreamer_app=true, have_gstreamer_app=false)
+PKG_CHECK_MODULES(GSTAPP, gstreamer-app-1.0, have_gstreamer_app=true, have_gstreamer_app=false)
 if test "x${have_gstreamer_app}" = "xfalse" ; then
     AC_MSG_ERROR([missing package: libgstreamer-plugins-base0.10-dev])
 fi
@@ -70,7 +70,7 @@ AC_SUBST([CLUTTER_CFLAGS])
 # libjson-glib-dev and others
 
 # Clutter-GST
-PKG_CHECK_MODULES([CLUTTERGST], [clutter-gst-1.0 >= 1.0], have_clutter_gst=true, 
+PKG_CHECK_MODULES([CLUTTERGST], [clutter-gst-2.0 >= 2.0], have_clutter_gst=true, 
     PKG_CHECK_MODULES([CLUTTERGST], [clutter-gst-0.10 >= 0.10], have_clutter_gst=true, have_clutter_gst=false))
 if test "x${have_clutter_gst}" = "xfalse" ; then
     AC_MSG_ERROR([missing package: libclutter-gst-dev])

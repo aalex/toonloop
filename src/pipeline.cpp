@@ -63,14 +63,14 @@ void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg, gpointer user_da
             break;
   
         /* only interested in these two messages */
-        if (!gst_structure_has_name(msg->structure, "preroll-pixbuf") &&
-                !gst_structure_has_name(msg->structure, "pixbuf")) 
+        if (! gst_message_has_name(msg, "preroll-pixbuf") &&
+                ! gst_message_has_name(msg, "pixbuf")) 
         {
             break;
         }
   
         //g_print("pixbuf\n");
-        val = gst_structure_get_value(msg->structure, "pixbuf");
+        val = gst_structure_get_value(gst_message_get_structure (msg), "pixbuf");
         g_return_if_fail(val != NULL);
   
         pixbuf = GDK_PIXBUF(g_value_dup_object(val));
@@ -384,6 +384,7 @@ Pipeline::Pipeline(Application* owner) :
     GstElement* dv_ffmpegcolorspace = NULL;
     GstElement* dvdec = NULL;
     GstElement* dv_queue0 = NULL;
+    GstElement* videoscale3 = NULL;
     //GstElement* dv_queue1 = NULL;
     // capsfilter0, for the capture FPS and size
     GstElement* capsfilter0 = gst_element_factory_make ("capsfilter", NULL);
@@ -411,7 +412,7 @@ Pipeline::Pipeline(Application* owner) :
         dv_queue0  = gst_element_factory_make("queue", "dv_queue0");
         dvdec = gst_element_factory_make("dvdec", "dvdec");
         dv_videoscale0 = gst_element_factory_make("videoscale", "dv_videoscale0");
-        dv_ffmpegcolorspace = gst_element_factory_make("ffmpegcolorspace", "dv_ffmpegcolorspace");
+        dv_ffmpegcolorspace = gst_element_factory_make("videoconvert", "dv_ffmpegcolorspace");
         //dv_queue1  = gst_element_factory_make("queue", "dv_queue1");
         // register connection callback for the dvdemux element.
         // Note that the demuxer will be linked to whatever after it dynamically.
@@ -446,8 +447,12 @@ Pipeline::Pipeline(Application* owner) :
     // TODO: use something else than g_assert to see if we could create the elements.
     g_assert(videosrc_); 
 
+    // scaler:
+    videoscale3 = gst_element_factory_make("videoscale", "videoscale3");
+    g_assert (videoscale3);
+
     // ffmpegcolorspace0 element
-    GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
+    GstElement* ffmpegcolorspace0 = gst_element_factory_make("videoconvert", "ffmpegcolorspace0");
     g_assert(ffmpegcolorspace0);
     GstElement* tee0 = gst_element_factory_make("tee", "tee0");
     g_assert(tee0);
@@ -474,7 +479,7 @@ Pipeline::Pipeline(Application* owner) :
     {
         queue2 = gst_element_factory_make("queue", "queue2");
         g_assert(queue2);
-        ffmpegcolorspace1 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace1");
+        ffmpegcolorspace1 = gst_element_factory_make("videoconvert", "ffmpegcolorspace1");
         g_assert(ffmpegcolorspace1);
         xvimagesink = gst_element_factory_make("xvimagesink", "xvimagesink0");
         g_assert(xvimagesink);
@@ -483,6 +488,7 @@ Pipeline::Pipeline(Application* owner) :
 
     // add elements
     gst_bin_add(GST_BIN(pipeline_), videosrc_); // capture
+    gst_bin_add(GST_BIN(pipeline_), videoscale3);
     gst_bin_add(GST_BIN(pipeline_), capsfilter0);
     if (is_dv_enabled)
     {
@@ -534,7 +540,7 @@ Pipeline::Pipeline(Application* owner) :
             gst_caps_unref(the_caps);
         }
 
-        link_or_die(videosrc_, capsfilter0);
+        link_or_die(videosrc_, videoscale3);
     } 
     else if (is_dv_enabled || is_hdv_enabled) 
     {
@@ -545,7 +551,7 @@ Pipeline::Pipeline(Application* owner) :
             link_or_die(dv_queue0, dvdec);
             link_or_die(dvdec, dv_ffmpegcolorspace);
             link_or_die(dv_ffmpegcolorspace, dv_videoscale0);
-            link_or_die(dv_videoscale0, capsfilter0);
+            link_or_die(dv_videoscale0, videoscale3);
         } 
         else // hdv
         {
@@ -562,7 +568,7 @@ Pipeline::Pipeline(Application* owner) :
             GstCaps *videocaps = gst_caps_from_string(guess_source_caps(frame_rate_index).c_str());
             g_object_set(capsfilter0, "caps", videocaps, NULL);
             gst_caps_unref(videocaps);
-            is_linked = gst_element_link(videosrc_, capsfilter0);
+            is_linked = gst_element_link(videosrc_, videoscale3);
             if (!is_linked) 
             { 
                 std::cout << "Failed to link video source. Trying another framerate." << std::endl;
@@ -577,13 +583,20 @@ Pipeline::Pipeline(Application* owner) :
         }
     }
     //Will now link capfilter0--ffmpegcolorspace0--tee.
+    link_or_die(videoscale3, capsfilter0);
     link_or_die(capsfilter0, ffmpegcolorspace0);
     link_or_die(ffmpegcolorspace0, tee0);
+
+
+    GstPad * pad = NULL;
     //Will now link tee--queue--videosink.
-    is_linked = gst_element_link_pads(tee0, "src0", queue0, "sink");
+    pad = gst_element_get_request_pad (tee0, "src_0");
+    is_linked = gst_element_link_pads(tee0, "src_0", queue0, "sink");
+    gst_object_unref(GST_OBJECT (pad));
+
     if (!is_linked) 
     {
-        g_print("Could not link %s to %s.\n", "tee0", "sink"); 
+        g_print("Could not link %s to %s.\n", "tee0", "queue0"); 
         exit(1);
     }
     // output 0: the OpenGL uploader.
@@ -591,7 +604,9 @@ Pipeline::Pipeline(Application* owner) :
 
     // output 1: the GdkPixbuf sink
     //Will now link tee--queue--pixbufsink.
-    is_linked = gst_element_link_pads(tee0, "src1", queue1, "sink");
+    pad = gst_element_get_request_pad (tee0, "src_1");
+    is_linked = gst_element_link_pads(tee0, "src_1", queue1, "sink");
+    gst_object_unref(GST_OBJECT (pad));
     if (!is_linked) 
     { 
         g_print("Could not link %s to %s.\n", "tee0", "queue1"); 
@@ -601,8 +616,9 @@ Pipeline::Pipeline(Application* owner) :
 
     if (is_preview_enabled)
     {
-        
-        is_linked = gst_element_link_pads(tee0, "src2", queue2, "sink");
+        pad = gst_element_get_request_pad (tee0, "src_2");
+        is_linked = gst_element_link_pads(tee0, "src_2", queue2, "sink");
+        gst_object_unref(GST_OBJECT (pad));
         if (!is_linked) 
         { 
             g_print("Could not link %s to %s.\n", "tee0", "queue2"); 
@@ -670,21 +686,25 @@ Pipeline::Pipeline(Application* owner) :
 
 // Desctructor. TODO: do we need to free anything?
 Pipeline::~Pipeline() {}
+
 /**
  * Tries to guess the frame rate for a V4L2 source.
  */
 std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
 {
+    std::ostringstream capsStr;
     bool is_verbose = owner_->get_configuration()->get_verbose();
+
     if (is_verbose)
         LOG_DEBUG("Trying to guess source FPS " << framerateIndex);
 
-    std::ostringstream capsStr;
     GstStateChangeReturn ret = gst_element_set_state(videosrc_, GST_STATE_READY);
-    if (ret not_eq GST_STATE_CHANGE_SUCCESS)
+    if (ret != GST_STATE_CHANGE_SUCCESS)
         THROW_ERROR("Could not change v4l2src state to READY");
+
+#if 0
     GstPad *srcPad = gst_element_get_static_pad(videosrc_, "src");
-    GstCaps *caps = gst_pad_get_caps(srcPad);
+    GstCaps *caps = gst_pad_get_pad_template_caps(srcPad);
     GstStructure *structure = gst_caps_get_structure(caps, 0);
     const GValue *val = gst_structure_get_value(structure, "framerate");
     if (is_verbose)
@@ -726,18 +746,24 @@ std::string Pipeline::guess_source_caps(unsigned int framerateIndex) const
     // capsSuffix += ", pixel-aspect-ratio=1/1";
     //capsSuffix += config_.pixelAspectRatio();
     //capsSuffix += "4:3";
+#endif
     
     Configuration *config = owner_->get_configuration();
-    capsStr << "video/x-raw-yuv, width=" 
+    capsStr << "video/x-raw,width=" 
         << config->get_capture_width() 
         << ", height="
         << config->get_capture_height()
+        << ", pixel-aspect-ratio=1/1"
+#if 0
         << ", framerate="
         << capsSuffix;
+#else
+        ;
+#endif
     if (is_verbose)
         LOG_DEBUG("Video source caps are " << capsStr.str());
     ret = gst_element_set_state(videosrc_, GST_STATE_NULL);
-    if (ret not_eq GST_STATE_CHANGE_SUCCESS)
+    if (ret != GST_STATE_CHANGE_SUCCESS)
         THROW_ERROR("Could not change v4l2src state to NULL");
     return capsStr.str();
 }
