@@ -1306,7 +1306,7 @@ void Gui::on_save_project(std::string &file_name)
 
 void Gui::reset_progress_bar()
 {
-    clutter_actor_set_opacity(status_text_actor_, 255.0);
+   clutter_actor_set_opacity(status_text_actor_, 255.0);
     clutter_actor_set_opacity(progress_bar_actor_, 255.0);
     clutter_actor_set_width(progress_bar_actor_, 0.0);
 }
