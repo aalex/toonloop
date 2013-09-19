@@ -13,7 +13,7 @@ check_classes_LDADD = $(BOOST_LIBS)
 
 check_threads_SOURCES = check_threads.cpp 
 check_threads_CXXFLAGS = $(BOOST_CPPFLAGS) 
-check_threads_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB)
+check_threads_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIBS)
 
 check_bool_SOURCES = check_bool.cpp 
 
@@ -31,7 +31,7 @@ check_bool_SOURCES = check_bool.cpp
 
 check_symlinks_SOURCES = check_symlinks.cpp 
 check_symlinks_CXXFLAGS = $(BOOST_CPPFLAGS) 
-check_symlinks_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
+check_symlinks_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 
 # check_moviesaver_SOURCES = check_moviesaver.cpp ../src/clip.cpp  ../src/image.cpp ../src/timing.cpp ../src/moviesaver.cpp ../src/saverworker.cpp ../src/subprocess.cpp 
 # #../src/clip.h  ../src/image.h ../src/timing.h ../src/moviesaver.h ../src/saverworker.h ../src/subprocess.h
@@ -59,7 +59,7 @@ check_signals_LDADD = $(BOOST_LIBS)
 
 check_imageimporter_SOURCES = check_imageimporter.cpp $(top_srcdir)/src/image_importer.cpp
 check_imageimporter_CXXFLAGS = $(BOOST_CPPFLAGS) $(CLUTTER_CFLAGS) -Wno-fatal-error -Wno-deprecated -I$(top_srcdir)/src
-check_imageimporter_LDADD = $(BOOST_LIBS) $(CLUTTER_LIBS) $(BOOST_THREAD_LIB) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
+check_imageimporter_LDADD = $(BOOST_LIBS) $(CLUTTER_LIBS) $(BOOST_THREAD_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 
 check_properties_SOURCES = $(top_srcdir)/src/properties.h $(top_srcdir)/src/property.h check_properties.cpp
 check_properties_CXXFLAGS = -I$(top_srcdir)/src

@@ -85,16 +85,13 @@ namespace toonloop
 
 bool file_exists(const std::string &file_name)
 {
-#ifdef HAVE_BOOST_FILESYSTEM
     namespace fs = boost::filesystem;
     if (! fs::exists(file_name))
     {
         std::cerr << "ERROR: File " << file_name << " does not exist." << std::endl;
         return false;
     }
-#else
-    std::cerr << "Warning: HAVE_BOOST_FILESYSTEM is false" << std::endl;
-#endif
+    // std::cerr << "Warning: HAVE_BOOST_FILESYSTEM is false" << std::endl;
     return true;
 } // end of namespace toonloop
 

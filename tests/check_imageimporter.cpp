@@ -70,11 +70,9 @@ bool check_image_resize()
     //std::cout << "Input: " << input << std::endl;
     //if (success)
     //    std::cout << " Output: " << output << std::endl;
-#ifdef HAVE_BOOST_FILESYSTEM
     namespace fs = boost::filesystem;
     fs::remove(input);
     fs::remove(output);
-#endif
     return success;
 }
 

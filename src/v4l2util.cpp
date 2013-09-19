@@ -304,7 +304,6 @@ std::string v4l2util::colorspace2s(int val)
 }
 
 typedef std::vector<std::string> DeviceList;
-#ifdef HAVE_BOOST_FILESYSTEM
 DeviceList getDevices()
 {
     namespace fs = boost::filesystem;
@@ -336,9 +335,6 @@ DeviceList getDevices()
     }
     return deviceList;
 }
-#endif
-
-
 
 void v4l2util::listCameras()
 {

@@ -11,7 +11,7 @@ clean-local:
 headers = \
 	application.h \
 	clip.h \
-    clutter-tools.h \
+	clutter-tools.h \
 	command.h \
 	concurrentqueue.h \
 	config.h \
@@ -34,21 +34,21 @@ headers = \
 	subprocess.h \
 	timer.h \
 	timing.h \
-    brcosaeffect.h \
-    effect.h \
-    glslang.h \
-    infowindow.h \
-    oscinterface.h \
-    oscreceiver.h \
-    oscsender.h \
-    playheaditerator.h \
-    unused.h \
+	brcosaeffect.h \
+	effect.h \
+	glslang.h \
+	infowindow.h \
+	oscinterface.h \
+	oscreceiver.h \
+	oscsender.h \
+	playheaditerator.h \
+	unused.h \
 	v4l2util.h
 
 toonloop_SOURCES = \
 	application.cpp \
 	clip.cpp \
-    clutter-tools.cpp \
+	clutter-tools.cpp \
 	command.cpp \
 	configuration.cpp \
 	controller.cpp \
@@ -65,15 +65,15 @@ toonloop_SOURCES = \
 	timer.cpp \
 	timing.cpp \
 	v4l2util.cpp \
-    brcosaeffect.cpp \
-    effect.cpp \
-    glslang.cpp \
-    infowindow.cpp \
-    midibinder.cpp \
-    oscinterface.cpp \
-    oscreceiver.cpp \
-    oscsender.cpp \
-    playheaditerator.cpp \
+	brcosaeffect.cpp \
+	effect.cpp \
+	glslang.cpp \
+	infowindow.cpp \
+	midibinder.cpp \
+	oscinterface.cpp \
+	oscreceiver.cpp \
+	oscsender.cpp \
+	playheaditerator.cpp \
 	$(headers)
 
 toonloop_CXXFLAGS = \
@@ -89,12 +89,12 @@ toonloop_CXXFLAGS = \
 	$(LIBXML_XFLAGS)
  
 toonloop_LDADD = \
-	$(BOOST_FILESYSTEM_LIB) \
-	$(BOOST_LDFLAGS) \
-	$(BOOST_LIBS)  \
-	$(BOOST_PROGRAM_OPTIONS_LIB) \
-	$(BOOST_SYSTEM_LIB) \
-	$(BOOST_THREAD_LIB) \
+	$(BOOST_FILESYSTEM_LIBS) \
+	$(BOOST_DATE_TIME_LIBS) \
+	$(BOOST_PROGRAM_OPTIONS_LIBS) \
+	$(BOOST_SIGNALS_LIBS) \
+	$(BOOST_SYSTEM_LIBS) \
+	$(BOOST_THREAD_LIBS) \
 	$(CLUTTERGST_LIBS) \
 	$(LIBLO_LIBS) \
 	$(LIBM_LIBS) \

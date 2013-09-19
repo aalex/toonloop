@@ -98,33 +98,23 @@ fi
 AC_SUBST([LIBXML_LIBS])
 AC_SUBST([LIBXML_CFLAGS])
 
-# BOOST
-AX_BOOST_BASE([1.35])
+# boost
+BOOST_REQUIRE([1.35])
+BOOST_DATE_TIME
+BOOST_FILESYSTEM
+BOOST_PROGRAM_OPTIONS
+BOOST_SIGNALS
+BOOST_SYSTEM
+BOOST_THREADS
 
-AX_BOOST_PROGRAM_OPTIONS
-if test "x${ax_cv_boost_program_options}" = "xno" ; then
-	AC_MSG_ERROR([missing package: libboost-program-options-dev])
-fi
-
-AX_BOOST_FILESYSTEM
-if test "x${ax_cv_boost_filesystem}" = "xno" ; then
-	AC_MSG_ERROR([missing package: libboost-filesystem-dev])
-fi
-
-AX_BOOST_THREAD
-if test "x${ax_cv_boost_thread}" = "xno" ; then
-    AC_MSG_ERROR([missing package: libboost-thread-dev])
-fi
-
-AX_BOOST_DATE_TIME
-if test "x${ax_cv_boost_date_time}" = "xno" ; then
-	AC_MSG_ERROR([missing package: libboost-date-time-dev])
-fi
-
-AX_BOOST_SYSTEM
-if test "x${ax_cv_boost_system}" = "xno" ; then
-	AC_MSG_ERROR([missing package: libboost-system-dev])
-fi
+dnl AC_MSG_NOTICE([BOOST_LDFLAGS:              ${BOOST_LDFLAGS}])
+AC_MSG_NOTICE([BOOST_CPPFLAGS:             ${BOOST_CPPFLAGS}])
+AC_MSG_NOTICE([BOOST_DATE_TIME_LIBS:       ${BOOST_DATE_TIME_LIBS}])
+AC_MSG_NOTICE([BOOST_FILESYSTEM_LIBS:      ${BOOST_FILESYSTEM_LIBS}])
+AC_MSG_NOTICE([BOOST_PROGRAM_OPTIONS_LIBS: ${BOOST_PROGRAM_OPTIONS_LIBS}])
+AC_MSG_NOTICE([BOOST_SIGNALS_LIBS:         ${BOOST_SIGNALS_LIBS}])
+AC_MSG_NOTICE([BOOST_SYSTEM_LIBS:          ${BOOST_SYSTEM_LIBS}])
+AC_MSG_NOTICE([BOOST_THREAD_LIBS:         ${BOOST_THREAD_LIBS}])
 
 # GNU help2man creates man pages from --help output; in many cases, this
 # is sufficient, and obviates the need to maintain man pages separately.
