@@ -1,0 +1,15 @@
+Toonloop on Fedora
+==================
+
+Install build dependencies for Toonloop on Fedora 19
+----------------------------------------------------
+Do this::
+  
+  sudo yum install -y gstreamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-bad gstreamer1-plugins-ugly gstreamer1-libav
+  sudo yum install -y help2man ivtv-utils clutter-devel clutter-gst-devel gstreamer1-devel
+  sudo yum install -y gstreamer1-plugins-bad-free-extras
+  sudo yum install -y gstreamer1-plugins-bad-free-devel
+  sudo yum install -y bison flex gcc-c++ boost-devel libavc1394-devel libxml2-devel liblo-devel rtmidi-devel rtmidi rtmidi-jack
+  sudo yum install -y gstreamer1-plugins-bad-nonfree 
+  sudo yum-builddep -y gstreamer1-plugins-base 
+
