@@ -57,14 +57,16 @@ void Pipeline::bus_message_cb(GstBus* /*bus*/, GstMessage *msg, gpointer user_da
     {
         const GValue *val;
         GdkPixbuf *pixbuf = NULL;
+        const GstStructure *structure;
+        structure = gst_message_get_structure(msg);
   
         /* only interested in element messages from our gdkpixbufsink */
         if (msg->src != GST_OBJECT_CAST(context->gdkpixbufsink_))
             break;
   
         /* only interested in these two messages */
-        if (! gst_message_has_name(msg, "preroll-pixbuf") &&
-                ! gst_message_has_name(msg, "pixbuf")) 
+        if (0 != g_strcmp0(gst_structure_get_name(structure), "preroll-pixbuf") &&
+                0 != g_strcmp0(gst_structure_get_name(structure), "pixbuf")) 
         {
             break;
         }
