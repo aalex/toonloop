@@ -1,0 +1,39 @@
+#!/bin/bassh
+
+# trusty:
+sudo apt-get install \
+    gettext \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-x \
+    help2man \
+    libasound-dev \
+    libavc1394-dev \
+    libboost-program-options-dev \
+    libboost-filesystem-dev \
+    libboost-thread-dev \
+    libboost-date-time-dev \
+    libboost-signals-dev \
+    libboost-system-dev \
+    liblo-dev \
+    libclutter-1.0-dev \
+    libclutter-gtk-1.0-dev \
+    libglew1.5-dev \
+    libglib2.0-dev \
+    libglu1-mesa-dev \
+    libgstreamer-plugins-base1.0-dev \
+    libgstreamer1.0-dev \
+    libgtk2.0-dev \
+    libraw1394-dev \
+    libstk0-dev \
+    libxml2-dev \
+    libxv-dev \
+    mencoder \
+    automake \
+    bison \
+    build-essential \
+    flex \
+    libtool \
+    libclutter-gst-2.0-dev
