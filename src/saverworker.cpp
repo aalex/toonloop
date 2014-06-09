@@ -116,7 +116,7 @@ void SaverWorker::operator()()
     int clip_h = owner_->current_task_.height_;
 
     std::ostringstream command;
-    command << "mencoder mf://" << directory.string() << "/*.jpg -quiet -mf w=" << clip_w << ":h=" << clip_h << ":fps=" << fps << ":type=jpg -ovc lavc -lavcopts vcodec=mjpeg -oac copy -of lavf -lavfopts format=mov -o " << output_movie.string();
+    command << "mencoder mf://" << directory.string() << "/*.jpg -quiet -mf w=" << clip_w << ":h=" << clip_h << ":fps=" << fps << ":type=jpg -ovc lavc -oac copy -of lavf -lavfopts format=mov -o " << output_movie.string();
     std::cout << "Lauching $ " << command.str() << std::endl;  
     bool ret_val = subprocess::run_command(command.str()); // blocking call
     //std::cout << "Done with $ " << command << std::endl;
