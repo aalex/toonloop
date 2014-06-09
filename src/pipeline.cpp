@@ -528,14 +528,14 @@ Pipeline::Pipeline(Application* owner) :
         {
             g_object_set(G_OBJECT(videosrc_), "endx", config->get_capture_width(), NULL);
             g_object_set(G_OBJECT(videosrc_), "endy", config->get_capture_height(), NULL);
-            GstCaps *the_caps = gst_caps_from_string("video/x-raw-rgb, framerate=30/1");
+            GstCaps *the_caps = gst_caps_from_string("video/x-raw, framerate=30/1");
             g_object_set(capsfilter0, "caps", the_caps, NULL);
             gst_caps_unref(the_caps);
             
         }
         else
         {   // it's a videotestsrc
-            std::string caps_str = "video/x-raw-yuv, width=" + boost::lexical_cast<std::string>(config->get_capture_width()) + ", height=" + boost::lexical_cast<std::string>(config->get_capture_height()) + ", framerate=30/1";
+            std::string caps_str = "video/x-raw, width=" + boost::lexical_cast<std::string>(config->get_capture_width()) + ", height=" + boost::lexical_cast<std::string>(config->get_capture_height()) + ", framerate=30/1";
             std::cout << "CAPS: " << caps_str << std::endl;
             GstCaps *the_caps = gst_caps_from_string(caps_str.c_str());
             g_object_set(capsfilter0, "caps", the_caps, NULL);
