@@ -36,4 +36,4 @@ sudo apt-get install \
     build-essential \
     flex \
     libtool \
-    libclutter-gst-dev
+    libclutter-gst-2.0-dev

@@ -702,6 +702,8 @@ void Gui::resize_actors()
         area_width  = (video_input_width_ * stage_height) / video_input_height_;
         area_height = stage_height;
         area_x = (stage_width - area_width) / 2;
+        if (stage_width > 1920) // FIXME: sometimes clutter reports wrong stage width (adding up the width of the two displays)
+            area_x = 0;
         area_y = 0;
     }
     // Checks if we are using the whole drawing area, or parts of it for each actor:
@@ -721,13 +723,13 @@ void Gui::resize_actors()
         live_tex_width = area_width / 2;
         live_tex_height = area_height / 2;
         live_tex_x = area_x;
-        live_tex_y = (stage_height / 4);
+        live_tex_y = (area_height / 4);
 
         // playback texture size and position:
         playback_tex_width = area_width / 2;
         playback_tex_height = area_height / 2;
-        playback_tex_x = (stage_width / 2);
-        playback_tex_y = (stage_height / 4);
+        playback_tex_x = area_x + (area_width / 2);
+        playback_tex_y = (area_height / 4);
     } 
     else if (current_layout_ == LAYOUT_PLAYBACK_ONLY) 
     {
@@ -788,6 +790,23 @@ void Gui::resize_actors()
         clutter_actor_set_rotation(CLUTTER_ACTOR(*iter), CLUTTER_Z_AXIS, rotation, live_tex_width / 2.0f, live_tex_height / 2.0f, 0.0f);
     }
     clutter_actor_set_size(black_out_rectangle_, stage_width, stage_height);
+
+    if (this->owner_->get_configuration()->get_verbose())
+    {
+        std::cout << "SIZE INFO:" << std::endl;
+        std::cout << "* stage_width: " << stage_width << std::endl;
+        std::cout << "* stage_height: " << stage_height << std::endl;
+        std::cout << "* area_width: " << area_width << std::endl;
+        std::cout << "* area_height: " << area_height << std::endl;
+        std::cout << "* live_tex_width: " << live_tex_width << std::endl;
+        std::cout << "* live_tex_height: " << live_tex_height << std::endl;
+        std::cout << "* live_tex_x: " << live_tex_x << std::endl;
+        std::cout << "* live_tex_y: " << live_tex_y << std::endl;
+        std::cout << "* playback_tex_width: " << playback_tex_width << std::endl;
+        std::cout << "* playback_tex_height: " << playback_tex_height << std::endl;
+        std::cout << "* playback_tex_x: " << playback_tex_x << std::endl;
+        std::cout << "* playback_tex_y: " << playback_tex_y << std::endl;
+    }
 }
 
 /**
