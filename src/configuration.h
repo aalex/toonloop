@@ -74,6 +74,7 @@ class Configuration
         void set_video_source(const std::string &video_source);
         bool get_verbose() const { return verbose_; } 
         bool get_fullscreen() const { return fullscreen_; } 
+        bool get_grayscale() const { return grayscale_; } 
         int get_midi_input_number() const { return midi_input_number_; }
         std::string get_osc_recv_port() const { return osc_recv_port_; }
         std::string get_osc_send_port() const { return osc_send_port_; }
@@ -114,6 +115,7 @@ class Configuration
         std::string image_on_top_;
         bool preview_window_enabled_;
         bool auto_save_project_;
+        bool grayscale_;
         bool home_when_choose_;
 };
 #endif // __CONFIGURATION_H__

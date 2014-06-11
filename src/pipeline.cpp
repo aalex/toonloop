@@ -449,6 +449,8 @@ Pipeline::Pipeline(Application* owner) :
     // ffmpegcolorspace0 element
     GstElement* ffmpegcolorspace0 = gst_element_factory_make("ffmpegcolorspace", "ffmpegcolorspace0");
     g_assert(ffmpegcolorspace0);
+    GstElement* videobalance0 = gst_element_factory_make("videobalance", "videobalance0");
+    g_assert(videobalance0);
     GstElement* tee0 = gst_element_factory_make("tee", "tee0");
     g_assert(tee0);
     GstElement* queue0 = gst_element_factory_make("queue", "queue0");
@@ -499,6 +501,7 @@ Pipeline::Pipeline(Application* owner) :
         gst_bin_add(GST_BIN(pipeline_), hdv_decoder0);
     }
     gst_bin_add(GST_BIN(pipeline_), ffmpegcolorspace0);
+    gst_bin_add(GST_BIN(pipeline_), videobalance0);
     gst_bin_add(GST_BIN(pipeline_), tee0);
     gst_bin_add(GST_BIN(pipeline_), queue0); // branch #0: videosink
     //gst_bin_add(GST_BIN(pipeline_), capsfilter1);
@@ -577,7 +580,8 @@ Pipeline::Pipeline(Application* owner) :
         }
     }
     //Will now link capfilter0--ffmpegcolorspace0--tee.
-    link_or_die(capsfilter0, ffmpegcolorspace0);
+    link_or_die(capsfilter0, videobalance0);
+    link_or_die(videobalance0, ffmpegcolorspace0);
     link_or_die(ffmpegcolorspace0, tee0);
     //Will now link tee--queue--videosink.
     is_linked = gst_element_link_pads(tee0, "src0", queue0, "sink");
@@ -621,6 +625,12 @@ Pipeline::Pipeline(Application* owner) :
             g_print("Could not link %s to %s.\n", "ffmpegcolorspace1", "xvimagesink0"); 
             exit(1); 
         }
+    }
+
+    bool desaturate_is_enabled = owner_->get_configuration()->get_grayscale();
+    if (desaturate_is_enabled)
+    {
+        g_object_set(videobalance0, "saturation", 0.0, NULL); 
     }
 
     if (verbose)

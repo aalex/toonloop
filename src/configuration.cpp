@@ -42,6 +42,7 @@ Configuration::Configuration(const boost::program_options::variables_map &option
     osc_send_addr_(options["osc-send-addr"].as<std::string>()),
     image_on_top_(options["image-on-top"].as<std::string>()),
     auto_save_project_(options["auto-save-project"].as<bool>()),
+    grayscale_(options["grayscale"].as<bool>()),
     home_when_choose_(! options["continue-when-choose"].as<bool>())
 {
     if (midi_input_number_ != MIDI_INPUT_NONE) // Means disabled

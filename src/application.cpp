@@ -156,6 +156,7 @@ void Application::run(int argc, char *argv[])
         ("project-home,H", po::value<std::string>()->default_value(project_home), "Path to the saved files")
         ("version", "Show program's version number and exit")
         ("verbose,v", po::bool_switch(), "Enables a verbose output")
+        ("grayscale,g", po::bool_switch(), "Makes the video source grayscale")
         ("display,D", po::value<std::string>()->default_value(std::getenv("DISPLAY")), "Sets the X11 display name")
         ("playhead-fps", po::value<int>()->default_value(12), "Sets the initial playback rate of clips")
         ("fullscreen,f", po::bool_switch(), "Runs in fullscreen mode")
@@ -245,6 +246,11 @@ void Application::run(int argc, char *argv[])
     {
         if (verbose)
             std::cout << "Fullscreen mode is on: " << options["fullscreen"].as<bool>() << std::endl;
+    }
+    if (options["grayscale"].as<bool>())
+    {
+        if (verbose)
+            std::cout << "grayscale mode is on: " << options["grayscale"].as<bool>() << std::endl;
     }
     // Options to use in the normal mode:
     if (options.count("video-source"))
