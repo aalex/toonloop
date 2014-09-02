@@ -13,7 +13,7 @@ check_classes_LDADD = $(BOOST_LIBS)
 
 check_threads_SOURCES = check_threads.cpp 
 check_threads_CXXFLAGS = $(BOOST_CPPFLAGS) 
-check_threads_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB)
+check_threads_LDADD = $(BOOST_LIBS) $(BOOST_THREAD_LIB) $(BOOST_SYSTEM_LIB)
 
 check_bool_SOURCES = check_bool.cpp 
 
