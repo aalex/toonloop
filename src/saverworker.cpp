@@ -25,6 +25,38 @@
 #include "saverworker.h"
 #include "subprocess.h" // TODO: use glib instead of subprocess.h
 
+static int calc_bitrate(int clip_w, int clip_h, int fps)
+{
+    (void) fps; // unused
+    int bitrate_kbps = 4000;
+    int mult = clip_w * clip_h;
+    if (mult >= (1920 * 1080))
+    {
+        bitrate_kbps = 4000;
+    }
+    else if (mult >= (1280 * 720))
+    {
+        bitrate_kbps = 2500;
+    }
+    else if (mult >= (1024 * 576))
+    {
+        bitrate_kbps = 1500;
+    }
+    else if (mult >= (480 * 270))
+    {
+        bitrate_kbps = 700;
+    }
+    else if (mult >= (320 * 240))
+    {
+        bitrate_kbps = 400;
+    }
+    else
+    {
+        bitrate_kbps = 400;
+    }
+    return bitrate_kbps;
+}
+
 SaverWorker::SaverWorker(MovieSaver *owner) :
     owner_(owner)
 {
@@ -44,6 +76,7 @@ void SaverWorker::set_final_options(const std::string &datetime_started, const s
 void SaverWorker::operator()()
 {
     namespace fs = boost::filesystem;
+    int fps_int = owner_->current_task_.fps_;
     success_ = false;
     // TODO: make FPS configurable
     std::ostringstream fps_os;
@@ -114,9 +147,14 @@ void SaverWorker::operator()()
     
     int clip_w = owner_->current_task_.width_;
     int clip_h = owner_->current_task_.height_;
+    int bitrate_kbps = calc_bitrate(clip_w, clip_h, fps_int);
 
     std::ostringstream command;
-    command << "mencoder mf://" << directory.string() << "/*.jpg -quiet -mf w=" << clip_w << ":h=" << clip_h << ":fps=" << fps << ":type=jpg -ovc lavc -oac copy -of lavf -lavfopts format=mov -o " << output_movie.string();
+    command << "mencoder mf://" << directory.string() <<
+        "/*.jpg -quiet -mf w=" << clip_w << ":h=" << clip_h <<
+        ":fps=" << fps <<
+        ":type=jpg -ovc lavc -oac copy -of lavf -lavfopts format=mov -lavcopts vbitrate=" << bitrate_kbps << " -o " <<
+        output_movie.string();
     std::cout << "Lauching $ " << command.str() << std::endl;  
     bool ret_val = subprocess::run_command(command.str()); // blocking call
     //std::cout << "Done with $ " << command << std::endl;
