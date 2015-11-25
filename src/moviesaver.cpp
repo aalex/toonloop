@@ -24,6 +24,7 @@
 #include "moviesaver.h"
 #include "saverworker.h"
 #include "timing.h"
+#include "playheaditerator.h"
 
 MovieSaver::MovieSaver() : // const Clip &clip?
     current_task_(),
@@ -53,21 +54,49 @@ bool MovieSaver::add_saving_task(Clip& clip, std::string &file_name)
     current_task_.fps_ = clip.get_playhead_fps();
     current_task_.width_ = clip.get_width();
     current_task_.height_ = clip.get_height();
+    std::string playhead_direction = clip.get_direction();
+    bool is_backwards = false;
+
+    PlayheadIterator *tmp = new BackwardIterator();
+    if (tmp->get_name() == playhead_direction)
+    {
+        is_backwards = true;
+    }
+    delete tmp;
+
     //std::cout << "MovieSaver Clip ID is " << current_task_.clip_id_ << " and it has " << clip.size() << " images" << std::endl;  
 
     // load image names
     current_task_.image_paths_.clear();
+
+    if (clip.size() == 0)
+    {
+        return false;
+    }
     
     //clip.lock_mutex(); // FIXME: do we need mutexes at all?
     //TODO: save in reverse order or ping pong - as well
     std::string image_path;
-    for (unsigned int i = 0; i < clip.size(); i++)
+    if (is_backwards)
     {
-        // TODO: store the SavingTaskInfo in a struct
-        // Will containt the image_paths, file_extension and format, plus the path to the image directory, etc.
-        image_path = clip.get_image_full_path(clip.get_image(i));
-        //std::cout << "Clip has image " << image_path << std::endl;
-        current_task_.image_paths_.push_back(image_path);
+        // backwards
+        for (int i = clip.size() - 1; i >= 0; i--)
+        {
+            image_path = clip.get_image_full_path(clip.get_image(i));
+            current_task_.image_paths_.push_back(image_path);
+        }
+    }
+    else
+    {
+        // forward
+        for (unsigned int i = 0; i < clip.size(); i++)
+        {
+            // TODO: store the SavingTaskInfo in a struct
+            // Will containt the image_paths, file_extension and format, plus the path to the image directory, etc.
+            image_path = clip.get_image_full_path(clip.get_image(i));
+            //std::cout << "Clip has image " << image_path << std::endl;
+            current_task_.image_paths_.push_back(image_path);
+        }
     }
     //clip.unlock_mutex();
     // See saverworker.h
