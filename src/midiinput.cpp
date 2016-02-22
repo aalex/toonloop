@@ -381,7 +381,7 @@ void MidiInput::enumerate_devices() const
         try {
             portName = midi_in_->getPortName(i);
         }
-        catch (RtError &name_error) {
+        catch (RtMidiError &name_error) {
             name_error.printMessage();
         }
         std::cout << " * " << i << " : " << portName << '\n';
@@ -436,7 +436,7 @@ MidiInput::MidiInput(Application* owner, bool verbose) :
     try {
         midi_in_ = new RtMidiIn; // FIXME: should be use a pointer?
     }
-    catch (RtError &error) {
+    catch (RtMidiError &error) {
         error.printMessage();
         exit(EXIT_FAILURE);
     }
@@ -460,7 +460,7 @@ bool MidiInput::open(unsigned int port)
     {
         midi_in_->openPort(port);
     }
-    catch (RtError &error)
+    catch (RtMidiError &error)
     {
         std::cout << "Error opening MIDI port " << port << std::endl;
         error.printMessage();
