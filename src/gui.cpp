@@ -73,11 +73,32 @@ void Gui::set_window_icon(const std::string &path)
 gboolean Gui::on_mouse_button_event(ClutterActor* /* actor */, ClutterEvent *event, gpointer user_data)
 {
     Gui *context = static_cast<Gui *>(user_data);
+    guint button_pressed;
     // Before 2010-09-20 we tried to start/stop video recording but it was buggy
     if (event->type == CLUTTER_BUTTON_PRESS)
     {
         if (context->owner_->get_configuration()->get_mouse_controls_enabled())
-            context->owner_->get_controller()->add_frame();
+        {
+            button_pressed = clutter_event_get_button(event);
+
+            if (context->owner_->get_configuration()->get_verbose())
+            {
+                std::cout << "Mouse clicked! button " << button_pressed << std::endl;
+            }
+            if (button_pressed == CLUTTER_BUTTON_PRIMARY)
+            {
+                context->owner_->get_controller()->add_frame();
+            }
+            else if (button_pressed == CLUTTER_BUTTON_MIDDLE)
+            {
+                context->owner_->get_controller()->remove_frame();
+            }
+            else if (button_pressed == CLUTTER_BUTTON_SECONDARY)
+            {
+                context->owner_->get_controller()->save_current_clip();
+                context->owner_->get_controller()->clear_current_clip();
+            }
+        }
     }
     return TRUE;
 }
