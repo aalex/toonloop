@@ -40,6 +40,10 @@ static const unsigned char MIDIPROGRAMCHANGE = 0xc0; // channel, value
 static const unsigned char MIDIPITCHBEND =     0xe0; // channel, value
 static const unsigned char MIDI_NOT_SUPPORTED = 0x00;
 
+#if !defined(RtMidiError)
+typedef RtError RtMidiError;
+#endif
+
 unsigned char get_midi_event_type(const unsigned char first_byte)
 {
     unsigned char type_code;
