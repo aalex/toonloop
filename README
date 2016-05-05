@@ -7,20 +7,29 @@
     |_|\___/ \___/|_| |_|_|\___/ \___/| .__/ 
                                       |_|    
   
-Toonloop is a live animation software. It aims to show the creation process to the audience as well as the result of the creation. Frame by frame animation clips can made by adding images one by one. Clips are displayed in a never ending loop. Toonloop can also grab video images continuously.
+Toonloop is a live animation software. The idea is to show the creation process
+to the audience as well as the result of the creation. Frame by frame animation
+clips can made by adding images one by one. Clips are displayed in a never
+ending loop. Toonloop can also grab video images continuously.
 
-Toonloop is a great tool for teaching new medias to children. It can also be used as a professionnal software for movie creators, though it is mainly intended to be used in a live kiosk of show. In the left window, you can see what is seen by the live camera. In the right window, it is the result of the stop motion loop.
+Toonloop is a great tool for teaching new medias to children. It can also be
+used as a professionnal software for movie creators, though it is mainly
+intended to be used in a live kiosk of show. In the left window, you can see
+what is seen by the live camera. In the right window, it is the result of the
+stop motion loop.
 
-Toonloop can be controlled using MIDI input, or the Open Sound Control protocol. Images are saved to the disk in the JPEG format, and the clips are saved using the photo-JPEG video codec. (using mencoder)
+Toonloop can be controlled using MIDI input, or the Open Sound Control
+protocol. Images are saved to the disk in the JPEG format, and the clips are
+saved using the photo-JPEG video codec. (using mencoder)
 
-See the NEWS file for its history and up-to-date information about this version of Toonloop.
+See the NEWS file for its history and up-to-date information about this
+version of Toonloop.
 
 Most of the information on how to use it is in the toonloop(1) man page.
 
 
 How to use Toonloop
 -------------------
-
 To make it short, press space to capture an image, it will be recorded 
 in your default directory (~/Documents/toonloop/default/) under jpg format.
 
@@ -40,52 +49,72 @@ F1                 : show help
 
 See the toonloop(1) man page, or press F1 for all the key controls.
 
-Toonloop saves the clip in its project directory. The default project directory is the ~/Documents/toonloop/default/ directory, where "~" is your HOME directory. 
+Toonloop saves the clips in its project directory. The default project
+directory is the ~/Documents/toonloop/default/ directory, where "~" is your
+HOME directory. 
+
 
 Versioning
 ----------
+In Toonloop we use the common "Linux kernel" versioning system, where
+even-numbered minor versions are stable and odd-numbered minor versions are
+development snapshots.
 
-Toonloop uses the common "Linux kernel" versioning system, where even-numbered minor versions are stable and odd-numbered minor versions are development snapshots.
+The micro version indicates the origin of the release: even micro numbers are
+only used for released archives; odd micro numbers are only used on the Git
+repository.
 
-The micro version indicates the origin of the release: even micro numbers are only used for released archives; odd micro numbers are only used on the Git repository.
+A stable series means that the command-line options and the interactive
+keyboard controls should not change much for all tags whose version number
+start with the same major-minor numbers. Some new features might be developped
+in that branch, but each release should be backward-compatible with their
+ancestor. Releases from a stable series should be use for production. 
 
-A stable series means that the command-line options and the interactive keyboard controls should not change much for all tags whose version number start with the same major-minor numbers. Some new features might be developped in that branch, but each release should be backward-compatible with their ancestor. Releases from a stable series should be use for production. 
-
-In contrast, unstable branches consist of tags which are developer snapshots. They are not expected to be compatible with any other version. Some features might change between different stable branches.
+In contrast, unstable branches consist of tags which are developer snapshots.
+They are not expected to be compatible with any other version. Some features
+might change between different stable branches.
 
 
 Known Bugs
 ----------
+Here is a list of known bugs. See also the TODO file. That is what we mainly
+use to manage issues, rather than a Web application. Please read and write on
+the mailing list if you encounter some issues with Toonloop.
 
-Here is a list of known bugs. See also the TODO file. That is what we mainly use to manage issues, rather than a Web application. Please read and write on the mailing list if you encounter some issues with Toonloop.
-
- * The portrait layout doesn't look nice: both images overlap when not in 4:3 ratio.
- * If you run toonloop from a directory in your home (not in /usr/local) it might use the midi.xml file in /usr/local, unless you are in the same directory as the executable. Be careful.
+ * The portrait layout doesn't look nice: both images overlap when not in
+   4:3 ratio.
+ * If you run toonloop from a directory in your home (not in /usr/local) it
+   might use the midi.xml file in /usr/local, unless you are in the same
+   directory as the executable. Be careful.
 
 
 Basic Tools for Compiling
 -------------------------
-
-To build applications such as Toonloop, you should have the following packages installed on your system::
+To build applications such as Toonloop, you should have the following packages
+installed on your system::
 
  sudo apt-get install automake bison build-essential flex libtool
 
-These instructions are for Ubuntu GNU/Linux - and should work on Debian GNU/Linux as well. Toonloop should build on other platforms too. Please help us improving this documentation if you get it to work on other operating systems.
+These instructions are for Ubuntu GNU/Linux - and should work on Debian
+GNU/Linux as well. Toonloop should build on other platforms too. Please help
+us improving this documentation if you get it to work on other operating systems.
 
 
 Dependencies
 ------------
+Toonloop 2.x.x has been built successfully on many versions of Debian and
+Ubuntu. It should not currently build on Mac OS X and Windows, but the idea is
+to port it eventually to many platforms.
 
-Toonloop 1.9.x has been built successfully on many versions of Debian and Ubuntu. It should not currently build on Mac OS X and Windows, but the idea is to port it eventually to many platforms.
+Here is the list of Debian package that you will need to build Toonloop 2.x.x::
 
-Here is the list of Debian package that you will need to build Toonloop 2.x::
+sudo apt-get install -y automake bison build-essential flex libtool autotools-dev bison flex help2man libasound2-dev libavc1394-dev librtaudio-dev libboost-date-time-dev libboost-filesystem-dev libboost-program-options-dev libboost-signals-dev libboost-system-dev libboost-thread-dev libclutter-1.0-dev libglew-dev libglib2.0-dev libglu-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev libjack-dev liblo-dev libraw1394-dev libstk0-dev libxml2-dev libxv-dev gstreamer1.0-plugins-bad gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-x gstreamer1.0-tools gstreamer1.0-libav libclutter-gst-2.0-dev
 
- sudo apt-get install ffmpeg gettext gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-base gstreamer0.10-plugins-good gstreamer0.10-plugins-ugly gstreamer0.10-x help2man libasound2-dev libavc1394-dev libboost-program-options-dev libboost-filesystem-dev libboost-thread-dev libboost-date-time-dev libboost-signals-dev libboost-system-dev liblo-dev libclutter-1.0-dev libclutter-gst-dev libgdk-pixbuf-dev libglew1.5-dev libglib2.0-dev libglu1-mesa-dev libgstreamer-plugins-base0.10-dev libgstreamer0.10-dev libraw1394-dev librtmidi-dev libxml2-dev libxv-dev mencoder mscgen
+FIXME: there is no longer any package for mencoder.
 
 
 How to build Toonloop
 ---------------------
-
 Here is how to build it::
 
  ./autogen.sh
@@ -93,18 +122,23 @@ Here is how to build it::
  make
  sudo make install
 
-There is also the handy ./one_click_build.sh that does it in a single script. (except the `sudo make install`)
+There is also the handy ./one_click_build.sh that does it in a single script.
+(except the `sudo make install`)
 
-If you want to install the bash completion script, you should set the sysconfdir command-line option given to ./configure to "/etc". Here is an example::
+If you want to install the bash completion script, you should set the
+sysconfdir command-line option given to ./configure to "/etc".
+Here is an example::
 
  ./configure --sysconfdir=/etc
 
-Be warned that the command above would overwrite the default Toonloop config files installed by your package manager, if any. 
+Be warned that the command above would overwrite the default Toonloop config
+files installed by your package manager, if any. 
 
 How to run Toonloop
 -------------------
 
-Note that you need to have the GLX acceleration set up in order to use Clutter, and therefore Toonloop. 
+Note that you need to have the GLX acceleration set up in order to use Clutter,
+and therefore Toonloop. 
 
 Here is how to lauch Toonloop using the default V4L2 video input::
 
@@ -170,4 +204,3 @@ GNU General Public License for more details.
 
 You should have received a copy of the gnu general public license
 along with Toonloop.  If not, see <http://www.gnu.org/licenses/>.
-
