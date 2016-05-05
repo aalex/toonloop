@@ -86,6 +86,8 @@ the mailing list if you encounter some issues with Toonloop.
  * If you run toonloop from a directory in your home (not in /usr/local) it
    might use the midi.xml file in /usr/local, unless you are in the same
    directory as the executable. Be careful.
+ * On Ubuntu 15.10, there is no mencoder package. It is needed for video file
+   exports.
 
 
 Basic Tools for Compiling
@@ -134,9 +136,9 @@ Here is an example::
 Be warned that the command above would overwrite the default Toonloop config
 files installed by your package manager, if any. 
 
+
 How to run Toonloop
 -------------------
-
 Note that you need to have the GLX acceleration set up in order to use Clutter,
 and therefore Toonloop. 
 
@@ -155,7 +157,6 @@ See the toonloop(1) man page for details.
 
 DEVELOPERS DOCUMENTATION
 ------------------------
-
 To build the HTML documentation, make sure you have doxygen installed, then::
 
  make html
@@ -165,7 +166,6 @@ See the CONTRIBUTING file.
 
 Additional Configuration Notes
 ------------------------------
-
 You might need to properly configure your V4L2 video device::
 
   sudo apt-get install ivtv-utils
@@ -186,7 +186,6 @@ If you use two displays, you might want to use 2 separate X screens::
 
 Copyright and license
 ---------------------
-
 Toonloop
 
 Copyright (c) 2010 Alexandre Quessy <alexandre@quessy.net>
