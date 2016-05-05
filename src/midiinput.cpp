@@ -40,7 +40,9 @@ static const unsigned char MIDIPROGRAMCHANGE = 0xc0; // channel, value
 static const unsigned char MIDIPITCHBEND =     0xe0; // channel, value
 static const unsigned char MIDI_NOT_SUPPORTED = 0x00;
 
-#if !defined(RtMidiError)
+#if 0
+// Should make RtMidiError work on Ubuntu 14.04
+// FIXME #if !defined(RtMidiError)
 typedef RtError RtMidiError;
 #endif
 
@@ -385,6 +387,7 @@ void MidiInput::enumerate_devices() const
         try {
             portName = midi_in_->getPortName(i);
         }
+        // See RtMidiError typedef for Ubuntu 14.04 above.
         catch (RtMidiError &name_error) {
             name_error.printMessage();
         }
