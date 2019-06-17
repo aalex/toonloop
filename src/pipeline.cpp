@@ -461,8 +461,8 @@ Pipeline::Pipeline(Application* owner) :
     GstElement* queue0 = gst_element_factory_make("queue", "queue0");
     g_assert(queue0);
 
-    videosink_ = gst_element_factory_make ("cluttersink", NULL);
-    g_object_set (videosink_, "texture", CLUTTER_TEXTURE(owner_->get_gui()->get_live_input_texture()), NULL);
+    videosink_ = gst_element_factory_make ("clutterautovideosink", NULL);
+    g_object_set (videosink_, "content", clutter_actor_get_content(owner_->get_gui()->get_live_input_texture()), NULL);
 
     // TODO: Make sure the rendering FPS is constant, and not subordinate to
     // the FPS of the camera.
