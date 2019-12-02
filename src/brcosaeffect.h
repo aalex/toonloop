@@ -34,8 +34,8 @@ class BrCoSaEffect: public Effect
         virtual void init_properties();
         virtual void update_actor(ClutterActor *actor);
         virtual void setup_actor(ClutterActor *actor);
-        void on_saturation_changed(std::string &name, float value);
-        void on_contrast_changed(std::string &name, float value);
+        void on_saturation_changed(std::string name, float value);
+        void on_contrast_changed(std::string name, float value);
         float contrast_;
         float saturation_;
         ClutterShader *shader_;

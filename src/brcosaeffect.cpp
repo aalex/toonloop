@@ -79,14 +79,14 @@ void BrCoSaEffect::setup_actor(ClutterActor *actor)
     clutter_actor_set_shader(actor, shader_);
 }
 
-void BrCoSaEffect::on_contrast_changed(std::string &name, float value)
+void BrCoSaEffect::on_contrast_changed(std::string name, float value)
 {
     UNUSED(name);
     contrast_ = value;
     update_all_actors();
 }
 
-void BrCoSaEffect::on_saturation_changed(std::string &name, float value)
+void BrCoSaEffect::on_saturation_changed(std::string name, float value)
 {
     UNUSED(name);
     saturation_ = value;

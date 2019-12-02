@@ -4,22 +4,22 @@
 #include <map>
 #include <iostream>
 
-void int_cb(std::string &name, int value)
+void int_cb(std::string name, int value)
 {
     std::cout << name << " changed to " << value << std::endl;
 }
 
-void float_cb(std::string &name, float value)
+void float_cb(std::string name, float value)
 {
     std::cout << name << " changed to " << value << std::endl;
 }
 
-void string_cb(std::string &name, std::string value)
+void string_cb(std::string name, std::string value)
 {
     std::cout << name << " changed to " << value << std::endl;
 }
 
-void bool_cb(std::string &name, bool value)
+void bool_cb(std::string name, bool value)
 {
     std::cout << name << " changed to " << value << std::endl;
 }
