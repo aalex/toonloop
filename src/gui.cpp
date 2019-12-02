@@ -106,7 +106,7 @@ gboolean Gui::on_mouse_button_event(ClutterActor* /* actor */, ClutterEvent *eve
 /**
  * [0,255]
  */
-void Gui::on_livefeed_opacity_changed(std::string &name, int value)
+void Gui::on_livefeed_opacity_changed(std::string name, int value)
 {
     UNUSED(name);
     if (owner_->get_configuration()->get_verbose())
@@ -414,7 +414,7 @@ gboolean Gui::key_press_event(ClutterActor *stage, ClutterEvent *event, gpointer
     return TRUE;
 }
 
-void Gui::on_crossfade_ratio_changed(std::string &name, float value)
+void Gui::on_crossfade_ratio_changed(std::string name, float value)
 {
     UNUSED(name);
     if (crossfade_ratio_ != value)
@@ -904,7 +904,7 @@ void on_playback_texture_size_changed(ClutterTexture *texture,
     gui->resize_actors();
 }
 
-void Gui::on_blending_mode_int_property_changed(std::string &name, int value)
+void Gui::on_blending_mode_int_property_changed(std::string name, int value)
 {
     UNUSED(name);
     if (value == 1)
@@ -913,7 +913,7 @@ void Gui::on_blending_mode_int_property_changed(std::string &name, int value)
         set_blending_mode(BLENDING_MODE_NORMAL);
 }
 
-void Gui::on_playback_opacity_changed(std::string &name, int value)
+void Gui::on_playback_opacity_changed(std::string name, int value)
 {
     UNUSED(name);
     clutter_actor_set_opacity(playback_group_, value);
@@ -1168,7 +1168,7 @@ void Gui::show()
     }
 }
 
-void Gui::on_black_out_opacity_changed(std::string &name, int value)
+void Gui::on_black_out_opacity_changed(std::string name, int value)
 {
     if (owner_->get_configuration()->get_verbose())
         g_print("make black_out opacity %d\n", value);
@@ -1176,7 +1176,7 @@ void Gui::on_black_out_opacity_changed(std::string &name, int value)
     clutter_actor_set_opacity(black_out_rectangle_, value);
 }
 
-void Gui::on_black_out_changed(std::string &name, int value)
+void Gui::on_black_out_changed(std::string name, int value)
 {
     if (owner_->get_configuration()->get_verbose())
         g_print("toggle black_out %d\n", value);
@@ -1326,7 +1326,7 @@ std::string Gui::get_blending_mode_name(BlendingMode mode)
     }
 }
 
-void Gui::on_save_clip(unsigned int clip_number, std::string &file_name)
+void Gui::on_save_clip(unsigned int clip_number, std::string file_name)
 {
     std::ostringstream os;
     os << "Saving clip " << clip_number << " as " << file_name;
@@ -1335,7 +1335,7 @@ void Gui::on_save_clip(unsigned int clip_number, std::string &file_name)
     animate_progress_bar();
 }
 
-void Gui::on_save_project(std::string &file_name)
+void Gui::on_save_project(std::string file_name)
 {
     std::ostringstream os;
     os << "Saving project as " << file_name;
